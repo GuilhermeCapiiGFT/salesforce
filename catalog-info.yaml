@@ -1,0 +1,79 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "Salesforce"
+  description: "Salesforce project by globa tech"
+  annotations:
+    # https://backstage.io/docs/features/software-catalog/well-known-annotations#githubcomproject-slug
+    github.com/project-slug: Creditas/salesforce
+
+    # https://backstage.io/docs/features/software-catalog/well-known-annotations#backstageiotechdocs-ref
+    # Uncomment this line if your repository / project has documentation to be generated
+    #backstage.io/techdocs-ref: url:https://github.com/Creditas/salesforce
+
+    # https://backstage.io/docs/features/software-catalog/well-known-annotations#circlecicomproject-slug
+    # Uncomment this line if your project uses CircleCI
+    #circleci.com/project-slug: github/Creditas/salesforce
+
+  tags:
+    - service
+
+  # Uncomment the line to reference some quick access links, such as metrics dashboard
+  # links:
+  #   - url: https://developerhub.creditas.io
+  #     title: Developer hub
+  #     icon: dashboard
+spec:
+  # https://backstage.io/docs/features/software-catalog/descriptor-format#spectype-required
+  # ENUM:[service, website, library, documentation]
+  type: service
+
+  # https://backstage.io/docs/features/software-catalog/descriptor-format#speclifecycle-required
+  # ENUM: [experimental, production, deprecated]
+  lifecycle: experimental
+
+  # https://backstage.io/docs/features/software-catalog/descriptor-format#specowner-required
+  # Github Team Name: Name of responsible team
+  # When it is a single person: user:username
+  owner: "global-tech"
+
+  # API name that this component makes available
+  # providesApis:
+  #   - "Salesforce"-api
+
+  # https://backstage.io/docs/features/software-catalog/descriptor-format#specconsumesapis-optional
+  # If you want to reference which internal APIs your application consumes
+  # consumesApis:
+  #   - OTHER_API
+
+  # Uncomment the line below to reference a dependency with other applications
+  # dependsOn:
+  #   - OTHER_COMPONENT
+
+# Uncomment the configuration block below to expose your application's API documentation
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
+# ---
+# apiVersion: backstage.io/v1alpha1
+# kind: API
+# metadata:
+#   name: "Salesforce"-api
+#   description: API for "Salesforce project by globa tech"
+# spec:
+#   # https://backstage.io/docs/features/software-catalog/descriptor-format#spectype-required-2
+#   # ENUM: [openapi, asyncapi, graphql, grpc]
+#   type: openapi
+#
+#   # https://backstage.io/docs/features/software-catalog/descriptor-format#speclifecycle-required
+#   # ENUM: [experimental, production, deprecated]
+#   lifecycle: experimental
+#
+#   # https://backstage.io/docs/features/software-catalog/descriptor-format#specowner-required
+#   # Github Team Name: Name of responsible team
+#   # When it is a single person: user:username
+#   owner: "global-tech"
+#
+#   definition:
+#     # Uncomment to reference a file in the repository itself
+#     $text: ./src/main/resources/openapi/v1/openapi.yaml
+#     # If the OpenAPI file is on an endpoint
+#     $text: http://your_app.creditas.io/openapi.yaml
