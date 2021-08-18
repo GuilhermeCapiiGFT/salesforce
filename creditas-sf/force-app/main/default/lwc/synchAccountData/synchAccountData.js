@@ -75,4 +75,5 @@ export default class SynchAccountData extends LightningElement {
             myComponent.subscription = response;
         });
     }
+
 }

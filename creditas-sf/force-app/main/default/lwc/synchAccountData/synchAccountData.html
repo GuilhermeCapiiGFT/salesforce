@@ -1,15 +1,24 @@
 <template>
     <template if:true={showComponent}>
         <template if:true={showSynchButton}> 
-            <lightning-card title="Para sincronizar os dados da conta clique no botão abaixo:" icon-name="custom:custom14">
-                <lightning-button label="Sincronizar"  onclick={clickHandler} class="slds-align_absolute-center"> </lightning-button> 
-            </lightning-card>
+            <div class="exampleHolder" >                               
+                <lightning-button 
+                    id="botao" 
+                    icon-name="utility:sync" 
+                    label="Sincronizar dados da conta"  
+                    onclick={clickHandler} 
+                    class="slds-align_absolute-center" 
+                    variant="brand" 
+                    style="width: 100%!important;"> 
+                </lightning-button> 
+                
+            </div>
         </template>
     </template>
 
     <template if:true={showSynchingScreen}>
         <lightning-card title="A sincronização foi iniciada, aguarde">    
-            <div class="exampleHolder" style="white-space: normal!important">
+            <div class="exampleHolder" style="height:100px">
                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
             </div>
         </lightning-card>
