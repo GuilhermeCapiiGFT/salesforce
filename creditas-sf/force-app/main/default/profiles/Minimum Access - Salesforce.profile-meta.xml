@@ -461,6 +461,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>CommunicationContacts__c.Channel__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>CommunicationContacts__c.Code__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>CommunicationContacts__c.Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Contact.AccountId</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -695,15 +710,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <layoutAssignments>
-        <layout>Account-Account Layout</layout>
-        <recordType>Account.AccountTest</recordType>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Account-Account Layout</layout>
+        <layout>Account-Pessoa Fisica</layout>
         <recordType>Account.Pessoa_Fisica</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Account-Account Layout</layout>
+        <layout>Account-Pessoa Juridica</layout>
         <recordType>Account.Pessoa_Juridica</recordType>
     </layoutAssignments>
     <layoutAssignments>
@@ -711,6 +722,9 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Addresses__c-Layout de Endereço</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommunicationContacts__c-CommunicationContact Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>ContactPointAddress-Layout de Endereço do ponto de contato</layout>

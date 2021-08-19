@@ -99,15 +99,14 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
     private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'Documents__c';
-        
-        Map<Id, Id> mapDocumentsToAccount = new Map<Id, Id>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
-        
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+        Map<Account, Documents__c> mapAccountToDocuments = new Map<Account, Documents__c>();  
+        Set<Id> setAccountIds = new Set<Id>();
         List<Account> listAccountToUpdate = new List<Account>();
 
-        for(Documents__c newDocuments : lstnewDocuments)
+        for(Documents__c newDocument : lstNewDocuments)
         {   
-            mapDocumentsToAccount.put(newDocuments.Id, newDocuments.Account__c);
+            setAccountIds.add(newDocument.Account__c);
         }
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
@@ -117,27 +116,35 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
         }
 
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: mapDocumentsToAccount.values()]); 
-
-        for(Documents__c newDocuments : lstNewDocuments)
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
+        
+        for(Documents__c newDocument : lstNewDocuments)
         {
-            Documents__c oldDocuments = mapOldDocuments.get(newDocuments.Id);
-    
+            Documents__c oldDocument = mapOldDocuments.get(newDocument.Id);
+            
             for(String trackedField : mapTrackedFields.keySet())
             {
-                if(newDocuments.get(trackedField) != oldDocuments.get(trackedField))
+                if(newDocument.get(trackedField) != oldDocument.get(trackedField))
                 {     
-                    Account varAccount = mapAccounts.get(oldDocuments.Account__c);
-                    
-                    varAccount.IsExternallySynched__c = false;
-                    listAccountToUpdate.add(varAccount);
-
-                    System.debug('campo rastreado >>> ' + trackedField + ' <<< teve seu valor alterado');
-                    System.debug('tyumi => new value: ' +  varAccount.IsExternallySynched__c);
+                    mapAccountToDocuments.put(mapAccounts.get(oldDocument.Account__c), oldDocument);
                 }
             }
         }
 
-        update listAccountToUpdate;
+        if(!mapAccountToDocuments.isEmpty())
+        {
+            for(Account varAccount : mapAccountToDocuments.keySet())
+            {
+                varAccount.IsExternallySynched__c = false;
+                listAccountToUpdate.add(varAccount);
+            }
+        }
+
+        TriggerHandler.bypass('AccountTriggerHandler');
+        if(!listAccountToUpdate.isEmpty())
+        {
+            update listAccountToUpdate;
+        }
+        TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 }

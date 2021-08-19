@@ -14,22 +14,7 @@ public class AddressesTriggerHandlerTest {
     
     @TestSetup
     static void makeData()
-    {
-        Profile userProfile = [SELECT Id FROM Profile LIMIT 1];
-        User userTest = new User();
-        userTest.LastName = 'Test';
-        userTest.Alias = 'Test';
-        userTest.Email = 'usertest@Creditas.com.dev';
-        userTest.Username = 'usertest@Creditas.com.dev';
-        usertest.EmployeeNumber = '01984';
-        userTest.CommunityNickname = 'UserTest';
-        userTest.ProfileId = userProfile.Id;
-        userTest.LocaleSidKey = 'pt_BR';
-        userTest.LanguageLocaleKey = 'pt_BR';
-        userTest.EmailEncodingKey = 'UTF-8';
-        userTest.TimeZoneSidKey = 'America/Sao_Paulo';
-        insert userTest;
-        
+    {        
         Account varAccount = TestSetup.getAccount('Francisco', true);
         varAccount.IsExternallySynched__c = true;
         

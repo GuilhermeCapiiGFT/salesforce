@@ -89,7 +89,7 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     * ================================================================================================================================
     * @description atualizar campo isExternallySynced da Conta quando for PF
     * @return void
-    * @param Documents
+    * @param Financial Resource
     * ================================================================================================================================
     * History
     * -------
@@ -99,15 +99,14 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'FinancialResources__c';
-        
-        Map<Id, Id> mapFinancialToAccount = new Map<Id, Id>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
-        
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+        Map<Account, FinancialResources__c> mapAccountToFinancial = new Map<Account, FinancialResources__c>();  
+        Set<Id> setAccountIds = new Set<Id>();
         List<Account> listAccountToUpdate = new List<Account>();
 
-        for(FinancialResources__c newFinancial : lstNewFinancialResources)
+        for(FinancialResources__c newFinancialResource : lstNewFinancialResources)
         {   
-            mapFinancialToAccount.put(newFinancial.Id, newFinancial.Account__c);
+            setAccountIds.add(newFinancialResource.Account__c);
         }
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
@@ -117,27 +116,35 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
         }
 
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: mapFinancialToAccount.values()]); 
-
-        for(FinancialResources__c newFinancial : lstNewFinancialResources)
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
+        
+        for(FinancialResources__c newFinancialResource : lstNewFinancialResources)
         {
-            FinancialResources__c oldDocuments = mapOldFinancialResources.get(newFinancial.Id);
-    
+            FinancialResources__c oldFinancialResource = mapOldFinancialResources.get(newFinancialResource.Id);
+            
             for(String trackedField : mapTrackedFields.keySet())
             {
-                if(newFinancial.get(trackedField) != oldDocuments.get(trackedField))
+                if(newFinancialResource.get(trackedField) != oldFinancialResource.get(trackedField))
                 {     
-                    Account varAccount = mapAccounts.get(oldDocuments.Account__c);
-                    
-                    varAccount.IsExternallySynched__c = false;
-                    listAccountToUpdate.add(varAccount);
-
-                    System.debug('campo rastreado >>> ' + trackedField + ' <<< teve seu valor alterado');
-                    System.debug('tyumi => new value: ' +  varAccount.IsExternallySynched__c);
+                    mapAccountToFinancial.put(mapAccounts.get(oldFinancialResource.Account__c), oldFinancialResource);
                 }
             }
         }
 
-        update listAccountToUpdate;
+        if(!mapAccountToFinancial.isEmpty())
+        {
+            for(Account varAccount : mapAccountToFinancial.keySet())
+            {
+                varAccount.IsExternallySynched__c = false;
+                listAccountToUpdate.add(varAccount);
+            }
+        }
+
+        TriggerHandler.bypass('AccountTriggerHandler');
+        if(!listAccountToUpdate.isEmpty())
+        {
+            update listAccountToUpdate;
+        }
+        TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 }
