@@ -694,6 +694,51 @@
         <field>ProfessionalInfo__c.Status__c</field>
         <readable>false</readable>
     </fieldPermissions>
+    <layoutAssignments>
+        <layout>Account-Account Layout</layout>
+        <recordType>Account.AccountTest</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-Account Layout</layout>
+        <recordType>Account.Pessoa_Fisica</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-Account Layout</layout>
+        <recordType>Account.Pessoa_Juridica</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AccountRelationships__c-Layout de Conta Relacionada</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Addresses__c-Layout de Endereço</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointAddress-Layout de Endereço do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointEmail-Layout de Email do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointPhone-Layout de Telefone do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Custom_Field_Tracking_Map__mdt-Custom Field Tracking Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Documents__c-Layout de Documento</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Layout de Recurso Financeiro</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityContactRole-Opportunity Contact Role Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ProcessException-Layout de Exceção de processo</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ProfessionalInfo__c-ProfessionalInfo Layout</layout>
+    </layoutAssignments>
     <recordTypeVisibilities>
         <default>true</default>
         <personAccountDefault>true</personAccountDefault>

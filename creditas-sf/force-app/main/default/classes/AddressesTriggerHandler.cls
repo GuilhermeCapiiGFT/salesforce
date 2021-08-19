@@ -99,10 +99,9 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'Addresses__c';
-        
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+        Map<Account, Addresses__c> mapAccountToAddresses = new Map<Account, Addresses__c>();  
         Set<Id> setAccountIds = new Set<Id>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
-        
         List<Account> listAccountToUpdate = new List<Account>();
 
         for(Addresses__c newAddress : lstNewAddresses)
@@ -118,8 +117,7 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
         }
 
         Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
-        Map<Account, Addresses__c> mapAccountToAddresses = new Map<Account, Addresses__c>();
-    
+        
         for(Addresses__c newAddress : lstNewAddresses)
         {
             Addresses__c oldAddress = mapOldAddresses.get(newAddress.Id);
@@ -133,13 +131,14 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
             }
         }
 
-        for(Account varAccount : mapAccountToAddresses.keySet())
+        if(!mapAccountToAddresses.isEmpty())
         {
-            varAccount.IsExternallySynched__c = false;
-            listAccountToUpdate.add(varAccount);
+            for(Account varAccount : mapAccountToAddresses.keySet())
+            {
+                varAccount.IsExternallySynched__c = false;
+                listAccountToUpdate.add(varAccount);
+            }
         }
-
-        System.debug('tymi lista: ' + listAccountToUpdate);
 
         TriggerHandler.bypass('AccountTriggerHandler');
         if(!listAccountToUpdate.isEmpty())
