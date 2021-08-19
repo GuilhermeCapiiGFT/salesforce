@@ -57,17 +57,17 @@ public class AccountTriggerHandlerTest {
 
         insert lstTestAccounts;
         
-        Account testTerritoryAccount = TestSetup.getAccount('testAccount', false);
+        // Account testTerritoryAccount = TestSetup.getAccount('testAccount', false);
         // testTerritoryAccount.Territorios__c = '123';
-        insert testTerritoryAccount;   
+        // insert testTerritoryAccount;   
     }
 
     @isTest
     static void updateIsExternallySync() 
     {
-        Account varAccount = [SELECT Id, ExternalId__c, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
+        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
                               ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
-                              CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c
+                              CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
                               FROM Account LIMIT 1];
         
 
@@ -76,6 +76,11 @@ public class AccountTriggerHandlerTest {
 
         System.debug(varAccount);
 
+        Test.startTest();
         update varAccount;
+        Test.stopTest();
+
+        System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
+        System.assertEquals('ENABLED', varAccount.IsSynchEnabled__c, 'O campo isSynchEnabled não foi mudado para Enabled');
     }
 }

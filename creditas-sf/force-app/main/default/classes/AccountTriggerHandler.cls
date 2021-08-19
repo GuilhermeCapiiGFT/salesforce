@@ -1,5 +1,5 @@
 /***********************************************************************************************************************************
-* Copyright © 2021 BR Distribuidores
+* Copyright © 2021 Creditas
 * ================================================================================================================================
 * @description Handler padrão para a trigger do Objeto Conta (Account).
 * ================================================================================================================================
@@ -73,7 +73,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void beforeUpdate()
     {
-        this.didFieldsChange();
+        this.updateIsExternallySynced();
         this.firePlatformEventSynchAccount();
     }
     
@@ -118,7 +118,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     * VERSION     AUTHOR                  DATE            DETAIL      Description
     * 1.0         Thales Yumiya           11/08/21
     **********************************************************************************************************************************/
-    private void didFieldsChange()
+    private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'Account';
         
@@ -126,8 +126,8 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
         Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                FROM Custom_Field_Tracking_Map__mdt
-                                                                WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
+                                                                    FROM Custom_Field_Tracking_Map__mdt
+                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
         {
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);
         }

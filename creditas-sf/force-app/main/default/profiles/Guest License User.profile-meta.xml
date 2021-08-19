@@ -696,11 +696,6 @@
     </fieldPermissions>
     <recordTypeVisibilities>
         <default>false</default>
-        <recordType>Account.AccountTest</recordType>
-        <visible>false</visible>
-    </recordTypeVisibilities>
-    <recordTypeVisibilities>
-        <default>false</default>
         <recordType>Account.Pessoa_Fisica</recordType>
         <visible>false</visible>
     </recordTypeVisibilities>

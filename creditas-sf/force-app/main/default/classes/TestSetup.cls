@@ -1,5 +1,5 @@
 /*******************************************************************************************************************************
- * Copyright © 2021 Crefisa
+ * Copyright © 2021 Creditas
  * =============================================================================================================================
  * Purpose: Classe para criação de objetos utilizados nas classes de teste
  * =============================================================================================================================
@@ -17,6 +17,7 @@ public class TestSetup {
             
         Account varAccount = new Account(Name = name);
         varAccount.DocumentNumber__c = '12345678901234';
+        varAccount.IsExternallySynched__c = true;
         // varAccount.Cidade__c = getRegiao(true).Id;
         // varAccount.Status_Integracao__c = 'OK';
         // varAccount.Apelido__c = 'apelido';
@@ -253,26 +254,27 @@ public class TestSetup {
         
     // }
      
-    // public static Account getPersonAccount(String firstName, String lastName, Boolean doinsert)
-    // {
-    //     final Id ACCOUNT_RT_PERSON_ACCOUNT = Util.getRecordTypeIdbyName('Account', 'Conta_Pessoa_Fisica');
+    public static Account getPersonAccount(String firstName, String lastName, Boolean doinsert)
+    {
+        final Id ACCOUNT_RT_PERSON_ACCOUNT = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
 
-    //     Account varAccount = new Account(RecordTypeId = ACCOUNT_RT_PERSON_ACCOUNT);
-    //     varAccount.FirstName = firstName;
-    //     varAccount.LastName = lastName;
-    //     varAccount.Numero_Do_Documento__c = '12345678900';
-    //     varAccount.Bairro__c = 'Jardim S. Domingos';
-    //     varAccount.Bloqueio_De_Ordem__c = false;
-    //     varAccount.CEP__c = '1363463';
-    //     varAccount.De_Olho_No_Combustivel__c = false;
-    //     varAccount.Rua__c = 'Rua Espanha';
-    //     varAccount.Tipo_De_Documento__c = 'CPF';
+        Account varAccount = new Account(RecordTypeId = ACCOUNT_RT_PERSON_ACCOUNT);
+        varAccount.Name = firstName;
+        varAccount.DocumentNumber__c = '12345678901234';
+        varAccount.IsExternallySynched__c = true;
+        // varAccount.LastName = lastName;
+        // varAccount.Numero_Do_Documento__c = '12345678900';
+        // varAccount.Bairro__c = 'Jardim S. Domingos';
+        // varAccount.Bloqueio_De_Ordem__c = false;
+        // varAccount.CEP__c = '1363463';
+        // varAccount.Rua__c = 'Rua Espanha';
+        // varAccount.Tipo_De_Documento__c = 'CPF';
         
-    //     if(doInsert)
-    //     {
-    //         insert varAccount;
-    //     }
+        if(doInsert)
+        {
+            insert varAccount;
+        }
         
-    //     return varAccount;
-    // }
+        return varAccount;
+    }
 }

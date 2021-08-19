@@ -1,5 +1,5 @@
 /***********************************************************************************************************************************
-* Copyright © 2021 BR Distribuidores
+* Copyright © 2021 Creditas
 * ================================================================================================================================
 * @description Handler padrão para a trigger do Objeto Endereço (Addresses).
 * ================================================================================================================================
@@ -82,7 +82,7 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterUpdate() 
     {
-        
+         
     }
 
     /**********************************************************************************************************************************
@@ -100,44 +100,52 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     {
         String varSObjectApiName = 'Addresses__c';
         
-        Map<Id, Id> mapAddressToAccount = new Map<Id, Id>();
+        Set<Id> setAccountIds = new Set<Id>();
         Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
         
         List<Account> listAccountToUpdate = new List<Account>();
 
         for(Addresses__c newAddress : lstNewAddresses)
         {   
-            mapAddressToAccount.put(newAddress.Id, newAddress.Account__c);
+            setAccountIds.add(newAddress.Account__c);
         }
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                FROM Custom_Field_Tracking_Map__mdt
-                                                                WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
+                                                                    FROM Custom_Field_Tracking_Map__mdt
+                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
         {
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
         }
 
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: mapAddressToAccount.values()]); 
-
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
+        Map<Account, Addresses__c> mapAccountToAddresses = new Map<Account, Addresses__c>();
+    
         for(Addresses__c newAddress : lstNewAddresses)
         {
             Addresses__c oldAddress = mapOldAddresses.get(newAddress.Id);
-    
+            
             for(String trackedField : mapTrackedFields.keySet())
             {
                 if(newAddress.get(trackedField) != oldAddress.get(trackedField))
                 {     
-                    Account varAccount = mapAccounts.get(oldAddress.Account__c);
-                    
-                    varAccount.IsExternallySynched__c = false;
-                    listAccountToUpdate.add(varAccount);
-
-                    System.debug('campo rastreado >>> ' + trackedField + ' <<< teve seu valor alterado');
-                    System.debug('tyumi => new value: ' +  varAccount.IsExternallySynched__c);
+                    mapAccountToAddresses.put(mapAccounts.get(oldAddress.Account__c), oldAddress);
                 }
             }
         }
 
-        update listAccountToUpdate;
+        for(Account varAccount : mapAccountToAddresses.keySet())
+        {
+            varAccount.IsExternallySynched__c = false;
+            listAccountToUpdate.add(varAccount);
+        }
+
+        System.debug('tymi lista: ' + listAccountToUpdate);
+
+        TriggerHandler.bypass('AccountTriggerHandler');
+        if(!listAccountToUpdate.isEmpty())
+        {
+            update listAccountToUpdate;
+        }
+        TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 }
