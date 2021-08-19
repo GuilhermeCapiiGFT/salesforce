@@ -1,37 +1,25 @@
 # "Salesforce"
 
 ## Description
-"Salesforce project by globa tech"
+"Projeto Salesforce Creditas by GFT"
 
 ## Maintainer
 It must contain information about who is the maintainer of the project. There must be a Slack channel for questions and the github team responsible.
 
-**Github Team**: [@Creditas/YOUR_TEAM](https://github.com/orgs/Creditas/teams/"global-tech")
-**Slack**: [#YOUR_SLACK_CHANNEL](https://app.slack.com/client/CHANNEL)
+**Github Team**: [@Creditas/gft](https://github.com/orgs/Creditas/teams/gft)
+**Slack**: [#gft-creditas](https://app.slack.com/client/T02AZR491CG/C02AACUBZB5)
 
 ## Stack
 Which Stack is used in the project? Informs what is mandatory and what is optional.
-
-Example:
-
-- **[Required]** [Ruby on Rails](https://rubyonrails.org/)
-- **[Optional]** [PostgreSQL](https://www.postgresql.org/)
+- **[Required]** [Salesforce](https://www.salesforce.com/)
 
 ## Prerequisites
-
-What is needed to run the project on localhost?
-
-Example:
-- **[Required]** [Docker](https://www.docker.com/): As this project is dockerized.
-- **[Required]** [Docker-Compose](https://docs.docker.com/compose/): To run project with its dependencies
-- [Optional] [Ruby](https://www.ruby-lang.org/en/downloads/): To run project locally without docker
-- [Optional] [RVM](https://rvm.io/): To manage ruby version and gemsets
-
-## Infrastructure Terraform (Optional)
-How is the infrastructure organized?
+- **[Required]** [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli)
+- **[Optional]** [Visualstudio Code](https://code.visualstudio.com/)
 
 ## Architecture Diagram
-Having a diagram explaining the basic architecture of the project helps those who are starting.
+![image](https://user-images.githubusercontent.com/88781971/130148931-ec4a5892-dd88-49e0-8320-29827c7287b6.png)
+
 
 ## Environment
 How is the development, Staging or Production environment accessed?
@@ -41,9 +29,9 @@ Example:
 |Environment|DNS|
 |-----------|---|
 |Localhost |http://localhost:8000|
-|Dev |https://kong.dev.creditas.io/app|
-|Staging |https://kong.stg.creditas.io/app|
-|Production |https://kong.prod.creditas.io/app|
+|Devhub |https://creditas--devhub.lightning.force.com/|
+|Test |https://creditas--test.lightning.force.com/|
+|Production |https://creditas.lightning.force.com/|
 
 ## API Documentation
 Does the Service have an API for integration? If so, enter the address in the Developer Hub.
