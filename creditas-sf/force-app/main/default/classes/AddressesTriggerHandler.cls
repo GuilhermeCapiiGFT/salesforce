@@ -125,11 +125,14 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
             for(String trackedField : mapTrackedFields.keySet())
             {
                 if(newAddress.get(trackedField) != oldAddress.get(trackedField))
-                {     
+                {    
+                    System.debug('TYUMI => Entrou no if');
                     mapAccountToAddresses.put(mapAccounts.get(oldAddress.Account__c), oldAddress);
                 }
             }
         }
+
+        System.debug('TYUMI => mapAccountToAddress' + mapAccountToAddresses);
 
         if(!mapAccountToAddresses.isEmpty())
         {
@@ -139,6 +142,8 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
                 listAccountToUpdate.add(varAccount);
             }
         }
+
+        System.debug('TYUMI => list: ' + listAccountToUpdate);
 
         TriggerHandler.bypass('AccountTriggerHandler');
         if(!listAccountToUpdate.isEmpty())

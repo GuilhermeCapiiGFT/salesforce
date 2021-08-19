@@ -34,6 +34,10 @@
     </types>
     <types>
         <members>*</members>
+        <name>StaticResource</name>
+    </types>
+    <!-- <types>
+        <members>*</members>
         <name>CustomObject</name>
     </types>
     <types>
@@ -48,5 +52,6 @@
         <members>*</members>
         <name>Profile</name>
     </types>
+    -->
     <version>52.0</version>
 </Package>

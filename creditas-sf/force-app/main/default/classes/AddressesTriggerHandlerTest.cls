@@ -52,7 +52,7 @@ public class AddressesTriggerHandlerTest {
     }
 
     @isTest
-    static void updateMultiple()
+    static void updateMultipleAddresses()
     {
         Account varAccount = [SELECT Id, Name, isExternallySynched__c FROM Account LIMIT 1];
         List<Addresses__c> listAddressesInsert = new List<Addresses__c>();
@@ -74,6 +74,71 @@ public class AddressesTriggerHandlerTest {
             listAddressesUpdate.add(varAddress);
         }
         
+        Test.startTest();
         update listAddressesUpdate;
+        Test.stopTest();
+
+        Account varAccountUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Account Where Name = 'Francisco' LIMIT 1];
+
+        System.debug('tyumi account => ' + varAccountUpdate);
+
+        System.assertEquals(false, varAccountUpdate.IsExternallySynched__c);
+    }
+
+    @isTest
+    static void updateMultiple()
+    {
+        List<Account> listAccountInsert = new List<Account>();
+        List<Addresses__c> listAddressesInsert = new List<Addresses__c>();
+        List<Addresses__c> listAddressesUpdate = new List<Addresses__c>();
+        
+        Account varAccount1 = new Account();
+        varAccount1.Name = 'Jose';
+        varAccount1.IsExternallySynched__c = true;
+        
+        Account varAccount2 = new Account();
+        varAccount2.Name = 'Joao';
+        varAccount2.IsExternallySynched__c = true;
+        
+        Account varAccount3 = new Account();
+        varAccount3.IsExternallySynched__c = true;
+        varAccount3.Name = 'Josimar';
+
+        listAccountInsert.add(varAccount1);
+        listAccountInsert.add(varAccount2);
+        listAccountInsert.add(varAccount3);
+
+        insert listAccountInsert;
+
+        Addresses__c varAddress1 = new Addresses__c();
+        varAddress1.Account__c = varAccount1.Id; 
+        
+        Addresses__c varAddress2 = new Addresses__c();
+        varAddress2.Account__c = varAccount1.Id;
+
+        Addresses__c varAddress3 = new Addresses__c();
+        varAddress3.Account__c = varAccount1.Id;
+
+        listAddressesInsert.add(varAddress1);
+        listAddressesInsert.add(varAddress2);
+        listAddressesInsert.add(varAddress3);
+
+        insert listAddressesInsert;
+
+        varAddress1.Complement__c = 'Rua da gloria';
+        varAddress2.Complement__c = 'Rua Sarsi Figueira';
+        varAddress3.Complement__c = 'Rua Jose sampaio';
+
+        listAddressesUpdate.add(varAddress1);
+        listAddressesUpdate.add(varAddress2);
+        listAddressesUpdate.add(varAddress3);
+
+        Test.startTest();
+        update listAddressesUpdate;
+        Test.stopTest();
+
+        Account varAccountUpdated = [SELECT Id, Name, IsExternallySynched__c FROM Account WHERE Name = 'Jose' LIMIT 1];
+
+        System.assertEquals(false, varAccountUpdated.IsExternallySynched__c);
     }
 }
