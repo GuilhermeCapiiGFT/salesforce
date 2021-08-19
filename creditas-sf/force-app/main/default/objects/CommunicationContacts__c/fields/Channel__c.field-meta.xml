@@ -12,6 +12,11 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>WHATSAPP</fullName>
+                <default>false</default>
+                <label>WHATSAPP</label>
+            </value>
+            <value>
                 <fullName>PHONE</fullName>
                 <default>false</default>
                 <label>PHONE</label>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
+    <excludeButtons>DataDotComAccountInsights</excludeButtons>
+    <excludeButtons>DataDotComClean</excludeButtons>
     <excludeButtons>DisableCustomerPortalAccount</excludeButtons>
     <excludeButtons>DisablePartnerPortalAccount</excludeButtons>
     <excludeButtons>IncludeOffline</excludeButtons>
@@ -408,11 +409,11 @@
         <relatedList>FinancialResources__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>CONTACT.FULL_NAME</fields>
-        <fields>Type__c</fields>
+        <fields>NAME</fields>
         <fields>Channel__c</fields>
         <fields>Code__c</fields>
-        <relatedList>RelatedAccountContactRelationList</relatedList>
+        <fields>Type__c</fields>
+        <relatedList>CommunicationContacts__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>Type__c</fields>

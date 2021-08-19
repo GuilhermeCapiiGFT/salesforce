@@ -121,8 +121,6 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'Account';
-        
-        //String trackedField = '';
         Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
@@ -138,15 +136,9 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
 
             for(String trackedField : mapTrackedFields.keySet())
             {
-                System.debug('tracked field: ' + trackedField);
-
                 if(newAccount.get(trackedField) != oldAccount.get(trackedField))
                 {
                     newAccount.IsExternallySynched__c = false;
-                 
-                    System.debug('limit: ' + Limits.getCpuTime());
-                    System.debug('campo rastreado >>> ' + trackedField + ' <<< teve seu valor alterado');
-                    System.debug('TYUMI => ' + newAccount.IsExternallySynched__c);
                 }
             }
         }

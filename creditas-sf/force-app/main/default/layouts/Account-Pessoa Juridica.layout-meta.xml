@@ -406,9 +406,6 @@
     </relatedLists>
     <relatedLists>
         <fields>CONTACT.FULL_NAME</fields>
-        <fields>Type__c</fields>
-        <fields>Channel__c</fields>
-        <fields>Code__c</fields>
         <relatedList>RelatedAccountContactRelationList</relatedList>
     </relatedLists>
     <relatedLists>

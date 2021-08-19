@@ -99,15 +99,14 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
     private void updateIsExternallySynced()
     {
         String varSObjectApiName = 'ProfessionalInfo__c';
-        
-        Map<Id, Id> mapProfessionalInfoToAccount = new Map<Id, Id>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();
-        
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+        Map<Account, ProfessionalInfo__c> mapAccountToProfessionalInfo = new Map<Account, ProfessionalInfo__c>();  
+        Set<Id> setAccountIds = new Set<Id>();
         List<Account> listAccountToUpdate = new List<Account>();
 
         for(ProfessionalInfo__c newProfessionalInfo : lstNewProfessionalInfo)
         {   
-            mapProfessionalInfoToAccount.put(newProfessionalInfo.Id, newProfessionalInfo.Account__c);
+            setAccountIds.add(newProfessionalInfo.Account__c);
         }
 
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
@@ -117,27 +116,35 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
         }
 
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: mapProfessionalInfoToAccount.values()]); 
-
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
+        
         for(ProfessionalInfo__c newProfessionalInfo : lstNewProfessionalInfo)
         {
             ProfessionalInfo__c oldProfessionalInfo = mapOldProfessionalInfo.get(newProfessionalInfo.Id);
-    
+            
             for(String trackedField : mapTrackedFields.keySet())
             {
                 if(newProfessionalInfo.get(trackedField) != oldProfessionalInfo.get(trackedField))
                 {     
-                    Account varAccount = mapAccounts.get(oldProfessionalInfo.Account__c);
-                    
-                    varAccount.IsExternallySynched__c = false;
-                    listAccountToUpdate.add(varAccount);
-
-                    System.debug('campo rastreado >>> ' + trackedField + ' <<< teve seu valor alterado');
-                    System.debug('tyumi => new value: ' +  varAccount.IsExternallySynched__c);
+                    mapAccountToProfessionalInfo.put(mapAccounts.get(oldProfessionalInfo.Account__c), oldProfessionalInfo);
                 }
             }
         }
 
-        update listAccountToUpdate;
+        if(!mapAccountToProfessionalInfo.isEmpty())
+        {
+            for(Account varAccount : mapAccountToProfessionalInfo.keySet())
+            {
+                varAccount.IsExternallySynched__c = false;
+                listAccountToUpdate.add(varAccount);
+            }
+        }
+
+        TriggerHandler.bypass('AccountTriggerHandler');
+        if(!listAccountToUpdate.isEmpty())
+        {
+            update listAccountToUpdate;
+        }
+        TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 }
