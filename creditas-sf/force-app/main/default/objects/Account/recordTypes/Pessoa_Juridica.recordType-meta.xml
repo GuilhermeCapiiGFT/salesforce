@@ -80,12 +80,8 @@
     <picklistValues>
         <picklist>DocumentType__c</picklist>
         <values>
-            <fullName>CPF</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>RFC</fullName>
-            <default>false</default>
+            <fullName>CNPJ</fullName>
+            <default>true</default>
         </values>
     </picklistValues>
     <picklistValues>

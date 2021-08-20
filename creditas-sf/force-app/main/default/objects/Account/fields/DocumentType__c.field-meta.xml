@@ -20,6 +20,11 @@
                 <default>false</default>
                 <label>RFC</label>
             </value>
+            <value>
+                <fullName>CNPJ</fullName>
+                <default>false</default>
+                <label>CNPJ</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

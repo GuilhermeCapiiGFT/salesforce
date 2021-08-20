@@ -81,7 +81,7 @@
         <picklist>DocumentType__c</picklist>
         <values>
             <fullName>CPF</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>RFC</fullName>
