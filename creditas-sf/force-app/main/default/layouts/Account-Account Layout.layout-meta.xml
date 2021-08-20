@@ -34,10 +34,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>IncomeAmount__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>ExternalId__c</field>
             </layoutItems>
             <layoutItems>
@@ -475,6 +471,8 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Type__c</fields>
+        <fields>SecondaryRelationship__c</fields>
         <relatedList>AccountRelationships__c.PrimaryRelationship__c</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
