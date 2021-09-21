@@ -5,6 +5,7 @@
     <externalId>false</externalId>
     <label>Tipo de Recurso</label>
     <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
@@ -18,14 +19,69 @@
                 <label>MONTHLY_INCOME</label>
             </value>
             <value>
-                <fullName>PRESUMED_MONTHLY_INCOME/NET_MONTHLY_INCOME</fullName>
+                <fullName>PRESUMED_MONTHLY_INCOME</fullName>
                 <default>false</default>
-                <label>PRESUMED_MONTHLY_INCOME/NET_MONTHLY_INCOME</label>
+                <label>PRESUMED_MONTHLY_INCOME</label>
             </value>
             <value>
                 <fullName>CONFIRMED_MONTHLY_INCOME</fullName>
                 <default>false</default>
                 <label>CONFIRMED_MONTHLY_INCOME</label>
+            </value>
+            <value>
+                <fullName>NET_MONTHLY_INCOME</fullName>
+                <default>false</default>
+                <label>NET_MONTHLY_INCOME</label>
+            </value>
+            <value>
+                <fullName>HOUSE</fullName>
+                <default>false</default>
+                <label>HOUSE</label>
+            </value>
+            <value>
+                <fullName>COMMERCIAL</fullName>
+                <default>false</default>
+                <label>COMMERCIAL</label>
+            </value>
+            <value>
+                <fullName>APARTMENT</fullName>
+                <default>false</default>
+                <label>APARTMENT</label>
+            </value>
+            <value>
+                <fullName>LAND</fullName>
+                <default>false</default>
+                <label>LAND</label>
+            </value>
+            <value>
+                <fullName>CONDOMINIUM_HOUSE</fullName>
+                <default>false</default>
+                <label>CONDOMINIUM_HOUSE</label>
+            </value>
+            <value>
+                <fullName>COMMERCIAL_ROOM</fullName>
+                <default>false</default>
+                <label>COMMERCIAL_ROOM</label>
+            </value>
+            <value>
+                <fullName>CAR</fullName>
+                <default>false</default>
+                <label>CAR</label>
+            </value>
+            <value>
+                <fullName>MOTORCYCLE</fullName>
+                <default>false</default>
+                <label>MOTORCYCLE</label>
+            </value>
+            <value>
+                <fullName>QUADRICYCLE</fullName>
+                <default>false</default>
+                <label>QUADRICYCLE</label>
+            </value>
+            <value>
+                <fullName>TRUCK</fullName>
+                <default>false</default>
+                <label>TRUCK</label>
             </value>
         </valueSetDefinition>
     </valueSet>

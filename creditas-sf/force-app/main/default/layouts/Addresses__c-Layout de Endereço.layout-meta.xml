@@ -12,10 +12,6 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>Account__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Type__c</field>
             </layoutItems>
@@ -27,9 +23,15 @@
                 <behavior>Edit</behavior>
                 <field>StreetNumber__c</field>
             </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>Account__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Neighborhood__c</field>
+                <field>Country__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -37,13 +39,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Country__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>CurrencyIsoCode</field>
+                <field>Neighborhood__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -55,11 +51,23 @@
         <label>System Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>CreatedById</field>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountVersion__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountTenant__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>CreatedById</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>LastModifiedById</field>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>DataDotComAccountInsights</excludeButtons>
-    <excludeButtons>DataDotComClean</excludeButtons>
+    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
     <excludeButtons>DisableCustomerPortalAccount</excludeButtons>
     <excludeButtons>DisablePartnerPortalAccount</excludeButtons>
     <excludeButtons>IncludeOffline</excludeButtons>
@@ -286,11 +285,6 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>SendEmail</actionName>
-            <actionType>QuickAction</actionType>
-            <sortOrder>10</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>AccountHierarchy</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>0</sortOrder>
@@ -340,6 +334,11 @@
             <actionType>QuickAction</actionType>
             <sortOrder>9</sortOrder>
         </platformActionListItems>
+        <platformActionListItems>
+            <actionName>SendEmail</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>10</sortOrder>
+        </platformActionListItems>
     </platformActionList>
     <quickActionList>
         <quickActionListItems>
@@ -375,8 +374,9 @@
         </relatedContentItems>
     </relatedContent>
     <relatedLists>
+        <fields>NAME</fields>
+        <fields>RECORDTYPE</fields>
         <fields>Source__c</fields>
-        <fields>Type__c</fields>
         <fields>Amount__c</fields>
         <relatedList>FinancialResources__c.Account__c</relatedList>
     </relatedLists>
@@ -407,6 +407,7 @@
         <fields>Issuer__c</fields>
         <fields>IssuerState__c</fields>
         <fields>IssueDate__c</fields>
+        <fields>NAME</fields>
         <relatedList>Documents__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -415,27 +416,6 @@
         <fields>StartDate__c</fields>
         <fields>EndDate__c</fields>
         <relatedList>ProfessionalInfo__c.Account__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>CONTRACT.CONTRACT_NUMBER</fields>
-        <fields>CONTRACT.NAME</fields>
-        <fields>CONTRACT.START_DATE</fields>
-        <fields>CONTRACT.END_DATE</fields>
-        <fields>CONTRACT.STATUS</fields>
-        <relatedList>RelatedContractList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>CASES.CASE_NUMBER</fields>
-        <fields>CASES.STATUS</fields>
-        <fields>CASES.CREATED_DATE_DATE_ONLY</fields>
-        <fields>CASES.SUBJECT</fields>
-        <relatedList>RelatedCaseList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedContentNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedFileList</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>

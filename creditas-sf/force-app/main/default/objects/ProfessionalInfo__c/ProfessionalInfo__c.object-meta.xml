@@ -145,7 +145,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>false</enableBulkApi>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
@@ -156,9 +156,11 @@
     <gender>Masculine</gender>
     <label>Emprego</label>
     <nameField>
+        <displayFormat>ProfInfo-{00000000}</displayFormat>
         <label>ProfessionalInfo Name</label>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>ProfessionalInfos</pluralLabel>
     <searchLayouts></searchLayouts>

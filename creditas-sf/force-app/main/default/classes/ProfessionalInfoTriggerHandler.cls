@@ -42,6 +42,7 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
     **********************************************************************************************************************************/
     public override void beforeInsert()
     {
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -69,6 +70,7 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
     public override void beforeUpdate()
     {
         this.updateIsExternallySynced();
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -98,53 +100,36 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
     **********************************************************************************************************************************/
     private void updateIsExternallySynced()
     {
-        String varSObjectApiName = 'ProfessionalInfo__c';
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Account, ProfessionalInfo__c> mapAccountToProfessionalInfo = new Map<Account, ProfessionalInfo__c>();  
+        Util.updateIsExternallySynced('ProfessionalInfo__c', lstNewProfessionalInfo, mapOldProfessionalInfo);
+    }
+
+     /**********************************************************************************************************************************
+    * ================================================================================================================================
+    * @description preenche os campos de external id, version e tenant dos objetos relacionados à account
+    * @return void
+    * @param ProfessionalInfo
+    * ================================================================================================================================
+    * History
+    * -------
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           11/08/21
+    **********************************************************************************************************************************/
+    private void updateAccountExternalFields()
+    {
         Set<Id> setAccountIds = new Set<Id>();
-        List<Account> listAccountToUpdate = new List<Account>();
-
-        for(ProfessionalInfo__c newProfessionalInfo : lstNewProfessionalInfo)
-        {   
-            setAccountIds.add(newProfessionalInfo.Account__c);
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
         
-        for(ProfessionalInfo__c newProfessionalInfo : lstNewProfessionalInfo)
+        for(ProfessionalInfo__c varProfessionalInfo : lstNewProfessionalInfo)
         {
-            ProfessionalInfo__c oldProfessionalInfo = mapOldProfessionalInfo.get(newProfessionalInfo.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newProfessionalInfo.get(trackedField) != oldProfessionalInfo.get(trackedField))
-                {     
-                    mapAccountToProfessionalInfo.put(mapAccounts.get(oldProfessionalInfo.Account__c), oldProfessionalInfo);
-                }
-            }
+             setAccountIds.add(varProfessionalInfo.Account__c);
         }
 
-        if(!mapAccountToProfessionalInfo.isEmpty())
-        {
-            for(Account varAccount : mapAccountToProfessionalInfo.keySet())
-            {
-                varAccount.IsExternallySynched__c = false;
-                listAccountToUpdate.add(varAccount);
-            }
-        }
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Account WHERE Id IN :setAccountIds]);
 
-        TriggerHandler.bypass('AccountTriggerHandler');
-        if(!listAccountToUpdate.isEmpty())
+        for(ProfessionalInfo__c varProfessionalInfo : lstNewProfessionalInfo)
         {
-            update listAccountToUpdate;
-        }
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+            varProfessionalInfo.ExternalAccountId__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalId__c;
+            varProfessionalInfo.ExternalAccountVersion__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalVersion__c;
+            varProfessionalInfo.ExternalAccountTenant__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalTenant__c;
+        }        
     }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>DataDotComAccountInsights</excludeButtons>
-    <excludeButtons>DataDotComClean</excludeButtons>
+    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
     <excludeButtons>DisableCustomerPortalAccount</excludeButtons>
     <excludeButtons>DisablePartnerPortalAccount</excludeButtons>
     <excludeButtons>IncludeOffline</excludeButtons>
@@ -180,9 +179,9 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>SendEmail</actionName>
-            <actionType>QuickAction</actionType>
-            <sortOrder>10</sortOrder>
+            <actionName>AccountHierarchy</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>0</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
             <actionName>Edit</actionName>
@@ -225,14 +224,14 @@
             <sortOrder>8</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>AccountHierarchy</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>0</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>FeedItem.ContentPost</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>9</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>SendEmail</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>10</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <quickActionList>
@@ -287,27 +286,6 @@
         <relatedList>RelatedOpportunityList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>CONTRACT.CONTRACT_NUMBER</fields>
-        <fields>CONTRACT.NAME</fields>
-        <fields>CONTRACT.START_DATE</fields>
-        <fields>CONTRACT.END_DATE</fields>
-        <fields>CONTRACT.STATUS</fields>
-        <relatedList>RelatedContractList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>CASES.CASE_NUMBER</fields>
-        <fields>CASES.STATUS</fields>
-        <fields>CASES.CREATED_DATE_DATE_ONLY</fields>
-        <fields>CASES.SUBJECT</fields>
-        <relatedList>RelatedCaseList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedContentNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedFileList</relatedList>
-    </relatedLists>
-    <relatedLists>
         <fields>TASK.SUBJECT</fields>
         <fields>TASK.WHO_NAME</fields>
         <fields>ACTIVITY.TASK</fields>
@@ -327,6 +305,14 @@
         <fields>CORE.USERS.FULL_NAME</fields>
         <fields>TASK.WHAT_NAME</fields>
         <relatedList>RelatedHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>CreatedDate</fields>
+        <fields>StepStatus</fields>
+        <fields>OriginalActor</fields>
+        <fields>Actor</fields>
+        <fields>Comments</fields>
+        <relatedList>RelatedProcessHistoryList</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

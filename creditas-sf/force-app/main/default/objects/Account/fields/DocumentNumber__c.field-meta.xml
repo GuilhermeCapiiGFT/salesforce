@@ -5,7 +5,7 @@
     <label>Document Number</label>
     <length>20</length>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>

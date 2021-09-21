@@ -42,6 +42,7 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     **********************************************************************************************************************************/
     public override void beforeInsert()
     {
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -69,6 +70,7 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     public override void beforeUpdate()
     {
         this.updateIsExternallySynced();
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -98,53 +100,36 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     **********************************************************************************************************************************/
     private void updateIsExternallySynced()
     {
-        String varSObjectApiName = 'FinancialResources__c';
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Account, FinancialResources__c> mapAccountToFinancial = new Map<Account, FinancialResources__c>();  
+        Util.updateIsExternallySynced('FinancialResources__c', lstNewFinancialResources, mapOldFinancialResources);
+    }
+
+     /**********************************************************************************************************************************
+    * ================================================================================================================================
+    * @description preenche os campos de external id, version e tenant dos objetos relacionados à account
+    * @return void
+    * @param FinancialResources
+    * ================================================================================================================================
+    * History
+    * -------
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           11/08/21
+    **********************************************************************************************************************************/
+    private void updateAccountExternalFields()
+    {
         Set<Id> setAccountIds = new Set<Id>();
-        List<Account> listAccountToUpdate = new List<Account>();
-
-        for(FinancialResources__c newFinancialResource : lstNewFinancialResources)
-        {   
-            setAccountIds.add(newFinancialResource.Account__c);
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
         
-        for(FinancialResources__c newFinancialResource : lstNewFinancialResources)
+        for(FinancialResources__c varFinancialResources : lstNewFinancialResources)
         {
-            FinancialResources__c oldFinancialResource = mapOldFinancialResources.get(newFinancialResource.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newFinancialResource.get(trackedField) != oldFinancialResource.get(trackedField))
-                {     
-                    mapAccountToFinancial.put(mapAccounts.get(oldFinancialResource.Account__c), oldFinancialResource);
-                }
-            }
+             setAccountIds.add(varFinancialResources.Account__c);
         }
 
-        if(!mapAccountToFinancial.isEmpty())
-        {
-            for(Account varAccount : mapAccountToFinancial.keySet())
-            {
-                varAccount.IsExternallySynched__c = false;
-                listAccountToUpdate.add(varAccount);
-            }
-        }
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Account WHERE Id IN :setAccountIds]);
 
-        TriggerHandler.bypass('AccountTriggerHandler');
-        if(!listAccountToUpdate.isEmpty())
+        for(FinancialResources__c varFinancialResources : lstNewFinancialResources)
         {
-            update listAccountToUpdate;
-        }
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+            varFinancialResources.ExternalAccountId__c = mapAccounts.get(varFinancialResources.Account__c).ExternalId__c;
+            varFinancialResources.ExternalAccountVersion__c = mapAccounts.get(varFinancialResources.Account__c).ExternalVersion__c;
+            varFinancialResources.ExternalAccountTenant__c = mapAccounts.get(varFinancialResources.Account__c).ExternalTenant__c;
+        }        
     }
 }

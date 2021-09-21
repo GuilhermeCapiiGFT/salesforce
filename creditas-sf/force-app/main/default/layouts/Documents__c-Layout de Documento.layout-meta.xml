@@ -12,10 +12,6 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>Account__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>DocumentType__c</field>
             </layoutItems>
@@ -23,15 +19,11 @@
                 <behavior>Edit</behavior>
                 <field>DocumentNumber__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ExternalId__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>CurrencyIsoCode</field>
+                <behavior>Required</behavior>
+                <field>Account__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -55,11 +47,27 @@
         <label>System Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>CreatedById</field>
+                <behavior>Edit</behavior>
+                <field>ExternalId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountVersion__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ExternalAccountTenant__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>CreatedById</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>LastModifiedById</field>
