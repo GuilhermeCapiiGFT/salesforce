@@ -42,6 +42,7 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void beforeInsert()
     {
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -55,6 +56,7 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterInsert() 
     {
+        
     }
     
     /**********************************************************************************************************************************
@@ -68,7 +70,8 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void beforeUpdate()
     {
-        this.updateIsExternallySynced();
+        this.updateMethod();
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -82,7 +85,6 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterUpdate() 
     {
-         
     }
 
     /**********************************************************************************************************************************
@@ -96,60 +98,38 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
     * VERSION     AUTHOR                  DATE            DETAIL      Description
     * 1.0         Thales Yumiya           13/08/21
     **********************************************************************************************************************************/
-    private void updateIsExternallySynced()
+    private void updateMethod()
     {
-        String varSObjectApiName = 'Addresses__c';
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Account, Addresses__c> mapAccountToAddresses = new Map<Account, Addresses__c>();  
+        Util.updateIsExternallySynced('Addresses__c', lstNewAddresses, mapOldAddresses);
+    }
+
+     /**********************************************************************************************************************************
+    * ================================================================================================================================
+    * @description preenche os campos de external id, version e tenant dos objetos relacionados à account
+    * @return void
+    * @param Addresses
+    * ================================================================================================================================
+    * History
+    * -------
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           11/08/21
+    **********************************************************************************************************************************/
+    private void updateAccountExternalFields()
+    {
         Set<Id> setAccountIds = new Set<Id>();
-        List<Account> listAccountToUpdate = new List<Account>();
-
-        for(Addresses__c newAddress : lstNewAddresses)
-        {   
-            setAccountIds.add(newAddress.Account__c);
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
         
-        for(Addresses__c newAddress : lstNewAddresses)
+        for(Addresses__c varAddress : lstNewAddresses)
         {
-            Addresses__c oldAddress = mapOldAddresses.get(newAddress.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newAddress.get(trackedField) != oldAddress.get(trackedField))
-                {    
-                    System.debug('TYUMI => Entrou no if');
-                    mapAccountToAddresses.put(mapAccounts.get(oldAddress.Account__c), oldAddress);
-                }
-            }
+             setAccountIds.add(varAddress.Account__c);
         }
 
-        System.debug('TYUMI => mapAccountToAddress' + mapAccountToAddresses);
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Account WHERE Id IN :setAccountIds]);
 
-        if(!mapAccountToAddresses.isEmpty())
+        for(Addresses__c varAddress : lstNewAddresses)
         {
-            for(Account varAccount : mapAccountToAddresses.keySet())
-            {
-                varAccount.IsExternallySynched__c = false;
-                listAccountToUpdate.add(varAccount);
-            }
-        }
-
-        System.debug('TYUMI => list: ' + listAccountToUpdate);
-
-        TriggerHandler.bypass('AccountTriggerHandler');
-        if(!listAccountToUpdate.isEmpty())
-        {
-            update listAccountToUpdate;
-        }
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+            varAddress.ExternalAccountId__c = mapAccounts.get(varAddress.Account__c).ExternalId__c;
+            varAddress.ExternalAccountVersion__c = mapAccounts.get(varAddress.Account__c).ExternalVersion__c;
+            varAddress.ExternalAccountTenant__c = mapAccounts.get(varAddress.Account__c).ExternalTenant__c;
+        }        
     }
 }

@@ -5,6 +5,7 @@
     <label>Bairro</label>
     <length>20</length>
     <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

@@ -42,6 +42,7 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void beforeInsert()
     {
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -69,6 +70,7 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
     public override void beforeUpdate()
     {
         this.updateIsExternallySynced();
+        this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -98,53 +100,36 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     private void updateIsExternallySynced()
     {
-        String varSObjectApiName = 'Documents__c';
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Account, Documents__c> mapAccountToDocuments = new Map<Account, Documents__c>();  
+        Util.updateIsExternallySynced('Documents__c', lstNewDocuments, mapOldDocuments);
+    }
+
+     /**********************************************************************************************************************************
+    * ================================================================================================================================
+    * @description preenche os campos de external id, version e tenant dos objetos relacionados à account
+    * @return void
+    * @param Documents
+    * ================================================================================================================================
+    * History
+    * -------
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           11/08/21
+    **********************************************************************************************************************************/
+    private void updateAccountExternalFields()
+    {
         Set<Id> setAccountIds = new Set<Id>();
-        List<Account> listAccountToUpdate = new List<Account>();
-
-        for(Documents__c newDocument : lstNewDocuments)
-        {   
-            setAccountIds.add(newDocument.Account__c);
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
         
-        for(Documents__c newDocument : lstNewDocuments)
+        for(Documents__c varDocuments : lstNewDocuments)
         {
-            Documents__c oldDocument = mapOldDocuments.get(newDocument.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newDocument.get(trackedField) != oldDocument.get(trackedField))
-                {     
-                    mapAccountToDocuments.put(mapAccounts.get(oldDocument.Account__c), oldDocument);
-                }
-            }
+             setAccountIds.add(varDocuments.Account__c);
         }
 
-        if(!mapAccountToDocuments.isEmpty())
-        {
-            for(Account varAccount : mapAccountToDocuments.keySet())
-            {
-                varAccount.IsExternallySynched__c = false;
-                listAccountToUpdate.add(varAccount);
-            }
-        }
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Account WHERE Id IN :setAccountIds]);
 
-        TriggerHandler.bypass('AccountTriggerHandler');
-        if(!listAccountToUpdate.isEmpty())
+        for(Documents__c varDocuments : lstNewDocuments)
         {
-            update listAccountToUpdate;
-        }
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+            varDocuments.ExternalAccountId__c = mapAccounts.get(varDocuments.Account__c).ExternalId__c;
+            varDocuments.ExternalAccountVersion__c = mapAccounts.get(varDocuments.Account__c).ExternalVersion__c;
+            varDocuments.ExternalAccountTenant__c = mapAccounts.get(varDocuments.Account__c).ExternalTenant__c;
+        }        
     }
 }

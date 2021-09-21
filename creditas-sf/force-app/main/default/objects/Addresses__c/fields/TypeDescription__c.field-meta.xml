@@ -6,6 +6,7 @@
     <inlineHelpText>Descrição/observação sobre o endereço</inlineHelpText>
     <label>Observação</label>
     <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>TextArea</type>

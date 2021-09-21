@@ -458,4 +458,73 @@ public class Util {
 
         return dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss') + stringOffset;
     }
+
+    /**********************************************************************************************************************************
+    * ================================================================================================================================
+    * @description atualizar campo isExternallySynced da Conta quando for PF
+    * @return void
+    * @param SObject
+    * ================================================================================================================================
+    * History
+    * -------
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           13/08/21                    Atualizar o campo isExternallySynched na Account para os objetos
+                                                                      relacionados
+    **********************************************************************************************************************************/
+    public static void updateIsExternallySynced(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
+    {
+        Set<Id> setAccountIds = new Set<Id>();
+        List<Account> listAccountToUpdate = new List<Account>();
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+        Map<Account, SObject> mapAccountSObject = new Map<Account, SObject>();  
+
+        for(SObject newSObject : lstNewRecord)
+        {   
+            setAccountIds.add((Id) newSObject.get('Account__c'));
+        }
+
+        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
+                                                                    FROM Custom_Field_Tracking_Map__mdt
+                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
+        {
+            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
+        }
+
+        Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, isExternallySynched__c FROM Account WHERE Id IN: setAccountIds]); 
+        
+        for(SObject newSObject : lstNewRecord)
+        {
+            SObject oldSObject = mapOldRecord.get(newSObject.Id);
+            
+            for(String trackedField : mapTrackedFields.keySet())
+            {
+                if(newSObject.get(trackedField) != oldSObject.get(trackedField))
+                {    
+                    System.debug('TYUMI => Entrou no if');
+                    
+                    mapAccountSObject.put(mapAccounts.get((Id) oldSObject.get('Account__c')), oldSObject);
+                }
+            }
+        }
+
+        System.debug('TYUMI => mapAccountSObjects' + mapAccountSObject);
+
+        if(!mapAccountSObject.isEmpty())
+        {
+            for(Account varAccount : mapAccountSObject.keySet())
+            {
+                varAccount.IsExternallySynched__c = false;
+                listAccountToUpdate.add(varAccount);
+            }
+        }
+
+        System.debug('TYUMI => list: ' + listAccountToUpdate);
+
+        TriggerHandler.bypass('AccountTriggerHandler');
+        if(!listAccountToUpdate.isEmpty())
+        {
+            update listAccountToUpdate;
+        }
+        TriggerHandler.clearBypass('AccountTriggerHandler');
+    }    
 }

@@ -128,11 +128,14 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Recurso_Financeiro_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <formFactor>Large</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -146,7 +149,7 @@
     <description>Objeto responsável por armazenar as informações de renda e fonte de renda ara pagamento da divida.</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
@@ -157,12 +160,15 @@
     <gender>Masculine</gender>
     <label>Recurso Financeiro</label>
     <nameField>
-        <displayFormat>RF-{000000}</displayFormat>
+        <displayFormat>FR-{00000000}</displayFormat>
         <label>Nome de Recurso Financeiro</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Recursos Financeiros</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts></searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
