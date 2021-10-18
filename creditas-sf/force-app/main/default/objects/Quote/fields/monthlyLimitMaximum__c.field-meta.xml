@@ -5,7 +5,8 @@
     <label>monthlyLimitMaximum</label>
     <precision>18</precision>
     <required>false</required>
-    <scale>2</scale>
+    <scale>15</scale>
     <trackFeedHistory>false</trackFeedHistory>
-    <type>Currency</type>
+    <type>Number</type>
+    <unique>false</unique>
 </CustomField>

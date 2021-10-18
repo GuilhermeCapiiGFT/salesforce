@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <formulas>
+        <name>FinancialResource</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.RecordType.Name} &amp; &quot; - &quot; &amp; TEXT({!$Record.Source__c}) &amp; &quot; - &quot; &amp; {!$Record.ResourceKey__c}</expression>
+    </formulas>
+    <interviewLabel>NomeRecursoFinanceiros {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>NomeRecursoFinanceiros</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>NomeRecursoFinanceiros</name>
+        <label>NomeRecursoFinanceiros</label>
+        <locationX>154</locationX>
+        <locationY>278</locationY>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>FinancialResource</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>30</locationX>
+        <locationY>27</locationY>
+        <connector>
+            <targetReference>NomeRecursoFinanceiros</targetReference>
+        </connector>
+        <object>FinancialResources__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

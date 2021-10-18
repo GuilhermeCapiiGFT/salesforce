@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>CivilStatus__c</fullName>
     <externalId>false</externalId>
-    <label>Civil Status</label>
+    <label>Estado Civil</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Picklist</type>
@@ -13,37 +13,37 @@
             <value>
                 <fullName>MARRIED</fullName>
                 <default>false</default>
-                <label>MARRIED</label>
-            </value>
-            <value>
-                <fullName>STABLE_UNION</fullName>
-                <default>false</default>
-                <label>STABLE_UNION</label>
-            </value>
-            <value>
-                <fullName>NOT_INFORMED</fullName>
-                <default>false</default>
-                <label>NOT_INFORMED</label>
+                <label>Casado(a)</label>
             </value>
             <value>
                 <fullName>SEPARATED</fullName>
                 <default>false</default>
-                <label>SEPARATED</label>
+                <label>Separado(a)</label>
             </value>
             <value>
                 <fullName>SINGLE</fullName>
                 <default>false</default>
-                <label>SINGLE</label>
+                <label>Solteiro(a)</label>
             </value>
             <value>
                 <fullName>DIVORCED</fullName>
                 <default>false</default>
-                <label>DIVORCED</label>
+                <label>Divorciado(a)</label>
             </value>
             <value>
                 <fullName>WIDOW</fullName>
                 <default>false</default>
-                <label>WIDOW</label>
+                <label>Viúvo(a)</label>
+            </value>
+            <value>
+                <fullName>STABLE_UNION</fullName>
+                <default>false</default>
+                <label>União estável</label>
+            </value>
+            <value>
+                <fullName>NOT_INFORMED</fullName>
+                <default>false</default>
+                <label>Não informado</label>
             </value>
         </valueSetDefinition>
     </valueSet>

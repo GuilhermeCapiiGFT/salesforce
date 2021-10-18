@@ -99,6 +99,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Doutorado</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>FOURTH_YEAR_PRIMARY_SCHOOL_COMPLETED</fullName>
             <default>false</default>
         </values>
@@ -119,11 +123,19 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Mestrado</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>PRIMARY_SCHOOL_COMPLETED</fullName>
             <default>false</default>
         </values>
         <values>
             <fullName>PRIMARY_SCHOOL_INCOMPLETE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pós Graduação</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -176,11 +188,11 @@
     <picklistValues>
         <picklist>ExternalTenant__c</picklist>
         <values>
-            <fullName>creditas-br</fullName>
+            <fullName>creditasbr</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>creditas-mx</fullName>
+            <fullName>creditasmx</fullName>
             <default>false</default>
         </values>
     </picklistValues>

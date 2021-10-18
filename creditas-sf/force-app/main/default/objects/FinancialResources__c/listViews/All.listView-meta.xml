@@ -6,6 +6,8 @@
     <columns>Source__c</columns>
     <columns>Type__c</columns>
     <columns>Amount__c</columns>
+    <columns>ResourceKeyType__c</columns>
+    <columns>ResourceKey__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

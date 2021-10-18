@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Account</label>
     <referenceTo>Account</referenceTo>
-    <relationshipLabel>Empregos</relationshipLabel>
+    <relationshipLabel>Profissão</relationshipLabel>
     <relationshipName>ProfessionalInfos</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

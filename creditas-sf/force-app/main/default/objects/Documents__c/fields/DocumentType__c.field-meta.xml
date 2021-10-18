@@ -33,6 +33,21 @@
                 <default>false</default>
                 <label>RNE</label>
             </value>
+            <value>
+                <fullName>CPF</fullName>
+                <default>false</default>
+                <label>CPF</label>
+            </value>
+            <value>
+                <fullName>RG</fullName>
+                <default>false</default>
+                <label>RG</label>
+            </value>
+            <value>
+                <fullName>RFC</fullName>
+                <default>false</default>
+                <label>RFC</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

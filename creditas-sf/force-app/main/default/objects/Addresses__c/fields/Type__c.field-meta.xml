@@ -34,6 +34,11 @@
                 <default>false</default>
                 <label>Trabalho</label>
             </value>
+            <value>
+                <fullName>OTHER</fullName>
+                <default>false</default>
+                <label>Outros</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

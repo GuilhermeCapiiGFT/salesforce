@@ -3,7 +3,7 @@
     <fullName>Birth_City__c</fullName>
     <externalId>false</externalId>
     <label>Birth City</label>
-    <length>20</length>
+    <length>50</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Text</type>

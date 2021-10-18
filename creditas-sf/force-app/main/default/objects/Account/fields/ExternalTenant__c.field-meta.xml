@@ -12,14 +12,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>creditas-mx</fullName>
+                <fullName>creditasmx</fullName>
                 <default>false</default>
-                <label>creditas-mx</label>
+                <label>creditasmx</label>
             </value>
             <value>
-                <fullName>creditas-br</fullName>
+                <fullName>creditasbr</fullName>
                 <default>false</default>
-                <label>creditas-br</label>
+                <label>creditasbr</label>
             </value>
         </valueSetDefinition>
     </valueSet>

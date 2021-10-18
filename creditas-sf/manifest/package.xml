@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
+        <members>Sharing</members>
+        <name>Settings</name>
+    </types>   
+    <types>
         <members>*</members>
         <name>ApexClass</name>
     </types>
@@ -47,7 +51,7 @@
     <types>
         <members>*</members>
         <name>FlexiPage</name>
-    </types> 
+    </types>
     <types>
         <members>*</members>
         <name>Profile</name>
@@ -55,6 +59,10 @@
     <types>
         <members>*</members>
         <name>Queue</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomTab</name>
     </types>
     <version>52.0</version>
 </Package>
