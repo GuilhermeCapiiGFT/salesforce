@@ -2,14 +2,14 @@ public class AssetIntegrationModel{
 	public String id;	//AST-3FA85F64-5717-4562-B3FC-111111111111
 	public Integer version;	//1
 	public String type;	//VEHICLE
-	public cls_owners[] owners;
+	public OwnersModel[] owners;
 	public cls_value value;
 	public cls_alienation alienation;
 	public cls_assetDetail assetDetail;
 	public String createdAt;	//2019-01-10T10:00:01Z
 	public String updatedAt;	//2019-01-10T12:00:01Z
 
-	public class cls_owners {
+	public class OwnersModel {
 		public cls_person person;
 	}
 
@@ -51,7 +51,7 @@ public class AssetIntegrationModel{
 	public class cls_licensing {
 		public cls_address address;
 	}
-    
+
 	public class cls_address {
 		public String administrativeAreaLevel1;	//Pernambuco
 		public String administrativeAreaLevel2;	//Recife

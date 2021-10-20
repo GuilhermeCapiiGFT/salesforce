@@ -32,6 +32,23 @@ global without sharing class IntegrationAccountIN {
         Map<String, AccountFinancialRelationship__c> accountExternalIdToSalesforceMap = new Map<String, AccountFinancialRelationship__c>(); 
              
         AccountIntegrationModel typedRequestBody = AccountIntegrationModel.parse(RestContext.request.requestBody.toString());
+        for(AccountIntegrationModel.professionalInfoModel professionalInfo : typedRequestBody.professionalInfo){
+            if(professionalInfo.professionalIncome != null && professionalInfo.professionalIncome.size() > 1){
+
+                AccountResponseData ard = new AccountResponseData();
+                ard.accountId = null;
+                ard.message = 'Incorrect professionalIncome';
+
+                RestResponse res = RestContext.response;
+                if (res == null) {
+                    res = new RestResponse();
+                    RestContext.response = res;
+                }
+                res.responseBody = Blob.valueOf(JSON.serialize(ard));
+                res.statusCode = 400;
+                return;
+            }
+        }
         String accountExternalId = typedRequestBody.Id;  
         
         List<Account> existingAccounts = [SELECT ExternalId__c FROM Account WHERE ExternalId__c = :accountExternalId];                 
@@ -175,8 +192,6 @@ global without sharing class IntegrationAccountIN {
         if(accountAddressesToupsert != null){
             for (AccountIntegrationModel.adressesModel am : accountAddressesToupsert){
                 Addresses__c salesForceAddress = addressExternalIdToSalesForceAddressMap.get(am.id);
-                System.debug('salesForceAddress: '+salesForceAddress);
-                System.debug('is null? '+salesForceAddress != null);
                 am.isUpdate = salesForceAddress != null;
                 
                 Addresses__c adr = new Addresses__c();
@@ -313,7 +328,6 @@ global without sharing class IntegrationAccountIN {
         for (AccountFinancialRelationship__c afr : [SELECT Id, Account__c, Recurso_Financeiro__c 
                                                     FROM AccountFinancialRelationship__c
                                                     WHERE Account__c = :accountId AND Recurso_Financeiro__c IN :incomeIds]){
-                                                        System.debug('retornou');
             accountFinancialRelationshipKeys.put(afr.Account__c + '_' + afr.Recurso_Financeiro__c, afr.Id);                                         
         }
         
@@ -340,7 +354,6 @@ global without sharing class IntegrationAccountIN {
         if(professionalsInfoToUpsert != null){
             for (AccountIntegrationModel.professionalInfoModel professionalInfoSF :professionalInfoToUpsert){
                 Id salesForceProfessionalInfoId = professionalInfoExternalIdToSalesForceProfessionalInfoMap.get(professionalInfoSF.id)?.Id;
-                System.debug('salesForceProfessionalInfoId: '+salesForceProfessionalInfoId);
                   
                 ProfessionalInfo__c professionalObj = new ProfessionalInfo__c();          
                 professionalObj.JobTitle__c = professionalInfoSF.jobTitle;
@@ -366,6 +379,7 @@ global without sharing class IntegrationAccountIN {
               }
         }
               if (professionalInfoToUpsert.size() > 0)
+                
                   upsert professionalsInfoToUpsert;
                                
                 Set<Id> professionalInfoIds = new Set<Id>();
@@ -376,13 +390,14 @@ global without sharing class IntegrationAccountIN {
                 }
                 
                 Map<Id, Id> professionalInfoIdToProfessionalIncomeIdMap = new Map<Id, Id>();
-                for(FinancialResources__c financialResources : [SELECT Id, ExternalId__c, ProfessionalInfo__c, ProfessionalInfo__r.ExternalId__c FROM FinancialResources__c WHERE ExternalId__c = :accountId AND ProfessionalInfo__c IN :professionalInfoIds]){                
+                for(FinancialResources__c financialResources : [SELECT Id, ExternalId__c, ProfessionalInfo__c, ProfessionalInfo__r.ExternalId__c FROM FinancialResources__c WHERE ProfessionalInfo__c IN :professionalInfoIds]){                
                     professionalInfoIdToProfessionalIncomeIdMap.put(financialResources.ProfessionalInfo__c, financialResources.Id);
                 }
                 
           
                 for(AccountIntegrationModel.professionalInfoModel professionalInfoSF : professionalInfoToUpsert){
                     if (professionalInfoSF.professionalIncome != null && professionalInfoSF.professionalIncome.size() > 0) {
+
                         //FinancialResources__c salesForceProfessionalInfoIncome = incomeExternalIdToSalesForceIncomeMap.get(professionalInfoSF.id);
                         Id professionalInfoId = professionalInfoExternalIdToSalesforceIdMap.get(professionalInfoSF.id);
                         
@@ -397,19 +412,16 @@ global without sharing class IntegrationAccountIN {
 
                         //professionalInfoIncome.Id = salesForceProfessionalInfoIncome?.Id;
      
-                         
                         professionalInfoIncomeToUpsert.add(professionalInfoIncome);
-                    
                   } 
-                }
+                } 
                         if (professionalInfoIncomeToUpsert.size() > 0){
-                            upsert professionalInfoIncomeToUpsert;
-                            
+                        upsert professionalInfoIncomeToUpsert;
+                     
                  	 Set<Id> financialResourceIds = new Set<Id>();
-         			 for(FinancialResources__c professionalInfoIncome :professionalInfoIncomeToUpsert){
+                       for(FinancialResources__c professionalInfoIncome :professionalInfoIncomeToUpsert){
             		   financialResourceIds.add(professionalInfoIncome.Id);
       			   }
-                    System.debug('financialResourceIds: '+financialResourceIds);
     
                 Map<String, Id> financialResourceKeys = new Map<String, Id>();
                 for(AccountFinancialRelationship__c accountRelation : [SELECT Id, Account__c, Recurso_Financeiro__c 

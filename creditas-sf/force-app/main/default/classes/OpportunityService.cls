@@ -62,6 +62,7 @@ global without sharing class OpportunityService
         	ExternalTenant__c = requestBodyObj.tenant,                     
             Name = requestBodyObj.friendlyId + ' - ' + accountName,
             StageName = 'Formalização',
+            IdName__c = requestBodyObj.friendlyId,
             CloseDate = System.today().addDays(30),                                
         	ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt),
         	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt)
@@ -69,7 +70,7 @@ global without sharing class OpportunityService
         Boolean isUpdate = opportunityToUpsert.Id != null;
                 
         upsert opportunityToUpsert;
-         
+        system.debug('>>>>> ' + opportunityToUpsert);
        	Response oppResponse = new Response();
         oppResponse.opportunityId = opportunityToUpsert.Id;
         oppResponse.message = isUpdate ? 'Opportunity sucessfully updated.' : 'Opportunity sucessfully created.';

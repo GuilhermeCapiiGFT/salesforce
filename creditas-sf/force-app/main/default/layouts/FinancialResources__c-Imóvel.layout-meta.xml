@@ -125,7 +125,7 @@
         <fields>Account__c</fields>
         <fields>Record_Type__c</fields>
         <fields>Origem__c</fields>
-        <fields>Valor__c</fields>
+        <fields>Amount__c</fields>
         <relatedList>AccountFinancialRelationship__c.Recurso_Financeiro__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>

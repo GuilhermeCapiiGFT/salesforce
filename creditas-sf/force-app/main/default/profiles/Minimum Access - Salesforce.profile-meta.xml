@@ -145,6 +145,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Agencia__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Account.AnnualRevenue</field>
         <readable>false</readable>
@@ -206,6 +211,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Account.DocumentKey__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Account.DocumentNumber__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -213,6 +223,11 @@
         <editable>false</editable>
         <field>Account.DocumentType__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Documento_de_identificacao__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -335,6 +350,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Naturalidade__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Account.NetWorthLowerLimit__c</field>
         <readable>false</readable>
@@ -368,6 +388,11 @@
         <editable>false</editable>
         <field>Account.Rating</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Rg_o_Emissor__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -431,6 +456,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>AccountFinancialRelationship__c.Amount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>AccountFinancialRelationship__c.Origem__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -442,11 +472,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>AccountFinancialRelationship__c.Recurso_Financeiro__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>AccountFinancialRelationship__c.Valor__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -665,6 +690,31 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Event.Description</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event.IsAllDayEvent</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event.Location</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Event.Processos_da_Oportunidade__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event.Type</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>FinancialResources__c.Account_Financial_Relationship__c</field>
         <readable>true</readable>
@@ -880,6 +930,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.IdName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Opportunity.IsPrivate</field>
         <readable>false</readable>
@@ -923,6 +978,16 @@
         <editable>false</editable>
         <field>Opportunity.Type</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OpportunityProcess__c.Opportunity__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>OpportunityProcess__c.Stage__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -1264,6 +1329,113 @@
         <field>Quote.yearlyLimitMinimunc__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Task.ActivityDate</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Task.Description</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Task.Processos_da_Oportunidade__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Task.Type</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <layoutAssignments>
+        <layout>Account-Pessoa Fisica</layout>
+        <recordType>Account.Pessoa_Fisica</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-Pessoa Juridica</layout>
+        <recordType>Account.Pessoa_Juridica</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AccountFinancialRelationship__c-AccountFinancialRelationship Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AccountRelationships__c-Layout de Conta Relacionada</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Addresses__c-Layout de Endereço</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>BusinessBrand-Layout de Marca de negócios</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommunicationContacts__c-CommunicationContact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ConditionStep__c-ConditionStep Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointAddress-Layout de Endereço do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointEmail-Layout de Email do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointPhone-Layout de Telefone do ponto de contato</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Custom_Field_Tracking_Map__mdt-Custom Field Tracking Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Customer-Layout de Cliente</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Documents__c-Layout de Documento</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Auto</layout>
+        <recordType>FinancialResources__c.Auto</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Certificado</layout>
+        <recordType>FinancialResources__c.Certificado</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Imóvel</layout>
+        <recordType>FinancialResources__c.Imovel</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Layout de Recurso Financeiro</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FinancialResources__c-Layout de Recurso Financeiro</layout>
+        <recordType>FinancialResources__c.Outros</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Garantias__c-Garantias Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Genero__c-Layout de Gênero</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityContactRole-Opportunity Contact Role Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityProcess__c-Processos da Oportunidade Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityRole__c-OpportunityRole Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ProcessException-Layout de Exceção de processo</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ProfessionalInfo__c-ProfessionalInfo Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Seller-Layout de Vendedor</layout>
+    </layoutAssignments>
     <recordTypeVisibilities>
         <default>true</default>
         <personAccountDefault>true</personAccountDefault>
@@ -1295,6 +1467,18 @@
         <recordType>FinancialResources__c.Outros</recordType>
         <visible>false</visible>
     </recordTypeVisibilities>
+    <tabVisibilities>
+        <tab>Documents__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>FinancialResources__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>OpportunityProcess__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
     <userLicense>Salesforce</userLicense>
     <userPermissions>
         <enabled>true</enabled>

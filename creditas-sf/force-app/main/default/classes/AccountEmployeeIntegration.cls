@@ -9,21 +9,22 @@ global with sharing class AccountEmployeeIntegration {
         AccountEmployeeIntegrationVO request = (AccountEmployeeIntegrationVO) System.JSON.deserialize(req.requestBody.toString(), AccountEmployeeIntegrationVO.class);
         if(request.personId != ''){
             acc = [SELECT AdmissionDate__c, 
-                                        EmployeeId__c, 
-                                        EmployeeStatus__c,
-                                        EmployeeType__c,
-                                        ExternalCompanyId__c, 
-                                        ExternalEmployeeVersion__c, 
-                                        ExternalId__c, 
-                                        ExternalTenant__c, 
-                                        Margin__c, 
-                                        Salary__c, 
-                                        Type,
-                                        ExternalVersion__c 
-                                FROM Account 
-                                WHERE ExternalId__c =: request.personId];
+                          EmployeeId__c, 
+                          EmployeeStatus__c,
+                          EmployeeType__c,
+                          ExternalCompanyId__c, 
+                          ExternalEmployeeVersion__c, 
+                          ExternalId__c, 
+                          ExternalTenant__c, 
+                          Margin__c, 
+                          Salary__c, 
+                          Type,
+                          ExternalVersion__c 
+                    FROM Account 
+                    WHERE ExternalId__c =: request.personId];
         } 
         else {
+            res.statusCode = 400;
             return 'PersonId invalido.';
         }
         
@@ -48,9 +49,10 @@ global with sharing class AccountEmployeeIntegration {
             update acc;
         } 
         else {
+            res.statusCode = 400;
             return 'Conta com personId ' + request.personId + ' não encontrada.';
         }
-        
+        res.statusCode = 200;
         return 'Registro atualizado com sucesso!';
     }
 }

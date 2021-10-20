@@ -43,6 +43,18 @@
                 <behavior>Edit</behavior>
                 <field>Agencia__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Rg_o_Emissor__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Naturalidade__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Documento_de_identificacao__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -327,7 +339,7 @@
         <fields>Recurso_Financeiro__c</fields>
         <fields>Record_Type__c</fields>
         <fields>Origem__c</fields>
-        <fields>Valor__c</fields>
+        <fields>Amount__c</fields>
         <relatedList>AccountFinancialRelationship__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
