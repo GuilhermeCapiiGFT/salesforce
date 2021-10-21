@@ -3,7 +3,7 @@
     <fullName>BankAccountNumber__c</fullName>
     <description>Número da conta do cliente</description>
     <externalId>false</externalId>
-    <label>Bank Account Number</label>
+    <label>Conta</label>
     <length>20</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>

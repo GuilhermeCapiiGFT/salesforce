@@ -3,7 +3,7 @@
     <fullName>JobTitle__c</fullName>
     <externalId>false</externalId>
     <label>JobTitle</label>
-    <length>20</length>
+    <length>100</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>

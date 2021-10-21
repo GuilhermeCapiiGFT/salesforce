@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DocumentType__c</fullName>
     <externalId>false</externalId>
-    <label>Document Type</label>
+    <label>Tipo do Documento</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Picklist</type>

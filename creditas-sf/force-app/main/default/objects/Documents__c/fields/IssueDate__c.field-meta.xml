@@ -3,7 +3,7 @@
     <fullName>IssueDate__c</fullName>
     <description>Data de emissão do documento que está sendo registrado</description>
     <externalId>false</externalId>
-    <label>Data de Emissão</label>
+    <label>Data de Expedição</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>

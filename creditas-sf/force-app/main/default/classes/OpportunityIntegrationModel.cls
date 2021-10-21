@@ -11,6 +11,7 @@ public class OpportunityIntegrationModel{
 	public String tenant;	//XXX
 	public String createdAt;	//xxx
 	public String updateAt;	//XXX
+    public String friendlyId; //YAZMUN2
     
 	public class cls_conditions {
 		public cls_installments installments;
@@ -50,8 +51,8 @@ public class OpportunityIntegrationModel{
 	}
     
     public class cls_cetLimit {
-		public Integer maximum;	//30000
-		public Integer minimum;	//1000
+		public Decimal maximum;	//30000
+		public Decimal minimum;	//1000
 	}    
     
     public class cls_parameters {
@@ -103,18 +104,18 @@ public class OpportunityIntegrationModel{
 	}
     
     public class cls_yearly {
-		public Integer maximum;	//24
-		public Integer minimum;	//0
+		public Decimal maximum;	//24
+		public Decimal minimum;	//0
 	}
     
     public class cls_monthly {
-		public Integer maximum;	//2
-		public Integer minimum;	//0
+		public Decimal maximum;	//2
+		public Decimal minimum;	//0
 	}
     
     public class cls_total {
 		public String currencyCode;	//BRL
-		public Integer amount;	//25000
+		public Decimal amount;	//25000
 	}
     
     public class cls_depositAccount {
@@ -158,7 +159,7 @@ public class OpportunityIntegrationModel{
 		return (OpportunityIntegrationModel) System.JSON.deserialize(json, OpportunityIntegrationModel.class);
 	}
 
-	static String opportunityMock() {
+	public static String opportunityMock() {
 		String json=		'{'+
 		''+
 		'    "conditions":{'+
@@ -167,7 +168,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "value":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":25000'+
 		' '+
@@ -205,7 +206,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "collateralValue":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":25000'+
 		' '+
@@ -213,7 +214,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "requestedAmount":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":25000'+
 		' '+
@@ -221,7 +222,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "tac":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":2'+
 		' '+
@@ -229,7 +230,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "iof":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":100'+
 		' '+
@@ -237,7 +238,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "additionalCosts":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":200'+
 		' '+
@@ -261,9 +262,9 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "cetLimit":{'+
 		' '+
-		'             "maximum":30000,'+
+		'             "maximum":10,'+
 		' '+
-		'             "minimum":1000'+
+		'             "minimum":0.00950000001'+
 		' '+
 		'          },'+
 		' '+
@@ -289,7 +290,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'          "total":{'+
 		' '+
-		'             "currencyCode":"BRL",'+
+		'             "currencyType":"BRL",'+
 		' '+
 		'             "amount":25000'+
 		' '+
@@ -327,7 +328,7 @@ public class OpportunityIntegrationModel{
 		' '+
 		'       "netValues":{'+
 		' '+
-		'          "currencyCode":"BRL",'+
+		'          "currencyType":"BRL",'+
 		' '+
 		'          "amount":25000'+
 		' '+
@@ -397,11 +398,11 @@ public class OpportunityIntegrationModel{
 		' '+
 		'    "version": "123",'+
 		' '+
-		'    "tenant": "XXX",'+
+		'    "tenant": "creditas-br",'+
 		' '+
-		'    "createdAt": "xxx",'+
+		'    "createdAt": "2021-08-16T14:09:42.206Z",'+
 		' '+
-		'    "updateAt": "XXX"'+
+		'    "updateAt": "2021-08-16T23:40:11.362Z"'+
 		' '+
 		' }';
 		return json;

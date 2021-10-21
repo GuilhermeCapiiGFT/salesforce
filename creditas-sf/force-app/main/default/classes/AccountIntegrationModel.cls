@@ -18,10 +18,14 @@ public class AccountIntegrationModel{
 	public incomeModel[] income;
 	public professionalInfoModel[] professionalInfo;
 	public relationshipsModel[] relationships;
-	public String createdAt;	//2021-08-16T14:09:42.206Z
+    public AccountFinancialRelationship[] accountFinancialRelationship;
+    public String createdAt;	//2021-08-16T14:09:42.206Z
 	public String updatedAt;	//2021-08-16T23:40:11.362Z
 	public Integer version;	//27
     public String salesforceId;
+	public String tenant;
+	public String modifiedBy;
+
     
 	public class mainDocumentModel {
 		public String type;	//RFC
@@ -65,6 +69,11 @@ public class AccountIntegrationModel{
 		public String streetNumber;	//30
 		public String complement;	//14388
 		public String zipCode;	//14376
+		public String administrativeAreaLevel1;
+		public String administrativeAreaLevel2;
+		public String administrativeAreaLevel3;
+		public String administrativeAreaLevel4;
+		public String administrativeAreaLevel5;
         public Boolean isUpdate;
 	}
     
@@ -113,6 +122,7 @@ public class AccountIntegrationModel{
 		public String category;	//ADMINISTRATIVE
 		public boolean current;
 		public professionalIncomeModel[] professionalIncome;
+        public String name;
         public Boolean isUpdate;
 	}
     
@@ -126,6 +136,9 @@ public class AccountIntegrationModel{
 		public String type;	//MONTHLY_INCOME
 		public amountModel amount;
 		public String source;	//SALES
+        public String currencyCode;	//MXN
+        public Boolean isUpdate;
+        
 	}
     
 	public class relationshipsModel {
@@ -135,6 +148,12 @@ public class AccountIntegrationModel{
         public Boolean isUpdate;
 	}
     
+    public class accountFinancialRelationship {
+        public String id;
+        public String recursoFinanceiro;
+        public Boolean isUpdate;
+    }
+  
 	public static AccountIntegrationModel parse(String json){
 		return (AccountIntegrationModel) System.JSON.deserialize(json, AccountIntegrationModel.class);
 	}
@@ -158,11 +177,13 @@ public class AccountIntegrationModel{
 		'        "accountNumber": "123445566",'+
 		'        "clabe": "123445566",'+
 		'        "politicallyExposed": false'+
+        '        "tenant": "creditasbr"'+
+        '        "modifiedBy": "Nathalia"'+    
 		'    },'+
 		'    "wealth": {'+
 		'        "networthLowerLimit": "30000",'+
 		'        "networthUpperLimit": "100000",'+
-		'        "currency": "MXN",'+
+		'        "currencyCode": "MXN",'+
 		'        "informedDate": "2021-08-16T14:09:42.189Z"'+
 		'    },'+
 		'    "gender": "FEMALE",'+
@@ -204,7 +225,7 @@ public class AccountIntegrationModel{
 		'            "country": "MX",'+
 		'            "neighborhood": "ARBOLEDAS DEL SUR",'+
 		'            "street": "CERRADA BETIS",'+
-		'            "number": "30",'+
+		'            "streetNumber": "30",'+
 		'            "complement": "14388",'+
 		'            "zipCode": "14376"'+
 		'        },'+
@@ -214,7 +235,7 @@ public class AccountIntegrationModel{
 		'            "country": "MX",'+
 		'            "neighborhood": "ARBOLEDAS DEL SUR",'+
 		'            "street": "CERRADA BETIS",'+
-		'            "number": "40",'+
+		'            "streetNumber": "40",'+
 		'            "complement": "14388",'+
 		'            "zipCode": "14376"'+
 		'        }'+
@@ -257,7 +278,7 @@ public class AccountIntegrationModel{
 		'            "type": "MONTHLY_INCOME",'+
 		'            "source": "SALES",'+
 		'            "amount": {'+
-		'                "currency": "MXN",'+
+		'                "currencyCode": "MXN",'+
 		'                "amount": "10000"'+
 		'            },'+
 		'            "createdAt": "2021-08-16T21:06:49Z",'+
@@ -268,7 +289,7 @@ public class AccountIntegrationModel{
 		'            "type": "NET_MONTHLY_INCOME",'+
 		'            "source": "RENTS",'+
 		'            "amount": {'+
-		'                "currency": "MXN",'+
+		'                "currencyCode": "MXN",'+
 		'                "amount": "10000"'+
 		'            },'+
 		'            "createdAt": "2021-08-16T21:06:49Z",'+
@@ -279,7 +300,7 @@ public class AccountIntegrationModel{
 		'            "type": "PRESUMED_MONTHLY_INCOME",'+
 		'            "source": "RENTS",'+
 		'            "amount": {'+
-		'                "currency": "MXN",'+
+		'                "currencyCode": "MXN",'+
 		'                "amount": "10000"'+
 		'            },'+
 		'            "createdAt": "2021-08-16T21:06:49Z",'+
@@ -303,7 +324,7 @@ public class AccountIntegrationModel{
 		'                {'+
 		'                    "type": "MONTHLY_INCOME",'+
 		'                    "amount": {'+
-		'                        "currency": "MXN",'+
+		'                        "currencyCode": "MXN",'+
 		'                        "amount": "10000"'+
 		'                    },'+
 		'                    "source": "SALES"'+
@@ -326,7 +347,7 @@ public class AccountIntegrationModel{
 		'                {'+
 		'                    "type": "MONTHLY_INCOME",'+
 		'                    "amount": {'+
-		'                        "currency": "MXN",'+
+		'                        "currencyCode": "MXN",'+
 		'                        "amount": "8000"'+
 		'                    },'+
 		'                    "source": "SALES"'+

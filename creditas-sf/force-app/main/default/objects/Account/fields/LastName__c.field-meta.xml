@@ -3,7 +3,7 @@
     <fullName>LastName__c</fullName>
     <externalId>false</externalId>
     <label>LastName</label>
-    <length>20</length>
+    <length>100</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Text</type>

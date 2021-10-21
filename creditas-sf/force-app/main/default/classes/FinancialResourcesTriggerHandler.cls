@@ -42,7 +42,7 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     **********************************************************************************************************************************/
     public override void beforeInsert()
     {
-        this.updateAccountExternalFields();
+       //this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -70,7 +70,7 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     public override void beforeUpdate()
     {
         this.updateIsExternallySynced();
-        this.updateAccountExternalFields();
+        //this.updateAccountExternalFields();
     }
     
     /**********************************************************************************************************************************
@@ -100,7 +100,48 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
     **********************************************************************************************************************************/
     private void updateIsExternallySynced()
     {
-        Util.updateIsExternallySynced('FinancialResources__c', lstNewFinancialResources, mapOldFinancialResources);
+        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
+
+        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
+                                                                    FROM Custom_Field_Tracking_Map__mdt
+                                                                    WHERE ObjetoRastreado__r.QualifiedApiName = 'FinancialResources__c'])
+        {
+            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
+        }
+
+        Set<Id> financialResourceIdsToSynchAccount = new Set<Id>();
+        for(FinancialResources__c newFinancialResource : lstNewFinancialResources)
+        {
+            FinancialResources__c oldFinancialResource = mapOldFinancialResources.get(newFinancialResource.Id);
+            
+            for(String trackedField : mapTrackedFields.keySet())
+            {
+                if(newFinancialResource.get(trackedField) != oldFinancialResource.get(trackedField))
+                {     
+                    financialResourceIdsToSynchAccount.add(newFinancialResource.Id);
+                }
+            }
+        }
+
+        Set<Id> accountsToUpdateIds = new Set<Id>();
+        List<Account> accountsToUpdate = new List<Account>();       
+        for (AccountFinancialRelationship__c afr : [SELECT Account__c
+                                                    FROM AccountFinancialRelationship__c 
+                                                    WHERE Recurso_Financeiro__c IN : financialResourceIdsToSynchAccount])
+        {
+            if(!accountsToUpdateIds.contains(afr.Account__c))
+            {
+                accountsToUpdateIds.add(afr.Account__c); 
+                accountsToUpdate.add(new Account(
+                    Id = afr.Account__c,
+                    IsExternallySynched__c = false
+                ));    
+            }                         
+        }
+
+        TriggerHandler.clearBypass('AccountTriggerHandler');
+        update accountsToUpdate;
+        TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 
      /**********************************************************************************************************************************
@@ -120,16 +161,16 @@ public without sharing class FinancialResourcesTriggerHandler extends TriggerHan
         
         for(FinancialResources__c varFinancialResources : lstNewFinancialResources)
         {
-             setAccountIds.add(varFinancialResources.Account__c);
+            // setAccountIds.add(varFinancialResources.Account__c);
         }
 
         Map<Id, Account> mapAccounts = new Map<Id, Account>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Account WHERE Id IN :setAccountIds]);
 
         for(FinancialResources__c varFinancialResources : lstNewFinancialResources)
         {
-            varFinancialResources.ExternalAccountId__c = mapAccounts.get(varFinancialResources.Account__c).ExternalId__c;
-            varFinancialResources.ExternalAccountVersion__c = mapAccounts.get(varFinancialResources.Account__c).ExternalVersion__c;
-            varFinancialResources.ExternalAccountTenant__c = mapAccounts.get(varFinancialResources.Account__c).ExternalTenant__c;
+            //varFinancialResources.ExternalAccountId__c = mapAccounts.get(varFinancialResources.Account__c).ExternalId__c;
+           // varFinancialResources.ExternalAccountVersion__c = mapAccounts.get(varFinancialResources.Account__c).ExternalVersion__c;
+           // varFinancialResources.ExternalAccountTenant__c = mapAccounts.get(varFinancialResources.Account__c).ExternalTenant__c;
         }        
     }
 }

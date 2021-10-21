@@ -11,6 +11,7 @@
 public class Util {
     
     public class UtilException extends Exception {}
+
     
     /*****************************************************************************************************************************
 	 * Purpose: Método de auxílio para a obtenção do RecordTypeId através do nome.
@@ -462,8 +463,6 @@ public class Util {
     /**********************************************************************************************************************************
     * ================================================================================================================================
     * @description atualizar campo isExternallySynced da Conta quando for PF
-    * @return void
-    * @param SObject
     * ================================================================================================================================
     * History
     * -------
@@ -499,15 +498,11 @@ public class Util {
             for(String trackedField : mapTrackedFields.keySet())
             {
                 if(newSObject.get(trackedField) != oldSObject.get(trackedField))
-                {    
-                    System.debug('TYUMI => Entrou no if');
-                    
+                {     
                     mapAccountSObject.put(mapAccounts.get((Id) oldSObject.get('Account__c')), oldSObject);
                 }
             }
         }
-
-        System.debug('TYUMI => mapAccountSObjects' + mapAccountSObject);
 
         if(!mapAccountSObject.isEmpty())
         {
@@ -518,13 +513,181 @@ public class Util {
             }
         }
 
-        System.debug('TYUMI => list: ' + listAccountToUpdate);
-
         TriggerHandler.bypass('AccountTriggerHandler');
         if(!listAccountToUpdate.isEmpty())
         {
             update listAccountToUpdate;
         }
         TriggerHandler.clearBypass('AccountTriggerHandler');
-    }    
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    
+    **********************************************************************************************************************************/
+    private static Integer calcularDigito(String str, List<Integer> peso) 
+    {
+        Integer soma = 0;
+        Integer digito;
+        
+        for (Integer indice = str.length()-1; indice >= 0; indice--) 
+        {
+            digito = Integer.valueOf(str.substring(indice,indice+1));
+            soma += digito * peso.get(peso.size() - str.length() + indice);
+        }   
+        soma = math.mod(soma*10, 11);
+        return soma > 9 ? 0 : soma;
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    verifica se o cpf é válido
+    **********************************************************************************************************************************/
+    public static boolean isValidCPF(String cpf) 
+    {
+        List<Integer> pesoCPF = new List<Integer>{11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
+    
+        if ((cpf==null) || (cpf.length()!=11))
+        {
+            return false;
+
+        }
+        else
+        {
+            Integer digito1 = calcularDigito(cpf.substring(0,9), pesoCPF);
+            Integer digito2 = calcularDigito(cpf.substring(0,9) + digito1, pesoCPF);
+            return cpf.equals(cpf.substring(0,9) + digito1 + digito2) && !(isAllTheSameCaracter(cpf)); 
+        }
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    verifica se o cnpj é válido
+    **********************************************************************************************************************************/
+    public static boolean isValidCNPJ(String cnpj) 
+    {
+        List<Integer> pesoCNPJ = new List<Integer>{6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+    
+        if ((cnpj==null)||(cnpj.length()!=14))
+        {
+           return false; 
+        }
+        Integer digito1 = calcularDigito(cnpj.substring(0,12), pesoCNPJ);
+        Integer digito2 = calcularDigito(cnpj.substring(0,12) + digito1, pesoCNPJ);
+        return cnpj.equals(cnpj.substring(0,12) + digito1 + digito2) && !(isAllTheSameCaracter(cnpj));
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    gera a string do documento com a máscara
+    **********************************************************************************************************************************/
+    public static String getMaskedCPF(String cpf){
+        String p1;
+        String p2;
+        String p3;
+        String p4;
+        
+        String cleanedStr = getNumbersOnly(cpf);
+        String maskedStr;
+        if(isValidCPF(cleanedStr)){
+            p1 = cleanedStr.substring(0, 3);
+            p2 = cleanedStr.substring(3, 6);
+            p3 = cleanedStr.substring(6, 9);
+            p4 = cleanedStr.substring(9, 11);
+            maskedStr = p1 + '.' + p2 + '.' + p3 + '-' + p4;
+        }
+        return maskedStr;
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    gera a string do documento com a máscara
+    **********************************************************************************************************************************/
+    public static String getMaskedCNPJ(String cnpj){
+        String p1;
+        String p2;
+        String p3; 
+        String p4;
+        String p5;
+            
+        String cleanedStr = getNumbersOnly(cnpj);
+        String maskedStr;
+        if(isValidCNPJ(cleanedStr)){
+            p1 = cleanedStr.substring(0, 2);
+            p2 = cleanedStr.substring(2, 5);
+            p3 = cleanedStr.substring(5, 8);
+            p4 = cleanedStr.substring(8, 12);
+            p5 = cleanedStr.substring(12, 14);
+            maskedStr = p1 + '.' + p2 + '.' + p3 + '/' + p4 + '-' + p5;
+        }
+        return maskedStr;
+    }
+
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    verifica se o documento contém números iguais
+    **********************************************************************************************************************************/
+    public static boolean isAllTheSameCaracter(String numDoc)
+    {
+        if(numDoc.length() == 11)
+        {
+            if(numDoc == '00000000000' || numDoc == '11111111111' || numDoc == '22222222222' || numDoc == '33333333333' || 
+               numDoc == '44444444444' || numDoc == '55555555555' || numDoc == '66666666666' || numDoc == '77777777777' || 
+               numDoc == '88888888888' || numDoc == '99999999999')
+            {
+                return true;
+            } else {
+                return false;  
+            } 
+        } else if(numDoc.length() == 14) {
+            if(numDoc == '00000000000000' || numDoc == '11111111111111' || numDoc == '22222222222222' || numDoc == '33333333333333' || 
+               numDoc == '44444444444444' || numDoc == '55555555555555' || numDoc == '66666666666666' || numDoc == '77777777777777' || 
+               numDoc == '88888888888888' || numDoc == '99999999999999')
+            {
+                return true;
+            } else {
+                return false;  
+            }             
+        } else { 
+            return false; 
+        }
+    }
+    
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    método para retornar apenas números
+    **********************************************************************************************************************************/
+    public static String getNumbersOnly(String varString)
+    {
+        Pattern varPattern = Pattern.compile('[^0-9]');
+        String formattedString = varPattern.matcher(varString).replaceAll('');
+        return formattedString;
+    }
+    
+    /**********************************************************************************************************************************
+    * VERSION     AUTHOR                  DATE            DETAIL      Description
+    * 1.0         Thales Yumiya           28/09/21                    verifica se o documento é válido
+    **********************************************************************************************************************************/
+    public static Boolean isValidDocumentNumber(String documentNumber)
+    {
+        String formattedDocument = getNumbersOnly(documentNumber); 
+
+        if(formattedDocument.isNumeric())        
+        {           
+            if(formattedDocument.length() == 11)
+            {               
+                return Util.isValidCPF(formattedDocument);
+            } else
+                if(formattedDocument.length() == 14)
+                {
+                    return Util.isValidCNPJ(formattedDocument);
+                } else
+                {
+                    return false;
+                }
+        }else
+        {
+            return false;
+        }
+    }
 }

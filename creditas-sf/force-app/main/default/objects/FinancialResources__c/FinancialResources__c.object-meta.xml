@@ -156,20 +156,32 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <externalSharingModel>ReadWrite</externalSharingModel>
     <gender>Masculine</gender>
     <label>Recurso Financeiro</label>
     <nameField>
-        <displayFormat>FR-{00000000}</displayFormat>
         <label>Nome de Recurso Financeiro</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>AutoNumber</type>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Recursos Financeiros</pluralLabel>
+    <profileSearchLayouts>
+        <fields>NAME</fields>
+        <fields>RECORDTYPE</fields>
+        <fields>Source__c</fields>
+        <fields>ResourceKey__c</fields>
+        <fields>Amount__c</fields>
+        <profileName>System Administrator</profileName>
+    </profileSearchLayouts>
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
-    <searchLayouts></searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
+    <searchLayouts>
+        <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Source__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ResourceKey__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Amount__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

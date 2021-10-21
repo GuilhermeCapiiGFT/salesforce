@@ -3,8 +3,8 @@
     <fullName>BankName__c</fullName>
     <description>Nome do banco do cliente.</description>
     <externalId>false</externalId>
-    <label>Bank Name</label>
-    <length>20</length>
+    <label>Banco</label>
+    <length>50</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>

@@ -3,7 +3,7 @@
     <fullName>Code__c</fullName>
     <externalId>false</externalId>
     <label>Code</label>
-    <length>20</length>
+    <length>150</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>

@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Status__c</fullName>
     <externalId>false</externalId>
-    <label>Status</label>
+    <label>Situação Profissional</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
@@ -15,37 +15,37 @@
             <value>
                 <fullName>CLT</fullName>
                 <default>false</default>
-                <label>CLT</label>
+                <label>Pessoa Assalariada</label>
             </value>
             <value>
                 <fullName>FREELANCER</fullName>
                 <default>false</default>
-                <label>FREELANCER</label>
+                <label>Pessoa Autônoma</label>
             </value>
             <value>
                 <fullName>CIVIL_SERVANT</fullName>
                 <default>false</default>
-                <label>CIVIL_SERVANT</label>
+                <label>Pessoa Funcionária Pública</label>
             </value>
             <value>
                 <fullName>RETIRED</fullName>
                 <default>false</default>
-                <label>RETIRED</label>
+                <label>Pessoa Aposentada</label>
             </value>
             <value>
                 <fullName>BUSINESSMAN</fullName>
                 <default>false</default>
-                <label>BUSINESSMAN</label>
+                <label>Pessoa Empresária</label>
             </value>
             <value>
                 <fullName>SELF_EMPLOYED</fullName>
                 <default>false</default>
-                <label>SELF_EMPLOYED</label>
+                <label>Pessoa Profissional Liberal</label>
             </value>
             <value>
                 <fullName>OTHER</fullName>
                 <default>false</default>
-                <label>OTHER</label>
+                <label>Outro</label>
             </value>
         </valueSetDefinition>
     </valueSet>

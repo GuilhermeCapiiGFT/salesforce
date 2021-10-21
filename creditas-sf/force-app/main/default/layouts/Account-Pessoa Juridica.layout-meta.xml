@@ -35,6 +35,26 @@
                 <behavior>Edit</behavior>
                 <field>DealStartDate__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>DocumentKey__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Agencia__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Rg_o_Emissor__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Naturalidade__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Documento_de_identificacao__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -272,10 +292,11 @@
         <relatedList>RelatedAccountContactRelationList</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>NAME</fields>
         <fields>Type__c</fields>
-        <fields>PostalCode__c</fields>
         <fields>Street__c</fields>
         <fields>StreetNumber__c</fields>
+        <fields>PostalCode__c</fields>
         <relatedList>Addresses__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -313,6 +334,19 @@
         <fields>Actor</fields>
         <fields>Comments</fields>
         <relatedList>RelatedProcessHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Recurso_Financeiro__c</fields>
+        <fields>Record_Type__c</fields>
+        <fields>Origem__c</fields>
+        <fields>Amount__c</fields>
+        <relatedList>AccountFinancialRelationship__c.Account__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>Record_Type__c</fields>
+        <fields>Recurso_Financeiro__c</fields>
+        <relatedList>Garantias__c.Account__c</relatedList>
     </relatedLists>
     <relatedObjects>ParentId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

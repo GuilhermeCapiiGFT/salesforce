@@ -154,7 +154,7 @@
     <enableStreamingApi>false</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <gender>Masculine</gender>
-    <label>Emprego</label>
+    <label>Profissão</label>
     <nameField>
         <displayFormat>ProfInfo-{00000000}</displayFormat>
         <label>ProfessionalInfo Name</label>

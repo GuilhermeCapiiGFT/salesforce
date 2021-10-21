@@ -3,7 +3,7 @@
     <fullName>SecondLastName__c</fullName>
     <externalId>false</externalId>
     <label>Second Last Name</label>
-    <length>20</length>
+    <length>100</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>

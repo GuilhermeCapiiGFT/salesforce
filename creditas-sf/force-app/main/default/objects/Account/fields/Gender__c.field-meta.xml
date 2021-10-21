@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Gender__c</fullName>
     <externalId>false</externalId>
-    <label>Gender</label>
+    <label>Gênero</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Picklist</type>
@@ -13,17 +13,17 @@
             <value>
                 <fullName>MALE</fullName>
                 <default>false</default>
-                <label>MALE</label>
+                <label>Masculino</label>
             </value>
             <value>
                 <fullName>FEMALE</fullName>
                 <default>false</default>
-                <label>FEMALE</label>
+                <label>Feminino</label>
             </value>
             <value>
                 <fullName>OTHER</fullName>
                 <default>false</default>
-                <label>OTHER</label>
+                <label>Outro</label>
             </value>
         </valueSetDefinition>
     </valueSet>

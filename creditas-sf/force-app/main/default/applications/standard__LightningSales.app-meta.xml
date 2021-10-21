@@ -11,6 +11,223 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>Sales</label>
     <navType>Standard</navType>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Garantias_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Garantias__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter External User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Free User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Moderator User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>ContractManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>CPQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Guest License User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>MarketingProfile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - Salesforce</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Read Only</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SolutionManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Endere_o_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Addresses__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Recurso_Financeiro_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>FinancialResources__c</pageOrSobjectType>
+        <recordType>FinancialResources__c.Imovel</recordType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>CPQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>ContractManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Moderator User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Free User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter External User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Guest License User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SolutionManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Read Only</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - Salesforce</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>MarketingProfile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Processos_da_Oportunidade_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>OpportunityProcess__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Identity User</profile>
+    </profileActionOverrides>
     <tabs>standard-home</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Opportunity</tabs>
@@ -18,6 +235,8 @@
     <tabs>FinancialResources__c</tabs>
     <tabs>standard-CollaborationGroup</tabs>
     <tabs>standard-Quote</tabs>
+    <tabs>Documents__c</tabs>
+    <tabs>OpportunityProcess__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Sales_UtilityBar</utilityBar>
 </CustomApplication>

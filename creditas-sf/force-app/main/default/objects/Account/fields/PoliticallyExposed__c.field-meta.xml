@@ -3,7 +3,7 @@
     <fullName>PoliticallyExposed__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <label>Politically Exposed</label>
+    <label>Pessoa Politicamente Exposta</label>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Checkbox</type>
 </CustomField>
