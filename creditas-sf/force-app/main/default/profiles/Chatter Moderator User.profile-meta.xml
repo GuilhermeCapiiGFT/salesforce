@@ -1657,10 +1657,6 @@
         <tab>FinancialResources__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
-    <tabVisibilities>
-        <tab>OpportunityProcess__c</tab>
-        <visibility>Hidden</visibility>
-    </tabVisibilities>
     <userLicense>Chatter Free</userLicense>
     <userPermissions>
         <enabled>true</enabled>

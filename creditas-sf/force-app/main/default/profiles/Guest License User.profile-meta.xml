@@ -1657,9 +1657,5 @@
         <tab>FinancialResources__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
-    <tabVisibilities>
-        <tab>OpportunityProcess__c</tab>
-        <visibility>Hidden</visibility>
-    </tabVisibilities>
     <userLicense>Guest User License</userLicense>
 </Profile>

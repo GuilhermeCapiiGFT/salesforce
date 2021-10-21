@@ -236,7 +236,6 @@
     <tabs>standard-CollaborationGroup</tabs>
     <tabs>standard-Quote</tabs>
     <tabs>Documents__c</tabs>
-    <tabs>OpportunityProcess__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Sales_UtilityBar</utilityBar>
 </CustomApplication>

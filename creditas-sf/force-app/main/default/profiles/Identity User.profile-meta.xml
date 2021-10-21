@@ -1657,10 +1657,6 @@
         <tab>FinancialResources__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
-    <tabVisibilities>
-        <tab>OpportunityProcess__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
     <userLicense>Identity</userLicense>
     <userPermissions>
         <enabled>true</enabled>

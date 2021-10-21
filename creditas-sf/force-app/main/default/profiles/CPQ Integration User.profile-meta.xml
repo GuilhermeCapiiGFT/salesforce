@@ -1658,10 +1658,6 @@
         <tab>FinancialResources__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
-    <tabVisibilities>
-        <tab>OpportunityProcess__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
     <userLicense>CPQ Integration User</userLicense>
     <userPermissions>
         <enabled>true</enabled>
