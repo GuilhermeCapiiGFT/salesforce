@@ -1,8 +1,19 @@
+/**********************************************************************************************************************************
+* Copyright © 2021 Creditas
+* ================================================================================================================================
+* Purpose: Class created to Insert or Update an Account Employee from an API.
+* ================================================================================================================================
+* History
+* -------
+* VERSION   AUTHOR                  DATE            DETAIL      Description
+* 1.0       Guilherme Assis         09/11/2021      Created     Class created to Insert or Update an Account Employee from an API.
+**********************************************************************************************************************************/
+
 @RestResource(urlMapping='/Account/*')
 global with sharing class AccountEmployeeIntegration {
     
     @HttpPost
-    global static String updateEmployee(){
+    global static String upsertEmployee(){
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
         List<Account> acc = new List<Account>();
@@ -19,7 +30,9 @@ global with sharing class AccountEmployeeIntegration {
                           Margin__c, 
                           Salary__c, 
                           Type,
-                          ExternalVersion__c 
+                          ExternalVersion__c,
+                          DocumentNumber__c,
+                          DocumentType__c
                     FROM Account 
                     WHERE ExternalId__c =: request.personId];
         } 
@@ -45,14 +58,40 @@ global with sharing class AccountEmployeeIntegration {
             acc[0].Margin__c                  = request.margin.amount;
             acc[0].Salary__c                  = request.salary.amount;
             acc[0].ExternalVersion__c         = decimal.valueOf(request.version);
+            acc[0].DocumentNumber__c          = request.mainDocument.code;
+            acc[0].DocumentType__c            = request.mainDocument.type;
 
-            update acc;
         } 
         else {
-            res.statusCode = 400;
-            return 'Conta com personId ' + request.personId + ' não encontrada.';
+            Account newAcc = new Account();
+            String admissionDate = request.admissionDate;
+
+            list<String> lstSplitDate = admissionDate.split('-');
+            Date admissionDateFormatted = date.newinstance(Integer.valueOf(lstSplitDate[0]), Integer.valueOf(lstSplitDate[1]), Integer.valueOf(lstSplitDate[2]));
+            
+            newAcc.AdmissionDate__c           = admissionDateFormatted;
+            newAcc.EmployeeId__c              = request.id;
+            newAcc.EmployeeStatus__c          = request.status;
+            newAcc.EmployeeType__c            = request.employeeType;
+            newAcc.ExternalCompanyId__c       = request.companyId;
+            newAcc.ExternalEmployeeVersion__c = decimal.valueOf(request.personVersion);
+            newAcc.ExternalId__c              = request.personId;
+            newAcc.ExternalTenant__c          = request.tenant;
+            newAcc.Margin__c                  = request.margin.amount;
+            newAcc.Salary__c                  = request.salary.amount;
+            newAcc.ExternalVersion__c         = decimal.valueOf(request.version);
+            newAcc.DocumentNumber__c          = request.mainDocument.code;
+            newAcc.DocumentType__c            = request.mainDocument.type;
+            newAcc.Name                       = request.personId;
+
+            acc.add(newAcc);
         }
-        res.statusCode = 200;
-        return 'Registro atualizado com sucesso!';
+        try {
+            upsert acc;
+            res.statusCode = 200;
+            return 'Registro criado/atualizado com sucesso';
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

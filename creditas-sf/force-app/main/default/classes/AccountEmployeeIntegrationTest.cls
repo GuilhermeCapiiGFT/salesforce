@@ -1,26 +1,42 @@
+/***********************************************************************************************************************************
+* Copyright © 2021 Creditas
+* ================================================================================================================================
+* @description Test class with AccountEmployeeIntegration
+* ================================================================================================================================
+* History
+* -------
+* VERSION   AUTHOR                  DATE            DETAIL      Description
+* 1.0       Guilherme Assis       09/11/2021        Created     Test class with AccountEmployeeIntegration
+**********************************************************************************************************************************/
+
 @isTest
 public with sharing class AccountEmployeeIntegrationTest {
     static testMethod void updateEmployeeTest() {
 		String json=		'{'+
-		'    "id": "69696d82-d3b3-4e3a-9cc5-965b1273da88",'+
-		'    "tenant": "CREDITASBR",'+
-		'    "personId": "PER-784029DB-7142-48D7-A8AC-475B96FFB325",'+
-		'    "personVersion": 2,'+
-		'    "companyId": "042b3737-6288-4335-9f43-ee74b3f38f60",'+
-		'    "status": "ACTIVE",'+
-		'    "employeeType": "STANDARD_CONTRACT",'+
+		'    "version": 1,	'+
+		'    "createdAt": "2020-04-04 9:24:55",	'+
+		'    "updatedAt": "2020-04-04 9:24:55",	'+
+		'    "employeeCode": "5856",	'+
+		'    "companyId": "042b3737-6288-4335-9f43-ee74b3f38f60",	'+
+		'    "employeeType": "STANDARD_CONTRACT",	'+
+		'    "personId": "PER-784029DB-7142-48D7-A8AC-475B96FFB325",	'+
+		'    "personVersion": 1,	'+
+		'    "id": "69696d82-d3b3-4e3a-9cc5-965b1273da88",	'+
+		'    "mainDocument": {'+
+		'        "code": "45106105803",'+
+		'        "type": "CPF"'+
+		'    },'+
+		'    "tenant": "creditasbr",	'+
+		'    "status": "ACTIVE",	'+
+		'    "admissionDate": "2015-01-01",	'+
 		'    "margin": {'+
-		'        "currency": "BRL",'+
-		'        "amount": 5000'+
+		'        "amount": 333,'+
+		'        "currency": "BRL"'+
 		'    },'+
 		'    "salary": {'+
-		'        "currency": "BRL",'+
-		'        "amount": 10000'+
-		'    },'+
-		'    "employeeCode": "5024",'+
-		'    "admissionDate": "2015-01-01",'+
-		'    "sourceId": "FILEIMP-0aada683-f912-4391-97ff-efc73049b5cc",'+
-		'    "version": 460'+
+		'        "amount": 1000,'+
+		'        "currency": "BRL"'+
+		'    }'+
 		'}';
 
         Test.startTest();
@@ -29,37 +45,42 @@ public with sharing class AccountEmployeeIntegrationTest {
             RestRequest req = new RestRequest(); 
             RestResponse res = new RestResponse();
         
-            req.requestURI = '/services/apexrest/Account/updateEmployee'; 
+            req.requestURI = '/services/apexrest/Account/upsertEmployee'; 
             req.httpMethod = 'POST';
             req.requestBody = Blob.valueof(json);
             RestContext.request = req;
             RestContext.response= res;             
 
-            AccountEmployeeIntegration.updateEmployee();         
+            AccountEmployeeIntegration.upsertEmployee();         
         Test.stopTest();   
 	}
 
     static testMethod void updateEmployeeWithIdTest() {
 		String json=		'{'+
-		'    "id": "69696d82-d3b3-4e3a-9cc5-965b1273da88",'+
-		'    "tenant": "CREDITASBR",'+
-		'    "personId": "PER-784029DB-7142-48D7-A8AC-475B96FFB325",'+
-		'    "personVersion": 2,'+
-		'    "companyId": "042b3737-6288-4335-9f43-ee74b3f38f60",'+
-		'    "status": "ACTIVE",'+
-		'    "employeeType": "STANDARD_CONTRACT",'+
+		'    "version": 1,	'+
+		'    "createdAt": "2020-04-04 9:24:55",	'+
+		'    "updatedAt": "2020-04-04 9:24:55",	'+
+		'    "employeeCode": "5856",	'+
+		'    "companyId": "042b3737-6288-4335-9f43-ee74b3f38f60",	'+
+		'    "employeeType": "STANDARD_CONTRACT",	'+
+		'    "personId": "PER-784029DB-7142-48D7-A8AC-475B96FFB325",	'+
+		'    "personVersion": 1,	'+
+		'    "id": "69696d82-d3b3-4e3a-9cc5-965b1273da88",	'+
+		'    "mainDocument": {'+
+		'        "code": "45106105803",'+
+		'        "type": "CPF"'+
+		'    },'+
+		'    "tenant": "creditasbr",	'+
+		'    "status": "ACTIVE",	'+
+		'    "admissionDate": "2015-01-01",	'+
 		'    "margin": {'+
-		'        "currency": "BRL",'+
-		'        "amount": 5000'+
+		'        "amount": 333,'+
+		'        "currency": "BRL"'+
 		'    },'+
 		'    "salary": {'+
-		'        "currency": "BRL",'+
-		'        "amount": 10000'+
-		'    },'+
-		'    "employeeCode": "5024",'+
-		'    "admissionDate": "2015-01-01",'+
-		'    "sourceId": "FILEIMP-0aada683-f912-4391-97ff-efc73049b5cc",'+
-		'    "version": 460'+
+		'        "amount": 1000,'+
+		'        "currency": "BRL"'+
+		'    }'+
 		'}';
 
         Test.startTest();
@@ -73,13 +94,13 @@ public with sharing class AccountEmployeeIntegrationTest {
             RestRequest req = new RestRequest(); 
             RestResponse res = new RestResponse();
         
-            req.requestURI = '/services/apexrest/Account/updateEmployee'; 
+            req.requestURI = '/services/apexrest/Account/upsertEmployee'; 
             req.httpMethod = 'POST';
             req.requestBody = Blob.valueof(json);
             RestContext.request = req;
             RestContext.response= res;             
 
-            AccountEmployeeIntegration.updateEmployee();         
+            AccountEmployeeIntegration.upsertEmployee();         
         Test.stopTest();   
 	}
 }
