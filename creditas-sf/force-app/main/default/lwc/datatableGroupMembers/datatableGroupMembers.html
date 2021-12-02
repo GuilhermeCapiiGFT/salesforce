@@ -1,0 +1,77 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title="Group Members" icon-name="standard:contact">
+        <div class="slds-clearfix">
+        <lightning-button label="NEW GROUP MEMBER"
+                          title="New Group Member"
+                          onclick={clickNewGroup} 
+                          class="slds-float_right slds-m-right_large">
+        </lightning-button>
+        </div>
+        <div style="width: auto;"> </br>
+            <template if:true = {data}>
+                    <lightning-datatable if:true={data} 
+                    show-row-number-column hide-checkbox-column
+                    onrowaction={handleRowActions}
+                        key-field="id"
+                        data={data}                        
+                        columns={columns}
+                        onsave={handlesave}
+                        draft-values={draftValues}>
+                    </lightning-datatable>
+            </template>
+        </div>
+        <div if:true={exibirModalMember}>
+            <c-new-group-member-l-w-c onclose={closeModal} groupname={nameGroup} groupid={recordId}> </c-new-group-member-l-w-c>
+        </div>
+        <!-- Detail view modal -->
+        <template if:true={bShowModal}>
+            <section role="dialog" tabindex="-1"
+                    aria-labelledby="modal-heading-01"
+                    aria-modal="true"
+                    aria-describedby="modal-content-id-1"
+                    class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- modal header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate" if:true={isEditForm}> Update Members</h2>
+                </header>
+                <!-- showing record edit form -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div if:true={isEditForm} class="slds-theme_default">
+                    <lightning-input type="text" label="UserId" readonly="true" value={userName}> </lightning-input>
+                    <lightning-input type="text" label="Title" value={title} onchange={onChangeTitle}> </lightning-input>
+                    <lightning-combobox
+                        dropdown-alignment="auto"
+                        aria-expanded= "true"
+                        label="Status"
+                        value={status}
+                        placeholder="Select Status"
+                        options={statusOptions}
+                        onchange={onChangeStatus} >
+                    </lightning-combobox>
+                    <lightning-combobox
+                        dropdown-alignment="auto"
+                        aria-expanded= "true"
+                        label="Role"
+                        value={role}
+                        placeholder="Select Role"
+                        options={roleOptions}
+                        onchange={onChangeRole} >
+                    </lightning-combobox>
+                </div>
+            </div>
+                <!-- modal footer start-->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                     <button class="slds-button slds-button_brand" onclick={updateModal}>Update</button>
+                 </footer>
+            </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </lightning-card>
+</template>
