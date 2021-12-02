@@ -1,0 +1,66 @@
+<template>
+    <section if:true={isModalOpen} role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+    <header class="slds-modal__header">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+            <lightning-icon icon-name="utility:close"
+                alternative-text="close"
+                variant="inverse"
+                size="small" ></lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">New Group Member</h2>
+    </header>
+    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+        <lightning-input type="text" label="Group" readonly="true" value={groupname}> </lightning-input>
+        <div style="margin-left: 4px; margin-right: 4px;" class="slds-form-element">
+            <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+            <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+            <lightning-input data-id="focusHospital" icon-name="standard:people" label="Member" name="searchText"
+            value={searchValue} onchange={onchangeSearch}> </lightning-input>
+            </div>
+            <!-- LISTA DE EXIBICAO -->
+            <div id="listbox-id-1" style="z-index: 0; position: relative; max-height: 12vh;" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> <!-- -->
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+            <template for:each={userList} for:item="user">
+            <li role="presentation" class="slds-listbox__item" key={user.Id}>
+            <div data-id={user.Id} data-name={user.Name} onclick={onclickSelecionarUser}
+            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" role="option">
+            <span class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-people">
+            <lightning-icon icon-name="standard:people" class="slds-icon slds-icon slds-icon_small slds-icon-text-default"
+            size="x-small"></lightning-icon>
+            </span>
+            </span>
+            <span class="slds-media__body">
+            <mark><span class="slds-listbox__option-text slds-listbox__option-text_entity">{user.Name}</span></mark>
+            </span>
+            </div>
+            </li>
+            </template>
+            </ul>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+        <lightning-combobox
+        style="height:9rem" dropdown-alignment="auto"
+        aria-expanded= "true"
+        label="Role"
+        value={roleValue}
+        placeholder="Select Role"
+        options={roleOptions}
+        onchange={roleChange} >
+       </lightning-combobox>
+    </div>
+        <footer class="slds-modal__footer">
+           <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+            <button class="slds-button slds-button_brand" onclick={saveModal}>Save</button>
+        </footer>
+    </div>
+</section>
+<div if:true={isModalOpen} class="slds-backdrop slds-backdrop_open"></div>
+</template>
