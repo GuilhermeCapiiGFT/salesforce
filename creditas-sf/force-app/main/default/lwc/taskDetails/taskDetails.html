@@ -1,0 +1,89 @@
+<template>
+    <div class="slds-box slds-theme_default">
+
+        <template for:each={tasks} for:item="fields">
+            <div key={fields.Id}>
+                
+                <!-- currency -->
+                <template if:true={fields.isCurrency}>
+                    <lightning-input 
+                        type="number" 
+                        class="form-fields" 
+                        label={fields.fieldName} 
+                        data-id={fields.fieldMappedKey} 
+                        data-fieldkey={fields.fieldKey} 
+                        data-name={fields.fieldName}
+                        formatter="currency"
+                        value=""> 
+                    </lightning-input>
+                </template>
+    
+                <!-- relationship -->
+                <template if:true={fields.isRelationShip}>                
+                    <c-search-component
+                        obj-name={fields.relatedObject}
+                        icon-name="standard:contact"
+                        label-name="Related to"
+                        placeholder="Search" 
+                        fields={fields}
+                        display-fields={displayFields}
+                        class="form-fields"
+                        data-id={fields.fieldMappedKey} 
+                        data-fieldkey={fields.fieldKey} 
+                        data-name={fields.fieldName}
+                        onlookup={handleLookup} >
+                    </c-search-component>
+                </template>
+                <!-- text -->
+                <template if:true={fields.isDefault}>
+                    <lightning-input 
+                        type={fields.fieldType} 
+                        class="form-fields" 
+                        label={fields.fieldName} 
+                        data-id={fields.fieldMappedKey} 
+                        data-fieldkey={fields.fieldKey} 
+                        data-name={fields.fieldName}
+                        value=""> 
+                    </lightning-input>
+                </template>         
+    
+                <!-- picklist -->
+                <template if:true={fields.isPicklist}>
+                    <lightning-combobox
+                    data-id={fields.fieldMappedKey}
+                    data-fieldkey={fields.fieldKey}
+                    data-name={fields.fieldName}
+                    name={fields.fieldName}
+                    label={fields.fieldName}
+                    value={selectedPicklist}
+                    placeholder="Picklist options"
+                    class="form-fields"
+                    options={fields.picklistValues}>
+                </lightning-combobox>
+                </template>
+    
+                <!-- multpicklist -->
+                <template if:true={fields.isMultiPicklist}>
+                    <lightning-dual-listbox 
+                    name={fields.fieldName}
+                    label={fields.fieldName}
+                    source-label={fields.fieldName}
+                    selected-label="Selected Profiles" 
+                    field-level-help="Select the required profiles" 
+                    class="form-fields"
+                    options={fields.picklistValues}
+                    value=""
+                    data-id={fields.fieldMappedKey}
+                    data-fieldkey={fields.fieldKey}
+                    data-name={fields.fieldName}
+                    size="3">
+                </lightning-dual-listbox>
+                </template>
+            </div>
+        </template>
+        <div class="slds-align_absolute-center slds-m-top_medium">
+            <lightning-button variant="brand" label="Salvar" title="Salvar" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+
+</template>
