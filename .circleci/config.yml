@@ -165,7 +165,7 @@ jobs:
       - sfdx/auth:
           consumerKey: TEST_CONSUMER_KEY
           jwtKey: SFDX_JWT_KEY
-          defaultusername: circleci@creditas.com
+          defaultusername: circleci@creditas.com.test
           instanceUrl: https://test.salesforce.com
       - run:
           command: . build/deploy_code.sh
