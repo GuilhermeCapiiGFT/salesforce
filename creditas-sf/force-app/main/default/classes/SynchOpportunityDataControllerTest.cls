@@ -1,15 +1,15 @@
 /**********************************************************************************************************************************
 * Copyright © 2021 Creditas
 * ================================================================================================================================
-* Purpose: Classe de teste para a classe SynchAccountDataController
+* Purpose: Classe de teste para a classe SynchOpportunityDataController
 * ================================================================================================================================
 * History
 * -------
 * VERSION   AUTHOR                  DATE            DETAIL      Description
-* 1.0       Erika Togniolo          28/10/2021      Created     Classe de teste para SynchAccountDataController
+* 1.0       Erika Togniolo          17/12/2021      Created     Classe de teste para SynchOpportunityDataController
 **********************************************************************************************************************************/
 @isTest
-public class SynchAccountDataControllerTest {
+public class SynchOpportunityDataControllerTest {
     
     @TestSetup
     static void makeData()
@@ -21,32 +21,41 @@ public class SynchAccountDataControllerTest {
         newAccount.RecordTypeId = '01203000000CpjkAAC';
         newAccount.IsSynchEnabled__c= '	ENABLED';
         insert(newAccount);
+               
+        Opportunity newOpp = new Opportunity();
+        newOpp.AccountId = newAccount.Id;
+        newOpp.Name = 'New Opp Synch';
+        newOpp.IsExternallySynched__c = true;
+        newOpp.IsSynchEnabled__c= '	ENABLED';
+        newOpp.StageName = 'Novo';
+        newOpp.CloseDate = Date.today().addDays(10);
+        
+        insert(newOpp);
     }
-    
+
     @isTest
-   	static void getAccount() 
+   	static void getOppData() 
     {
-      //List<Id> listId = new  List<Id>();
-              
-        Account accId = [SELECT Id FROM Account];
+      	             
+        Opportunity opp = [SELECT Id FROM Opportunity];
         
         Test.startTest();
-        Account res = SynchAccountDataController.getAccountData(accId.Id);
+        Opportunity res = SynchOpportunityDataController.getSyncInfo(opp.Id);
         Test.stopTest();
                 
        	System.assertNotEquals(Null, res);
     }
     
     @isTest
-    static void updateAccount() 
+    static void updateOpp() 
     {
-        Account acc = [SELECT Id, IsSynchEnabled__c FROM Account];
+        Opportunity opp = [SELECT Id, IsSynchEnabled__c, IsExternallySynched__c FROM Opportunity];
        
         Test.startTest();
-        SynchAccountDataController.checkSynchingField(acc);
+        SynchOpportunityDataController.updateSynchingFields(opp);
         Test.stopTest();
     
-        Account accUpdated = [SELECT Id, IsSynchEnabled__c FROM Account];
-        System.assertNotEquals(acc, accUpdated);
+        Opportunity oppUpdated = [SELECT Id, IsSynchEnabled__c, IsExternallySynched__c FROM Opportunity];
+        System.assertNotEquals(opp, oppUpdated);
     }
 }

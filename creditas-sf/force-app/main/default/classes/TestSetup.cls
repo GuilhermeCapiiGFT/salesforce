@@ -16,9 +16,9 @@ public class TestSetup {
         Integer aux = integer.valueof(crypto.getRandomLong());            
             
         Account varAccount = new Account(Name = name);
-        varAccount.DocumentNumber__c = '58131786277';
+        varAccount.DocumentNumber__c = '87056391079';
         varAccount.IsExternallySynched__c = true;
-        varAccount.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
+        varAccount.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = '[HOME] Pessoa Física']?.Id;
         // varAccount.Cidade__c = getRegiao(true).Id;
         // varAccount.Status_Integracao__c = 'OK';
         // varAccount.Apelido__c = 'apelido';
@@ -90,6 +90,8 @@ public class TestSetup {
         userTest.TimeZoneSidKey = 'America/Sao_Paulo';
         userTest.IsActive = true;
         userTest.ManagerId = UserInfo.getUserId();
+        userTest.Title = 'Analista';
+        userTest.Status__c =  'Ativo';
 
         if(doInsert) {
             insert userTest;
@@ -154,6 +156,8 @@ public class TestSetup {
             userTest.EmailEncodingKey = 'UTF-8';
             userTest.TimeZoneSidKey = 'America/Sao_Paulo';
             userTest.IsActive = true;
+            userTest.Status__c = 'Ativo';
+            userTest.Title = 'Analista';
 
             newUsers.add(userTest);
 
@@ -181,6 +185,8 @@ public class TestSetup {
         varOpportunity.Name = 'Teste';
         varOpportunity.StageName = 'Novo';
         varOpportunity.CloseDate = Date.today().addDays(10);
+        varOpportunity.ExternalTenant__c = 'creditasbr';
+        varOpportunity.ExternalVersion__c = 1;        
         
         if(doInsert)
         {
@@ -279,10 +285,7 @@ public class TestSetup {
         
         return varAccount;
     }
-    
-    
-    
-     
+
     public static OpportunityRole__c getOppRole (Account acc, Opportunity oppty, String role, Boolean titular, Boolean doinsert)
     {
      	OpportunityRole__c newOppRole = new OpportunityRole__c();
@@ -290,7 +293,8 @@ public class TestSetup {
         newOppRole.Opportunity__c = oppty.Id;
         newOppRole.Role__c = role;
         newOppRole.Titular_da_Conta__c = titular;
-         
+        newOppRole.ExternalOpportunityId__c = oppty.Id;
+       
         if(doInsert)
         {
             insert newOppRole;
@@ -298,6 +302,25 @@ public class TestSetup {
         
         return newOppRole;
     }
+    
+    public static Garantias__c getGuarantees (Account acc, Opportunity oppty, FinancialResources__c financialResource, Boolean doinsert)
+    {
+     	Garantias__c newGuarantees = new Garantias__c();        
+        newGuarantees.Opportunity__c = oppty.Id;             
+        newGuarantees.Account__c = acc.Id;
+        newGuarantees.Recurso_Financeiro__c = financialResource.Id;
+        newGuarantees.ExternalOpportunityId__c = oppty.ExternalId__c;
+        newGuarantees.ExternalOpportunityTenant__c = oppty.ExternalTenant__c;
+        newGuarantees.ExternalOpportunityVersion__c = oppty.ExternalVersion__c;
+       
+        if(doInsert)
+        {
+            insert newGuarantees;
+        }
+        
+        return newGuarantees;
+    }
+    
     
         public static FinancialResources__c getNewFinRes (String name, Boolean doinsert)
     {
@@ -310,6 +333,7 @@ public class TestSetup {
         }
         
         return newFinRes;
-    }
+    }   
+    
      
 }
