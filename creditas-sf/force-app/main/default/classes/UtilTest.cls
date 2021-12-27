@@ -94,7 +94,7 @@ private class UtilTest {
     @isTest
     static void testGetRecordType()
     {
-        Id recordTypeId = Util.getRecordTypeIdbyName('Account', 'Default');
+        Id recordTypeId = Util.getRecordTypeIdbyName('Account', 'Mestre');
         String recordTypeName = Util.getRecordTypeNameById('Account', recordTypeId);
         
     }
@@ -170,8 +170,8 @@ private class UtilTest {
     {
         QuoteLineItem varQuoteLineItem = new QuoteLineItem();
         Util.updateSObjectField(varQuoteLineItem, 'Description', 'Test');
-        Util.updateSObjectField(varQuoteLineItem, 'Desconto__c', 50);
-        Util.updateSObjectField(varQuoteLineItem, 'NEG_Desconto__c', true);
+        //Util.updateSObjectField(varQuoteLineItem, 'Desconto__c', 50);
+        //Util.updateSObjectField(varQuoteLineItem, 'NEG_Desconto__c', true);
         
         // Assertions
         System.assertEquals('Test', varQuoteLineItem.Description, 'Deveria ter preenchido o campo');

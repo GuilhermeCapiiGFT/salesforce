@@ -2,7 +2,7 @@
 global with sharing class IntegrationAccountINTest {
     @isTest
     static void testUpsertAccount(){   
-        
+               
         Test.startTest();
         	RestRequest req = new RestRequest(); 
         	RestResponse res = new RestResponse();
@@ -15,7 +15,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.postMethod();          
         	IntegrationAccountIN.postMethod();
-        Test.stopTest();     
+        Test.stopTest();
+		system.assertNotEquals(res.responseBody, null);     
     }        
   
 }

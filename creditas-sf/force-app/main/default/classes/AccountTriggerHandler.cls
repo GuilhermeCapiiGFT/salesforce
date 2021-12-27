@@ -32,8 +32,8 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
         this.lstOldAccount = (List<Account>) Trigger.old;
         this.mapNewAccount = (Map<Id, Account>) Trigger.newMap;
         this.mapOldAccount = (Map<Id, Account>) Trigger.oldMap;
-        this.RECORDTYPE_CONTA_PESSOA_FISICA = getAccountRecordTypeId('Pessoa Física');
-        this.RECORDTYPE_CONTA_PESSOA_JURIDICA = getAccountRecordTypeId('Pessoa Jurídica');
+        this.RECORDTYPE_CONTA_PESSOA_FISICA = getAccountRecordTypeId('Pessoa_Fisica');
+        this.RECORDTYPE_CONTA_PESSOA_JURIDICA = getAccountRecordTypeId('Pessoa_Juridica');
     }
     
     /**********************************************************************************************************************************
@@ -105,7 +105,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     private static Id getAccountRecordTypeId(String recordTypeName)
     {
-        return Schema.SObjectType.Account.getRecordTypeInfosByName().get(recordTypeName).getRecordTypeId();
+        return Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get(recordTypeName).getRecordTypeId();
     }
 
     /**********************************************************************************************************************************
@@ -172,12 +172,12 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     * History
     * -------
     * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21
+    * 1.0         Thales Yumiya           29/09/21
     **********************************************************************************************************************************/
     public void verifyValidDocument()
     {
         for(Account varAccount : lstNewAccount)
-        {
+        { 
             if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
             {
                 validaDocumento(varAccount);

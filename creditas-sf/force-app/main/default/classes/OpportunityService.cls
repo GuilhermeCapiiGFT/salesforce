@@ -1,7 +1,7 @@
 /***********************************************************************************************************************************
 * Copyright © 2021 Creditas
 * ================================================================================================================================
-* Purpose: Web Service customizado para criação de Opportunities and seus objetos relacionados 
+* Purpose: Web Service customizado para criação de Oportunidades e seus objetos relacionados 
 * ================================================================================================================================
 * History
 * -------
@@ -11,107 +11,175 @@
 @RestResource(urlMapping='/IntegrationOpportunity/*')
 global without sharing class OpportunityService 
 {
-    
+    public static Opportunity oppToUpsert;
+    public static String errorMessage = '';
+    public static String requestBody;
+    public static OpportunityIntegrationModel requestBodyObj;
+    public static Boolean hasError = false;
+    public static String accountName;
+
 	@HttpPut
     global static void putMethod() 
     {
-        OpportunityIntegrationModel requestBodyObj = OpportunityIntegrationModel.parse(RestContext.request.requestBody.toString());
-        
-        String accountName = getParticipantName(requestBodyObj);
-                        
-        Response opportunityResponse = upsertOpportunity(requestBodyObj, accountName);
+        try {
+            String requestBodyString = RestContext.request.requestBody.toString();
+            requestBody = requestBodyString;
+            requestBodyObj = OpportunityIntegrationModel.parse(requestBodyString);
 
-        Id opportunityId = opportunityResponse.opportunityId;
-        
-        upsertQuote(requestBodyObj, opportunityId, accountName);
-        
-        upsertOpportunityRoles(requestBodyObj, opportunityId); 
-                    
-        //Response
-        RestResponse res = RestContext.response;
-        if (res == null) {
-            res = new RestResponse();
-            RestContext.response = res;
+            if (!requestBodyObj.hasError){
+                getParticipantName();
+                if (accountName == 'false'){
+                    hasError = true;
+                    errorMessage = 'Proponente não encontrado na SalesForce.';
+                    setErrorResponse(500);
+                    insertErrorLog(500);
+                    return;
+                }
+
+                upsertOpportunity();
+
+                commitTransactions();
+
+                if (!hasError){
+                    Response oppResponse = new Response();
+                    oppResponse.opportunityId = oppToUpsert?.Id;
+                    oppResponse.message = 'Opportunity successfully upserted.';
+                    RestResponse res = RestContext.response;
+                    if (res == null) {
+                        res = new RestResponse();
+                        RestContext.response = res;
+                    }
+                    res.responseBody = Blob.valueOf(JSON.serialize(oppResponse));
+                    res.statusCode = 200;
+                } else {
+                    setErrorResponse(500);
+                    insertErrorLog(500);
+                }
+            } else {
+                hasError = true;
+                errorMessage = requestBodyObj.errorMessage;
+                setErrorResponse(500);
+                insertErrorLog(500);
+            }
+        } catch(Exception e) {
+            System.debug(e.getLineNumber());
+            hasError = true;
+            errorMessage = e.getMessage();
+            setErrorResponse(500);
+            insertErrorLog(500);
         }
-        res.responseBody = Blob.valueOf(JSON.serialize(opportunityResponse));
-        res.statusCode = 200;
+
     }   
     
     
-    private static String getParticipantName(OpportunityIntegrationModel requestBodyObj){
+    private static void getParticipantName(){
         List<String> externalPersonIds = new List<String>();
-        for(OpportunityIntegrationModel.cls_participants participant : requestBodyObj.participants)
-        {
-            externalPersonIds.add(participant.person.id);
+        Map<String, String> personIdToPersonRoleMap = new Map<String, String>();
+        if (requestBodyObj.participants == null){
+            accountName =  'false';
+            return;
+        }
+        for (Integer i = 0; i < requestBodyObj.participants.size(); i++){
+            String personId = requestBodyObj.participants[i].person.id;
+            externalPersonIds.add(personId);
+            personIdToPersonRoleMap.put(personId, requestBodyObj.participants[i].roles[0]);
+        }
+        String accountNameKey = '';
+        for(Account acc : [SELECT Id, ExternalId__c, Name, DocumentNumber__c FROM Account WHERE ExternalId__c IN :externalPersonIds]){
+            accountNameKey = acc.DocumentNumber__c + ' ' + acc.Name + '_' + acc.Id;
+            if (personIdToPersonRoleMap.get(acc.ExternalId__c) == 'PRINCIPAL'){
+                break;
+            }
         }
         
-        String accountName = [SELECT Id, ExternalId__c, Name FROM Account WHERE ExternalId__c IN :externalPersonIds]?.Name;
-        
-		return accountName != null ? accountName : externalPersonIds[0];         
+        accountName = accountNameKey != '' ? accountNameKey : 'false';      
     }
  
     
-    private static Response upsertOpportunity(OpportunityIntegrationModel requestBodyObj, String accountName)
+    private static void upsertOpportunity()
     {            
+        if (hasError){
+            return;
+        }
         
         Opportunity opportunityToUpsert = new Opportunity
         (     
         	Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :requestBodyObj.id]?.Id,
             ExternalId__c = requestBodyObj.id,
-        	ExternalVersion__c = Decimal.valueOf(requestBodyObj.version),
+        	ExternalVersion__c = requestBodyObj.version != null ? Decimal.valueOf(requestBodyObj.version) : null,
         	ExternalTenant__c = requestBodyObj.tenant,                     
-            Name = requestBodyObj.friendlyId + ' - ' + accountName,
+            Name = accountName.split('_',2)[0],
+            AccountId = accountName.split('_',2)[1],
             StageName = 'Formalização',
-            IdName__c = requestBodyObj.friendlyId,
             CloseDate = System.today().addDays(30),                                
         	ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt),
-        	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt)
+        	ExternalUpdatedDate__c = requestBodyObj.updateAt != null ? Date.valueOf(requestBodyObj.updateAt) : null
         ); 
-        Boolean isUpdate = opportunityToUpsert.Id != null;
-                
-        upsert opportunityToUpsert;
-        system.debug('>>>>> ' + opportunityToUpsert);
-       	Response oppResponse = new Response();
-        oppResponse.opportunityId = opportunityToUpsert.Id;
-        oppResponse.message = isUpdate ? 'Opportunity sucessfully updated.' : 'Opportunity sucessfully created.';
-        return oppResponse;
+
+        oppToUpsert = opportunityToUpsert;
     }
     
    
-    private static void upsertQuote(OpportunityIntegrationModel requestBodyObj, Id opportunityId, String accountName)
-    {
-        Quote quoteToUpsert = new Quote
-        (
-        	Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId]?.Id,
-        	ParameterTac__c = requestBodyObj.conditions.parameters.tac.amount,
-        	ParameterIOF__c = requestBodyObj.conditions.parameters.iof.amount,
-        	ParameterAdditionalCosts__c = requestBodyObj.conditions.parameters.additionalCosts.amount,
-        	CreditScore__c = requestBodyObj.conditions.parameters.creditScore,    
-        	GracePeriod__c = requestBodyObj.conditions.parameters.gracePeriod,
-        	ContractDate__c = Date.valueOf(requestBodyObj.conditions.parameters.contractDate),
-        	ParameterCalcVersion__c = requestBodyObj.conditions.parameters.calculatorVersion,
-            LimitCetMinimunc__c = requestBodyObj.conditions.limitData.cetLimit.minimum,
-            LimitCetMaximum__c = requestBodyObj.conditions.limitData.cetLimit.maximum,
-            yearlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.minimum,   
-            yearlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.maximum,  
-            monthlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.minimum,   
-            monthlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.maximum, 
-        	LimitTotal__c = requestBodyObj.conditions.limitData.total.amount,
-        	LimitInstallmentType__c = requestBodyObj.conditions.limitData.installmentType,
-        	LimitDueDate__c = Date.valueOf(requestBodyObj.conditions.limitData.dueDate),     
-        	MonthlyIntRateCompType__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].type,    
-        	MonthlyIntRateCompValue__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].value, 
-        	NetValue__c = requestBodyObj.conditions.netValues.amount,
-            OpportunityId = opportunityId,
-            Name = accountName + ' Quote'
-        );
-        
-        upsert quoteToUpsert;                 
+    private static void upsertQuote(){
+        if (requestBodyObj.conditions == null || hasError){
+            hasError = true;
+            return;
+        }
+        Id opportunityId = oppToUpsert?.Id;
+
+        Quote quoteObject = new Quote();
+        quoteObject.Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId LIMIT 1]?.Id;
+        if (requestBodyObj.conditions.parameters.tac != null){
+            quoteObject.ParameterTac__c = Decimal.valueOf(requestBodyObj.conditions.parameters.tac.amount);
+        }
+        if (requestBodyObj.conditions.parameters.iof != null){
+            quoteObject.ParameterIOF__c = Decimal.valueOf(requestBodyObj.conditions.parameters.iof.amount);
+        }
+        if (requestBodyObj.conditions.parameters.additionalCosts != null){
+            quoteObject.ParameterAdditionalCosts__c = Decimal.valueOf(requestBodyObj.conditions.parameters.additionalCosts.amount);
+        }
+        quoteObject.CreditScore__c = requestBodyObj.conditions.parameters.creditScore;
+        quoteObject.GracePeriod__c = requestBodyObj.conditions.parameters.gracePeriod;
+        if (requestBodyObj.conditions.parameters.contractDate != null){
+            quoteObject.ContractDate__c = Date.valueOf(requestBodyObj.conditions.parameters.contractDate);
+        }
+        quoteObject.ParameterCalcVersion__c = requestBodyObj.conditions.parameters.calculatorVersion;
+        if (requestBodyObj.conditions.limitData != null){
+            if (requestBodyObj.conditions.limitData.cetLimit != null){
+                quoteObject.LimitCetMinimunc__c = requestBodyObj.conditions.limitData.cetLimit.minimum;
+                quoteObject.LimitCetMaximum__c = requestBodyObj.conditions.limitData.cetLimit.maximum;
+            }
+            if (requestBodyObj.conditions.limitData.interest != null){
+                if (requestBodyObj.conditions.limitData.interest.yearlyLimit != null){
+                    quoteObject.yearlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.minimum; 
+                    quoteObject.yearlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.maximum;
+                }
+                if (requestBodyObj.conditions.limitData.interest.monthlyLimit != null){
+                    quoteObject.monthlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.minimum;  
+                    quoteObject.monthlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.maximum;
+                }
+            }           
+            quoteObject.LimitTotal__c = requestBodyObj.conditions.limitData.total.amount != null ? Decimal.valueOf(requestBodyObj.conditions.limitData.total.amount) : null;
+            quoteObject.LimitInstallmentType__c = requestBodyObj.conditions.limitData.installmentType;
+            quoteObject.LimitDueDate__c = requestBodyObj.conditions.limitData.dueDate != null ? Date.valueOf(requestBodyObj.conditions.limitData.dueDate) : null; 
+        } 
+        if (requestBodyObj.conditions.monthlyInterestRateComposition != null && !requestBodyObj.conditions.monthlyInterestRateComposition.isEmpty()){
+            quoteObject.MonthlyIntRateCompType__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].type;
+            quoteObject.MonthlyIntRateCompValue__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].value;
+        }
+        if (requestBodyObj.conditions.netValues != null){
+            quoteObject.NetValue__c = requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(requestBodyObj.conditions.netValues.amount) : null;
+        }
+        quoteObject.OpportunityId = opportunityId;
+        quoteObject.Name = accountName.split('_',2)[0] + ' Quote';
+
+        upsert quoteObject;          
     }
  
     
-    private static void upsertOpportunityRoles(OpportunityIntegrationModel requestBodyObj, Id opportunityId)
-    {
+    private static void upsertOpportunityRoles(){
+        Id opportunityId = oppToUpsert?.Id;
+
         Set<String> externalPersonIds = new Set<String>();
         for(OpportunityIntegrationModel.cls_participants participant : requestBodyObj.participants)
         {
@@ -119,43 +187,113 @@ global without sharing class OpportunityService
         }
         
         Map<String, OpportunityRole__c> externalPersonIdToOpportunityRoleMap = new Map<String, OpportunityRole__c>();
-        for (OpportunityRole__c opportunityRole : [SELECT Id, Opportunity__c, ExternalPersonId__c, Role__c 
+        for (OpportunityRole__c opportunityRole : [SELECT Id, Opportunity__c, ExternalPersonId__c, ExternalPersonId__r.ExternalId__c, Role__c 
                                                    FROM OpportunityRole__c
                                                    WHERE ExternalPersonId__r.ExternalId__c IN :externalPersonIds 
                                                    AND Opportunity__c = :opportunityId])
         {
-			externalPersonIdToOpportunityRoleMap.put(opportunityRole.ExternalPersonId__c, opportunityRole);                                                  
+			externalPersonIdToOpportunityRoleMap.put(opportunityRole.ExternalPersonId__r.ExternalId__c, opportunityRole);                                                  
         }
         
         Map<String, Account> externalPersonIdToAccountMap = new Map<String, Account>();
-        String accountName = '';
         for (Account acc : [SELECT Id, ExternalId__c, Name FROM Account WHERE ExternalId__c IN :externalPersonIds])
         {
             externalPersonIdToAccountMap.put(acc.ExternalId__c, acc);
         }
-        
+
         List<OpportunityRole__c> opportunityRolesToUpsert = new List<OpportunityRole__c>();
         for(OpportunityIntegrationModel.cls_participants participant : requestBodyObj.participants)
         {
-            Id personId = externalPersonIdToOpportunityRoleMap.get(participant.person.id)?.Id;
-            if (personId == null) continue;
+            Id oppRoleId = externalPersonIdToOpportunityRoleMap.get(participant.person.id)?.Id;
+            Id personId = externalPersonIdToAccountMap.get(participant.person.id)?.Id;
+            if (personId == null){
+                continue;
+            }
             OpportunityRole__c opportunityRoleToUpsert = new OpportunityRole__c
             (         
-            	Id = personId,
+            	Id = oppRoleId,
             	Role__c = participant.roles[0],
-            	ExternalPersonId__c = externalPersonIdToAccountMap.get(participant.person.id)?.Id,
+            	ExternalPersonId__c = personId,
             	Opportunity__c = opportunityId
             ); 
             
             opportunityRolesToUpsert.add(opportunityRoleToUpsert);
         }
-        
-        upsert opportunityRolesToUpsert;        
+
+        upsert opportunityRolesToUpsert;
+    }
+
+    public static void insertErrorLog(Integer errorCode){
+        API_Transaction_Errors__b ate = new API_Transaction_Errors__b();
+        ate.Endpoint__c = '/services/apexrest/IntegrationOpportunity';
+        ate.RequestBody__c = requestBody;
+        ate.ReturnCode__c = errorCode;
+        ate.ErrorMessage__c = errorMessage;
+        ate.CreatedDate__c = System.now();
+        ate.CreatedBy__c = UserInfo.getUserId();
+        System.debug(errorMessage);
+
+        try {
+            database.insertImmediate(ate);   
+        } catch (Exception e) {
+            setErrorResponse(500);
+        }
+    }
+
+    public static void setErrorResponse(Integer errorCode){
+        Response resp = new Response();
+        resp.opportunityId = null;
+        resp.message = 'An error has occurred. Please, contact a Salesforce Administrator.';
+        resp.status = errorCode;
+
+        RestResponse res = RestContext.response;
+        if (res == null) {
+            res = new RestResponse();
+            RestContext.response = res;
+        }
+        res.responseBody = Blob.valueOf(JSON.serialize(resp));
+        res.statusCode = errorCode;
+    }
+
+    public static void commitTransactions(){
+        Boolean varSuccess1 = false, varSuccess2 = false, varSuccess3 = false;
+
+        Savepoint sp = Database.setSavepoint();
+        if (!hasError){
+            try{
+                upsert oppToUpsert;
+                varSuccess1 = true; 
+            } catch(Exception e){
+                hasError = true;
+                errorMessage = e.getMessage();
+                Database.rollback(sp); 
+            }
+            if(varSuccess1){
+                try{
+                    upsertQuote();
+                    varSuccess2 = true; 
+                } catch(Exception e){
+                    hasError = true;
+                    errorMessage = e.getMessage();
+                    Database.rollback(sp); 
+                }
+            }
+            if(varSuccess2){
+                try{ 
+                    upsertOpportunityRoles();
+                    varSuccess3 = true;
+                } catch(Exception e){
+                    hasError = true;
+                    errorMessage = e.getMessage();
+                    Database.rollback(sp); 
+                }
+            }
+        }
     }
 
     private class Response
     {
-        public String status;
+        public Integer status;
         public String opportunityId;
         public String message;
     }

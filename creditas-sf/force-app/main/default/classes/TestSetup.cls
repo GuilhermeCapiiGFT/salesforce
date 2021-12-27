@@ -16,8 +16,9 @@ public class TestSetup {
         Integer aux = integer.valueof(crypto.getRandomLong());            
             
         Account varAccount = new Account(Name = name);
-        varAccount.DocumentNumber__c = '12345678901234';
+        varAccount.DocumentNumber__c = '58131786277';
         varAccount.IsExternallySynched__c = true;
+        varAccount.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
         // varAccount.Cidade__c = getRegiao(true).Id;
         // varAccount.Status_Integracao__c = 'OK';
         // varAccount.Apelido__c = 'apelido';
@@ -203,6 +204,7 @@ public class TestSetup {
         
         return varCase;
     }
+       
     
     // public static Quote getQuote(Id opportunityId, Boolean doInsert)
     // {
@@ -277,4 +279,37 @@ public class TestSetup {
         
         return varAccount;
     }
+    
+    
+    
+     
+    public static OpportunityRole__c getOppRole (Account acc, Opportunity oppty, String role, Boolean titular, Boolean doinsert)
+    {
+     	OpportunityRole__c newOppRole = new OpportunityRole__c();
+        newOppRole.ExternalPersonId__c = acc.Id;
+        newOppRole.Opportunity__c = oppty.Id;
+        newOppRole.Role__c = role;
+        newOppRole.Titular_da_Conta__c = titular;
+         
+        if(doInsert)
+        {
+            insert newOppRole;
+        }
+        
+        return newOppRole;
+    }
+    
+        public static FinancialResources__c getNewFinRes (String name, Boolean doinsert)
+    {
+     	FinancialResources__c newFinRes = new FinancialResources__c();
+        newFinRes.Name = name;
+                 
+        if(doInsert)
+        {
+            insert newFinRes;
+        }
+        
+        return newFinRes;
+    }
+     
 }

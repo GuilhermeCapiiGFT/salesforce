@@ -18,13 +18,14 @@ public class AccountIntegrationModel{
 	public incomeModel[] income;
 	public professionalInfoModel[] professionalInfo;
 	public relationshipsModel[] relationships;
-    public AccountFinancialRelationship[] accountFinancialRelationship;
-    public String createdAt;	//2021-08-16T14:09:42.206Z
+	public String createdAt;	//2021-08-16T14:09:42.206Z
 	public String updatedAt;	//2021-08-16T23:40:11.362Z
 	public Integer version;	//27
     public String salesforceId;
 	public String tenant;
 	public String modifiedBy;
+	public Boolean hasError;
+	public String errorMessage;
 
     
 	public class mainDocumentModel {
@@ -57,7 +58,7 @@ public class AccountIntegrationModel{
 		public String channel;	//PHONE
 		public String code;	//1155557771
 		public String type;	//PERSONAL
-        public Boolean isUpdate;
+        public String salesforceId;
 	}
     
 	public class adressesModel {
@@ -122,7 +123,6 @@ public class AccountIntegrationModel{
 		public String category;	//ADMINISTRATIVE
 		public boolean current;
 		public professionalIncomeModel[] professionalIncome;
-        public String name;
         public Boolean isUpdate;
 	}
     
@@ -136,9 +136,6 @@ public class AccountIntegrationModel{
 		public String type;	//MONTHLY_INCOME
 		public amountModel amount;
 		public String source;	//SALES
-        public String currencyCode;	//MXN
-        public Boolean isUpdate;
-        
 	}
     
 	public class relationshipsModel {
@@ -148,14 +145,16 @@ public class AccountIntegrationModel{
         public Boolean isUpdate;
 	}
     
-    public class accountFinancialRelationship {
-        public String id;
-        public String recursoFinanceiro;
-        public Boolean isUpdate;
-    }
-  
 	public static AccountIntegrationModel parse(String json){
-		return (AccountIntegrationModel) System.JSON.deserialize(json, AccountIntegrationModel.class);
+		AccountIntegrationModel accountModel = new AccountIntegrationModel();
+		try {
+			accountModel = (AccountIntegrationModel) System.JSON.deserialize(json, AccountIntegrationModel.class);
+			accountModel.hasError = false;
+        } catch (Exception e) {
+			accountModel.hasError = true;
+			accountModel.errorMessage = e.getMessage();
+        }
+		return accountModel;
 	}
 
 	public static String accountMock() {
