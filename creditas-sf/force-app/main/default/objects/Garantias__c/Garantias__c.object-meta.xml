@@ -156,9 +156,10 @@
     <gender>Feminine</gender>
     <label>Garantias</label>
     <nameField>
+        <displayFormat>G-{0000}</displayFormat>
         <label>Garantias Name</label>
         <trackHistory>false</trackHistory>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Garantias</pluralLabel>
     <searchLayouts></searchLayouts>
