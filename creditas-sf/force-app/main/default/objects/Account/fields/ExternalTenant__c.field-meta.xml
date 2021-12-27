@@ -21,6 +21,18 @@
                 <default>false</default>
                 <label>creditasbr</label>
             </value>
+            <value>
+                <fullName>creditas-br</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>creditas-br</label>
+            </value>
+            <value>
+                <fullName>creditas-mx</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>creditas-mx</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

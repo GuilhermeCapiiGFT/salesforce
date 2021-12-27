@@ -30,7 +30,7 @@
                 <field>Role__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ExternalPersonId__c</field>
             </layoutItems>
             <layoutItems>

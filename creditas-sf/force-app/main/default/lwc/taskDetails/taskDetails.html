@@ -1,89 +1,34 @@
 <template>
-    <div class="slds-box slds-theme_default">
-
-        <template for:each={tasks} for:item="fields">
-            <div key={fields.Id}>
-                
-                <!-- currency -->
-                <template if:true={fields.isCurrency}>
-                    <lightning-input 
-                        type="number" 
-                        class="form-fields" 
-                        label={fields.fieldName} 
-                        data-id={fields.fieldMappedKey} 
-                        data-fieldkey={fields.fieldKey} 
-                        data-name={fields.fieldName}
-                        formatter="currency"
-                        value=""> 
-                    </lightning-input>
-                </template>
-    
-                <!-- relationship -->
-                <template if:true={fields.isRelationShip}>                
-                    <c-search-component
-                        obj-name={fields.relatedObject}
-                        icon-name="standard:contact"
-                        label-name="Related to"
-                        placeholder="Search" 
-                        fields={fields}
-                        display-fields={displayFields}
-                        class="form-fields"
-                        data-id={fields.fieldMappedKey} 
-                        data-fieldkey={fields.fieldKey} 
-                        data-name={fields.fieldName}
-                        onlookup={handleLookup} >
-                    </c-search-component>
-                </template>
-                <!-- text -->
-                <template if:true={fields.isDefault}>
-                    <lightning-input 
-                        type={fields.fieldType} 
-                        class="form-fields" 
-                        label={fields.fieldName} 
-                        data-id={fields.fieldMappedKey} 
-                        data-fieldkey={fields.fieldKey} 
-                        data-name={fields.fieldName}
-                        value=""> 
-                    </lightning-input>
-                </template>         
-    
-                <!-- picklist -->
-                <template if:true={fields.isPicklist}>
-                    <lightning-combobox
-                    data-id={fields.fieldMappedKey}
-                    data-fieldkey={fields.fieldKey}
-                    data-name={fields.fieldName}
-                    name={fields.fieldName}
-                    label={fields.fieldName}
-                    value={selectedPicklist}
-                    placeholder="Picklist options"
-                    class="form-fields"
-                    options={fields.picklistValues}>
-                </lightning-combobox>
-                </template>
-    
-                <!-- multpicklist -->
-                <template if:true={fields.isMultiPicklist}>
-                    <lightning-dual-listbox 
-                    name={fields.fieldName}
-                    label={fields.fieldName}
-                    source-label={fields.fieldName}
-                    selected-label="Selected Profiles" 
-                    field-level-help="Select the required profiles" 
-                    class="form-fields"
-                    options={fields.picklistValues}
-                    value=""
-                    data-id={fields.fieldMappedKey}
-                    data-fieldkey={fields.fieldKey}
-                    data-name={fields.fieldName}
-                    size="3">
-                </lightning-dual-listbox>
-                </template>
+    <lightning-card
+            variant="narrow"
+            icon-name="standard:task">
+        <h1 slot="title">Task Details</h1>
+        <div class="slds-grid slds-gutters" style="margin-bottom:16px">
+            <div class="slds-col">
+                <lightning-input type="text" label="CPF" value="125.392.070-22" style="padding: 0px 16px"></lightning-input>
             </div>
-        </template>
-        <div class="slds-align_absolute-center slds-m-top_medium">
-            <lightning-button variant="brand" label="Salvar" title="Salvar" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+            <div class="slds-col">
+                <lightning-combobox label="Status da confirmação de valores" value="Nenhum"
+                    options={picklistOptions} style="padding: 0px 16px">
+                </lightning-combobox>
+            </div>
         </div>
-    </div>
+        <div class="slds-grid slds-gutters" style="margin-bottom:16px">
+            <div class="slds-col">
+                <lightning-input type="datetime" name="input2" label="Data de envio da confirmação para cliente" value="2021-09-12T18:13:41Z" style="padding: 0px 16px"></lightning-input>
+            </div>
+            <div class="slds-col">
+                <lightning-input type="datetime" name="input2" label="Data de confirmação do cliente" value="2021-10-12T15:09:41Z" style="padding: 0px 16px; margin-left:-8px"></lightning-input>
+            </div>
+        </div>
 
+        <div class="slds-col slds-size_1-of-2" style="margin-bottom:16px">
+            <lightning-input type="checkbox" label="Confirmação anexada na pasta do cliente" value="true" style="padding: 0px 16px"></lightning-input>
+        </div>
+
+        <lightning-button-group class="slds-align_absolute-center">
+            <lightning-button label="Save" icon-name="utility:save"></lightning-button>
+            <lightning-button label="Cancel"></lightning-button>
+        </lightning-button-group>
+    </lightning-card>
 </template>

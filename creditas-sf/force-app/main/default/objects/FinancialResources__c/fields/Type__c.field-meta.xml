@@ -16,7 +16,7 @@
             <value>
                 <fullName>MONTHLY_INCOME</fullName>
                 <default>false</default>
-                <label>MONTHLY_INCOME</label>
+                <label>Renda Mensal</label>
             </value>
             <value>
                 <fullName>PRESUMED_MONTHLY_INCOME</fullName>
@@ -82,6 +82,12 @@
                 <fullName>TRUCK</fullName>
                 <default>false</default>
                 <label>TRUCK</label>
+            </value>
+            <value>
+                <fullName>PRESUMED_MONTHLY_INCOME/NET_MONTHLY_INCOME</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>PRESUMED_MONTHLY_INCOME/NET_MONTHLY_INCOME</label>
             </value>
         </valueSetDefinition>
     </valueSet>

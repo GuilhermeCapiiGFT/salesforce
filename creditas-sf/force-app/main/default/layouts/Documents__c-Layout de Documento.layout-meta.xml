@@ -19,10 +19,6 @@
                 <behavior>Edit</behavior>
                 <field>DocumentNumber__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>DocumentKey__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>TEXT(DocumentType__c) &amp; &quot; - &quot; &amp; DocumentNumber__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>DocumentKey</label>
+    <label>Tipo do documento</label>
     <required>false</required>
     <type>Text</type>
     <unique>false</unique>
