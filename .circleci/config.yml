@@ -163,6 +163,8 @@ jobs:
       - checkout
       - sfdx/install
       - sfdx/auth:
+          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: SFDX_JWT_KEY
           defaultusername: circleci@creditas.com
           instanceUrl: https://test.salesforce.com
       - run:
