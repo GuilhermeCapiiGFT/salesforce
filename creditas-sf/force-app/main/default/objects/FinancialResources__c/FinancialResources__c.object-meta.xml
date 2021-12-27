@@ -166,14 +166,6 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Recursos Financeiros</pluralLabel>
-    <profileSearchLayouts>
-        <fields>NAME</fields>
-        <fields>RECORDTYPE</fields>
-        <fields>Source__c</fields>
-        <fields>ResourceKey__c</fields>
-        <fields>Amount__c</fields>
-        <profileName>System Administrator</profileName>
-    </profileSearchLayouts>
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts>
