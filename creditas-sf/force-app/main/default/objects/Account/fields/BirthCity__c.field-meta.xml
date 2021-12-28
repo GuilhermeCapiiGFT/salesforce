@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ExternalEmployeeVersion__c</fullName>
-    <description>Versão do Person ID vinculado</description>
+    <fullName>BirthCity__c</fullName>
     <externalId>false</externalId>
-    <label>Versão de Person</label>
-    <precision>18</precision>
+    <label>Cidade de Nascimento</label>
+    <length>50</length>
     <required>false</required>
-    <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>
-    <type>Number</type>
+    <type>Text</type>
     <unique>false</unique>
 </CustomField>

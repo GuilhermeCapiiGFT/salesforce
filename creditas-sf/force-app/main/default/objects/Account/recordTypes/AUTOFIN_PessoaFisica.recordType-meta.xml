@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Pessoa_Juridica</fullName>
+    <fullName>AUTOFIN_PessoaFisica</fullName>
     <active>true</active>
-    <label>[HOME] Pessoa Jurídica</label>
+    <label>[AUTOFIN] Pessoa Física</label>
     <picklistValues>
         <picklist>AccountSource</picklist>
         <values>
@@ -322,10 +322,6 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>INACTIVE</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>PENDING</fullName>
             <default>false</default>
         </values>
@@ -333,8 +329,12 @@
     <picklistValues>
         <picklist>DocumentType__c</picklist>
         <values>
-            <fullName>CNPJ</fullName>
+            <fullName>CPF</fullName>
             <default>true</default>
+        </values>
+        <values>
+            <fullName>RFC</fullName>
+            <default>false</default>
         </values>
     </picklistValues>
     <picklistValues>

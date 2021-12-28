@@ -2,7 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Pessoa_Fisica</fullName>
     <active>true</active>
-    <label>Pessoa Física</label>
+    <label>[HOME] Pessoa Física</label>
     <picklistValues>
         <picklist>AccountSource</picklist>
         <values>
@@ -47,6 +47,244 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>Atividade_economica_profissional__c</picklist>
+        <values>
+            <fullName>Acabamento %5BFINISHING%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Agricultura %5BAGRICULTURE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aluguel %5BRENTAL%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aposentado %5BRETIRED%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Armas de fogo %5BFIREARMS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Associações %5BASSOCIATIONS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Comida pronta %5BPREPARED_FOOD%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Comunicações %5BCOMMUNICATIONS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Comércio %5BCOMMERCE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Construção %5BCONSTRUCTION%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Desempregado %5BUNEMPLOYED%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dona de casa %5BHOUSEWIFE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Editorial %5BEDITORIAL%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Educação %5BEDUCATION%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Empregado%2F colaborador %5BEMPLOYEE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Energia elétrica %5BELECTRIC_POWER%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Estudante %5BSTUDENT%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fabricação %5BMANUFACTURE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fabricação de alimentos %5BFOOD_MANUFACTURING%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Floresta %5BFOREST%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Governo %5BGOVERNMENT%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Imóveis %5BREAL_STATE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Jogos de sorte%2F apostas %5BRAFFLES_SEEPSTAKES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Lojas %5BSTORES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Madeira %5BWOOD%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Maquinaria %5BMACHINERY%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medicina %5BMEDICINE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Metalurgia %5BMETALLURGY%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Minerais não metálicos %5BNON_METALLIC_MINERALS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mineração %5BMINING%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outros %5BOTHERS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Papel %5BPAPER%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pecuária %5BCATTLE_RAISING%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pensionista %5BPENSIONER%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Petroquímicos %5BPETROCHEMICALS%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Química %5BCHEMISTRY%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Religião %5BRELIGION%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Roupas %5BCLOTHES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sem atividade %5BNO_ACTIVITY%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços alimentícios %5BFOOD_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços de transporte %5BTRANSPORT_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços financeiros %5BFINANCIAL_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços pessoais %5BPERSONAL_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços profissionais %5BPROFESSIONAL_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Serviços recreacionais %5BRECREATIONAL_SERVICES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transporte aéreo %5BAIR_TRANSPORTATION%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transporte terrestre %5BGROUND_TRANSPORTATION%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Turismo %5BTOURISM%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Têxtil %5BTEXTILE%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Veículos %5BVEHICLES%5D</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Óleo %5BOIL%5D</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Banco_Teste__c</picklist>
+        <values>
+            <fullName>117 - Advanced Cc Ltda</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>121 - Banco Agibank S%2EA%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>172 - Albatross Ccv S%2EA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>188 - Ativa Investimentos S%2EA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>237 - Banco Bradesco S%2EA%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>246 - Banco ABC Brasil S%2EA%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>748 - Banco Cooperativo Sicredi S%2EA%2E</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>CivilStatus__c</picklist>
         <values>
             <fullName>DIVORCED</fullName>
@@ -78,6 +316,17 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>CompanyStatus__c</picklist>
+        <values>
+            <fullName>ACTIVE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PENDING</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>DocumentType__c</picklist>
         <values>
             <fullName>CPF</fullName>
@@ -100,14 +349,6 @@
         </values>
         <values>
             <fullName>Doutorado</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>FOURTH_YEAR_PRIMARY_SCHOOL_COMPLETED</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>FOURTH_YEAR_PRIMARY_SCHOOL_INCOMPLETE</fullName>
             <default>false</default>
         </values>
         <values>
@@ -193,6 +434,17 @@
         </values>
         <values>
             <fullName>creditasmx</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Filia_o__c</picklist>
+        <values>
+            <fullName>Mãe</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pai</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -392,9 +644,110 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>Situacao__c</picklist>
+        <values>
+            <fullName>Outros</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Aposentada</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Assalariada</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Autônoma</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Empresária</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Funcionária pública</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Profissional Liberal</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Tipo_de_opera_o_da_conta__c</picklist>
+        <values>
+            <fullName>Pessoa Física</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pessoa Jurídica</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Type</picklist>
         <values>
+            <fullName>Analyst</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Competitor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Customer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Integrator</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Investor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Press</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prospect</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Reseller</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>enabledProducts__c</picklist>
+        <values>
+            <fullName>BENEFITS_CARD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CREDIT_CARD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PAYROLL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SALARY_ADVANCE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>STORE</fullName>
             <default>false</default>
         </values>
     </picklistValues>

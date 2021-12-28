@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ExternalTenant__c</fullName>
-    <description>Esse campo representa a região da conta (Região de origem do registro - br/mx)</description>
+    <fullName>CompanyStatus__c</fullName>
+    <description>Status da Empresa</description>
     <externalId>false</externalId>
-    <label>Tenant</label>
+    <label>Status da empresa</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Picklist</type>
@@ -12,14 +12,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>creditasmx</fullName>
+                <fullName>ACTIVE</fullName>
                 <default>false</default>
-                <label>creditasmx</label>
+                <label>ACTIVE</label>
             </value>
             <value>
-                <fullName>creditasbr</fullName>
+                <fullName>INACTIVE</fullName>
                 <default>false</default>
-                <label>creditasbr</label>
+                <label>INACTIVE</label>
+            </value>
+            <value>
+                <fullName>PENDING</fullName>
+                <default>false</default>
+                <label>PENDING</label>
             </value>
         </valueSetDefinition>
     </valueSet>

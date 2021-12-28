@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ExternalId__c</fullName>
-    <description>Campo utilizado pelo Mulesoft como chave para fazer atualização dos registros.</description>
-    <externalId>true</externalId>
-    <label>ExternalId</label>
+    <fullName>EmployeeCode__c</fullName>
+    <description>Código de matrícula (somente algumas empresas possui, exemplo as que tem mais de um contrato por pessoa)</description>
+    <externalId>false</externalId>
+    <label>Código do colaborador</label>
     <length>100</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

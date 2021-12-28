@@ -3,7 +3,8 @@
     <fullName>ExternalVersion__c</fullName>
     <description>Campo para o mulesoft popular com a versão do registro no sistema externo</description>
     <externalId>false</externalId>
-    <label>ExternalVersion</label>
+    <inlineHelpText>Versão da empresa ou colaborador (Versão de atualização da entidade)</inlineHelpText>
+    <label>Versão</label>
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
