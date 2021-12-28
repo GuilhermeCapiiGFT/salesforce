@@ -4,7 +4,7 @@ cd creditas-sf
 #echo "Coverting source to metadata format"
 #sfdx force:source:convert -d deploy_code -r force-app
 
-echo "Executing deploy checkonly mode with tests"
+echo "Executing deploy"
 #sfdx force:mdapi:deploy -u DevHub -d deploy_code/ -w -1 -l RunLocalTests
 #sfdx force:source:deploy -u circleci@creditas.com --checkonly --sourcepath force-app --testlevel RunLocalTests
 

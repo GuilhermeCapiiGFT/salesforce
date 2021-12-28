@@ -254,37 +254,6 @@
         </values>
     </picklistValues>
     <picklistValues>
-        <picklist>Banco_Teste__c</picklist>
-        <values>
-            <fullName>117 - Advanced Cc Ltda</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>121 - Banco Agibank S%2EA%2E</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>172 - Albatross Ccv S%2EA</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>188 - Ativa Investimentos S%2EA</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>237 - Banco Bradesco S%2EA%2E</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>246 - Banco ABC Brasil S%2EA%2E</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>748 - Banco Cooperativo Sicredi S%2EA%2E</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>CivilStatus__c</picklist>
         <values>
             <fullName>DIVORCED</fullName>
