@@ -200,17 +200,6 @@
         </values>
     </picklistValues>
     <picklistValues>
-        <picklist>Filia_o__c</picklist>
-        <values>
-            <fullName>Mãe</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pai</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>Gender__c</picklist>
         <values>
             <fullName>FEMALE</fullName>
@@ -402,48 +391,6 @@
         </values>
         <values>
             <fullName>Warm</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Situacao__c</picklist>
-        <values>
-            <fullName>Outros</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Aposentada</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Assalariada</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Autônoma</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Empresária</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Funcionária pública</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Profissional Liberal</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Tipo_de_opera_o_da_conta__c</picklist>
-        <values>
-            <fullName>Pessoa Física</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pessoa Jurídica</fullName>
             <default>false</default>
         </values>
     </picklistValues>
