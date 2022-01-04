@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ParameterIOF__c</fullName>
     <externalId>false</externalId>
-    <label>ParameterIOF</label>
+    <label>Valor IOF</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

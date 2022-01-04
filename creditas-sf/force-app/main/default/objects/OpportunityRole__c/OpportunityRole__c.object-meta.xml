@@ -154,10 +154,10 @@
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <gender>Feminine</gender>
-    <label>OpportunityRole</label>
+    <label>Proponentes</label>
     <nameField>
-        <displayFormat>OppRole-{00000000}</displayFormat>
-        <label>OpportunityRole Name</label>
+        <displayFormat>Proponente-{00000000}</displayFormat>
+        <label>Proponentes Name</label>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>

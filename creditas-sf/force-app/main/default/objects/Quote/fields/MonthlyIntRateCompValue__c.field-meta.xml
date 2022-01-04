@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>MonthlyIntRateCompValue__c</fullName>
     <externalId>false</externalId>
-    <label>MonthlyIntRateCompValue</label>
+    <label>Valor</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

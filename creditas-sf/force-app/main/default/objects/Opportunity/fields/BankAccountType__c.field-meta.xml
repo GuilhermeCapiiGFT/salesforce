@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>BankAccountType__c</fullName>
     <externalId>false</externalId>
-    <label>BankAccountType</label>
+    <label>Tipo de Conta</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackTrending>false</trackTrending>
@@ -14,12 +14,12 @@
             <value>
                 <fullName>SAVINGS</fullName>
                 <default>false</default>
-                <label>SAVINGS</label>
+                <label>Conta Poupança</label>
             </value>
             <value>
                 <fullName>CHECKINGS</fullName>
                 <default>false</default>
-                <label>CHECKINGS</label>
+                <label>Conta Corrente</label>
             </value>
         </valueSetDefinition>
     </valueSet>

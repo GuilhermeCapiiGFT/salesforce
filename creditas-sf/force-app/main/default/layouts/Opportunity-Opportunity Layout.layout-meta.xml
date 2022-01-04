@@ -80,7 +80,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>AccountNumber__c</field>
+                <field>Branch__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -90,7 +90,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Branch__c</field>
+                <field>AccountNumber__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -194,6 +194,11 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
+            <actionName>Edit</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>0</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
             <actionName>Delete</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>1</sortOrder>
@@ -243,11 +248,6 @@
             <actionType>QuickAction</actionType>
             <sortOrder>10</sortOrder>
         </platformActionListItems>
-        <platformActionListItems>
-            <actionName>Edit</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>0</sortOrder>
-        </platformActionListItems>
     </platformActionList>
     <quickActionList>
         <quickActionListItems>
@@ -289,6 +289,7 @@
         <fields>NAME</fields>
         <fields>Role__c</fields>
         <fields>ExternalPersonId__c</fields>
+        <fields>Titular_da_Conta__c</fields>
         <relatedList>OpportunityRole__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedLists>
@@ -304,6 +305,9 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Stage__c</fields>
+        <fields>OWNER.FIRST_NAME</fields>
+        <fields>CREATED_DATE</fields>
         <relatedList>OpportunityProcess__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>

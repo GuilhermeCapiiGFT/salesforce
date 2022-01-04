@@ -1,0 +1,176 @@
+commands:
+    auth:
+        description: |
+            Authenticate with and configure the SFDX CLI after installation. This orb utilizes JWT-based authentication. You will need to create a connected app and provide a base64 encoded server key for authentication. Learn more: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm
+        parameters:
+            apiVersion:
+                default: ""
+                description: The API version for a specific project or all projects. Normally, the Salesforce CLI assumes that you’re using the same version of the CLI as the Dev Hub org.
+                type: string
+            consumerKey:
+                default: SFDX_CONSUMER_KEY
+                description: The consumner key of the connected app for salesforce. Stored as an environment variable
+                type: env_var_name
+            decryption_key:
+                default: DECRYPTION_KEY
+                description: Enviornment variable name for server.key decryption key, if available.
+                type: env_var_name
+            defaultdevhubusername:
+                default: ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}
+                description: The username of your Dev Hub org that the force:org:create command defaults to. Used as alias.
+                type: string
+            defaultusername:
+                description: The username for an org that all commands run against by default.
+                type: string
+            instanceUrl:
+                default: ""
+                description: The URL of the Salesforce instance that is hosting your org.
+                type: string
+            jwtKey:
+                default: SFDX_JWT_KEY
+                description: Environment variable containing the base64 encoded private server key.
+                type: env_var_name
+            server_key:
+                default: ""
+                description: Path to encrypted server.key within the project, if available.
+                type: string
+        steps:
+            - when:
+                condition:
+                    not: << parameters.server_key >>
+                steps:
+                    - run:
+                        command: |
+                            if [ -z $<<parameters.jwtKey>> ]; then
+                              echo "Authentication requires a base64 encoded server key to be provided as an evironment variable. Please ensure the <<parameters.jwtKey>> env var has been set correctly."
+                              exit 1
+                            fi
+                            if [ -z $<<parameters.consumerKey>> ]; then
+                              echo "Authentication requires a consumer key to be present. Please ensure the <<parameters.consumerKey>> env var has been set correctly."
+                              exit 1
+                            fi
+                            echo Creating jwt key file.
+                            echo
+                            if [ -f ./server.key ]; then
+                              echo "It appears you may have commited your server.key file. For your safety please never commit secrets to your code repository. We instead recommend utilizing environment variables for this purpose. You may wish to invalidate and regenerate your server key."
+                              exit 1
+                            fi
+                            echo $<<parameters.jwtKey>> | base64 --decode --ignore-garbage > ./server.key
+                        name: Check and install SFDC authentication key
+            - when:
+                condition:
+                    and:
+                        - << parameters.decryption_key >>
+                        - << parameters.server_key >>
+                steps:
+                    - run:
+                        command: |
+                            openssl enc -aes-256-cbc -md sha256 -salt -d -in << parameters.server_key >> -out server.key -K << parameters.decryption_key >> -pbkdf2
+                        name: Decrypt SFDC authentication key.
+            - run:
+                command: |
+                    <<#parameters.instanceUrl>>sfdx force:config:set instanceUrl=<<parameters.instanceUrl>> --global<</parameters.instanceUrl>>
+                    sfdx auth:jwt:grant --clientid $<<parameters.consumerKey>> \
+                    --jwtkeyfile ./server.key --username <<parameters.defaultusername>> <<#parameters.instanceUrl>>--instanceurl <<parameters.instanceUrl>><</parameters.instanceUrl>> \
+                    --setdefaultdevhubusername --setalias <<parameters.defaultdevhubusername>>
+                    <<#parameters.apiVersion>>sfdx force:config:set apiVersion=<<parameters.apiVersion>><</parameters.apiVersion>>
+                name: Authenticate with Salesforce
+    install:
+        description: |
+            Install and configure the Salesforce "sfdx" cli utility giving access to the "sfdx" command. Set parameters to automatically set the sfdx config values. Also able to be set via environment variables. Learn more: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_cli_config_values.htm
+        parameters:
+            version:
+                default: ""
+                description: By default, the latest version of the standalone CLI will be installed. To install via npm, supply a version tag such as "latest" or "6".
+                type: string
+        steps:
+            - when:
+                condition: <<parameters.version>>
+                steps:
+                    - run:
+                        command: |
+                            command -v npm >/dev/null 2>&1 || { echo >&2 "NPM not installed in the current environment. Aborting."; exit 1; }
+                            if [[ $EUID == 0 ]]; then export SUDO=""; else # Check if we're root
+                              if ! [[ -w $(npm root -g) ]]; then
+                                export SUDO="sudo";
+                              fi
+                            fi
+
+                            $SUDO npm install sfdx-cli@<<parameters.version>> --global
+                        name: Install SFDX - NPM
+            - unless:
+                condition: <<parameters.version>>
+                steps:
+                    - run:
+                        command: |
+                            cd /tmp
+                            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+                            mkdir sfdx
+                            tar xJf sfdx-linux-amd64.tar.xz -C sfdx --strip-components 1
+                            ./sfdx/install
+                        name: Install SFDX - Standalone
+            - run:
+                command: sfdx --version
+                name: Verify SFDX installation
+description: |
+    Salesforce SFDX CLI integration for CircleCI. Easily create CI/CD pipelines for your Salesforce integrations.
+display:
+    home_url: https://github.com/CircleCI-Public/Salesforce-sfdx-cli-orb
+examples:
+    install_and_authenticate:
+        description: |
+            Simple example showing how to install the Salesforce sfdx CLI with the default options and authenticate against it with JWT.
+        usage:
+            jobs:
+                install_authenticate:
+                    executor: sfdx/default
+                    steps:
+                        - checkout
+                        - sfdx/install
+                        - sfdx/auth:
+                            defaultusername: user@email.com
+                        - run:
+                            command: |
+                                echo You now have access to the sfdx cli and may execute commands against it.
+                                sfdx auth:list
+                            name: Run your SFDX commands here
+            orbs:
+                sfdx: circleci/salesforce-sfdx@2.2.0
+            version: 2.1
+            workflows:
+                basic-test:
+                    jobs:
+                        - install_authenticate        
+executors:
+    default:
+        description: |
+            "cimg/node is a Docker image created by CircleCI with continuous integration builds in mind. Each tag contains a version of Node.js, npm, yarn, and any binaries and tools that are required for builds to complete successfully in a CircleCI environment. https://github.com/CircleCI-Public/cimg-node"
+        docker:
+            - image: cimg/node:<<parameters.tag>>
+        parameters:
+            tag:
+                default: "16.1"
+                description: |
+                    Pick a specific circleci/node image variant: https://hub.docker.com/r/cimg/node
+                type: string
+version: 2.1
+orbs:
+  sfdx: circleci/salesforce-sfdx@2.2.0
+jobs:
+  SFAuthTest:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com.test
+          instanceUrl: https://test.salesforce.com
+      - run:
+          command: . build/deploy_code.sh
+workflows:
+  version: 2
+  deploytosandbox:
+    jobs:
+      - SFAuthTest

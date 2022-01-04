@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsSynchEnabled__c</fullName>
+    <description>O objetivo desse campo é informar ao Mulesoft, se ele tem permissão para iniciar a sincronização da Oportunidade.</description>
+    <externalId>false</externalId>
+    <label>IsSynchEnabled</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>DISABLED</fullName>
+                <default>true</default>
+                <label>DISABLED</label>
+            </value>
+            <value>
+                <fullName>SYNCHING</fullName>
+                <default>false</default>
+                <label>SYNCHING</label>
+            </value>
+            <value>
+                <fullName>ENABLED</fullName>
+                <default>false</default>
+                <label>ENABLED</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

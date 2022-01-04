@@ -16,7 +16,7 @@ public class CommunicationContactTriggerHandlerTest {
     static void makeData()
     {        
         Account varAccount = TestSetup.getAccount('Francisco', true);
-        varAccount.IsExternallySynched__c = true;
+        varAccount.IsExternallySynched__c = false;
         
         CommunicationContacts__c varCommunicationContact = new CommunicationContacts__c();
         varCommunicationContact.Account__c = varAccount.Id;
@@ -47,7 +47,7 @@ public class CommunicationContactTriggerHandlerTest {
         System.debug(varCommunicationContact);
         System.debug(varAccount);
 
-        System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
+        System.assertEquals(true, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 
     @isTest
@@ -81,7 +81,7 @@ public class CommunicationContactTriggerHandlerTest {
 
         System.debug('tyumi account => ' + varAccountUpdate);
 
-        System.assertEquals(false, varAccountUpdate.IsExternallySynched__c);
+        System.assertEquals(true, varAccountUpdate.IsExternallySynched__c);
     }
 
     @isTest
@@ -93,15 +93,25 @@ public class CommunicationContactTriggerHandlerTest {
         
         Account varAccount1 = new Account();
         varAccount1.Name = 'Jose';
-        varAccount1.IsExternallySynched__c = true;
+        varAccount1.IsExternallySynched__c = false;
+        varAccount1.DocumentNumber__c = '01234567890';
+        varAccount1.DocumentType__c = 'CPF';
+        varAccount1.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
         
         Account varAccount2 = new Account();
         varAccount2.Name = 'Joao';
-        varAccount2.IsExternallySynched__c = true;
+        varAccount2.IsExternallySynched__c = false;
+        varAccount2.DocumentNumber__c = '28241540043';
+        varAccount2.DocumentType__c = 'CPF';
+        varAccount2.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
+        
         
         Account varAccount3 = new Account();
-        varAccount3.IsExternallySynched__c = true;
+        varAccount3.IsExternallySynched__c = false;
         varAccount3.Name = 'Josimar';
+        varAccount3.DocumentNumber__c = '39615016020';
+        varAccount3.DocumentType__c = 'CPF';
+        varAccount3.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
 
         listAccountInsert.add(varAccount1);
         listAccountInsert.add(varAccount2);
@@ -113,10 +123,10 @@ public class CommunicationContactTriggerHandlerTest {
         varCommunicationContact1.Account__c = varAccount1.Id; 
         
         CommunicationContacts__c varCommunicationContact2 = new CommunicationContacts__c();
-        varCommunicationContact2.Account__c = varAccount1.Id;
+        varCommunicationContact2.Account__c = varAccount2.Id;
 
         CommunicationContacts__c varCommunicationContact3 = new CommunicationContacts__c();
-        varCommunicationContact3.Account__c = varAccount1.Id;
+        varCommunicationContact3.Account__c = varAccount3.Id;
 
         listAddressesInsert.add(varCommunicationContact1);
         listAddressesInsert.add(varCommunicationContact2);
