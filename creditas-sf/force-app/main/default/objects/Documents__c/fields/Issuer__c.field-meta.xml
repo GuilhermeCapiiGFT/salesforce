@@ -3,7 +3,7 @@
     <fullName>Issuer__c</fullName>
     <description>Órgão emissor do documento que está sendo registrado</description>
     <externalId>false</externalId>
-    <label>Órgão Emissor</label>
+    <label>Órgão emissor</label>
     <length>20</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
