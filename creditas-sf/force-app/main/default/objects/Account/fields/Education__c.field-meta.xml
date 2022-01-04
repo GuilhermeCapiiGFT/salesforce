@@ -26,16 +26,6 @@
                 <label>Ensino Fundamental Completo</label>
             </value>
             <value>
-                <fullName>FOURTH_YEAR_PRIMARY_SCHOOL_INCOMPLETE</fullName>
-                <default>false</default>
-                <label>FOURTH_YEAR_PRIMARY_SCHOOL_INCOMPLETE</label>
-            </value>
-            <value>
-                <fullName>FOURTH_YEAR_PRIMARY_SCHOOL_COMPLETED</fullName>
-                <default>false</default>
-                <label>FOURTH_YEAR_PRIMARY_SCHOOL_COMPLETED</label>
-            </value>
-            <value>
                 <fullName>HIGH_SCHOOL_INCOMPLETE</fullName>
                 <default>false</default>
                 <label>Ensino Médio Incompleto</label>

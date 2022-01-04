@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LegalName__c</fullName>
+    <description>Razão social da empresa</description>
     <externalId>false</externalId>
-    <label>LegalName</label>
+    <label>Razão social</label>
     <length>100</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>

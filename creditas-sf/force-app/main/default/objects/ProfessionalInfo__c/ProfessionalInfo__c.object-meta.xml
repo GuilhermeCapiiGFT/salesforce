@@ -158,7 +158,7 @@
     <nameField>
         <displayFormat>ProfInfo-{00000000}</displayFormat>
         <label>ProfessionalInfo Name</label>
-        <trackFeedHistory>true</trackFeedHistory>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>

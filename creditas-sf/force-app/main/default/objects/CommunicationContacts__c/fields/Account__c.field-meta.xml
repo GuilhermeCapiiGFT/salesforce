@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Account</label>
     <referenceTo>Account</referenceTo>
-    <relationshipLabel>Contacts</relationshipLabel>
+    <relationshipLabel>Contatos</relationshipLabel>
     <relationshipName>CommunicationContacts</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

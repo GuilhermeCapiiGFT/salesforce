@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Type__c</fullName>
     <externalId>false</externalId>
-    <label>Type</label>
+    <label>Tipo de contato</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
@@ -15,12 +15,12 @@
             <value>
                 <fullName>PERSONAL</fullName>
                 <default>false</default>
-                <label>PERSONAL</label>
+                <label>Pessoal</label>
             </value>
             <value>
                 <fullName>COMERCIAL</fullName>
                 <default>false</default>
-                <label>COMERCIAL</label>
+                <label>Profissional</label>
             </value>
         </valueSetDefinition>
     </valueSet>
