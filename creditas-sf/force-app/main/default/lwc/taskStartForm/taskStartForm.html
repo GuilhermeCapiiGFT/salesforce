@@ -1,0 +1,88 @@
+<template>
+  <div class="slds-box slds-theme_default">
+      <div class="title">
+          <h2 class="slds-text-title_bold">{proposalName}</h2>
+          <p class="slds-m-top_xxx-small">
+              <!-- <lightning-icon icon-name="utility:date_time" alternative-text="Vencimento" title="Vencimento" size="xx-small"></lightning-icon> -->
+              <!-- <span>Vencimento</span> <lightning-badge label="Lead Reincidente" class="slds-badge_inverse slds-m-left_xxx-small badge"></lightning-badge> -->
+          </p>
+      </div>
+      <div class="initialForm slds-m-top_medium">
+          <h3 class="slds-text-title_bold">Formulário Inicial</h3>
+          <p class="createDate">Criado em {createdDate}</p>
+          
+          <!--Client Name-->
+          <div class="slds-m-top_medium">
+              <!-- <lightning-icon icon-name="utility:text_color" alternative-text="Nome do cliente" title="Nome do cliente" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> Nome do cliente </span>
+              <p class="description">{clientName}</p> -->
+
+            <div>
+                <lightning-icon icon-name="utility:text_color" alternative-text="Ficha do MDO" title="fichaMDO" size="xx-small"></lightning-icon>
+                <span class='slds-text-title_bold'> Nome do cliente </span>
+            </div>
+            <button onclick={viewFicha} class="description proposal" value={accountId}>{clientName}</button>
+          </div>
+
+          <!--CPF-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:file" alternative-text="CPF" title="CPF" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> * CPF </span>
+              <p class="description">{cpf}</p>
+          </div>
+
+          <!--Shopkeeper-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:text_color" alternative-text="Lojista" title="Shopkeeper" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> Lojista </span>
+              <!-- <p class="description">{shopKeeper}</p> -->
+          </div>
+
+          <!--CNPJ-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:file" alternative-text="CPNJ" title="CPNJ" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> CNPJ </span>
+              <!-- <p class="description">{cnpj}</p> -->
+          </div>
+
+          <!--ID proposal-->
+          <div class="slds-m-top_medium">
+              <div style="display: flex;">
+                  <lightning-icon icon-name="utility:text_color" alternative-text="ID da proposta" title="ID" size="xx-small"></lightning-icon>
+                  <span class='slds-text-title_bold'> * ID da Proposta </span>
+              </div>
+              <button onclick={viewProposal} class="description proposal" value={idProposal}>{idProposal}</button>
+          </div>
+
+          <!--Vehicle type-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:text_color" alternative-text="Tipo de Veículo" title="vehicleType" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> Tipo de Veículo </span>
+              <!-- <p class="description">{vehicleType}</p> -->
+          </div>
+
+          <!-- <div class="slds-m-top_medium">
+              <div style="display: flex;">
+                  <lightning-icon icon-name="utility:text_color" alternative-text="Ficha do MDO" title="fichaMDO" size="xx-small"></lightning-icon>
+                  <span class='slds-text-title_bold'>* Ficha do MDO </span>
+              </div>
+              <button onclick={viewFicha} class="description proposal" value={fichaMDO}>{fichaMDO}</button>
+          </div> -->
+
+          <!--Proposal IN-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:date_input" alternative-text="Entrada da Proposta" title="proposalIN" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> Entrada da Proposta </span>
+              <p class="description">{createdDate}</p>
+          </div>
+
+          <!--Proposal queue-->
+          <div class="slds-m-top_medium">
+              <lightning-icon icon-name="utility:date_input" alternative-text="Entrada na Fila" title="queueProposal" size="xx-small"></lightning-icon>
+              <span class='slds-text-title_bold'> Entrada na Fila </span>
+              <p class="description">{createdDate}</p>
+          </div>
+
+      </div>
+  </div>
+</template>
