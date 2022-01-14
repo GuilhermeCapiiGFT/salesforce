@@ -173,4 +173,5 @@ workflows:
   version: 2
   deploytosandbox:
     jobs:
-      - SFAuthTest
+      - test:
+        - SFAuthTest
