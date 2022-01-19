@@ -20,7 +20,7 @@ public class GroupMembersLWCTest {
         //Create User
         User newUser = TestSetup.getUser(true);
 		newUser.ProfileId = profile.Id;
-        newUser.LastName = 'Usuario';
+        newUser.LastName = 'user';
 		update newUser;    
         
         User newUser2 = TestSetup.getUser(true);
@@ -32,17 +32,18 @@ public class GroupMembersLWCTest {
         
         User newUser3 = TestSetup.getUser(true);
 		newUser3.ProfileId = profile.Id;
-        newUser3.LastName = 'Usuario 2';
+        newUser3.LastName = 'User 2';
 		update newUser3; 
-                
+        
+		//Create Parent Group        
         system.runAs(newUser){
-        //Create Parent Group
         CollaborationGroup grp = new CollaborationGroup();
         grp.name = 'Test Group1';
         grp.CollaborationType = 'Private'; 
         grp.isBroadcast = true;
         Insert grp;  
             
+        //Create Group Member    
         CollaborationGroupMember collGroup = new CollaborationGroupMember();             
         collGroup.CollaborationRole = 'Standard';   
         collGroup.CollaborationGroupId = grp.Id;
@@ -54,125 +55,142 @@ public class GroupMembersLWCTest {
     @isTest
     static void createMemberGroupManager() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1];    
-        User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario 2' LIMIT 1];     
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1];    
+        User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Manager' LIMIT 1];     
               
         CollaborationGroup collGroup = [SELECT Id FROM CollaborationGroup LIMIT 1];
-      
-        Test.startTest();
-        //try{
+        CollaborationGroupMember collGroupMember = [SELECT Id, CollaborationGroupId FROM CollaborationGroupMember LIMIT 1];
+        
+       Test.startTest();  
         system.runAs(varUser){
-            string gpMember = GroupMembersLWC.createMemberGroup(collGroup.id, varUser2.Id, 'Manager');
-        }        	
-                        
-        //} catch (DMLException e) {
-    	//	System.debug('The following exception has occurred: ' + e.getMessage());
-       // }  
-        Test.stopTest();
-                           
-        //System.assertEquals(2,listGroupMember.size());
-    }
-    
+            
+        try{            
+            string gpMember = GroupMembersLWC.createMemberGroup(collGroup.id, varUser2.Id, 'Manager');            
+         } catch (DMLException e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+         }  
+            
+        Test.stopTest();        
+           
+        System.assertEquals(collGroupMember.CollaborationGroupId, collGroup.Id );
+    	}
+    }   
     @isTest
     static void createMemberGroupMemberErro() 
     {   
         User varUser = [SELECT Id, Title, Status__c FROM User LIMIT 1];        
               
         CollaborationGroup collGroup = [SELECT Id FROM CollaborationGroup LIMIT 1];
-      
+ 
         Test.startTest();
+        
         try{        	
             GroupMembersLWC.createMemberGroup(collGroup.id, varUser.Id, 'Member');            
         } catch (DMLException e) {
     		System.debug('The following exception has occurred: ' + e.getMessage());
         }  
+        
         Test.stopTest();
-                           
-        //System.assertEquals(2,listGroupMember.size());
+        
+        CollaborationGroupMember collGroupMember = [SELECT Id, CollaborationGroupId FROM CollaborationGroupMember LIMIT 1];                   
+        System.assertEquals(collGroupMember.CollaborationGroupId, collGroup.Id);
     }
     
      @isTest
      static void deleteMemberGroupMember() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1];    
-        User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario 2' LIMIT 1];          
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1];    
+        User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Manager' LIMIT 1];          
               
-        CollaborationGroupMember deleteCollGroupMember = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard' LIMIT 1];
-      
+        CollaborationGroupMember deleteCollGroupMember = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard'];
+        
         Test.startTest();
-        system.runAs(varUser){
-             GroupMembersLWC.deleteMembers(deleteCollGroupMember.Id);     
-        }    	
-  
+        system.runAs(varUser2){
+            
+        try{ 
+        GroupMembersLWC.deleteMembers(deleteCollGroupMember.Id);  
+            
+        } catch (DMLException e) {
+    		System.debug('The following exception has occurred: ' + e.getMessage());
+        }
+            
         Test.stopTest();
-                           
-        //System.assertEquals(2,listGroupMember.size());
-    }
-    
+        List<CollaborationGroupMember> listDelete = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard'];
+            
+        System.assertEquals(listDelete.size(),0);
+    	}
+	}
     @isTest
      static void deleteMemberGroupMemberErro() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1];   
-                
-              
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1];   
+                  
         CollaborationGroupMember deleteCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
       
-        Test.startTest();     
+        Test.startTest(); 
+        system.runAs(varUser){
+            
         try{     
-            system.runAs(varUser){
-                GroupMembersLWC.deleteMembers(deleteCollGroupMember.Id);
-            }
-           
+            GroupMembersLWC.deleteMembers(deleteCollGroupMember.Id);
+
         } catch (DMLException e) {
     		System.debug('The following exception has occurred: ' + e.getMessage());
         }  
-  
+       
         Test.stopTest();
                            
-        //System.assertEquals(2,listGroupMember.size());
-    }
-    
+         List<CollaborationGroupMember> listDelete = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard'];
+            
+        System.assertNotEquals(listDelete.size(),0);
+    	}
+    }  
     @isTest
      static void deleteMemberGroupMemberNull() 
     {   
+        Test.startTest();  
         
-        Test.startTest();     
-        
-        GroupMembersLWC.deleteMembers('');            
+        try{ 
+            GroupMembersLWC.deleteMembers(''); 
+        } catch (DMLException e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        } 
   
         Test.stopTest();
-                           
-        //System.assertEquals(2,listGroupMember.size());
+        
+        List<CollaborationGroupMember> listDelete = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard'];
+            
+        System.assertNotEquals(listDelete.size(),0);
     }
 
     @isTest
      static void updateMemberGroupMember() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1];    
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1];    
         User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Manager' LIMIT 1];          
               
         CollaborationGroupMember updateCollGroupMember = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard' LIMIT 1];
               
         Test.startTest();
-        //try{     
-            system.runAs(varUser){
-                 GroupMembersLWC.updateMemberGroup(updateCollGroupMember.Id, varUser2.Title, varUser2.Status__c, 'Standard');
-            }
-           
-        //} catch (DMLException e) {
-    	//	System.debug('The following exception has occurred: ' + e.getMessage());
-        //}  
+        system.runAs(varUser){
+        try{
+        
+            GroupMembersLWC.updateMemberGroup(updateCollGroupMember.Id, varUser2.Title, varUser2.Status__c, 'Standard');
+        } catch (DMLException e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        } 
+ 
         Test.stopTest();
                            
-        //System.assertEquals(2,listGroupMember.size());
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
+                           
+        System.assertEquals(listCollGroupMember.size(),1);
+    	}
     }
-    
     @isTest
      static void updateMemberGroupMemberErro() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1]; 
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1]; 
         
-              
         CollaborationGroupMember updateCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
               
         Test.startTest();
@@ -186,38 +204,49 @@ public class GroupMembersLWCTest {
         }  
         Test.stopTest();
                            
-        //System.assertEquals(2,listGroupMember.size());
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
+                           
+        System.assertEquals(listCollGroupMember.size(),1);
     }
     
     @isTest
      static void updateMemberGroupMemberNull() 
-    {       
-            
+    {   
         Test.startTest();
-        
-        GroupMembersLWC.updateMemberGroup(null, '', '', '');
-              
+        try{   
+            GroupMembersLWC.updateMemberGroup(null, '', '', '');
+        } catch (DMLException e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        }       
         Test.stopTest();
+        
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
                            
-        //System.assertEquals(2,listGroupMember.size());
+        System.assertEquals(listCollGroupMember.size(),1);
     }
     
     @isTest
-     static void buscarGrupoMembro() 
+     static void searchGroupMember() 
     {   
-        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Usuario' LIMIT 1];    
+        User varUser = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'User' LIMIT 1];    
         User varUser2 = [SELECT Id, Title, Status__c FROM User WHERE LastName = 'Manager' LIMIT 1];            
               
         CollaborationGroupMember searchGroupMember = [SELECT Id, CollaborationGroupId, CollaborationRole, member.Name, memberId, member.Title, member.Status__c FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard' LIMIT 1];
                  
         Test.startTest();
-        system.runAs(varUser){
-            GroupMembersLWC.buscarGrupoMembro(searchGroupMember.CollaborationGroupId);
-        }  	
+        try{
+            system.runAs(varUser){
+                GroupMembersLWC.searchGroupMember(searchGroupMember.CollaborationGroupId);
+            }  	
+        } catch (DMLException e) {
+            System.debug('The following exception has occurred: ' + e.getMessage());
+        } 
                  
         Test.stopTest();
                            
-        //System.assertEquals(2,listGroupMember.size());
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Standard' LIMIT 1];
+        
+        System.assertEquals(listCollGroupMember[0].id,searchGroupMember.Id);
     }
     
     @isTest
@@ -235,7 +264,9 @@ public class GroupMembersLWCTest {
         }  
         Test.stopTest();
                            
-        //System.assertEquals(2,listGroupMember.size());
+        List<CollaborationGroup> listCollGroup = [SELECT Id FROM CollaborationGroup LIMIT 1];
+        
+        System.assertEquals(listCollGroup[0].id,getNameGroup.Id);
     }
     
     @isTest
@@ -252,8 +283,10 @@ public class GroupMembersLWCTest {
     		System.debug('The following exception has occurred: ' + e.getMessage());
         }  
         Test.stopTest();
-                           
-        //System.assertEquals(2,listGroupMember.size());
+        
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
+        
+        System.assertEquals(listCollGroupMember[0].id,getMembers.Id);
     }
     
     @isTest
@@ -271,7 +304,9 @@ public class GroupMembersLWCTest {
     		System.debug('The following exception has occurred: ' + e.getMessage());
         }  
         Test.stopTest();
+        
+        List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember LIMIT 1];
                            
-        //System.assertEquals(2,listGroupMember.size());
+        System.assertEquals(listCollGroupMember[0].id,searchUser.Id);
     }    
 }

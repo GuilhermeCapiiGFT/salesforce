@@ -11,8 +11,8 @@
 **********************************************************************************************************************************/
 public class GroupMembersLWC {
     @AuraEnabled(cacheable=true)
-    public static List<GroupMembersResponse> buscarGrupoMembro ( String idGroup){
-       List<GroupMembersResponse> response = GroupMembersService.buscarGrupoMembro(idGroup);
+    public static List<GroupMembersResponse> searchGroupMember ( String idGroup){
+       List<GroupMembersResponse> response = GroupMembersService.searchGroupMember(idGroup);
        return response;
     }
     
@@ -27,23 +27,7 @@ public class GroupMembersLWC {
     public static string deleteMembers(String memberId){
         return GroupMembersService.deleteMembers(memberId);        
     }    
-   
-  /* @AuraEnabled(cacheable=true) 
-   public static void createMember(list<Id> lstMemberIds){
-         try {
-            list<CollaborationGroupMember> lstMemberToAdd = new list<CollaborationGroupMember>();
-            System.debug('lstMemberIds ====> '+lstMemberIds);
-            for(Id idCreateMember : lstMemberIds) {
-                lstMemberToAdd.add(new CollaborationGroupMember(Id = idCreateMember));
-            }
-            if(!lstMemberToAdd.isEmpty()) {
-                insert lstMemberToAdd;
-            }
-        }
-        catch(Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
-        }
-    }  */
+
    @AuraEnabled(cacheable=true) 
    public static string getNameGroup(id idGroup){
      return GroupMembersService.getNameGroup(idGroup);

@@ -9,7 +9,7 @@
 * 1.0       Nathalia Rosa           24/11/2021      Created     Classe que contém os métodos para o componente LWC de GroupMembers 
 **********************************************************************************************************************************/
 public class GroupMembersService {
-     public static List<GroupMembersResponse> buscarGrupoMembro ( String idGroup){
+     public static List<GroupMembersResponse> searchGroupMember ( String idGroup){
         List<CollaborationGroupMember> listGroupMember = [SELECT CollaborationGroupId, CollaborationRole, member.Name, memberId, member.Title, member.Status__c 
                                                           FROM CollaborationGroupMember
                                                           WHERE CollaborationGroupId =: idGroup];
@@ -69,21 +69,20 @@ public class GroupMembersService {
         if(listGroupMember.size() == 1){
             listGroupMember[0].CollaborationRole = role;
             
-            User usuario = [SELECT id, Status__c, Title FROM User WHERE id =: listGroupMember[0].memberId];
+            User user = [SELECT id, Status__c, Title FROM User WHERE id =: listGroupMember[0].memberId];
             
-            usuario.Title = title;
-            usuario.Status__c = status;      
+            user.Title = title;
+            user.Status__c = status;      
             
             try{
                 update listGroupMember[0]; 
-                update usuario;
+                update user;
                 return 'success';            
             }catch (Exception e){
           		return 'error';
             }          		
-        }
-        
-        return '';        
+        }        
+        return '';       
     }
     
         public static string deleteMembers(String memberId){
@@ -93,14 +92,12 @@ public class GroupMembersService {
         if(listGroupMember.size() == 1){
             try {
             	delete listGroupMember[0];
-                return 'success';
-            
+                return 'success';            
             }
             catch(Exception ex) {
                 return 'error';
             }
         }     
-        return '';
-        
+        return '';        
     }     
  }

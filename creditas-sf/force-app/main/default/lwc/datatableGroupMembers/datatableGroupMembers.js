@@ -1,15 +1,17 @@
 import { LightningElement, wire, api, track} from 'lwc';
-import buscarGrupoMembro from '@salesforce/apex/GroupMembersLWC.buscarGrupoMembro';
+import searchGroupMember from '@salesforce/apex/GroupMembersLWC.searchGroupMember';
 import deleteMembers from '@salesforce/apex/GroupMembersLWC.deleteMembers';
 import { NavigationMixin } from 'lightning/navigation';
 import getNameGroup from '@salesforce/apex/GroupMembersLWC.getNameGroup';
 import updateMemberGroup from '@salesforce/apex/GroupMembersLWC.updateMemberGroup';
 import { CurrentPageReference } from 'lightning/navigation';
+
 // row actions
 const actions = [
     { label: 'Edit', name: 'edit'}, 
     { label: 'Delete', name: 'delete'}
 ];
+ 
 // datatable columns with row actions
 const columns = [
     { label: 'Membro', fieldName: 'nameUrl', type: 'url', typeAttributes: { label: { fieldName: 'name'}, target: '_blank' }, sortable: true },
@@ -24,15 +26,20 @@ const columns = [
         }
     }    
 ];
+
 export default class BasicDatatable extends NavigationMixin(LightningElement) {
     @track recordId = '';
     @api memberId = '';
+
     data = [];
     columns = columns; 
     record = {};
     draftValues = []; 
+
     currentPageReference = null;
+        
     @track exibirModalMember = false;
+
     @track bShowModal = false;
     @track currentRecordId;
     @track isEditForm = false;
@@ -41,22 +48,26 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
     @track status = '';
     @track title = '';
     @track groupMemberId = '';
+
     get roleOptions() {
         return [
             { label: 'Admin', value: 'Admin' },
             { label: 'Standard', value: 'Standard' },        
         ];
     }
+
     get statusOptions() {
         return [
             { label: 'Ativo', value: 'Ativo' },
             { label: 'Inativo', value: 'Inativo' },        
         ];
     } 
+    
     connectedCallback(){
         this.getNameGroup();
-        this.buscarGrupoMembro();
+        this.searchGroupMember();
     }
+
     @wire( CurrentPageReference )
     getURLParameters( currentPageReference )
     {
@@ -69,9 +80,10 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
             }
         }
     }
-    buscarGrupoMembro(){   
-        buscarGrupoMembro( { idGroup: this.recordId  })
-        .then( result =>
+
+    searchGroupMember(){   
+        searchGroupMember( { idGroup: this.recordId  })
+        .then( result => 
         {                               
             this.data = result;
             console.log(this.data);            
@@ -83,7 +95,7 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
     }   
     getNameGroup(){   
         getNameGroup( { idGroup: this.recordId })
-        .then( result =>
+        .then( result => 
         {
             console.log(result);            
             this.nameGroup = result;
@@ -93,14 +105,17 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
             console.log('error: ' + error);
         });
     }     
+
     clickNewGroup(){
         this.exibirModalMember = true;
         console.log(this.nameGroup);
     }
+   
     closeModal(){
         this.exibirModalMember = false;
         window.location.reload();        
     }   
+
     handleRowActions(event) {
         let actionName = event.detail.action.name;
         console.log('actionName ====> ' + actionName);
@@ -115,6 +130,7 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
                 break;
         }
     }
+
     editCurrentRecord(currentRow) {
         // open modal box
         this.bShowModal = true;
@@ -126,6 +142,7 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
         this.status = currentRow.status;
         this.groupMemberId = currentRow.memberGroupId;
     }
+
     deleteCons(currentRow){
         deleteMembers({memberId: currentRow.memberGroupId})
             .then(result => {
@@ -138,18 +155,22 @@ export default class BasicDatatable extends NavigationMixin(LightningElement) {
                 this.error = error;
             });
     }
+
     onChangeTitle(event){
         this.title = event.detail.value;
         console.log(this.title);
     }
+
     onChangeStatus(event){
         this.status = event.detail.value;
         console.log(this.status);
     }
+
     onChangeRole(event){
         this.role = event.detail.value;
         console.log(this.role);
     }
+
     updateModal(){
         updateMemberGroup({idMemberGroup: this.groupMemberId, title: this.title, status: this.status, role: this.role})
             .then(result => {

@@ -2,12 +2,13 @@
 {
   top: 60% !important;
 }
-.slds-icon_small, .slds-icon--small, .slds-button__icon_large
+.slds-icon_small, .slds-icon--small, .slds-button__icon_large  
 {
   width: 1.5rem;
   height: 1.5rem;
   line-height: 2;
 }
+
 .iconAllign
 {
     width: 1.6rem;
@@ -19,10 +20,13 @@
   max-width: 40% !important;
   width:40% !important;
   height: 70% !important;
+  
 }
+
 .slds-modal__content{
     height: 14rem;
 }
+
 .slds-dropdown{
   box-shadow: "none";
   padding: 0px;

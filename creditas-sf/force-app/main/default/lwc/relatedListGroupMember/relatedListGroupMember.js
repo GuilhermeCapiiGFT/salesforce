@@ -1,7 +1,9 @@
 import { api, LightningElement } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+
 export default class RelatedListGroupMember extends NavigationMixin(LightningElement) {
     @api recordId = '';
+
     navigateToTab() {
        // console.log(this.recordId);
         this[NavigationMixin.Navigate]({            
