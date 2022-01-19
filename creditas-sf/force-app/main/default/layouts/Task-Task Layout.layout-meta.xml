@@ -5,7 +5,12 @@
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Detalhes adicionais</label>
-        <layoutColumns/>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ProductType__c</field>
+            </layoutItems>
+        </layoutColumns>
         <layoutColumns/>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>

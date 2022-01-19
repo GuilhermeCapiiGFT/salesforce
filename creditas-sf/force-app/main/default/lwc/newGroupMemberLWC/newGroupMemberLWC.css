@@ -1,0 +1,34 @@
+.slds-input-has-icon .slds-input__icon
+{
+  top: 60% !important;
+}
+.slds-icon_small, .slds-icon--small, .slds-button__icon_large  
+{
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 2;
+}
+
+.iconAllign
+{
+    width: 1.6rem;
+    height: 1.6rem;
+    padding-right: 8px;
+    padding-bottom: 7px;
+}
+.slds-modal__container{
+  max-width: 40% !important;
+  width:40% !important;
+  height: 70% !important;
+  
+}
+
+.slds-modal__content{
+    height: 14rem;
+}
+
+.slds-dropdown{
+  box-shadow: "none";
+  padding: 0px;
+  border: 0px;
+}

@@ -2,22 +2,24 @@
 
     <lightning-spinner if:true={isLoading} alternative-text="Loading" size="small"></lightning-spinner>
     <div class="slds-form-element">
-        <label class="slds-form-element__label slds-form-element__legend" for="combobox-id-1">{labelName}</label>
+        <!-- <label class="slds-form-element__label slds-form-element__legend" for="combobox-id-1">{labelName}</label> -->
+        <legend class="slds-form-element__legend slds-form-element__label">{labelName}</legend>
         <div class="slds-form-element__control">
-            <div class="slds-combobox_container">
-                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+            <!-- <div class="slds-combobox_container"> -->
+                <!-- <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-expanded="false" aria-haspopup="listbox" role="combobox"> -->
                     <template if:false={selectedRecord}>
-                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                            <input type="text" onchange={handleInputChange} onkeyup={handleInputChange} onkeydown={handleInputChange}
-                            class="slds-input slds-combobox__input" 
+                        <!-- <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none"> -->
+                            
+                            <lightning-input type="text" onchange={handleInputChange} onkeyup={handleInputChange} onkeydown={handleInputChange}
+                            class="form-fields-search" 
                             id="combobox-id-1" aria-autocomplete="list" aria-controls="listbox-id-1" autocomplete="off" 
-                            role="textbox" placeholder={placeholder} />
-                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                            role="textbox" placeholder={placeholder} required={fieldRequired} read-only={fieldReadonly} variant="label-hidden"></lightning-input>
+                            <!-- <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
                             <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true">
                                 <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
                             </svg>
-                            </span>
-                        </div>
+                            </span> -->
+                        <!-- </div> -->
                         <div style="background: white;" id="listbox-id-1" class="slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                 <template if:true={searchRecords} for:each={searchRecords} for:item="record" for:index="index">
@@ -44,28 +46,27 @@
                         </div>
                     </template>
                     <template if:true={selectedRecord}>
-                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right" role="none">
-                            <span class="slds-icon_container slds-icon-standard-account slds-combobox__input-entity-icon" 
-                            title={objName}>
-                                    <lightning-icon icon-name="standard:avatar"></lightning-icon>
+                        <!-- <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right" role="none"> -->
+                            <span class="slds-icon_container slds-icon-standard-account slds-combobox__input-entity-icon" title={objName}>
+                                <lightning-icon icon-name="standard:avatar"></lightning-icon>
                                 <span class="slds-assistive-text">{objName}</span>
                             </span>
-                            <input type="text" class="slds-input slds-combobox__input slds-combobox__input-value" 
+                            <input type="text" class="slds-input slds-combobox__input slds-combobox__input-value" style="padding-left: 2rem;"
                                     id="combobox-id-5" aria-controls="listbox-id-5"  disabled
                                     autocomplete="off" role="textbox" placeholder="Select an Option…" 
                                     readonly="" value={selectedRecord.Name}
                             />
                             <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" 
-                                title="Remove selected option" onclick={handleClose}>
+                                title="Remove selected option" onclick={handleClose} style="position: absolute;right: 8px; top: 8px;">
                                 <svg class="slds-button__icon" aria-hidden="true">
                                     <use xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                                 </svg>
                                 <span class="slds-assistive-text">Remove selected option</span>
                             </button>
-                        </div>
+                        <!-- </div> -->
                     </template>
-                </div>
-            </div>
+                <!-- </div> -->
+            <!-- </div> -->
         </div>
     </div>
 </template>

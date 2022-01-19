@@ -575,6 +575,21 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>IsSynchEnabled__c</picklist>
+        <values>
+            <fullName>DISABLED</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ENABLED</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SYNCHING</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Ownership</picklist>
         <values>
             <fullName>Other</fullName>
@@ -639,13 +654,7 @@
             <default>false</default>
         </values>
     </picklistValues>
-    <picklistValues>
-        <picklist>Type</picklist>
-        <values>
-            <fullName>Reseller</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
+
     <picklistValues>
         <picklist>enabledProducts__c</picklist>
         <values>

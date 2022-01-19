@@ -15,6 +15,29 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>ProductType__c</picklist>
+        <values>
+            <fullName>DISCHARGE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PAYROLL_LOAN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>REFINANCING</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SALARY_ADVANCE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>STORE</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Status</picklist>
         <values>
             <fullName>Completed</fullName>

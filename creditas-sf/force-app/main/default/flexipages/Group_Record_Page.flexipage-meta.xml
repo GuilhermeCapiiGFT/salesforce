@@ -112,6 +112,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>relatedListGroupMember</componentName>
+                <identifier>c_relatedListGroupMember1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>forceChatter:groupDetailCard</componentName>
                 <identifier>forceChatter_groupDetailCard</identifier>
             </componentInstance>

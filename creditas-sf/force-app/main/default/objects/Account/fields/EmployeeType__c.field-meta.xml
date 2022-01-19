@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Tipo de contrato</label>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

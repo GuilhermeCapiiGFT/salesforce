@@ -5,6 +5,17 @@
     <businessProcess>Home - Creditas</businessProcess>
     <label>Home</label>
     <picklistValues>
+        <picklist>ExternalTenant__c</picklist>
+        <values>
+            <fullName>creditasbr</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>creditasmx</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>ForecastCategoryName</picklist>
         <values>
             <fullName>Best Case</fullName>
@@ -24,6 +35,21 @@
         </values>
         <values>
             <fullName>Pipeline</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>IsSynchEnabled__c</picklist>
+        <values>
+            <fullName>DISABLED</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>ENABLED</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SYNCHING</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -67,6 +93,29 @@
         </values>
         <values>
             <fullName>Website</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Loss_Reason__c</picklist>
+        <values>
+            <fullName>Lost to Competitor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No Budget %2F Lost Funding</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No Decision %2F Non-Responsive</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Price</fullName>
             <default>false</default>
         </values>
     </picklistValues>

@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Tipo de Conta</label>
     <required>false</required>
-    <trackFeedHistory>true</trackFeedHistory>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
