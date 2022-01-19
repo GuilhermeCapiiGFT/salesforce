@@ -108,17 +108,24 @@ export default class TaskDetails extends LightningElement {
     handleSave(){
         var listTaskDetails = [];
         let isValid = true;
-
+        let count = 0;
         this.template.querySelectorAll(".form-fields").forEach(elem => {
             var objTaskDetails = {};
             let dataId = elem.getAttribute("data-id");
              
-            // if(!ele.checkValidity()) {
-            //     console.log('Não valido');
-            //     ele.reportValidity();
-            //     isValid = false;
-            // }
-            if(!this.isUndefined(dataId)){
+            if(elem.tagName == 'C-SEARCH-COMPONENT'){
+                
+                if(elem.fieldRequired == true){
+                    let isValidRelationship = elem.getValidityRelationship();
+                    console.log('retorno: '+isValidRelationship);
+                    (isValidRelationship != true) ? isValid = false: '';
+                }
+            }else if(!elem.checkValidity()) {
+                console.log('Não valido');
+                elem.reportValidity();
+                isValid = false;
+            }
+            if(!this.isUndefined(dataId) && isValid){
 
                 objTaskDetails["FieldKey"+dataId+"__c"] = elem.getAttribute("data-fieldKey");
                 objTaskDetails["FieldName"+dataId+"__c"] = elem.getAttribute("data-name");
@@ -137,16 +144,19 @@ export default class TaskDetails extends LightningElement {
                 objTaskDetails["FieldValue"+dataId+"__c"] = valueField;
                 listTaskDetails.push(objTaskDetails);
             }
+            count++;
         }); 
+        console.log('Count: '+count);
+        if(isValid){
+            this.listRecordSave = JSON.parse(JSON.stringify(listTaskDetails));
+            
+            console.log('Save/Update');
+            console.log(this.listRecordSave);
 
-        this.listRecordSave = JSON.parse(JSON.stringify(listTaskDetails));
-        
-        console.log('Save/Update');
-        console.log(this.listRecordSave);
-
-        (this.isRecordUpdate == true)
-        ? this.updateTaskDetails()
-        : this.insertTaskDetails();
+            (this.isRecordUpdate == true)
+            ? this.updateTaskDetails()
+            : this.insertTaskDetails();
+        }
     }
 
     insertTaskDetails(){

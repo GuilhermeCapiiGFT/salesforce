@@ -452,6 +452,7 @@
         <fields>Channel__c</fields>
         <fields>Code__c</fields>
         <fields>Type__c</fields>
+        <fields>Contact_Key__c</fields>
         <relatedList>CommunicationContacts__c.Account__c</relatedList>
     </relatedLists>
     <relatedLists>

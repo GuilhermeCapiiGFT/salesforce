@@ -17,12 +17,14 @@ export default class SearchComponent extends LightningElement {
     @api placeholder = 'Search';
     @api createRecord;
     @api fields;
+    @api fieldRequired;
+    @api fieldReadonly;
 
     @track error;
 
     delayTimeout;
     searchRecords;
-    selectedRecord;
+    selectedRecord = false;
     isLoading = false;
 
     connectedCallback(){
@@ -110,5 +112,24 @@ export default class SearchComponent extends LightningElement {
             }
         });
         this.dispatchEvent(selectedEvent);
+    }
+
+    @api
+    getValidityRelationship(){
+        if(this.selectedRecord == false){
+            this.template.querySelectorAll(".form-fields-search").forEach(elem => {
+                console.log(elem.tagName);
+                if(!elem.checkValidity()){
+                    console.log('entrou');
+                    elem.reportValidity();
+                }
+            });
+            console.log('Search Component - Validity false');
+            return false;
+        }
+        else{
+            console.log('Search Component - Validity true');
+            return true;
+        }
     }
 }

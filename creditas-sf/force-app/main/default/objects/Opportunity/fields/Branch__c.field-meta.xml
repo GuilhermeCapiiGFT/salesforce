@@ -5,7 +5,7 @@
     <label>Agência</label>
     <length>20</length>
     <required>false</required>
-    <trackFeedHistory>true</trackFeedHistory>
+    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

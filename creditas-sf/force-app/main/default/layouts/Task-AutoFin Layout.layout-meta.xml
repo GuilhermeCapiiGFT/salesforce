@@ -53,7 +53,7 @@
                 <field>TaskType__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>StartDate__c</field>
             </layoutItems>
             <layoutItems>

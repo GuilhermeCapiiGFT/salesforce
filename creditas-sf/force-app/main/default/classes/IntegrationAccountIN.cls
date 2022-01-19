@@ -32,7 +32,7 @@ global without sharing class IntegrationAccountIN {
             if (requestBodyObj.professionalInfo != null){
                 for(AccountIntegrationModel.professionalInfoModel professionalInfo : requestBodyObj.professionalInfo){
                     if(professionalInfo.professionalIncome != null && professionalInfo.professionalIncome.size() > 1){
-                        errorMessageToReturn = errorMessage = 'Cada professional info pode possuir somente um professional income.';                    
+                        errorMessageToReturn = errorMessage = 'Each professional info. must has only one professional income.';                    
                         setErrorResponse(500);
                         insertErrorLog(500);
                         return;
@@ -56,12 +56,7 @@ global without sharing class IntegrationAccountIN {
                 accResponse.message = 'Account upserted';
                 accResponse.status = 200;
 
-                RestResponse res = RestContext.response;
-                if (res == null) 
-                {
-                    res = new RestResponse();
-                    RestContext.response = res;
-                }
+                RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
                 res.responseBody = Blob.valueOf(JSON.serialize(accResponse));
                 res.statusCode = 200;
             } else {
@@ -383,8 +378,6 @@ global without sharing class IntegrationAccountIN {
             errorMessageToReturn = e.getDmlMessage(0);
             return;
         }
-        //upsert incomesToUpsert;
-
 
         Set<Id> incomeIds = new Set<Id>();
         for (FinancialResources__c income : incomesToUpsert){
@@ -461,7 +454,7 @@ global without sharing class IntegrationAccountIN {
 
                         
         Set<Id> professionalInfoIds = new Set<Id>();
-        Map<String, Id> professionalInfoExternalIdToSalesforceIdMap = new  Map<String, Id>();
+        Map<String, Id> professionalInfoExternalIdToSalesforceIdMap = new Map<String, Id>();
         for(ProfessionalInfo__c professionalObj : professionalsInfoToUpsert){
             professionalInfoExternalIdToSalesforceIdMap.put(professionalObj.ExternalId__c, professionalObj.Id);
             professionalInfoIds.add(professionalObj.Id);
@@ -510,7 +503,6 @@ global without sharing class IntegrationAccountIN {
                                                                     FROM AccountFinancialRelationship__c 
                                                                     WHERE Account__c = :accountId 
                                                                     AND Recurso_Financeiro__c IN :financialResourceIds]){
-            System.debug('map key: '+accountRelation.Account__c + '_' + accountRelation.Recurso_Financeiro__c);
             financialResourceKeys.put(accountRelation.Account__c + '_' + accountRelation.Recurso_Financeiro__c, accountRelation.Id);
         }
     
@@ -534,16 +526,13 @@ global without sharing class IntegrationAccountIN {
     } 
 
     public static void setErrorResponse(Integer errorCode){
+        System.debug('errorMessage: '+errorMessage);
         AccountResponseData resp = new AccountResponseData();
         resp.accountId = null;
-        resp.message = errorMessageToReturn != '' ? errorMessageToReturn : 'An error has occurred. Please, contact a Salesforce Administrator.';
+        resp.message = errorMessage != '' ? errorMessage : 'An error has occurred. Please, contact a Salesforce Administrator.';
         resp.status = errorCode;
 
-        RestResponse res = RestContext.response;
-        if (res == null) {
-            res = new RestResponse();
-            RestContext.response = res;
-        }
+        RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
         res.responseBody = Blob.valueOf(JSON.serialize(resp));
         res.statusCode = errorCode;
     }
@@ -558,7 +547,9 @@ global without sharing class IntegrationAccountIN {
         ate.CreatedBy__c = UserInfo.getUserId();
 
         try {
-            database.insertImmediate(ate);   
+            if (!Test.isRunningTest()){
+ 				database.insertImmediate(ate);                
+            }
         } catch (Exception e) {
             setErrorResponse(500);
         }
@@ -588,20 +579,12 @@ global without sharing class IntegrationAccountIN {
             }
             if(varSuccessAccount)
             {
-                try
-                {
-                    upsertContacts();
-                    if (!hasError){
-                        varSuccessContacts = true;               
-                   } else {
-                       Database.rollback(sp); 
-                   }
-                } catch(Exception e)
-                {
-                    hasError = true;
-                    errorMessage = e.getMessage();
-                    Database.rollback(sp); 
-                }
+            	upsertContacts();
+                if (!hasError){
+                	varSuccessContacts = true;               
+                } else {
+                	Database.rollback(sp); 
+               	}
             }
             if(varSuccessContacts)
             {

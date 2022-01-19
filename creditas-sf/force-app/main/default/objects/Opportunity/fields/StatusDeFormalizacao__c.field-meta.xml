@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>StatusDeFormalizacao__c</fullName>
+    <externalId>false</externalId>
+    <label>Status de Formalização</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Nova Proposta</fullName>
+                <default>false</default>
+                <label>Nova Proposta</label>
+            </value>
+            <value>
+                <fullName>Pendências</fullName>
+                <default>false</default>
+                <label>Pendências</label>
+            </value>
+            <value>
+                <fullName>Em Análise</fullName>
+                <default>false</default>
+                <label>Em Análise</label>
+            </value>
+            <value>
+                <fullName>Aguardando OPS</fullName>
+                <default>false</default>
+                <label>Aguardando OPS</label>
+            </value>
+            <value>
+                <fullName>Finalizados com Sucesso</fullName>
+                <default>false</default>
+                <label>Finalizados com Sucesso</label>
+            </value>
+            <value>
+                <fullName>Recusados</fullName>
+                <default>false</default>
+                <label>Recusados</label>
+            </value>
+            <value>
+                <fullName>Desistentes</fullName>
+                <default>false</default>
+                <label>Desistentes</label>
+            </value>
+            <value>
+                <fullName>Block-list (Fraude Confirmada)</fullName>
+                <default>false</default>
+                <label>Block-list (Fraude Confirmada)</label>
+            </value>
+            <value>
+                <fullName>Casos Suspeitos</fullName>
+                <default>false</default>
+                <label>Casos Suspeitos</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

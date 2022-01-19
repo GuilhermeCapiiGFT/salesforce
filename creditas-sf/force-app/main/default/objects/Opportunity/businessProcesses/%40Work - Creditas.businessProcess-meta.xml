@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>%40Work - Creditas</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Assinatura</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Distrato</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Emissão e Pré-Assinatura</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Pago</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Perdido</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Protocolo</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Registro</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

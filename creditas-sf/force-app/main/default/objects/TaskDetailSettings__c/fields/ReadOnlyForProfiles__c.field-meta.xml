@@ -66,6 +66,16 @@
                 <default>false</default>
                 <label>[HOME] Lider de GCA</label>
             </value>
+            <value>
+                <fullName>[AUTOFIN] Admin</fullName>
+                <default>false</default>
+                <label>[AUTOFIN] Admin</label>
+            </value>
+            <value>
+                <fullName>System Administrator</fullName>
+                <default>false</default>
+                <label>System Administrator</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
     <visibleLines>4</visibleLines>

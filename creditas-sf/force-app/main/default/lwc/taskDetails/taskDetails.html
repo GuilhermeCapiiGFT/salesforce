@@ -24,7 +24,9 @@
                             formatter="currency"
                             value={fields.value}
                             variant="label-hidden"
-                            step={fields.numberPrecision}> 
+                            step={fields.numberPrecision}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}> 
                         </lightning-input>
                     </template>
 
@@ -40,7 +42,9 @@
                             data-name={fields.fieldName}
                             value={fields.value}
                             variant="label-hidden"
-                            step={fields.numberPrecision}> 
+                            step={fields.numberPrecision}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}> 
                         </lightning-input>
                     </template>
         
@@ -50,6 +54,8 @@
                             obj-name={fields.relatedObject}
                             icon-name="standard:contact"
                             label-name={fields.fieldName}
+                            field-required={fields.isRequeried}
+                            field-readonly={fields.isReadOnly}
                             placeholder="Search" 
                             fields={fields}
                             display-fields={displayFields}
@@ -75,7 +81,9 @@
                             data-mask={fields.fieldMask}
                             value={fields.value}
                             variant="label-hidden"
-                            onchange={handleChange}>
+                            onchange={handleChange}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-input>
                     </template>  
 
@@ -88,7 +96,9 @@
                             data-id={fields.fieldMappedKey} 
                             data-fieldkey={fields.fieldKey} 
                             data-name={fields.fieldName}
-                            checked={fields.value}>
+                            checked={fields.value}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-input>
                     </template>
 
@@ -104,7 +114,9 @@
                             data-id={fields.fieldMappedKey}
                             data-fieldkey={fields.fieldKey}
                             data-name={fields.fieldName}
-                            class="form-fields">
+                            class="form-fields"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-checkbox-group>
                     </template>
 
@@ -121,7 +133,9 @@
                             variant="label-hidden"
                             placeholder="Picklist options"
                             class="form-fields"
-                            options={fields.picklistValues}>
+                            options={fields.picklistValues}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-combobox>
                     </template>
         
@@ -138,7 +152,9 @@
                             data-name={fields.fieldName}
                             variant="label-hidden"
                             value={fields.value}
-                            size="3">
+                            size="3"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-dual-listbox>
                     </template>
 
@@ -155,7 +171,9 @@
                             value={fields.value}
                             variant="label-hidden"
                             class="form-fields" 
-                            type="radio">
+                            type="radio"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
                         </lightning-radio-group>
                     </template>
                 </div>
