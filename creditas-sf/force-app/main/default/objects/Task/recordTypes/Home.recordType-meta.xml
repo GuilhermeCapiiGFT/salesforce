@@ -68,81 +68,6 @@
         </values>
     </picklistValues>
     <picklistValues>
-        <picklist>TaskType__c</picklist>
-        <values>
-            <fullName>Adiantar Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Ajustar Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Atualizar Proposta Final de Crédito</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Condicionante de Fechamento para Emissão</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Condicionante de Formalização para Emissão</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Conferir Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Confirmar Valores</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Emitir Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Enviar Minuta Rascunho para o Cliente</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Liberar Minuta Final</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão de Crédito</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão de Fechamento</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão de Formalização</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão de Jurídico</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão de Risco Imobiliário</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Emissão e Operações Cartorárias</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Validar Emissão da Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Validar Minuta com Credor</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>Type</picklist>
         <values>
             <fullName>Call</fullName>
@@ -154,17 +79,6 @@
         </values>
         <values>
             <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>WasThereValidation__c</picklist>
-        <values>
-            <fullName>Não</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Sim</fullName>
             <default>false</default>
         </values>
     </picklistValues>
