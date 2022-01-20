@@ -5,6 +5,17 @@
     <businessProcess>Home - Creditas</businessProcess>
     <label>Home</label>
     <picklistValues>
+        <picklist>BankAccountType__c</picklist>
+        <values>
+            <fullName>CHECKINGS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SAVINGS</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>ExternalTenant__c</picklist>
         <values>
             <fullName>creditasbr</fullName>
@@ -12,6 +23,45 @@
         </values>
         <values>
             <fullName>creditasmx</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Flow_Stage__c</picklist>
+        <values>
+            <fullName>Ajuste de Minuta</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Antecipação da Minuta</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Identificada Pendência para Emissão</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Não há pendência para Emissão</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Não é possível Antecipar a Minuta</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pendência de Assinatura</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Surprise de Formalização</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Surprise de Formalização%28 Conferência %29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Validação de Minuta</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -116,6 +166,68 @@
         </values>
         <values>
             <fullName>Price</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ProductType__c</picklist>
+        <values>
+            <fullName>DISCHARGE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PAYROLL_LOAN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>REFINANCING</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SALARY_ADVANCE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>STORE</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>StatusDeFormalizacao__c</picklist>
+        <values>
+            <fullName>Aguardando OPS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Block-list %28Fraude Confirmada%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Casos Suspeitos</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Desistentes</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Em Análise</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Finalizados com Sucesso</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Nova Proposta</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pendências</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Recusados</fullName>
             <default>false</default>
         </values>
     </picklistValues>

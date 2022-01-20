@@ -244,6 +244,7 @@
         <excludedStandardButtons>SendBulkMessageAction</excludedStandardButtons>
         <excludedStandardButtons>MassCreateCallList</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>IsotopeSubscription</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>

@@ -3,7 +3,7 @@
     <fullName>Agency__c</fullName>
     <externalId>false</externalId>
     <label>Agência</label>
-    <length>20</length>
+    <length>21</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>
