@@ -12,11 +12,13 @@
 global without sharing class OpportunityService 
 {
     public static Opportunity oppToUpsert;
-    public static String errorMessage = '';
+    public static String errorMessage;
     public static String requestBody;
     public static OpportunityIntegrationModel requestBodyObj;
     public static Boolean hasError = false;
     public static String accountName;
+    public static Id opportunityId;
+    
 
 	@HttpPut
     global static void putMethod() 
@@ -30,25 +32,21 @@ global without sharing class OpportunityService
                 getParticipantName();
                 if (accountName == 'false'){
                     hasError = true;
-                    errorMessage = 'Proponente não encontrado na SalesForce.';
+                    errorMessage = 'Proponent not found in Salesforce';
                     setErrorResponse(500);
                     insertErrorLog(500);
                     return;
                 }
 
-                upsertOpportunity();
+                //upsertOpportunity();
 
                 commitTransactions();
 
                 if (!hasError){
                     Response oppResponse = new Response();
-                    oppResponse.opportunityId = oppToUpsert?.Id;
+                    oppResponse.opportunityId = opportunityId;
                     oppResponse.message = 'Opportunity successfully upserted.';
-                    RestResponse res = RestContext.response;
-                    if (res == null) {
-                        res = new RestResponse();
-                        RestContext.response = res;
-                    }
+                    RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
                     res.responseBody = Blob.valueOf(JSON.serialize(oppResponse));
                     res.statusCode = 200;
                 } else {
@@ -62,13 +60,11 @@ global without sharing class OpportunityService
                 insertErrorLog(500);
             }
         } catch(Exception e) {
-            System.debug(e.getLineNumber());
             hasError = true;
             errorMessage = e.getMessage();
             setErrorResponse(500);
             insertErrorLog(500);
         }
-
     }   
     
     
@@ -86,46 +82,49 @@ global without sharing class OpportunityService
         }
         String accountNameKey = '';
         for(Account acc : [SELECT Id, ExternalId__c, Name, DocumentNumber__c FROM Account WHERE ExternalId__c IN :externalPersonIds]){
-            accountNameKey = acc.DocumentNumber__c + ' ' + acc.Name + '_' + acc.Id;
+            //accountNameKey = acc.DocumentNumber__c + ' ' + acc.Name + '_' + acc.Id;
+            accountNameKey = acc.Name + '_' + acc.Id;
             if (personIdToPersonRoleMap.get(acc.ExternalId__c) == 'PRINCIPAL'){
                 break;
             }
         }
-        
         accountName = accountNameKey != '' ? accountNameKey : 'false';      
     }
- 
-    
+     
     private static void upsertOpportunity()
     {            
-        if (hasError){
-            return;
-        }
-        
         Opportunity opportunityToUpsert = new Opportunity
         (     
         	Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :requestBodyObj.id]?.Id,
             ExternalId__c = requestBodyObj.id,
-        	ExternalVersion__c = requestBodyObj.version != null ? Decimal.valueOf(requestBodyObj.version) : null,
-        	ExternalTenant__c = requestBodyObj.tenant,                     
-            Name = accountName.split('_',2)[0],
-            AccountId = accountName.split('_',2)[1],
-            StageName = 'Formalização',
-            CloseDate = System.today().addDays(30),                                
+        	ExternalVersion__c = Decimal.valueOf(requestBodyObj.version),
+        	ExternalTenant__c = requestBodyObj.tenant,       
+			Name = accountName.split('_',2)[0],
+            AccountId = accountName.split('_',2)[1],           
+            StageName = 'Formalização',            
+            CloseDate = System.today().addDays(30),                          
         	ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt),
-        	ExternalUpdatedDate__c = requestBodyObj.updateAt != null ? Date.valueOf(requestBodyObj.updateAt) : null
+        	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt)
         ); 
+        
+        //oppToUpsert = opportunityToUpsert;
+        
+        try {
+            upsert opportunityToUpsert;  
+            opportunityId = opportunityToUpsert.Id;  
+        } catch (System.DmlException e){
+            hasError = true;
+            errorMessage = e.getDmlMessage(0);            
+            return;
+        }      
+   }
 
-        oppToUpsert = opportunityToUpsert;
-    }
-    
-   
     private static void upsertQuote(){
-        if (requestBodyObj.conditions == null || hasError){
+        /*if (requestBodyObj.conditions == null || hasError){
             hasError = true;
             return;
-        }
-        Id opportunityId = oppToUpsert?.Id;
+        }*/
+        //Id opportunityId = oppToUpsert?.Id;
 
         Quote quoteObject = new Quote();
         quoteObject.Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId LIMIT 1]?.Id;
@@ -170,15 +169,21 @@ global without sharing class OpportunityService
         if (requestBodyObj.conditions.netValues != null){
             quoteObject.NetValue__c = requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(requestBodyObj.conditions.netValues.amount) : null;
         }
-        quoteObject.OpportunityId = opportunityId;
+        quoteObject.OpportunityId = opportunityId; 
         quoteObject.Name = accountName.split('_',2)[0] + ' Quote';
-
-        upsert quoteObject;          
+        
+    
+        try {
+            upsert quoteObject;
+        } catch (System.DmlException e){
+            hasError = true;
+            errorMessage = e.getDmlMessage(0);            
+            return;
+        }        
     }
- 
     
     private static void upsertOpportunityRoles(){
-        Id opportunityId = oppToUpsert?.Id;
+        //Id opportunityId = oppToUpsert?.Id;
 
         Set<String> externalPersonIds = new Set<String>();
         for(OpportunityIntegrationModel.cls_participants participant : requestBodyObj.participants)
@@ -212,7 +217,7 @@ global without sharing class OpportunityService
             OpportunityRole__c opportunityRoleToUpsert = new OpportunityRole__c
             (         
             	Id = oppRoleId,
-            	Role__c = participant.roles[0],
+            	Role__c = participant.roles[0],                  
             	ExternalPersonId__c = personId,
             	Opportunity__c = opportunityId
             ); 
@@ -220,7 +225,13 @@ global without sharing class OpportunityService
             opportunityRolesToUpsert.add(opportunityRoleToUpsert);
         }
 
-        upsert opportunityRolesToUpsert;
+        try {
+            upsert opportunityRolesToUpsert;
+        } catch (System.DmlException e){
+            hasError = true;
+            errorMessage = e.getDmlMessage(0);            
+            return;
+        }      
     }
 
     public static void insertErrorLog(Integer errorCode){
@@ -231,26 +242,25 @@ global without sharing class OpportunityService
         ate.ErrorMessage__c = errorMessage;
         ate.CreatedDate__c = System.now();
         ate.CreatedBy__c = UserInfo.getUserId();
-        System.debug(errorMessage);
 
         try {
-            database.insertImmediate(ate);   
+            if(!Test.isRunningTest()){
+                database.insertImmediate(ate);   
+            }         	
         } catch (Exception e) {
             setErrorResponse(500);
         }
     }
-
+   
+    
     public static void setErrorResponse(Integer errorCode){
-        Response resp = new Response();
+        System.debug(errorMessage);
+        Response resp = new Response();       
         resp.opportunityId = null;
-        resp.message = 'An error has occurred. Please, contact a Salesforce Administrator.';
+        resp.message = String.isNotBlank(errorMessage) ? errorMessage : 'An error has occurred. Please, contact a Salesforce Administrator.';
         resp.status = errorCode;
 
-        RestResponse res = RestContext.response;
-        if (res == null) {
-            res = new RestResponse();
-            RestContext.response = res;
-        }
+        RestResponse res = RestContext.response != null ?  RestContext.response : new RestResponse();
         res.responseBody = Blob.valueOf(JSON.serialize(resp));
         res.statusCode = errorCode;
     }
@@ -261,8 +271,13 @@ global without sharing class OpportunityService
         Savepoint sp = Database.setSavepoint();
         if (!hasError){
             try{
-                upsert oppToUpsert;
-                varSuccess1 = true; 
+                //upsert oppToUpsert;
+                upsertOpportunity();
+                if (!hasError){
+                	varSuccess1 = true;
+                } else {
+               		Database.rollback(sp);    
+                }
             } catch(Exception e){
                 hasError = true;
                 errorMessage = e.getMessage();
@@ -271,7 +286,11 @@ global without sharing class OpportunityService
             if(varSuccess1){
                 try{
                     upsertQuote();
-                    varSuccess2 = true; 
+                    if (!hasError){
+                    	varSuccess2 = true; 
+                    } else {
+               			Database.rollback(sp);    
+                	}
                 } catch(Exception e){
                     hasError = true;
                     errorMessage = e.getMessage();
@@ -281,7 +300,11 @@ global without sharing class OpportunityService
             if(varSuccess2){
                 try{ 
                     upsertOpportunityRoles();
-                    varSuccess3 = true;
+                    if (!hasError){
+                    	varSuccess3 = true;
+                    } else {
+               			Database.rollback(sp);    
+                	}   
                 } catch(Exception e){
                     hasError = true;
                     errorMessage = e.getMessage();
