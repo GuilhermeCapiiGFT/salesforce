@@ -4,9 +4,10 @@
     <description>Filiação</description>
     <externalId>false</externalId>
     <label>Nome do Pai</label>
-    <length>100</length>
-    <required>false</required>
+    <length>32768</length>
     <trackFeedHistory>false</trackFeedHistory>
+    <type>LongTextArea</type>
+    <visibleLines>2</visibleLines>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>
