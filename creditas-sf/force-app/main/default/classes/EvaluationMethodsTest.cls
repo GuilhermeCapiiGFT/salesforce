@@ -55,6 +55,7 @@ private class EvaluationMethodsTest {
     lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Store', 'STORE', 30));
     lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Payroll', 'PAYROLL_LOAN', 40));
     lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Antecipação', 'SALARY_ADVANCE', 50));
+    lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Retorno de Pendência', 'PENDENCY_RETURN', 100));
 
     insert lstCustomQueue;
 
@@ -207,6 +208,108 @@ private class EvaluationMethodsTest {
           opp.PriorityPoints__c,
           'Opportunities with no Product Type should have 0 Priority Points'
         );
+      }
+    }
+  }
+
+  @isTest
+  private static void testPendencyReturnOpps(){
+    List<Opportunity> lstOpp = makeOpportunityList(40, accountId, 'DISCHARGE');
+    lstOpp.addAll(makeOpportunityList(40, accountId, 'REFINANCING'));
+    lstOpp.addAll(makeOpportunityList(40, accountId, 'STORE'));
+    lstOpp.addAll(makeOpportunityList(40, accountId, 'PAYROLL_LOAN'));
+    lstOpp.addAll(makeOpportunityList(40, accountId, 'SALARY_ADVANCE'));
+    for(Opportunity iOpp : lstOpp){
+      iOpp.PendencyReturn__c = true;
+    }
+
+    insert lstOpp;
+
+    List<CustomQueue__c> lstCustomQueue = [
+      SELECT Id, ProductType__c
+      FROM CustomQueue__c
+      WHERE ProductType__c IN ('DISCHARGE', 'REFINANCING', 'STORE', 'PAYROLL_LOAN')
+    ];
+
+    for (CustomQueue__c cQueue : lstCustomQueue) {
+      if (cQueue.ProductType__c == 'DISCHARGE') {
+        cQueue.Points__c = 11;
+      } else if (cQueue.ProductType__c == 'REFINANCING') {
+        cQueue.Points__c = 21;
+      } else if (cQueue.ProductType__c == 'STORE') {
+        cQueue.Points__c = 31;
+      } else if (cQueue.ProductType__c == 'PAYROLL_LOAN') {
+        cQueue.Points__c = 41;
+      }
+    }
+
+    Test.startTest();
+
+    update lstCustomQueue;
+
+    Test.stopTest();
+
+    for (Opportunity opp : [SELECT ProductType__c, PriorityPoints__c FROM Opportunity WHERE Id IN :lstOpp]) {
+      if (opp.ProductType__c == 'DISCHARGE') {
+        System.assertEquals(
+          111,
+          opp.PriorityPoints__c,
+          'Opportunities with Product Type \'DISCHARGE\' should have 111 Priority Points'
+        );
+      } else if (opp.ProductType__c == 'REFINANCING') {
+        System.assertEquals(
+          121,
+          opp.PriorityPoints__c,
+          'Opportunities with Product Type \'REFINANCING\' should have 121 Priority Points'
+        );
+      } else if (opp.ProductType__c == 'STORE') {
+        System.assertEquals(
+          131,
+          opp.PriorityPoints__c,
+          'Opportunities with Product Type \'STORE\' should have 131 Priority Points'
+        );
+      } else if (opp.ProductType__c == 'PAYROLL_LOAN') {
+        System.assertEquals(
+          141,
+          opp.PriorityPoints__c,
+          'Opportunities with Product Type \'PAYROLL_LOAN\' should have 41 Priority Points'
+        );
+      } else {
+        System.assertEquals(
+          150,
+          opp.PriorityPoints__c,
+          'Opportunities with no Product Type SALARY_ADVANCE should have 150 Priority Points'
+        );
+      }
+    }
+  }
+
+  @isTest
+  static void testUpdatePendencyCustomQueue() {
+    List<Opportunity> lstOpp = makeOpportunityList(1, accountId, 'DISCHARGE');
+    lstOpp[0].PendencyReturn__c = true;
+    lstOpp.addAll(makeOpportunityList(1, accountId, 'REFINANCING'));
+    lstOpp.addAll(makeOpportunityList(1, accountId, 'STORE'));
+    lstOpp.addAll(makeOpportunityList(1, accountId, ''));
+
+    insert lstOpp;
+
+    CustomQueue__c cQueue = [SELECT Id, ProductType__c FROM CustomQueue__c WHERE ProductType__c = 'PENDENCY_RETURN' LIMIT 1];
+    cQueue.Points__c = 150;
+
+    Test.startTest();
+
+    update cQueue;
+
+    Test.stopTest();
+
+    for (Opportunity opp : [SELECT ProductType__c, PriorityPoints__c, PendencyReturn__c FROM Opportunity WHERE Id IN :lstOpp]) {
+      if (opp.PendencyReturn__c) {
+        System.assertEquals(160, opp.PriorityPoints__c, 'Opportunity priority points should be 160');
+      } else if (opp.ProductType__c == 'REFINANCING' || opp.ProductType__c == 'STORE') {
+        System.assertNotEquals(22, opp.PriorityPoints__c, 'Opportunity priority points should not be 22');
+      } else {
+        System.assertEquals(0, opp.PriorityPoints__c, 'Opportunity priority points should be 0');
       }
     }
   }
