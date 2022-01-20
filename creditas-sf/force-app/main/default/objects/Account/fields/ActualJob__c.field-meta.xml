@@ -3,7 +3,7 @@
     <fullName>ActualJob__c</fullName>
     <externalId>false</externalId>
     <label>Emprego atual</label>
-    <length>255</length>
+    <length>100</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>
