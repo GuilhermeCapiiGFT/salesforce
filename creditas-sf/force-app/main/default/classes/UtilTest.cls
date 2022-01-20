@@ -92,10 +92,17 @@ private class UtilTest {
     }
     
     @isTest
-    static void testGetRecordType()
+    private static void testGetRecordType()
     {
-        Id recordTypeId = Util.getRecordTypeIdbyName('Account', 'Default');
-        String recordTypeName = Util.getRecordTypeNameById('Account', recordTypeId);
+        List<RecordType> lRecordTypeAccList = [SELECT Id,DeveloperName,Name FROM RecordType WHERE SobjectType  = 'Account'];
+        Test.startTest();
+        for(RecordType iRecordType : lRecordTypeAccList){
+            Id recordTypeId = Util.getRecordTypeIdbyName('Account', iRecordType.DeveloperName);
+            System.assertEquals(iRecordType.Id, recordTypeId, 'Id do RT incorreto');
+        	String recordTypeName = Util.getRecordTypeNameById('Account', recordTypeId);
+            System.assertEquals(iRecordType.Name, recordTypeName, 'DeveloperName do RT incorreto');
+        }
+        Test.stopTest();
         
     }
     
@@ -166,15 +173,18 @@ private class UtilTest {
      * 1.0          Thales Yumiya   11/08/2021      Created     Atualiza o campo do objeto com o valor informado
      *****************************************************************************************************************************/
     @isTest
-    static void testUpdateSObjectField()
+    private static void testUpdateSObjectField()
     {
-        QuoteLineItem varQuoteLineItem = new QuoteLineItem();
-        Util.updateSObjectField(varQuoteLineItem, 'Description', 'Test');
-        Util.updateSObjectField(varQuoteLineItem, 'Desconto__c', 50);
-        Util.updateSObjectField(varQuoteLineItem, 'NEG_Desconto__c', true);
-        
+        Account lAcc = TestSetup.getAccount('TestUpdateField', false);
+        Test.startTest();
+        Util.updateSObjectField(lAcc, 'Name', 'Test');
+        Util.updateSObjectField(lAcc, 'AnnualRevenue', 50);
+        Util.updateSObjectField(lAcc, 'PoliticallyExposed__c', true);
+        Test.stopTest();
         // Assertions
-        System.assertEquals('Test', varQuoteLineItem.Description, 'Deveria ter preenchido o campo');
+        System.assertEquals('Test', lAcc.Name, 'Deveria ter preenchido o campo Name');
+        System.assertEquals(50, lAcc.AnnualRevenue, 'Deveria ter preenchido o campo AnnualRevenue');
+        System.assertEquals(true, lAcc.PoliticallyExposed__c, 'Deveria ter preenchido o campo PoliticallyExposed__c');
     }
     
     @isTest

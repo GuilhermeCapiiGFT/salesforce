@@ -113,6 +113,10 @@ public with sharing class TaskDetailsController {
             lTaskDetailsVO.fieldMappedKey = iTaskSettings.MappedField__c;
             lTaskDetailsVO.fieldMask      = (iTaskSettings.FieldMask__c != null) ? iTaskSettings.FieldMask__c : '';
             
+            
+            lTaskDetailsVO.isReadOnly  = actionByProfile(iTaskSettings.ReadOnlyForProfiles__c);
+            lTaskDetailsVO.isRequeried = actionByProfile(iTaskSettings.RequiredForProfiles__c);
+
             if(lTaskDetailsVO.fieldType == 'Currency'){
                 lTaskDetailsVO.isCurrency = true;
                 lTaskDetailsVO.numberPrecision = (iTaskSettings.NumberPrecision__c != null) ? iTaskSettings.NumberPrecision__c : '0.01';
@@ -178,4 +182,30 @@ public with sharing class TaskDetailsController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    
+    @AuraEnabled(cacheable=false)
+    public static Boolean actionByProfile(String aProfileRequired){
+        try {
+
+            if(String.isBlank(aProfileRequired)){
+                return false;
+            }
+
+            List<String> lLstProfiles = aProfileRequired.split(';');
+
+            Id lCurrentProfileId = userinfo.getProfileId();
+            String lCurrentProfileName = [SELECT Id, Name FROM Profile WHERE Id =: lCurrentProfileId]?.Name;
+
+            if( lLstProfiles.contains(lCurrentProfileName)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+    
 }

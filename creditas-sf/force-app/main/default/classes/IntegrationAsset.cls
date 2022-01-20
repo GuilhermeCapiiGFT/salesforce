@@ -44,7 +44,6 @@ global without sharing class IntegrationAsset
                     ownerExternalIds.add(owner.person.id);           
                 }
             }
-
             Map<String, Account> accountExternalIdToAccountMap = new Map<String, Account>();
             for (Account acc : [SELECT Id, ExternalId__c FROM Account WHERE ExternalId__c IN :ownerExternalIds])
             {
@@ -164,9 +163,7 @@ global without sharing class IntegrationAsset
 
             ownerRelationshipsToUpsert.add(assetOwnerRelationship);
         }
-
-        upsert ownerRelationshipsToUpsert;
-                                                   
+        upsert ownerRelationshipsToUpsert;                                               
     }
 
     public static void insertErrorLog(Integer errorCode){
@@ -179,7 +176,9 @@ global without sharing class IntegrationAsset
         ate.CreatedBy__c = UserInfo.getUserId();
 
         try {
-            database.insertImmediate(ate);   
+            if (!Test.isRunningTest()){
+  				database.insertImmediate(ate);              
+            }
         } catch (Exception e) {
             setErrorResponse(500);
         }
@@ -188,7 +187,7 @@ global without sharing class IntegrationAsset
     public static void setErrorResponse(Integer errorCode){
         AssetResponseData resp = new AssetResponseData();
         resp.assetId = null;
-        resp.message = 'An error has occurred. Please, contact a Salesforce Administrator.';
+        resp.message = String.isNotBlank(errorMessage) ? errorMessage : 'An error has occurred. Please, contact a Salesforce Administrator.';
         resp.status = errorCode;
 
         RestResponse res = RestContext.response;
@@ -211,21 +210,21 @@ global without sharing class IntegrationAsset
             {
                 upsert assetToUpsert;
                 varSuccess = true; 
-            } catch(Exception e)
+            } catch(System.DmlException e)
             {
                 hasError = true;
-                errorMessage = e.getMessage();
+                errorMessage =  e.getDmlMessage(0);  
                 Database.rollback(sp); 
             }
             if(varSuccess)
             {
                 try
                 {
-                    upsertAccountFinancialRelationship(accountExternalIdToAccountMap);
-                } catch(Exception e)
+                  upsertAccountFinancialRelationship(accountExternalIdToAccountMap);
+                } catch(System.DmlException e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    errorMessage =  e.getDmlMessage(0);
                     Database.rollback(sp); 
                 }
             }

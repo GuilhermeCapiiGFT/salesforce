@@ -34,6 +34,7 @@ public class TestSetup {
         if(doInsert) {
             insert varAccount;
         }
+        System.debug(varAccount);
 
         return varAccount;
     }

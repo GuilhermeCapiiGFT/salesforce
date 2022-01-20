@@ -42,9 +42,9 @@ global with sharing class AccountCompanyIntegration {
         }
         
         if(!acc.isEmpty()){
-            
-            String createdAt = request.createdAt; 
-    		String updatedAt = request.updateAt;
+
+            String createdAt = formatDatetime(request.createdAt);
+    		String updatedAt = formatDatetime(request.updatedAt);            
             
             Datetime createdAtDateTime = Datetime.valueOf(createdAt);
             Datetime updatedAtDateTime = Datetime.valueOf(updatedAt);
@@ -69,13 +69,13 @@ global with sharing class AccountCompanyIntegration {
         } 
         else{
 
-            RecordType recordTypeAcc = [SELECT id FROM RecordType WHERE Name = 'Pessoa Jurídica'];
+            RecordType recordTypeAcc = [SELECT id FROM RecordType WHERE developerName = 'Pessoa_Juridica'];
 
             Account newAcc = new Account();
             
-            String createdAt = request.createdAt; 
-    		String updatedAt = request.updateAt;
-            
+            String createdAt = formatDatetime(request.createdAt);
+    		String updatedAt = formatDatetime(request.updatedAt);
+
             Datetime createdAtDateTime = Datetime.valueOf(createdAt);
             Datetime updatedAtDateTime = Datetime.valueOf(updatedAt);
             
@@ -108,4 +108,14 @@ global with sharing class AccountCompanyIntegration {
             return e.getMessage();
         }
 	}
+
+    private static String formatDatetime(String aDatetime){
+
+        List<String> dateParts = aDatetime.split('T');
+        String part1 = dateParts[0];
+        String part2 = dateParts[1].split('\\.')[0];
+        String formatedDatetime = part1 + ' ' + part2;        
+
+        return formatedDatetime;
+    }
 }

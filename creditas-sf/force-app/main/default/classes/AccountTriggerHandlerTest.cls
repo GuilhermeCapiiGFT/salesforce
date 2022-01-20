@@ -11,8 +11,8 @@
 @isTest
 public class AccountTriggerHandlerTest {
     
-    private static final Id RECORDTYPE_CONTA_FISICA = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Pessoa Física').getRecordTypeId();
-    private static final Id RECORDTYPE_CONTA_JURIDICA = Schema.SObjectType.Account.getRecordTypeInfosByName().get('Pessoa Jurídica').getRecordTypeId();
+    private static final Id RECORDTYPE_CONTA_FISICA = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Pessoa_Fisica').getRecordTypeId();
+    private static final Id RECORDTYPE_CONTA_JURIDICA = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('Pessoa_Juridica').getRecordTypeId();
     
     @TestSetup
     static void makeData()
@@ -35,7 +35,7 @@ public class AccountTriggerHandlerTest {
         List<Account> lstTestAccounts = new List<Account>();
         for(Integer i=0; i<3; i++)
         {
-            Account testAccount = new Account(Name = 'TestAccount'+i);
+            Account testAccount = new Account(Name = 'TestAccount'+i, MigrationRecord__c = false, IsExternallySynched__c = true);
             Integer aux = integer.valueof(crypto.getRandomLong());
              
             if(math.mod(i, 2) == 0)
@@ -50,7 +50,7 @@ public class AccountTriggerHandlerTest {
             
             if(i > 1)
             {
-                testAccount.DocumentType__c = 'CPF';
+                testAccount.ExternalTenant__c = 'creditasbr';
             }
             lstTestAccounts.add(testAccount);
         }
@@ -69,8 +69,7 @@ public class AccountTriggerHandlerTest {
                               ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
                               CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
                               FROM Account LIMIT 1];
-        
-
+   
         varAccount.ExternalId__c = '3213213231';
         varAccount.IsSynchEnabled__c = 'ENABLED';
 

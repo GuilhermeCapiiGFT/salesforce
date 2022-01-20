@@ -18,7 +18,7 @@ public with sharing class AccountCompanyIntegrationTest {
         '	"version": "1",	'+  	
         '	"status": "ACTIVE",	'+
         '	"createdAt": "2020-04-04 9:24:55",	'+
-        '	"updateAt": "2020-04-04 9:24:55",	'+
+        '	"updatedAt": "2020-04-04 9:24:55",	'+
         '	"mainDocument":{	'+
         '	"type": "CNPJ",	'+
         '	"code": "89584475000186"	'+
@@ -56,7 +56,7 @@ public with sharing class AccountCompanyIntegrationTest {
         '	"version": "1",	'+  	
         '	"status": "ACTIVE",	'+
         '	"createdAt": "2020-04-04 9:24:55",	'+
-        '	"updateAt": "2020-04-04 9:24:55",	'+
+        '	"updatedAt": "2020-04-04 9:24:55",	'+
         '	"mainDocument":{	'+
         '	"type": "CNPJ",	'+
         '	"code": "89584475000186"	'+

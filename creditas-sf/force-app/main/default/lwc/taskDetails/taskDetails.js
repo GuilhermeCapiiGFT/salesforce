@@ -156,6 +156,8 @@ export default class TaskDetails extends LightningElement {
             (this.isRecordUpdate == true)
             ? this.updateTaskDetails()
             : this.insertTaskDetails();
+        }else{
+            this.dispatchShowToast('','Favor revisar os campos do formulário.', 'error');
         }
     }
 
@@ -175,22 +177,10 @@ export default class TaskDetails extends LightningElement {
             this.isRecordUpdate = true;
             this.updateTask();
            
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Registro criado com sucesso.',
-                    variant: 'success'
-                })
-            )
+            this.dispatchShowToast('Success', 'Registro criado com sucesso.', 'success');
         })
         .catch(error => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Erro ao criar o registro.',
-                    message: error.body.message,
-                    variant: 'error',
-                }),
-            );
+            this.dispatchShowToast('Erro ao criar o registro.', error.body.message, 'error');
         });
     }
 
@@ -204,22 +194,10 @@ export default class TaskDetails extends LightningElement {
 
         updateRecord(recordInput)
         .then( taskdetails =>{
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Registro atualizado com sucesso.',
-                    variant: 'success'
-                })
-            )
+            this.dispatchShowToast('Success', 'Registro atualizado com sucesso.', 'success');
         })
         .catch(error => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Erro ao atualizar o registro.',
-                    message: error.body.message,
-                    variant: 'error',
-                }),
-            );
+            this.dispatchShowToast('Erro ao atualizar o registro.', error.body.message, 'error');
         });
     }
 
@@ -249,4 +227,14 @@ export default class TaskDetails extends LightningElement {
         return value === undefined;
     }
 
+    dispatchShowToast(aTitle, aMessage, aVariant){
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: aTitle,
+                message: aMessage,
+                variant: aVariant,
+            }),
+        );
+    }
+    
 }

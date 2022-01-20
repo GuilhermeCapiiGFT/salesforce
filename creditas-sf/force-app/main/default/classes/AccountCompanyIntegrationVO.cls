@@ -4,7 +4,7 @@ public class AccountCompanyIntegrationVO {
     public Integer version;
     public String status;
     public String createdAt; 
-    public String updateAt;
+    public String updatedAt;
     public mainDocument mainDocument;
     public String businessName;
     public String legalName;

@@ -16,7 +16,7 @@ public class CommunicationContactTriggerHandlerTest {
     static void makeData()
     {        
         Account varAccount = TestSetup.getAccount('Francisco', true);
-        varAccount.IsExternallySynched__c = false;
+        varAccount.IsExternallySynched__c = true;
         
         CommunicationContacts__c varCommunicationContact = new CommunicationContacts__c();
         varCommunicationContact.Account__c = varAccount.Id;
@@ -43,11 +43,10 @@ public class CommunicationContactTriggerHandlerTest {
                               WHERE Id =: varCommunicationContact.Account__c
                               LIMIT 1];
 
-        System.debug('TYUMI');
         System.debug(varCommunicationContact);
         System.debug(varAccount);
 
-        System.assertEquals(true, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
+        System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 
     @isTest
@@ -81,7 +80,7 @@ public class CommunicationContactTriggerHandlerTest {
 
         System.debug('tyumi account => ' + varAccountUpdate);
 
-        System.assertEquals(true, varAccountUpdate.IsExternallySynched__c);
+        System.assertEquals(false, varAccountUpdate.IsExternallySynched__c);
     }
 
     @isTest
@@ -93,25 +92,15 @@ public class CommunicationContactTriggerHandlerTest {
         
         Account varAccount1 = new Account();
         varAccount1.Name = 'Jose';
-        varAccount1.IsExternallySynched__c = false;
-        varAccount1.DocumentNumber__c = '01234567890';
-        varAccount1.DocumentType__c = 'CPF';
-        varAccount1.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
+        varAccount1.IsExternallySynched__c = true;
         
         Account varAccount2 = new Account();
         varAccount2.Name = 'Joao';
-        varAccount2.IsExternallySynched__c = false;
-        varAccount2.DocumentNumber__c = '28241540043';
-        varAccount2.DocumentType__c = 'CPF';
-        varAccount2.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
-        
+        varAccount2.IsExternallySynched__c = true;
         
         Account varAccount3 = new Account();
-        varAccount3.IsExternallySynched__c = false;
+        varAccount3.IsExternallySynched__c = true;
         varAccount3.Name = 'Josimar';
-        varAccount3.DocumentNumber__c = '39615016020';
-        varAccount3.DocumentType__c = 'CPF';
-        varAccount3.RecordTypeId = [SELECT ID FROM RECORDTYPE WHERE NAME = 'Pessoa Física']?.Id;
 
         listAccountInsert.add(varAccount1);
         listAccountInsert.add(varAccount2);
@@ -123,10 +112,10 @@ public class CommunicationContactTriggerHandlerTest {
         varCommunicationContact1.Account__c = varAccount1.Id; 
         
         CommunicationContacts__c varCommunicationContact2 = new CommunicationContacts__c();
-        varCommunicationContact2.Account__c = varAccount2.Id;
+        varCommunicationContact2.Account__c = varAccount1.Id;
 
         CommunicationContacts__c varCommunicationContact3 = new CommunicationContacts__c();
-        varCommunicationContact3.Account__c = varAccount3.Id;
+        varCommunicationContact3.Account__c = varAccount1.Id;
 
         listAddressesInsert.add(varCommunicationContact1);
         listAddressesInsert.add(varCommunicationContact2);
@@ -149,5 +138,22 @@ public class CommunicationContactTriggerHandlerTest {
         Account varAccountUpdated = [SELECT Id, Name, IsExternallySynched__c FROM Account WHERE Name = 'Jose' LIMIT 1];
 
         System.assertEquals(false, varAccountUpdated.IsExternallySynched__c);
+    }
+
+    @isTest
+    static void notUpdateIsExternallySync() 
+    {
+        CommunicationContacts__c varCommunicationContact = [SELECT Id, Name, Account__c, Code__c FROM CommunicationContacts__c LIMIT 1]; 
+
+        Test.startTest();
+        update varCommunicationContact;
+        Test.stopTest();
+
+        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C FROM Account WHERE Id =: varCommunicationContact.Account__c LIMIT 1];
+
+        System.debug(varCommunicationContact);
+        System.debug(varAccount);
+
+        System.assertNotEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 }

@@ -179,23 +179,26 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     {
         for(Account varAccount : lstNewAccount)
         {
-            if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
+            if(varAccount.RecordTypeId != null)
             {
-                validaDocumento(varAccount);
-
-                if(String.isNotBlank(varAccount.DocumentNumber__c))
+                if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
                 {
-                    String cpf = Util.getMaskedCPF(varAccount.DocumentNumber__c);
-                    varAccount.DocumentNumber__c = cpf;
-                }
-            } else if(varaccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_JURIDICA))
-            {
-                validaDocumento(varAccount);
-
-                if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    validaDocumento(varAccount);
+    
+                    if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    {
+                        String cpf = Util.getMaskedCPF(varAccount.DocumentNumber__c);
+                        varAccount.DocumentNumber__c = cpf;
+                    }
+                } else if(varaccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_JURIDICA))
                 {
-                    String cnpj = Util.getMaskedCNPJ(varAccount.DocumentNumber__c);
-                    varAccount.DocumentNumber__c = cnpj;
+                    validaDocumento(varAccount);
+    
+                    if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    {
+                        String cnpj = Util.getMaskedCNPJ(varAccount.DocumentNumber__c);
+                        varAccount.DocumentNumber__c = cnpj;
+                    }
                 }
             }
         }

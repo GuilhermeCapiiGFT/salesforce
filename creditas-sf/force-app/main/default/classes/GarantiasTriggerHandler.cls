@@ -14,6 +14,7 @@ public without sharing class GarantiasTriggerHandler extends TriggerHandler
     private List<Garantias__c> lstOldGarantias;
     private Map<Id, Garantias__c> mapNewGarantias;
     private Map<Id, Garantias__c> mapOldGarantias;
+    final String GARANTIAS_ERROR_MESSAGE = System.Label.Garantias_Error_Message;
 
     public GarantiasTriggerHandler() 
     {
@@ -75,7 +76,7 @@ public without sharing class GarantiasTriggerHandler extends TriggerHandler
         {
             if (accountIdToRoleName.get(garantiaNew.Account__c) != 'COLLATERAL_GUARANTOR')
             {
-                garantiaNew.addError('Somente recursos financeiros possuídos por um Collateral Guarantor podem ser adicionados às garantias.');
+                garantiaNew.addError(GARANTIAS_ERROR_MESSAGE);
             }
         }
     }

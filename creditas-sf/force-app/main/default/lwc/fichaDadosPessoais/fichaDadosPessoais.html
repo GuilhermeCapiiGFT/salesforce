@@ -260,10 +260,10 @@
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={monthlyIncomeId} data-id="rendaInformadaForm" >
+            <!-- <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={monthlyIncomeId} data-id="rendaInformadaForm" onsuccess={handleInformedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
-                    <lightning-input-field field-name="Account_Financial_Relationship__c " variant="label-hidden" data-id="AccFinRelId "></lightning-input-field>
+                    <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaInformadaTypeInput"></lightning-input-field>
                     
                     <lightning-layout-item size="12" padding="around-small">
                         <label>Renda Informada</label>
@@ -273,24 +273,22 @@
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={presumedMonthlyIncomeId} data-id="rendaConsideradaForm"  >
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={presumedMonthlyIncomeId} data-id="rendaConsideradaForm" onsuccess={handlePresumedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
-                    <lightning-input-field field-name="Account_Financial_Relationship__c " variant="label-hidden" data-id="AccFinRelId "></lightning-input-field>
-                   
+                    <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaConsideradaTypeInput"></lightning-input-field>
+
                     <lightning-layout-item size="12" padding="around-small">
                         <label>Renda Considerada</label>
-                        <lightning-input-field field-name={rendaConsideradaField}  variant="label-hidden"></lightning-input-field>
+                        <lightning-input-field field-name={rendaConsideradaField}  variant="label-hidden" data-id="rendaConsideradaInput"></lightning-input-field>
                     </lightning-layout-item>
     
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={confirmedMonthlyIncomeId} data-id="rendaConfirmadaForm" onsuccess={handleFinResSuccess} >
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={confirmedMonthlyIncomeId} data-id="rendaConfirmadaForm" onsuccess={handleConfirmedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
-                    <!-- <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field> -->
-    
                     <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaConfirmadaTypeInput"></lightning-input-field>
                     
                     <lightning-layout-item size="12" padding="around-small">
@@ -299,7 +297,7 @@
                     </lightning-layout-item>
     
                 </lightning-layout>
-            </lightning-record-edit-form>
+            </lightning-record-edit-form> -->
     
             <lightning-record-edit-form  object-api-name="Account" record-id={accountid} data-id="accountPatrimonioForm">
                 <lightning-layout  multiple-rows="true" >

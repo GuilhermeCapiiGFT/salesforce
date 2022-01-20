@@ -276,9 +276,17 @@ export default class FichaDadosPessoais extends LightningElement {
       emailForm.submit()
     }
 
-    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaInput"]').value)) {
-      this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaTypeInput"]').value = 'CONFIRMED_MONTHLY_INCOME'
-    }
+    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaInformadaInput"]').value)) {
+    //   this.template.querySelector('lightning-input-field[data-id="rendaInformadaTypeInput"]').value = 'MONTHLY_INCOME'
+    // }
+
+    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConsideradaInput"]').value)) {
+    //   this.template.querySelector('lightning-input-field[data-id="rendaConsideradaTypeInput"]').value = 'PRESUMED_MONTHLY_INCOME'
+    // }
+
+    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaInput"]').value)) {
+    //   this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaTypeInput"]').value = 'CONFIRMED_MONTHLY_INCOME'
+    // }
 
     // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rgInput"]').value)) {
     //   rgForm.submit()
@@ -288,9 +296,9 @@ export default class FichaDadosPessoais extends LightningElement {
     rgForm.submit()
     professionalInfoForm.submit()
     addressForm.submit()
-    rendaInformadaForm.submit()
-    rendaConsideradaForm.submit()
-    rendaConfirmadaForm.submit()
+    // rendaInformadaForm.submit()
+    // rendaConsideradaForm.submit()
+    // rendaConfirmadaForm.submit()
     accountPatrimonioForm.submit()
     rendaMinimaOppForm.submit()
 
@@ -311,33 +319,57 @@ export default class FichaDadosPessoais extends LightningElement {
     return (value === null || value === undefined || '') ? true : false
   }
 
-  handleCNHDocSuccess(event) {
-    console.log('CRIOU A CNH COM SUCESSO')
+  // handleInformedIncomeSuccess(event) {
+  //   const fields = {}
 
-    // console.log(JSON.stringify(event.detail))
-  }
+  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
 
-  handleCNHDocError(event) {
-    console.log('FALHA AO CRIAR CNH')
-  }
+  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+  //   createRecord(recordInput)
+  //     .then(record => {
+  //       console.log('registro de junção criado')
+  //       console.log(JSON.stringify(recordInput))
+  //     })
+  //     .catch(error => {
+  //     console.log('erro aconteceu')
+  //   })
+  // }
 
-  handleFinResSuccess(event) {
-    console.log(JSON.parse(JSON.stringify(event.detail)))
-    console.log('Financial Resource Id: ', event.detail.id)
+  // handlePresumedIncomeSuccess(event) {
+  //   const fields = {}
 
-    const fields = {}
+  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
 
-    fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
-    fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+  //   createRecord(recordInput)
+  //     .then(record => {
+  //       console.log('registro de junção criado')
+  //       console.log(JSON.stringify(recordInput))
+  //     })
+  //     .catch(error => {
+  //     console.log('erro aconteceu')
+  //   })
+  // } 
 
-    const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
-    createRecord(recordInput)
-      .then(record => {
-        console.log('registro de junção criado')
-        console.log(JSON.stringify(recordInput))
-      })
-      .catch(error => {
-      console.log('erro aconteceu')
-    })
-  }
+  // handleConfirmedIncomeSuccess(event) {
+  //   console.log(JSON.parse(JSON.stringify(event.detail)))
+  //   console.log('Financial Resource Id: ', event.detail.id)
+
+  //   const fields = {}
+
+  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+
+  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+  //   createRecord(recordInput)
+  //     .then(record => {
+  //       console.log('registro de junção criado')
+  //       console.log(JSON.stringify(recordInput))
+  //     })
+  //     .catch(error => {
+  //     console.log('erro aconteceu')
+  //   })
+  // }
 }

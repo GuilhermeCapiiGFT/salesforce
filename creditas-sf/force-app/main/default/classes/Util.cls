@@ -18,10 +18,23 @@ public class Util {
 	 * 1.0 				Thales Yumiya 	    11/08/2021 			Created 		Retorna o RecordTypeId correspondente ao
      *                                                                          RecordTypeName 
 	*****************************************************************************************************************************/    
-    public static Id getRecordTypeIdbyName(String objectName, String strRecordTypeName)
-    {
-    	return  Schema.getGlobalDescribe().get(objectName).getDescribe().getRecordTypeInfosByDeveloperName().get(strRecordTypeName).getRecordTypeId();
-    }        
+    	private static Map<String, Map<String, Id>> lMapAllSobjRT = new Map<String, Map<String, Id>>();
+    
+		public static Id getRecordTypeIdbyName(String objType, String recordTypeName) {
+            Map<String, Id> lMapSobjRT = lMapAllSobjRT.get(objType.toLowerCase());
+            if (lMapSobjRT != null && !lMapSobjRT.isEmpty()) { return lMapSobjRT.get(recordTypeName); }
+            
+            Map<String, Schema.RecordTypeInfo> lMapRTInfo = Schema.getGlobalDescribe().get(objType).getDescribe().getRecordTypeInfosByDeveloperName();
+            if (lMapRTInfo == null) { return null; }
+            
+            lMapSobjRT = new Map<String, Id>();
+            for (String iRtDevName: lMapRTInfo.keyset())
+            {
+                lMapSobjRT.put(iRtDevName, lMapRTInfo.get(iRtDevName).getRecordTypeId());
+            }
+            lMapAllSobjRT.put(objType.toLowerCase(), lMapSobjRT);
+            return lMapSobjRT.get(recordTypeName);
+        }        
     
     /*****************************************************************************************************************************
 	 * VERSION			AUTHOR				DATE				DETAIL 			Description
@@ -397,18 +410,17 @@ public class Util {
     
     /**********************************************************************************************************************************
     * ================================================================================================================================
-    * @description atualizar campo isExternallySynced de Oportunidade
+    * @description Atualizar o campo isExternallySynched em Opportunity para o objeto Quote
     * ================================================================================================================================
     * History
     * -------
     * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Nathalia Rosa           17/12/2021                  Atualizar o campo isExternallySynched em Opportunity para os objetos
-                                                                      relacionados
+    * 1.0         Nathalia Rosa           17/12/2021                  Atualizar o campo isExternallySynched em Opportunity para o objeto Quote
     **********************************************************************************************************************************/
     public static void updateIsExternallySyncedQuoteOpportunity(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
     {
         Set<Id> setOpportunityIds = new Set<Id>();
-        List<Opportunity> listOpportunityToUpdate = new List<Opportunity>();
+        List<Opportunity> listOpportunityQuoteToUpdate = new List<Opportunity>();
         Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
         Map<Opportunity, SObject> mapOpportunitySObject = new Map<Opportunity, SObject>();  
 
@@ -444,14 +456,14 @@ public class Util {
             for(Opportunity varOpportunity : mapOpportunitySObject.keySet())
             {
                 varOpportunity.IsExternallySynched__c = false;
-                listOpportunityToUpdate.add(varOpportunity);
+                listOpportunityQuoteToUpdate.add(varOpportunity);
             }
         }
 
         TriggerHandler.bypass('OpportunityTriggerHandler');
-        if(!listOpportunityToUpdate.isEmpty())
+        if(!listOpportunityQuoteToUpdate.isEmpty())
         {
-            update listOpportunityToUpdate;
+            update listOpportunityQuoteToUpdate;
         }
         TriggerHandler.clearBypass('OpportunityTriggerHandler');
     }
