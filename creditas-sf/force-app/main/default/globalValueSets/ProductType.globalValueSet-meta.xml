@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>SALARY_ADVANCE</fullName>
+        <default>false</default>
+        <label>Antecipação</label>
+    </customValue>
+    <customValue>
+        <fullName>PAYROLL_LOAN</fullName>
+        <default>false</default>
+        <label>Payroll</label>
+    </customValue>
+    <customValue>
+        <fullName>STORE</fullName>
+        <default>false</default>
+        <label>Store</label>
+    </customValue>
+    <customValue>
+        <fullName>REFINANCING</fullName>
+        <default>false</default>
+        <label>Refinanciamento</label>
+    </customValue>
+    <customValue>
+        <fullName>DISCHARGE</fullName>
+        <default>false</default>
+        <label>Quitação</label>
+    </customValue>
+    <masterLabel>Tipo de produto</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
