@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>JobTitle__c</fullName>
     <externalId>false</externalId>
-    <label>JobTitle</label>
+    <label>Profissão</label>
     <length>100</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>

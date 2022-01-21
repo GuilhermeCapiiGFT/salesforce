@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOMERG</fullName>
+    <active>true</active>
+    <label>[HOME] RG</label>
+    <picklistValues>
+        <picklist>DocumentType__c</picklist>
+        <values>
+            <fullName>CNH</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CPF</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PIS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>RG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>RNE</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

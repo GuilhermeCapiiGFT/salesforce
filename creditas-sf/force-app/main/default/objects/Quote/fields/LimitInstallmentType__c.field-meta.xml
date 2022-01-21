@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LimitInstallmentType__c</fullName>
     <externalId>false</externalId>
-    <label>LimitInstallmentType</label>
+    <label>Tipo de Amortização</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Picklist</type>

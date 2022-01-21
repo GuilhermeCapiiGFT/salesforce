@@ -1,0 +1,187 @@
+<template>
+    <template if:true={showComponent}>
+        <div class="slds-box slds-grid slds-wrap slds-theme_default">
+            <template for:each={tasks} for:item="fields">
+                <div key={fields.Id} class="slds-col slds-size_12-of-12">
+
+                    <!-- Header -->
+                    <template if:true={fields.isHeader}>
+                        <div class="slds-m-vertical_x-small slds-form-element__legend slds-form-element__label">
+                            <h1>{fields.fieldName}</h1>
+                        </div>
+                    </template>
+
+                    <!-- currency -->
+                    <template if:true={fields.isCurrency}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-input 
+                            type="number" 
+                            class="form-fields" 
+                            label={fields.fieldName} 
+                            data-id={fields.fieldMappedKey} 
+                            data-fieldkey={fields.fieldKey} 
+                            data-name={fields.fieldName}
+                            formatter="currency"
+                            value={fields.value}
+                            variant="label-hidden"
+                            step={fields.numberPrecision}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}> 
+                        </lightning-input>
+                    </template>
+
+                    <!-- number -->
+                    <template if:true={fields.isNumber}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-input 
+                            type="number" 
+                            class="form-fields" 
+                            label={fields.fieldName} 
+                            data-id={fields.fieldMappedKey} 
+                            data-fieldkey={fields.fieldKey} 
+                            data-name={fields.fieldName}
+                            value={fields.value}
+                            variant="label-hidden"
+                            step={fields.numberPrecision}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}> 
+                        </lightning-input>
+                    </template>
+        
+                    <!-- relationship -->
+                    <template if:true={fields.isRelationship}>         
+                        <c-search-component
+                            obj-name={fields.relatedObject}
+                            icon-name="standard:contact"
+                            label-name={fields.fieldName}
+                            field-required={fields.isRequeried}
+                            field-readonly={fields.isReadOnly}
+                            placeholder="Search" 
+                            fields={fields}
+                            display-fields={displayFields}
+                            class="form-fields"
+                            data-id={fields.fieldMappedKey} 
+                            mapped-field={fields.fieldMappedKey} 
+                            data-fieldkey={fields.fieldKey} 
+                            data-name={fields.fieldName}
+                            onlookup={handleLookup} >
+                        </c-search-component>
+                    </template>
+
+                    <!-- text -->
+                    <template if:true={fields.isDefault}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-input 
+                            type={fields.fieldType} 
+                            class="form-fields" 
+                            label={fields.fieldName} 
+                            data-id={fields.fieldMappedKey} 
+                            data-fieldkey={fields.fieldKey} 
+                            data-name={fields.fieldName}
+                            data-mask={fields.fieldMask}
+                            value={fields.value}
+                            variant="label-hidden"
+                            onchange={handleChange}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-input>
+                    </template>  
+
+                    <!-- checkbox -->
+                    <template if:true={fields.isCheckbox}>
+                        <lightning-input 
+                            type={fields.fieldType} 
+                            class="form-fields" 
+                            label={fields.fieldName} 
+                            data-id={fields.fieldMappedKey} 
+                            data-fieldkey={fields.fieldKey} 
+                            data-name={fields.fieldName}
+                            checked={fields.value}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-input>
+                    </template>
+
+                    <!-- checkboxGroup -->
+                    <template if:true={fields.isCheckboxGroup}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-checkbox-group 
+                            name={fields.fieldName}
+                            label={fields.fieldName}
+                            options={fields.checkboxGroupValues}
+                            value={fields.value}
+                            variant="label-hidden"
+                            data-id={fields.fieldMappedKey}
+                            data-fieldkey={fields.fieldKey}
+                            data-name={fields.fieldName}
+                            class="form-fields"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-checkbox-group>
+                    </template>
+
+                    <!-- picklist -->
+                    <template if:true={fields.isPicklist}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-combobox
+                            data-id={fields.fieldMappedKey}
+                            data-fieldkey={fields.fieldKey}
+                            data-name={fields.fieldName}
+                            name={fields.fieldName}
+                            label={fields.fieldName}
+                            value={fields.value}
+                            variant="label-hidden"
+                            placeholder="Picklist options"
+                            class="form-fields"
+                            options={fields.picklistValues}
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-combobox>
+                    </template>
+        
+                    <!-- multpicklist -->
+                    <template if:true={fields.isMultiPicklist}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-dual-listbox 
+                            name={fields.fieldName}
+                            label={fields.fieldName}
+                            class="form-fields"
+                            options={fields.picklistValues}
+                            data-id={fields.fieldMappedKey}
+                            data-fieldkey={fields.fieldKey}
+                            data-name={fields.fieldName}
+                            variant="label-hidden"
+                            value={fields.value}
+                            size="3"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-dual-listbox>
+                    </template>
+
+                    <!-- radioGroup -->
+                    <template if:true={fields.isRadioGroup}>
+                        <legend class="slds-form-element__legend slds-form-element__label">{fields.fieldName}</legend>
+                        <lightning-radio-group 
+                            name={fields.fieldName}
+                            label={fields.fieldName}
+                            options={fields.radioGroupValues}
+                            data-id={fields.fieldMappedKey}
+                            data-fieldkey={fields.fieldKey}
+                            data-name={fields.fieldName}
+                            value={fields.value}
+                            variant="label-hidden"
+                            class="form-fields" 
+                            type="radio"
+                            required={fields.isRequeried}
+                            disabled={fields.isReadOnly}>
+                        </lightning-radio-group>
+                    </template>
+                </div>
+            </template>
+            
+            <div class="slds-align_absolute-center slds-m-top_medium">
+                <lightning-button variant="brand" label="Salvar" title="Salvar" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </div>
+    </template>
+</template>

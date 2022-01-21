@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsExternallySynched__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Esse campo determina se houve alteração dos registros no Salesforce, para que o Mulesoft identifique quando propagar alterações.</description>
+    <externalId>false</externalId>
+    <label>IsExternallySynched</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

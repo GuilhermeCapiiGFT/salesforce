@@ -16,7 +16,7 @@
             <value>
                 <fullName>MONTHLY_INCOME</fullName>
                 <default>false</default>
-                <label>MONTHLY_INCOME</label>
+                <label>Renda Mensal</label>
             </value>
             <value>
                 <fullName>PRESUMED_MONTHLY_INCOME</fullName>

@@ -160,7 +160,7 @@
     <label>CommunicationContact</label>
     <nameField>
         <displayFormat>CC-{00000000}</displayFormat>
-        <label>Communication Name</label>
+        <label>Código do contato</label>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>

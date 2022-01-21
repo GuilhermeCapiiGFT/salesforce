@@ -1,0 +1,27 @@
+.badge{ 
+  font-size: xx-small !important;
+  border-radius: 6px !important;
+  background-color: rgb(245, 246, 255) !important;
+  color: rgb(101, 77, 255) !important;
+  border-color: rgb(238, 241, 255) !important;
+}
+
+lightning-icon{
+  margin-right: 3px;
+}
+
+.createDate {
+  font-size: xx-small;
+}
+
+.description {
+  font-size: smaller;
+  margin-left: 22px;
+  margin-top: 3px;
+}
+
+.proposal {
+  border: none;
+  padding: 5px 10px 5px 0;
+  background: transparent;
+}

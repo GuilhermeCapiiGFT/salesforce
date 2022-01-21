@@ -4,7 +4,7 @@
     <description>Tipo de endereço a ser inserido</description>
     <externalId>false</externalId>
     <inlineHelpText>Insira o tipo do endereço que esse registro se refere</inlineHelpText>
-    <label>Tipo</label>
+    <label>Tipo de endereço</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
@@ -20,19 +20,19 @@
                 <label>Cobrança</label>
             </value>
             <value>
-                <fullName>DELIVERY</fullName>
-                <default>false</default>
-                <label>Correspondência</label>
-            </value>
-            <value>
                 <fullName>HOME</fullName>
                 <default>false</default>
-                <label>Casa</label>
+                <label>Residencial</label>
             </value>
             <value>
                 <fullName>WORK</fullName>
                 <default>false</default>
                 <label>Trabalho</label>
+            </value>
+            <value>
+                <fullName>DELIVERY</fullName>
+                <default>false</default>
+                <label>Correspondência</label>
             </value>
             <value>
                 <fullName>OTHER</fullName>

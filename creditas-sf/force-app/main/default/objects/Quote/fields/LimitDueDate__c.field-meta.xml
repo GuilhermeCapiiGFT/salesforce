@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LimitDueDate__c</fullName>
     <externalId>false</externalId>
-    <label>LimitDueDate</label>
+    <label>Data de Vencimento</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Date</type>

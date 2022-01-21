@@ -158,12 +158,14 @@
     <label>Documento</label>
     <nameField>
         <displayFormat>D-{00000000}</displayFormat>
-        <label>Nome de Documento</label>
+        <label>Código do Documento</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Documentos</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts></searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

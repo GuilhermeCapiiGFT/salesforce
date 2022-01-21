@@ -158,8 +158,8 @@
     <label>Endereço</label>
     <nameField>
         <displayFormat>A-{00000000}</displayFormat>
-        <label>Numeração</label>
-        <trackFeedHistory>true</trackFeedHistory>
+        <label>Código do Endereço</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
