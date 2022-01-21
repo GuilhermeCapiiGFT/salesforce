@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ExternalTenant__c</fullName>
-    <description>Esse campo é a região da conta (br/mx)</description>
+    <description>Esse campo representa a região da conta (Região de origem do registro - br/mx)</description>
     <externalId>false</externalId>
-    <label>ExternalTenant</label>
+    <label>Tenant</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Picklist</type>

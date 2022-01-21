@@ -8,6 +8,8 @@ public class AssetIntegrationModel{
 	public cls_assetDetail assetDetail;
 	public String createdAt;	//2019-01-10T10:00:01Z
 	public String updatedAt;	//2019-01-10T12:00:01Z
+	public Boolean hasError;
+	public String errorMessage;
 
 	public class OwnersModel {
 		public cls_person person;
@@ -68,7 +70,15 @@ public class AssetIntegrationModel{
 	}
 
 	public static AssetIntegrationModel parse(String json){
-		return (AssetIntegrationModel) System.JSON.deserialize(json, AssetIntegrationModel.class);
+		AssetIntegrationModel assetModel = new AssetIntegrationModel();
+		try {
+			assetModel = (AssetIntegrationModel) System.JSON.deserialize(json, AssetIntegrationModel.class);
+			assetModel.hasError = false;
+        } catch (Exception e) {
+			assetModel.hasError = true;
+			assetModel.errorMessage = e.getMessage();
+        }
+		return assetModel;
 	}
 
 	public static String assetMock() {
@@ -80,6 +90,12 @@ public class AssetIntegrationModel{
 		'    {'+
 		'      "person": {'+
 		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111111",'+
+		'        "version": 1'+
+		'      }'+
+		'    },'+
+        '    {'+
+		'      "person": {'+
+		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111112",'+
 		'        "version": 1'+
 		'      }'+
 		'    }'+

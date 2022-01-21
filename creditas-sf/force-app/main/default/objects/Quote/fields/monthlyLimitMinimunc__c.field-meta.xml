@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>monthlyLimitMinimunc__c</fullName>
     <externalId>false</externalId>
-    <label>monthlyLimitMinimunc</label>
+    <label>Mínimo Mensal</label>
     <precision>18</precision>
     <required>false</required>
     <scale>15</scale>

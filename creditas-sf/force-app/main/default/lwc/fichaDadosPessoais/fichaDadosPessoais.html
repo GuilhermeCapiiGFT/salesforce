@@ -1,0 +1,333 @@
+<template>
+
+    <lightning-accordion active-section-name={openSections} allow-multiple-sections-open >
+
+        <lightning-accordion-section name="dadosPessoais" label="Dados Pessoais">
+
+            <lightning-record-edit-form object-api-name="Account" data-id="accountForm" record-id={accountid} onsuccess={handleAccountSuccess} onerror={handleAccountError} >
+                <lightning-layout multiple-rows="true" >
+
+                    <lightning-layout-item size="12" padding="around-small" flexibility="auto">
+                        <label for="name" style="display: inline-block; padding-bottom: 5px">Nome</label>
+                        <lightning-input-field id="name" field-name={nameField} type="text" variant="label-hidden" required></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="cpf" style="display: inline-block; padding-bottom: 5px">CPF</label>
+                        <lightning-input-field id="cpf" field-name={documentoField} type="text" label="CPF" variant="label-hidden" required></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="pep" style="display: inline-block; padding-bottom: 5px">Pessoa Politicamente exposta? (PEP)</label>
+                        <lightning-input-field id="pep" field-name={politicallyExposedField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="estado-civil" style="display: inline-block; padding-bottom: 5px">Estado Civil</label>
+                        <lightning-input-field id="estado-civil" field-name={civilStatusField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="data-nascimento" style="display: inline-block; padding-bottom: 5px">Data de Nascimento</label>
+                        <lightning-input-field id="data-nascimento" field-name={birthDateField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="cidade-nascimento" style="display: inline-block; padding-bottom: 5px">Cidade de Nascimento</label>
+                        <lightning-input-field id="cidade-nascimento" field-name={birthCityField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <!-- <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="celular" style="display: inline-block; padding-bottom: 5px">Celular</label>
+                        <lightning-input-field id="celular" field-name={phoneField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item> -->
+
+                    <lightning-layout-item size="6" padding="around-small">
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="pais-nascimento" style="display: inline-block; padding-bottom: 5px">País de Nascimento</label>
+                        <lightning-input-field id="pais-nascimento" field-name={birthCountryField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="nacionalidade" style="display: inline-block; padding-bottom: 5px">Nacionalidade</label>
+                        <lightning-input-field id="nacionalidade" field-name={nationalityField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <!-- <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="email" style="display: inline-block; padding-bottom: 5px">Email</label>
+                        <lightning-input-field id="email" type="email" field-name={nationalityField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item> -->
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="pai" style="display: inline-block; padding-bottom: 5px">Nome do Pai</label>
+                        <lightning-input-field id="pai" field-name={fatherField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small" flexibility="auto">
+                        <label for="mae" style="display: inline-block; padding-bottom: 5px">Nome da Mãe</label>
+                        <lightning-input-field id="mae" field-name={motherField} variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <!-- Documents CNH -->
+
+            <lightning-record-edit-form onsubmit={handleCNHSubmit} object-api-name="Documents__c" onerror={handleCNHDocError} onsuccess={handleCNHDocSuccess} record-id={documentIdCNH} data-id="cnhForm" >
+                <lightning-layout multiple-rows="true" >
+        
+                    <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+                    <lightning-input-field field-name="RecordTypeId" variant="label-hidden" style="display: none;" data-id="cnhRecordTypeId" ></lightning-input-field>
+                    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Número da CNH</label>
+                        <lightning-input-field field-name={cnhNumberField} type="text" variant="label-hidden" label="Número da CNH"></lightning-input-field>
+                    </lightning-layout-item>
+                
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Data de Expedição da CNH</label>
+                        <lightning-input-field type="date" field-name={cnhDataExpedicaoField} variant="label-hidden" label="Data de expedição da CNH"></lightning-input-field>
+                    </lightning-layout-item>
+                
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label for="">Órgão expedidor da CNH</label>
+                        <lightning-input-field type="text" field-name={cnhOrgaoExpedidorField} variant="label-hidden" label="Orgão expedidor da CNH"></lightning-input-field>
+                    </lightning-layout-item>
+                
+                    <lightning-layout-item size="6" padding="around-small">
+                    </lightning-layout-item>
+            
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <!-- Documents RG -->
+
+            <lightning-record-edit-form object-api-name="Documents__c" record-id={documentIdRG} data-id="rgForm" >
+                <lightning-layout multiple-rows="true" >
+
+                    <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+                    <lightning-input-field field-name="RecordTypeId" style="display: none;" variant="label-hidden"  data-id="rgRecordTypeId" ></lightning-input-field>
+                    
+                <lightning-layout-item size="6" padding="around-small">
+                    <label>Número do RG</label>
+                    <lightning-input-field field-name={rgNumberField} type="text" variant="label-hidden" label="Número do RG" required></lightning-input-field>
+                </lightning-layout-item>
+            
+                <lightning-layout-item size="6" padding="around-small">
+                    <label>Órgão expedidor do RG</label>
+                    <lightning-input-field field-name={rgOrgaoExpedidorField} type="text" variant="label-hidden" label="Órgão expedidor do RG"></lightning-input-field>
+                </lightning-layout-item>
+            
+                <lightning-layout-item size="6" padding="around-small">
+                    <label>Data de expedição do RG</label>
+                <lightning-input-field field-name={rgDataExpedicaoField} type="date" variant="label-hidden" label="Data de expedição do RG" ></lightning-input-field>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="6" padding="around-small">
+                    <label>UF do órgão expedidor do RG</label>
+                <lightning-input-field field-name={rgUFOrgaoExpedidorField}  variant="label-hidden"></lightning-input-field>
+                </lightning-layout-item>
+        
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <!-- professionalInfo form -->
+
+            <lightning-record-edit-form object-api-name="ProfessionalInfo__c" record-id={professionalInfoId} data-id="professionalInfoForm" >
+                <lightning-layout multiple-rows="true" >
+                    
+                    <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Profissão</label>
+                        <lightning-input-field field-name={jobTitleField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Situação Profissional</label>
+                        <lightning-input-field field-name={statusField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+                
+                </lightning-layout>
+            </lightning-record-edit-form>
+        </lightning-accordion-section>
+
+        <!-- Communication Contacts -->
+
+        <lightning-accordion-section name="dadosContato" label="Dados de Contato">
+            <lightning-record-edit-form  object-api-name="CommunicationContacts__c" record-id={celularId} data-id="phoneForm" >
+                <lightning-layout  multiple-rows="true" >
+     
+                <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+                <lightning-input-field field-name="Channel__c"  variant="label-hidden" style="display: none;" data-id="phoneChannel"></lightning-input-field>
+                
+                <lightning-layout-item size="12" padding="around-small">
+                    <label>Celular</label>
+                    <lightning-input-field class="validate" field-name={celularField}  variant="label-hidden" data-id="phoneInput" required></lightning-input-field>
+                </lightning-layout-item> 
+
+             </lightning-layout>
+            </lightning-record-edit-form>
+
+            <lightning-record-edit-form  object-api-name="CommunicationContacts__c" record-id={emailId} data-id="emailForm" >
+                <lightning-layout  multiple-rows="true" >
+     
+                <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+                <lightning-input-field field-name="Channel__c"  variant="label-hidden" style="display: none;" data-id="emailChannel"></lightning-input-field>
+
+                <lightning-layout-item size="12" padding="around-small">
+                    <label>Email</label>
+                    <lightning-input-field class="validate" type="email" field-name={emailField}  variant="label-hidden" data-id="emailInput" required></lightning-input-field>
+                </lightning-layout-item> 
+
+
+             </lightning-layout>
+            </lightning-record-edit-form>
+        </lightning-accordion-section>
+
+        <lightning-accordion-section name="dadosEndereco" label="Dados de Endereço">
+            <lightning-record-edit-form  object-api-name="Addresses__c" record-id={addressId} data-id="addressForm" >
+    
+                <lightning-layout  multiple-rows="true" >
+         
+                    <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Rua</label>
+                        <lightning-input-field field-name={streetField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Endereço</label>
+                        <lightning-input-field field-name={enderecoField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Número</label>
+                        <lightning-input-field field-name={streetNumberField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Complemento</label>
+                        <lightning-input-field field-name={complementField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>CEP</label>
+                        <lightning-input-field field-name={postalCodeField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Bairro</label>
+                        <lightning-input-field field-name={neighborhoodField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Cidade</label>
+                        <lightning-input-field field-name={cityField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>Estado</label>
+                        <lightning-input-field field-name={stateField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                    <lightning-layout-item size="6" padding="around-small">
+                        <label>País</label>
+                        <lightning-input-field field-name={countryField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                </lightning-layout>
+    
+            </lightning-record-edit-form>
+        </lightning-accordion-section>
+
+        <!-- RENDA -->
+
+        <lightning-accordion-section name="dadosRenda" label="Renda">
+
+            <lightning-record-edit-form  object-api-name="Opportunity" record-id={opportunityid} data-id="rendaMinimaOppForm">
+                <lightning-layout  multiple-rows="true" >
+                    
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Renda mínima</label>
+                        <lightning-input-field field-name={rendaMinimaField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={monthlyIncomeId} data-id="rendaInformadaForm" >
+                <lightning-layout  multiple-rows="true" >
+                    
+                    <lightning-input-field field-name="Account_Financial_Relationship__c " variant="label-hidden" data-id="AccFinRelId "></lightning-input-field>
+                    
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Renda Informada</label>
+                        <lightning-input-field field-name={rendaInformadaField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={presumedMonthlyIncomeId} data-id="rendaConsideradaForm"  >
+                <lightning-layout  multiple-rows="true" >
+                    
+                    <lightning-input-field field-name="Account_Financial_Relationship__c " variant="label-hidden" data-id="AccFinRelId "></lightning-input-field>
+                   
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Renda Considerada</label>
+                        <lightning-input-field field-name={rendaConsideradaField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                </lightning-layout>
+            </lightning-record-edit-form>
+
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={confirmedMonthlyIncomeId} data-id="rendaConfirmadaForm" onsuccess={handleFinResSuccess} >
+                <lightning-layout  multiple-rows="true" >
+                    
+                    <!-- <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field> -->
+    
+                    <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaConfirmadaTypeInput"></lightning-input-field>
+                    
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Renda Confirmada</label>
+                        <lightning-input-field field-name={rendaConfirmadaField}  variant="label-hidden" data-id="rendaConfirmadaInput"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                </lightning-layout>
+            </lightning-record-edit-form>
+    
+            <lightning-record-edit-form  object-api-name="Account" record-id={accountid} data-id="accountPatrimonioForm">
+                <lightning-layout  multiple-rows="true" >
+                    
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Patrimônio líquido máximo</label>
+                        <lightning-input-field field-name={patrimonioMaxField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" padding="around-small">
+                        <label>Patrimônio líquido mínimo</label>
+                        <lightning-input-field field-name={patrimonioMinField}  variant="label-hidden"></lightning-input-field>
+                    </lightning-layout-item>
+    
+                </lightning-layout>
+            </lightning-record-edit-form>
+    
+        </lightning-accordion-section>
+
+    </lightning-accordion>
+
+    <lightning-button
+        class="slds-m-around_small"
+        variant="brand"
+        
+        onclick={handleSave}
+        name="save"
+        label="Salvar"
+        >
+    </lightning-button>
+</template>

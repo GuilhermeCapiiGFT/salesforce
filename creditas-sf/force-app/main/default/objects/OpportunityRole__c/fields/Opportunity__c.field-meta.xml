@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Opportunity</label>
     <referenceTo>Opportunity</referenceTo>
-    <relationshipLabel>Opportunity Roles</relationshipLabel>
+    <relationshipLabel>Proponentes</relationshipLabel>
     <relationshipName>OpportunityRoles</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

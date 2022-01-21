@@ -3,7 +3,7 @@
     <fullName>IssuerState__c</fullName>
     <description>Estado onde o documento que está sendo cadastrado foi emitido</description>
     <externalId>false</externalId>
-    <label>Estado</label>
+    <label>Estado emissor</label>
     <length>20</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>

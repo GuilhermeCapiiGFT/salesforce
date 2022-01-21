@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>InstallmentType__c</fullName>
     <externalId>false</externalId>
-    <label>InstallmentType</label>
+    <label>Sistema de Amortização</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <type>Picklist</type>

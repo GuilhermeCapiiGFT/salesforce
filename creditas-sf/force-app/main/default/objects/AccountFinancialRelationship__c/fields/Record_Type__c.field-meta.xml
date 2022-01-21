@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>Recurso_Financeiro__r.RecordType.Name</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Record Type</label>
+    <label>Tipo de registro</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

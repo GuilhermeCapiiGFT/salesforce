@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TaskType__c</fullName>
+    <externalId>false</externalId>
+    <label>Tipo da Tarefa</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Validar Emissão da Minuta</fullName>
+                <default>false</default>
+                <label>Validar Emissão da Minuta</label>
+            </value>
+            <value>
+                <fullName>Condicionante de Fechamento para Emissão</fullName>
+                <default>false</default>
+                <label>Condicionante de Fechamento para Emissão</label>
+            </value>
+            <value>
+                <fullName>Condicionante de Formalização para Emissão</fullName>
+                <default>false</default>
+                <label>Condicionante de Formalização para Emissão</label>
+            </value>
+            <value>
+                <fullName>Adiantar Minuta</fullName>
+                <default>false</default>
+                <label>Adiantar Minuta</label>
+            </value>
+            <value>
+                <fullName>Confirmar Valores</fullName>
+                <default>false</default>
+                <label>Confirmar Valores</label>
+            </value>
+            <value>
+                <fullName>Atualizar Proposta Final de Crédito</fullName>
+                <default>false</default>
+                <label>Atualizar Proposta Final de Crédito</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão de Fechamento</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão de Fechamento</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão de Formalização</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão de Formalização</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão e Operações Cartorárias</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão e Operações Cartorárias</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão de Jurídico</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão de Jurídico</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão de Crédito</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão de Crédito</label>
+            </value>
+            <value>
+                <fullName>Pendência de Emissão de Risco Imobiliário</fullName>
+                <default>false</default>
+                <label>Pendência de Emissão de Risco Imobiliário</label>
+            </value>
+            <value>
+                <fullName>Emitir Minuta</fullName>
+                <default>false</default>
+                <label>Emitir Minuta</label>
+            </value>
+            <value>
+                <fullName>Conferir Minuta</fullName>
+                <default>false</default>
+                <label>Conferir Minuta</label>
+            </value>
+            <value>
+                <fullName>Validar Minuta com Credor</fullName>
+                <default>false</default>
+                <label>Validar Minuta com Credor</label>
+            </value>
+            <value>
+                <fullName>Enviar Minuta Rascunho para o Cliente</fullName>
+                <default>false</default>
+                <label>Enviar Minuta Rascunho para o Cliente</label>
+            </value>
+            <value>
+                <fullName>Ajustar Minuta</fullName>
+                <default>false</default>
+                <label>Ajustar Minuta</label>
+            </value>
+            <value>
+                <fullName>Liberar Minuta Final</fullName>
+                <default>false</default>
+                <label>Liberar Minuta Final</label>
+            </value>
+            <value>
+                <fullName>Formalização - Nova proposta</fullName>
+                <default>false</default>
+                <label>Formalização - Nova proposta</label>
+            </value>
+            <value>
+                <fullName>Formalização - Em análise</fullName>
+                <default>false</default>
+                <label>Formalização - Em análise</label>
+            </value>
+            <value>
+                <fullName>Formalização - Pendência</fullName>
+                <default>false</default>
+                <label>Formalização - Pendência</label>
+            </value>
+            <value>
+                <fullName>Pendência OPS</fullName>
+                <default>false</default>
+                <label>Pendência OPS</label>
+            </value>
+            <value>
+                <fullName>Contrato gerado</fullName>
+                <default>false</default>
+                <label>Contrato gerado</label>
+            </value>
+            <value>
+                <fullName>Proposta descartada</fullName>
+                <default>false</default>
+                <label>Proposta descartada</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

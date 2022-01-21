@@ -1,0 +1,53 @@
+<template>
+    <template if:true={showComponent}>
+        <lightning-card title="Adicionar novo endereço">    
+            <div class="slds-grid slds-gutters" style="margin-left:14px; margin-right:14px">
+                <div class="slds-col">
+                    <lightning-input type="text" disabled={disabledCepInput} name="cep" label="CEP" value={varCep} onchange={handleInputChange}> </lightning-input>
+                </div>
+                <div class="slds-col" style="padding-top:22px">
+                    <lightning-button-group class="slds-align_absolute-center">
+                        <lightning-button label="Search" variant="brand-outline" icon-name="utility:search" onclick={searchCep} ></lightning-button>
+                        <lightning-button label="Reset" variant="brand-outline" icon-name="utility:loop" onclick={reset} ></lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="margin-left:14px; margin-right:14px">
+                <div class="slds-col">
+                    <lightning-input type="text" name="logradouro" label="Rua / Avenida" value={logradouro} onchange={handleInputChange}> </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input type="text" name="numero" label="Número" value={numero} onchange={handleInputChange}> </lightning-input>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="margin-left:14px; margin-right:14px">
+                <div class="slds-col">
+                    <lightning-input type="text" name="complemento" label="Complemento" value={complemento} onchange={handleInputChange}> </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input type="text" name="bairro" label="Bairro" value={bairro}> </lightning-input>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="margin-left:14px; margin-right:14px">
+                <div class="slds-col">
+                    <lightning-input type="text" name="cidade" label="Cidade" value={cidade} onchange={handleInputChange}> </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input type="text" name="estado" label="Estado" value={estado} onchange={handleInputChange}> </lightning-input>
+                </div>
+            </div>
+            <lightning-button-group class="slds-align_absolute-center" style="margin-top:16px">
+                <lightning-button label="Save" variant="brand" icon-name="utility:save" onclick={save}></lightning-button>
+            </lightning-button-group>
+        </lightning-card>
+    </template>
+      
+
+    <template if:true={showLoadingScreen}>
+        <lightning-card title={spinnerMessage}>    
+            <div class="exampleHolder" style="height:100px">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </lightning-card>
+    </template>
+</template>

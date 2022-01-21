@@ -2,10 +2,10 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>MunicipalRegistry__c</fullName>
     <externalId>false</externalId>
-    <label>MunicipalRegistry</label>
+    <label>Registro Municipal</label>
     <length>100</length>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
