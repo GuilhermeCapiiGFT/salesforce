@@ -654,7 +654,6 @@
             <default>false</default>
         </values>
     </picklistValues>
-
     <picklistValues>
         <picklist>enabledProducts__c</picklist>
         <values>
