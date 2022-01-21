@@ -158,222 +158,242 @@ public class AccountIntegrationModel{
 	}
 
 	public static String accountMock() {
-		String json=		'{'+
-		'    "id": "PER-87CED27B-0CFD-4475-BB03-53B2E6F8A7C7",'+
-		'    "mainDocument": {'+
-		'        "type": "RFC",'+
-		'        "code": "HEVP260702QA3"'+
+        String json=		'{'+
+		'  "income": ['+
+		'    {'+
+		'      "id": "031593cc-5893-443d-b0d0-d9523aabe1a2",'+
+		'      "type": "MONTHLY_INCOME",'+
+		'      "createdAt": "2021-12-17T14:01:07Z",'+
+		'      "updatedAt": "2021-12-17T14:01:07Z",'+
+		'      "amount": {'+
+		'        "currencyCode": "BRL",'+
+		'        "amount": "17000"'+
+		'      }'+
 		'    },'+
-		'    "fullName": "Melanie Martin Virginia Esteban",'+
-		'    "additionalProperties": {'+
-		'        "firstName": "Melanie",'+
-		'        "secondName": "Martin",'+
-		'        "lastName": "Virginia",'+
-		'        "secondLastName": "Esteban",'+
-		'        "curp": "EEVM960513MMCSIL01",'+
-		'        "ineNumber": "1234567891234",'+
-		'        "bankName": "BBVA",'+
-		'        "accountNumber": "123445566",'+
-		'        "clabe": "123445566",'+
-		'        "politicallyExposed": false'+
-        '        "tenant": "creditasbr"'+
-        '        "modifiedBy": "Nathalia"'+    
+		'    {'+
+		'      "id": "edad3a15-3929-4627-b86e-53f030f0da00",'+
+		'      "type": "PRESUMED_MONTHLY_INCOME",'+
+		'      "createdAt": "2021-12-17T14:01:07Z",'+
+		'      "updatedAt": "2021-12-17T14:01:07Z",'+
+		'      "amount": {'+
+		'        "currencyCode": "BRL",'+
+		'        "amount": "7910.0"'+
+		'      }'+
+		'    }'+
+		'  ],'+
+		'  "addresses": ['+
+		'    {'+
+		'      "id": "71ede5f3-c07c-4601-9c60-c8b49f3405fd",'+
+		'      "type": "HOME",'+
+		'      "country": "BR",'+
+		'      "neighborhood": "Bairro",'+
+		'      "street": "Rua Rio Feio",'+
+		'      "streetNumber": "400",'+
+		'      "complement": "apt 201",'+
+		'      "zipCode": "09631030",'+
+		'      "city": "SBC",'+
+		'      "state": "SP"'+
 		'    },'+
-		'    "wealth": {'+
-		'        "networthLowerLimit": "30000",'+
-		'        "networthUpperLimit": "100000",'+
-		'        "currencyCode": "MXN",'+
-		'        "informedDate": "2021-08-16T14:09:42.189Z"'+
+		'    {'+
+		'      "id": "4b2a8bbb-55d0-44ac-980c-a24497967e28",'+
+		'      "type": "OTHER",'+
+		'      "country": "BR",'+
+		'      "neighborhood": "Downtown",'+
+		'      "street": "Paulista Avenue",'+
+		'      "streetNumber": "1000",'+
+		'      "complement": "C404 interior",'+
+		'      "zipCode": "06300",'+
+		'      "city": "Administrative level 2",'+
+		'      "state": "Administrative level 1"'+
 		'    },'+
-		'    "gender": "FEMALE",'+
-		'    "birthDate": "1996-05-13",'+
-		'    "civilStatus": "MARRIED",'+
-		'    "cityOfBirth": "Mexico",'+
-		'    "countryOfBirth": "MX",'+
-		'    "nationality": "MX",'+
-		'    "contacts": ['+
-		'        {'+
-		'            "id": "2d8003db-8e36-4f1b-a238-f1813d2f1fc3",'+
-		'            "channel": "PHONE",'+
-		'            "code": "1155557771",'+
-		'            "type": "PERSONAL"'+
-		'        },'+
-		'        {'+
-		'            "id": "758a54b3-0fbf-49e8-a7bc-5a0397ec3940",'+
-		'            "channel": "WHATSAPP",'+
-		'            "code": "11999998883",'+
-		'            "type": "COMERCIAL"'+
-		'        },'+
-		'        {'+
-		'            "id": "2d8003db-8e36-4f1b-a238-f1813d2f1fc3",'+
-		'            "channel": "WHATSAPP",'+
-		'            "code": "11999998882",'+
-		'            "type": "PERSONAL"'+
-		'        },'+
-		'        {'+
-		'            "id": "16cbd37c-6b99-4510-85ee-21e8bf61bc27",'+
-		'            "channel": "EMAIL",'+
-		'            "code": "email@email2.com",'+
-		'            "type": "PERSONAL"'+
-		'        }'+
-		'    ],'+
-		'    "addresses": ['+
-		'        {'+
-		'            "id": "d2d34ac2-b748-444b-ba99-45712381b1a7",'+
-		'            "type": "BILLING",'+
-		'            "country": "MX",'+
-		'            "neighborhood": "ARBOLEDAS DEL SUR",'+
-		'            "street": "CERRADA BETIS",'+
-		'            "streetNumber": "30",'+
-		'            "complement": "14388",'+
-		'            "zipCode": "14376"'+
-		'        },'+
-		'        {'+
-		'            "id": "0c498380-1092-4045-a782-f1b8f85210de",'+
-		'            "type": "HOME",'+
-		'            "country": "MX",'+
-		'            "neighborhood": "ARBOLEDAS DEL SUR",'+
-		'            "street": "CERRADA BETIS",'+
-		'            "streetNumber": "40",'+
-		'            "complement": "14388",'+
-		'            "zipCode": "14376"'+
-		'        }'+
-		'    ],'+
-		'    "documents": ['+
-		'        {'+
-		'            "id": "92ff3147-a698-4ae5-ad3b-bea939911015",'+
-		'            "type": "PIS",'+
-		'            "code": "HEVP260702QA3"'+
-		'        },'+
-		'        {'+
-		'            "id": "e38f9f2c-15e6-4a5a-a3a3-fc990f8ecd82",'+
-		'            "type": "CURP",'+
-		'            "code": "HEVP371106HASNIL09",'+
-		'            "issueDate": "2021-07-07",'+
-		'            "issuer": "CURP",'+
-		'            "issuerState": "Mexico"'+
-		'        },'+
-		'        {'+
-		'            "id": "a953ab68-eb25-4708-8fd1-434b9f8649ef",'+
-		'            "type": "CURP",'+
-		'            "code": "HEVP371113HASNIL04",'+
-		'            "issueDate": "2021-07-07",'+
-		'            "issuer": "CURP",'+
-		'            "issuerState": "Mexico"'+
-		'        }'+
-		'    ],'+
-		'    "education": {'+
-		'        "degree": "COLLEGE_DEGREE_COMPLETED"'+
+		'    {'+
+		'      "id": "2660df97-4abf-490a-a038-cb6be082449d",'+
+		'      "type": "BILLING",'+
+		'      "country": "BR",'+
+		'      "neighborhood": "centro",'+
+		'      "street": "Rua dos Tapesss",'+
+		'      "streetNumber": "165",'+
+		'      "complement": "Ap 176",'+
+		'      "zipCode": "01527050",'+
+		'      "city": "São Paulo",'+
+		'      "state": "SP"'+
+		'    }'+
+		'  ],'+
+		'  "education": {},'+
+		'  "gender": "MALE",'+
+		'  "documents": ['+
+		'    {'+
+		'      "id": "c5add100-a533-495c-9701-fe1a9b129a83",'+
+		'      "type": "CPF",'+
+		'      "code": "98765432100"'+
 		'    },'+
-		'    "filiation": ['+
-		'        {'+
-		'            "type": "MOTHER",'+
-		'            "name": "Paola Virginia 4"'+
-		'        }'+
-		'    ],'+
-		'    "income": ['+
-		'        {'+
-		'            "id": "43a6c3d0-47db-45f3-b410-b63859efd9a2",'+
-		'            "type": "MONTHLY_INCOME",'+
-		'            "source": "SALES",'+
-		'            "amount": {'+
-		'                "currencyCode": "MXN",'+
-		'                "amount": "10000"'+
-		'            },'+
-		'            "createdAt": "2021-08-16T21:06:49Z",'+
-		'            "updatedAt": "2021-08-16T21:06:49Z"'+
-		'        },'+
-		'        {'+
-		'            "id": "f15842b0-7978-4212-828a-83f90459e983",'+
-		'            "type": "NET_MONTHLY_INCOME",'+
-		'            "source": "RENTS",'+
-		'            "amount": {'+
-		'                "currencyCode": "MXN",'+
-		'                "amount": "10000"'+
-		'            },'+
-		'            "createdAt": "2021-08-16T21:06:49Z",'+
-		'            "updatedAt": "2021-08-16T21:06:49Z"'+
-		'        },'+
-		'        {'+
-		'            "id": "5baf872f-6b43-4da9-a8ca-74b3ca149aa1",'+
-		'            "type": "PRESUMED_MONTHLY_INCOME",'+
-		'            "source": "RENTS",'+
-		'            "amount": {'+
-		'                "currencyCode": "MXN",'+
-		'                "amount": "10000"'+
-		'            },'+
-		'            "createdAt": "2021-08-16T21:06:49Z",'+
-		'            "updatedAt": "2021-08-16T21:06:49Z"'+
-		'        }'+
-		'    ],'+
-		'    "professionalInfo": ['+
-		'        {'+
-		'            "id": "3cd499c0-5bb1-4019-83f3-2cf8d961da2c",'+
-		'            "startDate": {'+
-		'                "year": 2019,'+
-		'                "month": 10'+
-		'            },'+
-		'            "jobTitle": "Seller",'+
-		'            "companyName": "La Vivenda",'+
-		'            "economicActivity": "AGRICULTURE",'+
-		'            "status": "SELF_EMPLOYED",'+
-		'            "category": "ADMINISTRATIVE",'+
-		'            "current": true,'+
-		'            "professionalIncome": ['+
-		'                {'+
-		'                    "type": "MONTHLY_INCOME",'+
-		'                    "amount": {'+
-		'                        "currencyCode": "MXN",'+
-		'                        "amount": "10000"'+
-		'                    },'+
-		'                    "source": "SALES"'+
-		'                }'+
-		'            ]'+
-		'        },'+
-		'        {'+
-		'            "id": "8576ff9d-b6db-4253-adbe-0bd116419097",'+
-		'            "startDate": {'+
-		'                "year": 2019,'+
-		'                "month": 10'+
-		'            },'+
-		'            "jobTitle": "Seller",'+
-		'            "companyName": "La Vivenda",'+
-		'            "economicActivity": "AGRICULTURE",'+
-		'            "status": "SELF_EMPLOYED",'+
-		'            "category": "MERCHANT",'+
-		'            "current": true,'+
-		'            "professionalIncome": ['+
-		'                {'+
-		'                    "type": "MONTHLY_INCOME",'+
-		'                    "amount": {'+
-		'                        "currencyCode": "MXN",'+
-		'                        "amount": "8000"'+
-		'                    },'+
-		'                    "source": "SALES"'+
-		'                }'+
-		'            ]'+
-		'        }'+
-		'    ],'+
-		'    "relationships": ['+
-		'        {'+
-		'            "id": "d565c5ca-b5fc-42fc-b120-62550c34a0aa",'+
-		'            "type": "SPOUSE",'+
-		'            "personId": "PER-EDF4345E-04C2-45C1-87D5-445F52391DA1"'+
-		'        },'+
-		'        {'+
-		'            "id": "e65a232d-9ec4-4bc5-965f-a290fde3a599",'+
-		'            "type": "OFFSPRING",'+
-		'            "personId": "PER-54AA8B47-D0BD-464F-A446-5FA759222CD3"'+
-		'        },'+
-		'        {'+
-		'            "id": "3b7d048c-db63-45b9-bf8c-e5b26dd6b33c",'+
-		'            "type": "OFFSPRING",'+
-		'            "personId": "PER-28D3B49A-A5D9-4018-8BA3-C100A8516A36"'+
-		'        }'+
-		'    ],'+
-		'    "createdAt": "2021-08-16T14:09:42.206Z",'+
-		'    "updatedAt": "2021-08-16T23:40:11.362Z",'+
-		'    "version": 27'+
+		'    {'+
+		'      "id": "bfe5cdf0-cb95-44ea-a0f0-adb1d80282be",'+
+		'      "type": "RG",'+
+		'      "code": "520037789",'+
+		'      "issueDate": "2020-04-30",'+
+		'      "issuer": "SSP",'+
+		'      "issuerState": "SP"'+
+		'    },'+
+		'    {'+
+		'      "id": "abb64380-3259-4fb0-a188-3dff4a1b109b",'+
+		'      "type": "CNH",'+
+		'      "code": "67351450030",'+
+		'      "issueDate": "2018-04-20",'+
+		'      "issuer": "SSP"'+
+		'    },'+
+		'    {'+
+		'      "id": "67478be6-5df8-4a87-9e26-001da7b49014",'+
+		'      "type": "RG",'+
+		'      "code": "123123123123",'+
+		'      "issueDate": "1996-06-07",'+
+		'      "issuer": "SSP",'+
+		'      "issuerState": "AL"'+
+		'    }'+
+		'  ],'+
+		'  "professionalInfo": ['+
+		'    {'+
+		'      "id": "95f9bc09-1c1b-45a5-b2c7-f6968077c506",'+
+		'      "jobTitle": "Agenciador(a) de Propaganda",'+
+		'      "status": "CLT",'+
+		'      "category": "OTHER",'+
+		'      "current": true'+
+		'    }'+
+		'  ],'+
+		'  "civilStatus": "SINGLE",'+
+		'  "createdAt": "2021-06-08T14:40:12.886Z",'+
+		'  "relationships": ['+
+		'    {'+
+		'      "id": "566d79c5-e6a0-4c65-8601-d3d8ac5fb49c",'+
+		'      "type": "SPOUSE",'+
+		'      "personId": "PER-9141D8D1-75D6-442E-9BF0-8C2406D0B81C"'+
+		'    }'+
+		'  ],'+
+		'  "cityOfBirth": "São Paulo",'+
+		'  "countryOfBirth": "BR",'+
+		'  "id": "PER-A74F103F-AE7E-43A6-BA3F-172023B54AFA",'+
+		'  "tenant": "creditasbr",'+
+		'  "updatedAt": "2021-12-17T14:01:07.16Z",'+
+		'  "wealth": {'+
+		'    "networthLowerLimit": "500000.0",'+
+		'    "networthUpperLimit": "700000.0",'+
+		'    "currency": "BRL"'+
+		'  },'+
+		'  "fullName": "Teste BackgroundCheck 17-12-21 11:00",'+
+		'  "version": 550,'+
+		'  "birthDate": "1995-08-28",'+
+		'  "nationality": "BR",'+
+		'  "additionalProperties": {'+
+		'    "politicallyExposed": true'+
+		'  },'+
+		'  "mainDocument": {'+
+		'    "type": "CPF",'+
+		'    "code": "98765432100"'+
+		'  },'+
+		'  "contacts": ['+
+		'    {'+
+		'      "id": "b33a192b-a92d-43f9-86df-8cbb9a769ff4",'+
+		'      "channel": "EMAIL",'+
+		'      "code": "edercosta94@live.com",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "17419674-b98c-4237-b26a-553ca1f943cb",'+
+		'      "channel": "SMS",'+
+		'      "code": "21982850953",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "b33a192b-a92d-43f9-85df-8cbb9a769ff4",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11948573849",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "4b6819e4-c67e-4e14-bc34-0fc19b162ac9",'+
+		'      "channel": "EMAIL",'+
+		'      "code": "work_email@email.com",'+
+		'      "type": "COMERCIAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "b0ca3a04-1c60-48ee-afd9-380d30af1c1a",'+
+		'      "channel": "PHONE",'+
+		'      "code": "1132569875",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "09c161d7-7784-44b7-bc1a-56d03d9b016b",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11954856381",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "89ff92de-4a72-4974-8d8e-bce074480cc6",'+
+		'      "channel": "PHONE",'+
+		'      "code": "212221111111",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "c014aa97-46b8-4b96-8efa-ca990a7639ee",'+
+		'      "channel": "PHONE",'+
+		'      "code": "228898333333",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "5130a9da-8635-4068-987e-749557a20b29",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11912345678",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "7c54ceae-527c-4995-bbb6-252fb681d392",'+
+		'      "channel": "PHONE",'+
+		'      "code": "1122223333",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "0ef9ecf4-de2e-4de1-a0c5-0f89318df5fc",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11987675352",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "41702dd4-ae1c-44c4-8e87-3150659c259c",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11986485000",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "c6674872-e081-401b-afde-0a84b0d34316",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11986485421",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "0b265ae0-b583-4757-b1e4-842463d0381f",'+
+		'      "channel": "PHONE",'+
+		'      "code": "819960721753",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "57bc60d8-c0d6-48a8-9db8-98118f4f829b",'+
+		'      "channel": "PHONE",'+
+		'      "code": "81996072175",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "42bfb560-2c0d-420c-83e9-d4e66d3641bd",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11996072170",'+
+		'      "type": "PERSONAL"'+
+		'    },'+
+		'    {'+
+		'      "id": "dfc3a5be-5a96-45a0-a1f1-ab8778eedd52",'+
+		'      "channel": "PHONE",'+
+		'      "code": "11112222312323",'+
+		'      "type": "PERSONAL"'+
+		'    }'+
+		'  ]'+
 		'}';
         return json;
 	}
