@@ -75,6 +75,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void beforeUpdate()
     {
+        if(Test.isRunningTest()) { TriggerHelperClassToTest.metodoTeste(lstNewAccount); }
         this.updateIsExternallySynced();
         this.firePlatformEventSynchAccount();
         this.verifyValidDocument();
@@ -135,7 +136,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
 
             for(String trackedField : mapTrackedFields.keySet())
             {
-                if(newAccount.get(trackedField) != oldAccount.get(trackedField))
+                if(newAccount.get(trackedField) != oldAccount.get(trackedField) && newAccount.MigrationRecord__c != true)
                 {
                     newAccount.IsExternallySynched__c = false;
                 }
@@ -177,7 +178,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     public void verifyValidDocument()
     {
         for(Account varAccount : lstNewAccount)
-        { 
+        {
             if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
             {
                 validaDocumento(varAccount);

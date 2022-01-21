@@ -3,7 +3,7 @@
     <fullName>Type__c</fullName>
     <description>Tipo de relacionamento entre as pessoas da conta</description>
     <externalId>false</externalId>
-    <label>Tipo</label>
+    <label>Tipo de vínculo</label>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
@@ -14,24 +14,24 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>FATHER</fullName>
+                <fullName>SPOUSE</fullName>
                 <default>false</default>
-                <label>FATHER</label>
+                <label>Cônjuge</label>
             </value>
             <value>
                 <fullName>MOTHER</fullName>
                 <default>false</default>
-                <label>MOTHER</label>
+                <label>Mãe</label>
+            </value>
+            <value>
+                <fullName>FATHER</fullName>
+                <default>false</default>
+                <label>Pai</label>
             </value>
             <value>
                 <fullName>OFFSPRING</fullName>
                 <default>false</default>
-                <label>OFFSPRING</label>
-            </value>
-            <value>
-                <fullName>SPOUSE</fullName>
-                <default>false</default>
-                <label>SPOUSE</label>
+                <label>Filho(a)</label>
             </value>
         </valueSetDefinition>
     </valueSet>

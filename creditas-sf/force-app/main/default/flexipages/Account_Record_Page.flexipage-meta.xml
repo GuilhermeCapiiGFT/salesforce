@@ -197,6 +197,12 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>searchCep</componentName>
+                <identifier>c_searchCep1</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>sidebartabs</value>

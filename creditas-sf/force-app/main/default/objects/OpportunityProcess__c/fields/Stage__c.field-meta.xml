@@ -13,7 +13,7 @@
             <sorted>false</sorted>
             <value>
                 <fullName>Em Aberto</fullName>
-                <default>false</default>
+                <default>true</default>
                 <label>Em Aberto</label>
             </value>
             <value>
@@ -25,6 +25,54 @@
                 <fullName>Concluído</fullName>
                 <default>false</default>
                 <label>Concluído</label>
+            </value>
+            <value>
+                <fullName>Adiantar Minuta</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Adiantar Minuta</label>
+            </value>
+            <value>
+                <fullName>Condicionantes</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Condicionantes</label>
+            </value>
+            <value>
+                <fullName>Confirmação de Valores</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Confirmação de Valores</label>
+            </value>
+            <value>
+                <fullName>Emissão da Minuta</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Emissão da Minuta</label>
+            </value>
+            <value>
+                <fullName>Liberação da Minuta</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Liberação da Minuta</label>
+            </value>
+            <value>
+                <fullName>Pendências</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Pendências</label>
+            </value>
+            <value>
+                <fullName>Pendências Após Emissão</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Pendências Após Emissão</label>
+            </value>
+            <value>
+                <fullName>Validar Emissão de Minuta</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Validar Emissão de Minuta</label>
             </value>
         </valueSetDefinition>
     </valueSet>

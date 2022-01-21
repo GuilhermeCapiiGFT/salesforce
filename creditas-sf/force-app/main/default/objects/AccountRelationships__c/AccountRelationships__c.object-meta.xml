@@ -157,7 +157,7 @@
     <label>Conta Relacionada</label>
     <nameField>
         <displayFormat>AccRel-{00000000}</displayFormat>
-        <label>Nome de Contas Relacionadas</label>
+        <label>Código da Conta Relacionada</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>

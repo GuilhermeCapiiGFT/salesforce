@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Conta Relacionada</label>
     <referenceTo>Account</referenceTo>
-    <relationshipLabel>Proponentes</relationshipLabel>
+    <relationshipLabel>Oportunidades</relationshipLabel>
     <relationshipName>OpportunityRoles</relationshipName>
     <required>true</required>
     <trackFeedHistory>true</trackFeedHistory>
