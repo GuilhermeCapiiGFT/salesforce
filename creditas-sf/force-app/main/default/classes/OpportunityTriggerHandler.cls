@@ -40,7 +40,7 @@ public without sharing class OpportunityTriggerHandler extends TriggerHandler {
    * 1.0
    **********************************************************************************************************************************/
   public override void beforeInsert() {
-    //EvaluationMethods.evaluateAtWorkOpportunities(lstNewOpportunity);
+    EvaluationMethods.evaluateAtWorkOpportunities(lstNewOpportunity);
   }
 
   /**********************************************************************************************************************************
