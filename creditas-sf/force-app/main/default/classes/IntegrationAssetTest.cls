@@ -24,11 +24,7 @@ global with sharing class IntegrationAssetTest {
     }
  
     @isTest
-    static void testUpsertAssetSuccess(){   
-        /*Account owner = new Account();
-        owner.Name = 'Jose';
-        owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
-        insert owner;*/
+    static void testUpsertAssetSuccess(){       
         
         Test.startTest();
         	RestRequest req = new RestRequest(); 
@@ -40,13 +36,14 @@ global with sharing class IntegrationAssetTest {
         	RestContext.response= res;             
             IntegrationAsset.putMethod();          
         Test.stopTest();
-        System.assertEquals(res.statusCode, 200); 
+        
+        System.assertEquals(res.statusCode, 200, 'Asset upsert successfully'); 
         
         List<FinancialResources__c> assetList = [SELECT Id FROM FinancialResources__c];
-        System.assertEquals(1, assetList.size()); 
+        System.assertEquals(1, assetList.size(),'FinancialResources upsert successfully'); 
         
         List<AccountFinancialRelationship__c> accFinancialRelationshipList = [SELECT Id FROM AccountFinancialRelationship__c];
-        System.assertEquals(1, accFinancialRelationshipList.size()); 
+        System.assertEquals(1, accFinancialRelationshipList.size(),'AccountFinancialRelationship upsert successfully'); 
     }  
     
     @isTest
@@ -58,12 +55,12 @@ global with sharing class IntegrationAssetTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockDmlError());        	
         	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	IntegrationAsset.putMethod();          
+        	RestContext.response= res;            
+            IntegrationAsset.putMethod();          
         Test.stopTest();
+        
         System.debug(EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString());
-		system.assertEquals(res.statusCode, 500);      
+		system.assertEquals(res.statusCode, 500, 'Error inserting asset.');      
     }   
     
     @isTest
@@ -75,11 +72,11 @@ global with sharing class IntegrationAssetTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof('string inválida para formato JSON');        	
         	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	IntegrationAsset.putMethod();          
+        	RestContext.response= res;          
+            IntegrationAsset.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500);      
+        
+		system.assertEquals(res.statusCode, 500,'Invalid string for JSON format.');      
     }         
 
 	@isTest
@@ -91,14 +88,13 @@ global with sharing class IntegrationAssetTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockErroNull('nullOwners'));        	
         	RestContext.request = req;
-        	RestContext.response= res;  
-        
+        	RestContext.response= res;          
         	IntegrationAsset.putMethod();          
         Test.stopTest();
+        
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
-
        	system.assertEquals(reqResString, '{"status":500,"message":"The owner(s) was not found on Salesforce.","assetId":null}');   
-		system.assertEquals(res.statusCode, 500);      
+		system.assertEquals(res.statusCode, 500,'Owner cannot be null.');      
     }  
     
     @isTest
@@ -127,7 +123,7 @@ global with sharing class IntegrationAssetTest {
         
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
 		system.assertEquals(reqResString, '{"status":500,"message":"The owner(s) was not found on Salesforce.","assetId":null}');
-        system.assertEquals(res.statusCode, 500);
+        system.assertEquals(res.statusCode, 500, 'The owner(s) was not found on Salesforce.');
     }   
     
     @isTest
@@ -149,11 +145,11 @@ global with sharing class IntegrationAssetTest {
         Test.stopTest();      
         
         List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
-        system.assertEquals(res.statusCode, null);    
+        system.assertEquals(res.statusCode, null,'Request cannot be null.');    
     }    
     
     @isTest
-    static void testSetErrorResponseOthers(){         
+    static void testSetResponseOthers(){         
         Account owner = new Account();
         owner.Name = 'Jose';
         owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
@@ -169,13 +165,11 @@ global with sharing class IntegrationAssetTest {
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockOthers());
         	RestContext.request = req;
         	RestContext.response= res;
-        	IntegrationAsset.putMethod();
-       		/*delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];
-       		IntegrationAsset.putMethod();*/
+        	IntegrationAsset.putMethod();       		
         Test.stopTest();  
         
 		List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1]; 
-        system.assertEquals(res.statusCode, 200);      
+        system.assertEquals(res.statusCode, 200,'Successfully added Others type.');      
     }  
     
     @isTest
@@ -199,6 +193,6 @@ global with sharing class IntegrationAssetTest {
         Test.stopTest();   
         
 		List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
-        system.assertEquals(res.statusCode, 500);      
+        system.assertEquals(res.statusCode, 500,'Error inserting type Others.');      
     }  
 }
