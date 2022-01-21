@@ -160,14 +160,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <gender>Masculine</gender>
-    <label>CustomSetup</label>
+    <gender>Feminine</gender>
+    <label>Parametrização</label>
     <nameField>
         <label>Name</label>
         <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
-    <pluralLabel>CustomSetups</pluralLabel>
+    <pluralLabel>Parametrizações</pluralLabel>
     <searchLayouts></searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
