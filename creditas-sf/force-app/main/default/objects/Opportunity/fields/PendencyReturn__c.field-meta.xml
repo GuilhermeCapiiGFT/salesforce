@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PendencyReturn__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Campo para marcar se a oportunidade é um retorno de pendência</description>
+    <externalId>false</externalId>
+    <label>Retorno de Pendência</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
