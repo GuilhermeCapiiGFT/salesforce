@@ -66,9 +66,6 @@ export default class SearchComponent extends LightningElement {
                     .catch(error => {
                         console.error('Error:', error);
                     })
-                    .finally( ()=>{
-                        //this.isLoading = false;
-                    });
                 }
             }, DELAY);
         }
@@ -116,20 +113,14 @@ export default class SearchComponent extends LightningElement {
 
     @api
     getValidityRelationship(){
-        if(this.selectedRecord == false){
-            this.template.querySelectorAll(".form-fields-search").forEach(elem => {
-                console.log(elem.tagName);
-                if(!elem.checkValidity()){
-                    console.log('entrou');
-                    elem.reportValidity();
-                }
-            });
-            console.log('Search Component - Validity false');
-            return false;
-        }
-        else{
-            console.log('Search Component - Validity true');
-            return true;
-        }
+
+        let isValid = true;
+        this.template.querySelectorAll(".form-fields-search").forEach(elem => {
+            if(!elem.checkValidity()){
+                isValid = false;
+                elem.reportValidity();
+            }
+        });
+        return isValid;
     }
 }

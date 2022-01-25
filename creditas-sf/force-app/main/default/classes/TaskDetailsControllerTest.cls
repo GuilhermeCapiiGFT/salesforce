@@ -2,25 +2,25 @@
 public class TaskDetailsControllerTest {
     
     private static final Id RECORDTYPE_TASK_AUTOFIN = Schema.SObjectType.Task.getRecordTypeInfosByDeveloperName().get('AutoFin').getRecordTypeId();
-    
+    public static String profiles; 
+        
     @testSetup
     public static void createData() {
         
-        /*Schema.DescribeFieldResult taskTypeDescription = Task.TaskType__c.getDescribe();
-		List<Schema.PicklistEntry> taskTypePicklistValuesList = taskTypeDescription.getPicklistValues();*/
+        String lstProfile = getProfiles();
         
         List<TaskDetailSettings__c> lLstTaskDetailSettings = new List<TaskDetailSettings__c>();
         
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 1, 'AFcpf', 'Text', '1', 'Formalização - Em análise', '','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 2, 'AFsalario', 'Currency', '2', 'Formalização - Em análise', '','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 3, 'AFampanhacomercial', 'Multi-picklist', '3', 'Formalização - Em análise', 'Sim;Não','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 4, 'AFoperacaoIQ', 'Picklist', '4', 'Formalização - Em análise', 'Sim;Não','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 5, 'AFisActive', 'Checkbox', '5', 'Formalização - Em análise','','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 6, 'AFconta', 'Relationship', '6', 'Formalização - Em análise','','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 7, 'AFtext', 'Header', '7', 'Formalização - Em análise','','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 8, 'AFnumber', 'Number', '8', 'Formalização - Em análise','','',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 9, 'AFconta', 'RadioGroup', '9', 'Formalização - Em análise','','Sim;Não',''));
-        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 10, 'AFconta', 'CheckboxGroup', '10', 'Formalização - Em análise','','','Sim;Não'));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 1, 'AFcpf', 'Text', '1', 'Formalização - Em análise', '','','',lstProfile, lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 2, 'AFsalario', 'Currency', '2', 'Formalização - Em análise', '','','',lstProfile, lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 3, 'AFampanhacomercial', 'Multi-picklist', '3', 'Formalização - Em análise', 'Sim;Não','','',lstProfile, lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 4, 'AFoperacaoIQ', 'Picklist', '4', 'Formalização - Em análise', 'Sim;Não','','',lstProfile, lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 5, 'AFisActive', 'Checkbox', '5', 'Formalização - Em análise','','','', lstProfile,lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 6, 'AFconta', 'Relationship', '6', 'Formalização - Em análise','','','','',''));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 7, 'AFtext', 'Header', '7', 'Formalização - Em análise','','','','',''));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 8, 'AFnumber', 'Number', '8', 'Formalização - Em análise','','','','',''));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 9, 'AFconta', 'RadioGroup', '9', 'Formalização - Em análise','','Sim;Não','', lstProfile, lstProfile));
+        lLstTaskDetailSettings.add(createTaskDetailSettings('AUTOFIN', 'Teste', 10, 'AFconta', 'CheckboxGroup', '10', 'Formalização - Em análise','','','Sim;Não', lstProfile, lstProfile));
 
         insert lLstTaskDetailSettings;
 
@@ -116,11 +116,55 @@ public class TaskDetailsControllerTest {
     @isTest
     public static void getOpportunityTest(){
         Task lTask = [SELECT Id FROM Task LIMIT 1];
+        Opportunity lOpp = new Opportunity();
         Test.startTest();
-        	TaskDetailsController.getOpportunity(lTask.Id);
+        	lOpp = TaskDetailsController.getOpportunity(lTask.Id);
         Test.stopTest();
+        System.assertNotEquals(null, lOpp.Id);
     }
-    public static TaskDetailSettings__c createTaskDetailSettings(String aProduct, String aWorkflow, Integer aDisplaySequence, String aFieldKey,  String aFieldType,  String aMappedField,  String aTaskType, String aPicklistValues, String aRadioGroupValues, String aCheckboxGroupValues){
+    
+    @isTest
+    public static void getTaskSettingsByProfile(){
+        
+        List<String> lLstProfile = getProfiles().split(';');
+    	
+    	Profile profile = [SELECT Id FROM Profile WHERE Name in :lLstProfile LIMIT 1];
+        Task lTask = [SELECT Id FROM Task LIMIT 1];
+		Map<String,Object> lresult = new Map<String,Object>();        
+        
+        Test.startTest();
+        
+        User newUser = TestSetup.getUser(true);
+		newUser.ProfileId = profile.Id;
+        newUser.LastName = 'UsuarioTeste';
+		update newUser;
+        
+        System.runAs(newUser){
+        	lresult = TaskDetailsController.getTaskDetails(lTask.Id);    
+        }
+        
+        Test.stopTest();
+        
+        System.assert(lresult.get('TaskDetailSettings') != null);
+        System.assert(lresult.get('TaskDetails') != null);
+    }
+    
+        
+    @isTest
+    public static void getTaskSettingsByProfileError(){
+        Boolean lresult = false;
+        
+        Test.startTest();
+        lresult = TaskDetailsController.actionByProfile('PROFILE1');  
+        Test.stopTest();
+        
+		System.assertEquals(false, lresult);
+    }
+    
+    public static TaskDetailSettings__c createTaskDetailSettings(String aProduct, String aWorkflow, Integer aDisplaySequence, String aFieldKey,  
+                                                                 String aFieldType,  String aMappedField,  String aTaskType, String aPicklistValues, 
+                                                                 String aRadioGroupValues, String aCheckboxGroupValues, String aRequiredForProfiles, 
+                                                                 String aReadOnlyForProfiles){
         TaskDetailSettings__c lTaskSettings = new TaskDetailSettings__c();
         lTaskSettings.Product__c = aProduct;
         lTaskSettings.WorkflowKey__c = aWorkflow; 
@@ -133,7 +177,22 @@ public class TaskDetailsControllerTest {
         lTaskSettings.PicklistValues__c = aPicklistValues;
         lTaskSettings.RadioGroupValues__c = aRadioGroupValues;
         lTaskSettings.CheckboxGroupValues__c = aCheckboxGroupValues;
+        lTaskSettings.RequiredForProfiles__c = aRequiredForProfiles;
+        lTaskSettings.ReadOnlyForProfiles__c = aReadOnlyForProfiles;
         
         return lTaskSettings;
+    }
+    
+    public static string getProfiles(){
+        Schema.DescribeFieldResult taskTypeDescription = TaskDetailSettings__c.RequiredForProfiles__c.getDescribe();
+        List<Schema.PicklistEntry> taskTypePicklistValuesList = taskTypeDescription.getPicklistValues();
+     
+        String lstProfile = '';
+        for(Schema.PicklistEntry iValue : taskTypePicklistValuesList){
+            if(String.isNotBlank(iValue.getValue())){
+            	lstProfile += iValue.getValue() +';';
+           }
+        }
+        return lstProfile;
     }
 }
