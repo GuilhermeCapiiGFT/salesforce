@@ -11,68 +11,73 @@
 **********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAccountIN/*')
 global without sharing class IntegrationAccountIN { 
-    public static String errorMessage = '';
-    public static String errorMessageToReturn = '';
-    public static String requestBodyString;
-    public static AccountIntegrationModel requestBodyObj;
     public static Boolean hasError = false;
-    public static Id accountId;
 
     @HttpPut
     global static void putMethod(){
+        String requestBodyString = RestContext.request.requestBody.toString();
         try{               
-            requestBodyString = RestContext.request.requestBody.toString();
-            requestBodyObj =  AccountIntegrationModel.parse(requestBodyString);
+            AccountIntegrationModel requestBodyObj =  AccountIntegrationModel.parse(requestBodyString);
+            String errorMessage = '';
+            String errorMessageToReturn = '';
             if (requestBodyObj.hasError){
                 errorMessage = requestBodyObj.errorMessage;
-                setErrorResponse(500);
-                insertErrorLog(500);
+                errorMessageToReturn = 'Invalid JSON format.';
+                setErrorResponse(500, errorMessageToReturn);
+                insertErrorLog(500, errorMessage, requestBodyString);
                 return;
             }
             if (requestBodyObj.professionalInfo != null){
                 for(AccountIntegrationModel.professionalInfoModel professionalInfo : requestBodyObj.professionalInfo){
                     if(professionalInfo.professionalIncome != null && professionalInfo.professionalIncome.size() > 1){
-                        errorMessageToReturn = errorMessage = 'Each professional info. must has only one professional income.';                    
-                        setErrorResponse(500);
-                        insertErrorLog(500);
+                        errorMessage = 'Each professional info. must has only one professional income.';                   
+                        setErrorResponse(500, errorMessage);
+                        insertErrorLog(500, errorMessage, requestBodyString);
                         return;
                     }
                 }
             }
-
+            if (requestBodyObj.mainDocument == null || String.isBlank(requestBodyObj.mainDocument.code)){
+                errorMessage = 'Main Document cannot be null.';
+                setErrorResponse(500, errorMessage);
+                insertErrorLog(500, errorMessage, requestBodyString);
+                return;
+            }
             Id salesforceId = [SELECT Id, ExternalId__c FROM Account WHERE ExternalId__c = :requestBodyObj.id LIMIT 1]?.Id;
             if (salesforceId == null){
-                if (requestBodyObj.mainDocument != null){
-                    salesforceId = [SELECT Id, ExternalId__c, DocumentNumber__c FROM Account WHERE DocumentNumber__c = :requestBodyObj.mainDocument.code LIMIT 1]?.Id;
-                }
+                String docNumber = requestBodyObj.mainDocument.type == 'CPF' ? Util.getMaskedCPF(requestBodyObj.mainDocument.code) : requestBodyObj.mainDocument.code;
+            	salesforceId = [SELECT Id, ExternalId__c, DocumentNumber__c FROM Account WHERE DocumentNumber__c = :docNumber LIMIT 1]?.Id;         
             }
             requestBodyObj.salesforceId = salesforceId;
                                       
-            commitTransactions();
+            Map<String, String> commitReturnMap = commitTransactions(requestBodyObj);
 
             if (!hasError){
                 AccountResponseData accResponse = new AccountResponseData();
-                accResponse.accountId = accountId;
-                accResponse.message = 'Account upserted';
+                accResponse.accountId = commitReturnMap.get('accountId');
+                accResponse.message = 'Account upserted.';
                 accResponse.status = 200;
 
                 RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
                 res.responseBody = Blob.valueOf(JSON.serialize(accResponse));
                 res.statusCode = 200;
             } else {
-            	setErrorResponse(500);
-            	insertErrorLog(500); 
+                errorMessage = commitReturnMap.get('dmlErrorMessage');
+                errorMessageToReturn = commitReturnMap.get('friendlyErrorMessage');
+            	setErrorResponse(500, errorMessageToReturn);
+            	insertErrorLog(500, errorMessage, requestBodyString); 
             }
         } catch (Exception e){
             System.debug(e.getLineNumber());
-            errorMessageToReturn = errorMessage = errorMessage != '' ? errorMessage : e.getMessage();          
-            setErrorResponse(500);
-            insertErrorLog(500);
+            String errorMessage =  e.getMessage();
+            String errorMessageToReturn = 'An unexpected error has occurred. Please contact SalesForce administrator.';
+            setErrorResponse(500, errorMessageToReturn);
+            insertErrorLog(500, errorMessage, requestBodyString);
             return;
         }
     }
 
-    private static void upsertAccount(){
+    private static Map<String, String> upsertAccount(AccountIntegrationModel requestBodyObj){
         Account accountToUpsert = new Account();
       
         if(requestBodyObj != null){    
@@ -139,21 +144,21 @@ global without sharing class IntegrationAccountIN {
         }
 
         accountToUpsert.Id = requestBodyObj.salesforceId;
+        Map<String, String> accountReturnMap = new Map<String, String>();
         try {
-            upsert accountToUpsert;  
-            accountId = accountToUpsert.Id;  
+            upsert accountToUpsert;            
+            accountReturnMap.put('accountId', accountToUpsert.Id);  
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
-        }             
+            accountReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));  
+        } 
+        return accountReturnMap;          
     }  
                
-    private static void upsertContacts(){
-        List<AccountIntegrationModel.contactsModel> accountContactsToUpsert = requestBodyObj.contacts;
+    private static String upsertContacts(AccountIntegrationModel requestBodyObj, Id accountId){
+        List<AccountIntegrationModel.contactsModel> accountContactsToUpsert = requestBodyObj.contacts;  
         if(accountContactsToUpsert == null){
-            return;
+            return '';
         }
         Set<String> contactsExternalIds = new Set<String>();
         for (AccountIntegrationModel.contactsModel cm : accountContactsToUpsert){
@@ -176,22 +181,21 @@ global without sharing class IntegrationAccountIN {
             cnt.Type__c = cm.type;
 
             contactsToUpsert.add(cnt);  
-        }      
+        }   
         try {
             upsert contactsToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
+        return 'Success';
     }
 
     
-    private static void upsertAddresses(){
+    private static String upsertAddresses(AccountIntegrationModel requestBodyObj, Id accountId){
         List<AccountIntegrationModel.adressesModel> accountAddressesToupsert = requestBodyObj.addresses;
         if (accountAddressesToupsert == null){
-            return;
+            return '';
         }
 
         Set<String> addressesExternalIds = new Set<String>();
@@ -228,16 +232,16 @@ global without sharing class IntegrationAccountIN {
             upsert addressesToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
+        return 'success';
     }   
     
-    private static void upsertRelationships(){  
+    private static String upsertRelationships(AccountIntegrationModel requestBodyObj, Id accountId){  
         List<AccountIntegrationModel.relationshipsModel> relationshipsToupsert = requestBodyObj.relationships;
+        Map<String, String> relationshipReturnMap = new Map<String, String>(); 
         if (relationshipsToupsert == null){
-            return;
+            return '';
         }
         Map<String, AccountRelationships__c> relationshipsExternalIdToSalesForceRelationshipsMap = new Map<String, AccountRelationships__c>();
         Map<String, Account> relationshipPersonIdToAccountMap = new Map<String, Account>();
@@ -276,16 +280,15 @@ global without sharing class IntegrationAccountIN {
             upsert accountRelationshipsToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
+        return 'Success';
     }   
     
-    private static void upsertDocuments(){ 
+    private static String upsertDocuments(AccountIntegrationModel requestBodyObj, Id accountId){ 
         List<AccountIntegrationModel.documentsModel> documentsToUpsert = requestBodyObj.documents;
         if (documentsToUpsert == null){
-            return;
+            return '';
         }
         Set<String> documentsExternalIds = new Set<String>();
         for (AccountIntegrationModel.documentsModel documents : documentsToUpsert){
@@ -318,16 +321,15 @@ global without sharing class IntegrationAccountIN {
             upsert docsToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
+        return 'Success';
     }  
             
-    private static void upsertIncome(){
+    private static String upsertIncome(AccountIntegrationModel requestBodyObj, Id accountId){
         List<AccountIntegrationModel.incomeModel> incomeToUpsert = requestBodyObj.income;
         if (incomeToUpsert == null){
-            return;
+            return '';
         }
         Set<String> incomeExternalIds = new Set<String>();
         for (AccountIntegrationModel.incomeModel incom : incomeToUpsert){
@@ -340,13 +342,13 @@ global without sharing class IntegrationAccountIN {
         }
 
         Set<String> validCurrency = new Set<String>();
-        String currencyListString = '';
+        //String currencyListString = '';
         Schema.DescribeFieldResult currencyCodes = Pricebook2.CurrencyIsoCode.getDescribe();
         for (Schema.PicklistEntry pick : currencyCodes.getPicklistValues()){
             validCurrency.add(pick.getValue());
-            currencyListString += pick.getValue() + ', ';
+            //currencyListString += pick.getValue() + ', ';
         }
-        currencyListString = currencyListString.removeEnd(', ');
+        //currencyListString = currencyListString.removeEnd(', ');
 
         List<FinancialResources__c> incomesToUpsert = new List<FinancialResources__c>();      
         for (AccountIntegrationModel.incomeModel inc : incomeToUpsert){
@@ -354,9 +356,7 @@ global without sharing class IntegrationAccountIN {
             if (inc.amount != null){
                 if (!validCurrency.contains(inc.amount.currencyCode)){
                     hasError = true;
-                    errorMessage = 'invalid currency code: ' + inc.amount.currencyCode;
-                    errorMessageToReturn = 'invalid currency code: ' + inc.amount.currencyCode;
-                    return;
+                    return 'invalid currency code: ' + inc.amount.currencyCode;
                 }
                 income.CurrencyIsoCode = inc.amount.currencyCode;
                 income.Amount__c = Decimal.valueOf(inc.amount.amount);
@@ -374,9 +374,7 @@ global without sharing class IntegrationAccountIN {
             upsert incomesToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
 
         Set<Id> incomeIds = new Set<Id>();
@@ -403,16 +401,16 @@ global without sharing class IntegrationAccountIN {
             upsert accountRelationshipToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            return e.getDmlMessage(0);
         }
+        return 'Success';
     }
     
-    private static void upsertProfessionalInfo(){ 
+    private static Map<String, String> upsertProfessionalInfo(AccountIntegrationModel requestBodyObj, Id accountId){ 
         List<AccountIntegrationModel.professionalInfoModel> professionalInfoToUpsert = requestBodyObj.professionalInfo;
+        Map<String, String> professionalInfoReturnMap = new Map<String, String>();   
         if(professionalInfoToUpsert == null){
-            return;
+            return professionalInfoReturnMap;
         }
         Set<String> professionalInfoExternalIds = new Set<String>();
         for (AccountIntegrationModel.professionalInfoModel professionalInfoObj : requestBodyObj.professionalInfo){
@@ -447,9 +445,9 @@ global without sharing class IntegrationAccountIN {
             upsert professionalsInfoToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
+            professionalInfoReturnMap.put('friendlyErrorMessage','An error has occurred upserting Professional Info object.');
+            return professionalInfoReturnMap;
         }
 
                         
@@ -466,15 +464,30 @@ global without sharing class IntegrationAccountIN {
         }
         
         List<FinancialResources__c> professionalInfoIncomeToUpsert = new List<FinancialResources__c>();
+        Set<String> validCurrency = new Set<String>();
+        Schema.DescribeFieldResult currencyCodes = Pricebook2.CurrencyIsoCode.getDescribe();
+        for (Schema.PicklistEntry pick : currencyCodes.getPicklistValues()){
+            validCurrency.add(pick.getValue());
+        }
+
         for(AccountIntegrationModel.professionalInfoModel professionalInfoSF : professionalInfoToUpsert){
             if (professionalInfoSF.professionalIncome != null && professionalInfoSF.professionalIncome.size() > 0) {
+
                 Id professionalInfoId = professionalInfoExternalIdToSalesforceIdMap.get(professionalInfoSF.id);
                 
                 FinancialResources__c professionalInfoIncome = new FinancialResources__c();
                 professionalInfoIncome.Id = professionalInfoIdToProfessionalIncomeIdMap.get(professionalInfoId);
                 if (professionalInfoSF.professionalIncome[0].amount != null){
+                    String currencyCode = professionalInfoSF.professionalIncome[0].amount.currencyCode;
+                    if (!validCurrency.contains(currencyCode)){
+                        hasError = true;
+                        String errorMessage = 'invalid currency code: ' + currencyCode;
+                        professionalInfoReturnMap.put('dmlErrorMessage',errorMessage);
+                        professionalInfoReturnMap.put('friendlyErrorMessage', errorMessage);
+                        return professionalInfoReturnMap;
+                    }
                     professionalInfoIncome.Amount__c =  Decimal.valueOf(professionalInfoSF.professionalIncome[0].amount.amount);  
-                    professionalInfoIncome.CurrencyIsoCode = professionalInfoSF.professionalIncome[0].amount.currencyCode; 
+                    professionalInfoIncome.CurrencyIsoCode = currencyCode; 
                 }
                 professionalInfoIncome.Type__c = professionalInfoSF.professionalIncome[0].type;
                 professionalInfoIncome.Source__c = professionalInfoSF.professionalIncome[0].source;
@@ -488,9 +501,9 @@ global without sharing class IntegrationAccountIN {
             upsert professionalInfoIncomeToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
+            professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
+            professionalInfoReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Professional Income object.');
+            return professionalInfoReturnMap;
         }
   
         Set<Id> financialResourceIds = new Set<Id>();
@@ -519,14 +532,13 @@ global without sharing class IntegrationAccountIN {
             upsert professionalRelationshipToUpsert;
         } catch (System.DmlException e){
             hasError = true;
-            errorMessage = e.getDmlMessage(0);
-            errorMessageToReturn = e.getDmlMessage(0);
-            return;
-        }   
+            professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
+            professionalInfoReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Professional Income object.');
+        }  
+        return professionalInfoReturnMap; 
     } 
 
-    public static void setErrorResponse(Integer errorCode){
-        System.debug('errorMessage: '+errorMessage);
+    public static void setErrorResponse(Integer errorCode, String errorMessage){
         AccountResponseData resp = new AccountResponseData();
         resp.accountId = null;
         resp.message = errorMessage != '' ? errorMessage : 'An error has occurred. Please, contact a Salesforce Administrator.';
@@ -537,7 +549,8 @@ global without sharing class IntegrationAccountIN {
         res.statusCode = errorCode;
     }
 
-    public static void insertErrorLog(Integer errorCode){
+    public static void insertErrorLog(Integer errorCode, String errorMessage, String requestBodyString){
+        System.debug('Error >> '+errorMessage);
         API_Transaction_Errors__b ate = new API_Transaction_Errors__b();
         ate.Endpoint__c = '/services/apexrest/IntegrationAccountIN';
         ate.RequestBody__c = requestBodyString;
@@ -551,55 +564,75 @@ global without sharing class IntegrationAccountIN {
  				database.insertImmediate(ate);                
             }
         } catch (Exception e) {
-            setErrorResponse(500);
+            setErrorResponse(500, e.getMessage());
         }
     }
 
-    public static void commitTransactions(){
+    public static Map<String, String> commitTransactions(AccountIntegrationModel requestBodyObj){
         Boolean varSuccessAccount = false, varSuccessContacts = false, varSuccessAddresses = false, varSuccessDocs = false,
         varSuccessIncome = false, varSuccessProfessionalInfo = false, varSuccessRelationships = false;
-
+        Id accountId;
+        Map<String, String> commitReturnMap = new Map<String, String>();
         Savepoint sp = Database.setSavepoint();
         if (!hasError)
         {
             try
             {
-                upsertAccount();
+                Map<String, String> accountReturnMap = upsertAccount(requestBodyObj);
                 if (!hasError){
+                    accountId = accountReturnMap.get('accountId');
+                    commitReturnMap.put('accountId', accountId);
                     varSuccessAccount = true;                
-               } else {
-                   Database.rollback(sp); 
-               }
+                } else {
+                    commitReturnMap.put('dmlErrorMessage', accountReturnMap.get('dmlErrorMessage'));
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Account object.');   
+                    Database.rollback(sp); 
+                }
 
             } catch(Exception e)
             {
+                commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Account object.');   
                 hasError = true;
-                errorMessage = e.getMessage();
                 Database.rollback(sp); 
             }
             if(varSuccessAccount)
             {
-            	upsertContacts();
-                if (!hasError){
-                	varSuccessContacts = true;               
-                } else {
-                	Database.rollback(sp); 
-               	}
+                try
+                {
+                    String contactsError = upsertContacts(requestBodyObj, accountId);
+                    if (!hasError){
+                        varSuccessContacts = true;               
+                    } else {
+                        commitReturnMap.put('dmlErrorMessage', contactsError);
+                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Contact object.');   
+                        Database.rollback(sp); 
+                    }
+                } catch(Exception e)
+                {
+                    hasError = true;
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Contact object.');  
+                    Database.rollback(sp); 
+                }
             }
             if(varSuccessContacts)
             {
                 try
                 {
-                    upsertAddresses();
+                    String addressError = upsertAddresses(requestBodyObj, accountId);
                     if (!hasError){
                         varSuccessAddresses = true;               
-                   } else {
-                       Database.rollback(sp); 
-                   }
+                    } else {
+                        commitReturnMap.put('dmlErrorMessage', addressError);
+                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Address object.');   
+                        Database.rollback(sp); 
+                    }
                 } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Address object.');  
                     Database.rollback(sp); 
                 }
             }
@@ -607,16 +640,19 @@ global without sharing class IntegrationAccountIN {
             {
                 try
                 {
-                    upsertDocuments();
+                    String documentsError = upsertDocuments(requestBodyObj, accountId);
                     if (!hasError){
                         varSuccessDocs = true;
-                   } else {
-                       Database.rollback(sp); 
-                   }
+                    } else {
+                        commitReturnMap.put('dmlErrorMessage', documentsError);
+                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Document object.');  
+                        Database.rollback(sp); 
+                    }
                 } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Document object.');  
                     Database.rollback(sp); 
                 }
             }
@@ -624,16 +660,20 @@ global without sharing class IntegrationAccountIN {
             {
                 try
                 {
-                    upsertIncome();
+                    String incomeError = upsertIncome(requestBodyObj, accountId);
                     if (!hasError){
      					varSuccessIncome = true;                   
                     } else {
+                        String errorMessageToReturn = incomeError.contains('currency') ? incomeError : 'An error has occurred upserting Income object.';
+                        commitReturnMap.put('dmlErrorMessage', incomeError);
+                        commitReturnMap.put('friendlyErrorMessage', errorMessageToReturn); 
                         Database.rollback(sp); 
                     }
                 } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Income object.'); 
                     Database.rollback(sp); 
                 }
             }
@@ -641,16 +681,19 @@ global without sharing class IntegrationAccountIN {
             {
                 try
                 {
-                    upsertProfessionalInfo();
+                    Map<String, String> errorsProfessionalInfo = upsertProfessionalInfo(requestBodyObj, accountId);
                     if (!hasError){
                         varSuccessProfessionalInfo = true;                 
-                   } else {
-                       Database.rollback(sp); 
-                   }
+                    } else {
+                        commitReturnMap.put('dmlErrorMessage', errorsProfessionalInfo.get('dmlErrorMessage'));
+                        commitReturnMap.put('friendlyErrorMessage', errorsProfessionalInfo.get('friendlyErrorMessage'));
+                        Database.rollback(sp); 
+                    }
                 } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Professional Info object.');
                     Database.rollback(sp); 
                 }
             }
@@ -658,20 +701,24 @@ global without sharing class IntegrationAccountIN {
             {
                 try
                 {
-                    upsertRelationships();
+                    String relationshipError = upsertRelationships(requestBodyObj, accountId);
                     if (!hasError){
                         varSuccessRelationships = true;              
-                   } else {
-                       Database.rollback(sp); 
-                   }
+                    } else {
+                        commitReturnMap.put('dmlErrorMessage', relationshipError);
+                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Relationship object.'); 
+                        Database.rollback(sp); 
+                    }
                 } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage = e.getMessage();
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Relationship object.'); 
                     Database.rollback(sp); 
                 }
             }
         }
+        return commitReturnMap;
     }
    
     public class AccountResponseData{
