@@ -1,0 +1,42 @@
+<template>
+    <div class="slds-box fundo">
+        <lightning-tabset>
+            <lightning-tab label="Geral">
+                <p>Geral</p>
+            </lightning-tab>
+            <lightning-tab label="Dados Pessoais">
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="6">
+
+                        <lightning-radio-group name="radioGroup" label="Radio Group" options={options} value={value}
+                            onchange={handleChange} type="button"></lightning-radio-group>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6">
+                        <template if:true={isPendenciar}>
+                            <p>
+                                <lightning-input type="text" label="Enter some text" value="ACME Inc.">
+                                </lightning-input>
+                            </p>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-tab>
+            <lightning-tab label="Dados de Contato">
+                Three Content !
+            </lightning-tab>
+
+            <lightning-tab label="Dados de Endereço">
+                Three Content !
+            </lightning-tab>
+
+            <lightning-tab label="Dados de Garantia">
+                Three Content !
+            </lightning-tab>
+
+            <lightning-tab label="Dados de Operação">
+                Three Content !
+            </lightning-tab>
+        </lightning-tabset>
+    </div>
+
+</template>

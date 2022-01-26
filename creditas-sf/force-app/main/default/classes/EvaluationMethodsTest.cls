@@ -12,6 +12,8 @@
 @isTest
 private class EvaluationMethodsTest {
   static Id accountId;
+  static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
+  static DateTime secondDttm = firstDttm.addSeconds(1);
 
   static List<Opportunity> makeOpportunityList(Integer numOpps, Id accountId, String productType) {
     List<Opportunity> lstOpp = new List<Opportunity>();
@@ -213,13 +215,13 @@ private class EvaluationMethodsTest {
   }
 
   @isTest
-  private static void testPendencyReturnOpps(){
+  private static void testPendencyReturnOpps() {
     List<Opportunity> lstOpp = makeOpportunityList(40, accountId, 'DISCHARGE');
     lstOpp.addAll(makeOpportunityList(40, accountId, 'REFINANCING'));
     lstOpp.addAll(makeOpportunityList(40, accountId, 'STORE'));
     lstOpp.addAll(makeOpportunityList(40, accountId, 'PAYROLL_LOAN'));
     lstOpp.addAll(makeOpportunityList(40, accountId, 'SALARY_ADVANCE'));
-    for(Opportunity iOpp : lstOpp){
+    for (Opportunity iOpp : lstOpp) {
       iOpp.PendencyReturn__c = true;
     }
 
@@ -294,7 +296,12 @@ private class EvaluationMethodsTest {
 
     insert lstOpp;
 
-    CustomQueue__c cQueue = [SELECT Id, ProductType__c FROM CustomQueue__c WHERE ProductType__c = 'PENDENCY_RETURN' LIMIT 1];
+    CustomQueue__c cQueue = [
+      SELECT Id, ProductType__c
+      FROM CustomQueue__c
+      WHERE ProductType__c = 'PENDENCY_RETURN'
+      LIMIT 1
+    ];
     cQueue.Points__c = 150;
 
     Test.startTest();
@@ -303,7 +310,11 @@ private class EvaluationMethodsTest {
 
     Test.stopTest();
 
-    for (Opportunity opp : [SELECT ProductType__c, PriorityPoints__c, PendencyReturn__c FROM Opportunity WHERE Id IN :lstOpp]) {
+    for (Opportunity opp : [
+      SELECT ProductType__c, PriorityPoints__c, PendencyReturn__c
+      FROM Opportunity
+      WHERE Id IN :lstOpp
+    ]) {
       if (opp.PendencyReturn__c) {
         System.assertEquals(160, opp.PriorityPoints__c, 'Opportunity priority points should be 160');
       } else if (opp.ProductType__c == 'REFINANCING' || opp.ProductType__c == 'STORE') {
@@ -312,5 +323,63 @@ private class EvaluationMethodsTest {
         System.assertEquals(0, opp.PriorityPoints__c, 'Opportunity priority points should be 0');
       }
     }
+  }
+
+  @isTest
+  static void testGetOpportunitiesSorted() {
+    Opportunity op1 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
+    op1.Name = 'Opp Test A';
+    op1.ProductType__c = 'DISCHARGE';
+    op1.ExternalCreationDate__c = secondDttm;
+    insert op1;
+
+    Opportunity op2 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
+    op2.Name = 'Opp Test B';
+    op2.ProductType__c = 'DISCHARGE';
+    op2.ExternalCreationDate__c = firstDttm;
+    insert op2;
+
+    Opportunity op3 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
+    op3.Name = 'Opp Test C';
+    op3.ProductType__c = 'REFINANCING';
+    op3.ExternalCreationDate__c = secondDttm;
+    insert op3;
+
+    Opportunity op4 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
+    op4.Name = 'Opp Test D';
+    op4.ProductType__c = 'REFINANCING';
+    op4.ExternalCreationDate__c = firstDttm;
+    insert op4;
+
+    CustomSetup__c cSetup = EvaluationMethods.getAtWorkCustomSetup();
+    cSetup.DateFilter__c = 'Data de Solicitação';
+    update cSetup;
+
+    Test.startTest();
+
+    List<Opportunity> lstOpp1 = EvaluationMethods.getAtWorkOpportunitiesSorted(
+      cSetup.CustomQueue__r,
+      cSetup.DateFilter__c
+    );
+
+    cSetup.DateFilter__c = 'Data de Criação';
+    update cSetup;
+
+    List<Opportunity> lstOpp2 = EvaluationMethods.getAtWorkOpportunitiesSorted(
+      cSetup.CustomQueue__r,
+      cSetup.DateFilter__c
+    );
+
+    Test.stopTest();
+
+    System.assertEquals('Opp Test D', lstOpp1[0].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test C', lstOpp1[1].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test B', lstOpp1[2].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test A', lstOpp1[3].Name, 'getAtWorkOpportunitiesSorted failed');
+
+    System.assertEquals('Opp Test C', lstOpp2[0].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test D', lstOpp2[1].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test A', lstOpp2[2].Name, 'getAtWorkOpportunitiesSorted failed');
+    System.assertEquals('Opp Test B', lstOpp2[3].Name, 'getAtWorkOpportunitiesSorted failed');
   }
 }

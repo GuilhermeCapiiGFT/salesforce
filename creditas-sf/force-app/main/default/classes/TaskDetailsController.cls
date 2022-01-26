@@ -186,26 +186,20 @@ public with sharing class TaskDetailsController {
     
     @AuraEnabled(cacheable=false)
     public static Boolean actionByProfile(String aProfileRequired){
-        try {
-
-            if(String.isBlank(aProfileRequired)){
-                return false;
-            }
-
-            List<String> lLstProfiles = aProfileRequired.split(';');
-
-            Id lCurrentProfileId = userinfo.getProfileId();
-            String lCurrentProfileName = [SELECT Id, Name FROM Profile WHERE Id =: lCurrentProfileId]?.Name;
-
-            if( lLstProfiles.contains(lCurrentProfileName)){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }catch(Exception e){
-            throw new AuraHandledException(e.getMessage());
+        if(String.isBlank(aProfileRequired)){
+            return false;
         }
-    }
-    
+        
+        List<String> lLstProfiles = aProfileRequired.split(';');
+        
+        Id lCurrentProfileId = userinfo.getProfileId();
+        String lCurrentProfileName = [SELECT Id, Name FROM Profile WHERE Id =: lCurrentProfileId]?.Name;
+        
+        if( lLstProfiles.contains(lCurrentProfileName)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }    
 }

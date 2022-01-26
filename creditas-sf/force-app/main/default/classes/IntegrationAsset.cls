@@ -6,7 +6,7 @@ global without sharing class IntegrationAsset
     public static final String CERTIFICATE_RECORD_TYPE_NAME = 'Certificado';
     public static final String OTHERS_RECORD_TYPE_NAME = 'Outros';
     public static Id recordTypeId;
-    public static FinancialResources__c assetToUpsert;
+    public static Id assetId;
     public static String errorMessage;
     public static String requestBody;
     public static AssetIntegrationModel requestBodyObj;
@@ -74,24 +74,16 @@ global without sharing class IntegrationAsset
             }
             recordTypeId = Util.getRecordTypeIdbyName('FinancialResources__c', recordTypeDeveloperName);
             
-            upsertAsset();
-
             commitTransactions(accountExternalIdToAccountMap);
-
             
             if (!hasError)
             {
                 AssetResponseData assetResponse = new AssetResponseData();
-                assetResponse.assetId = assetToUpsert?.Id;
+                assetResponse.assetId = assetId;
                 assetResponse.message = 'Asset upserted';
                 assetResponse.status = 200;
 
-                RestResponse res = RestContext.response;
-                if (res == null) 
-                {
-                    res = new RestResponse();
-                    RestContext.response = res;
-                }
+                RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
                 res.responseBody = Blob.valueOf(JSON.serialize(assetResponse));
                 res.statusCode = 200;
             } else 
@@ -136,7 +128,14 @@ global without sharing class IntegrationAsset
         assetObject.ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt);
         assetObject.ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updatedAt);
 
-        assetToUpsert = assetObject;
+        try {
+            upsert assetObject;  
+            assetId = assetObject.Id;
+        } catch (System.DmlException e){
+            hasError = true;
+            errorMessage = e.getDmlMessage(0);
+            return;
+        }  
     }
 
     private static void upsertAccountFinancialRelationship(Map<String, Account> accountExternalIdToAccountMap)
@@ -144,7 +143,7 @@ global without sharing class IntegrationAsset
         Map<String, AccountFinancialRelationship__c> externalOwnerIdToAssetRelationshipMap = new Map<String, AccountFinancialRelationship__c>();
         for(AccountFinancialRelationship__c accountRelation : [SELECT Id, Account__r.ExternalId__c, Recurso_Financeiro__c 
                                                                             FROM AccountFinancialRelationship__c 
-                                                                            WHERE Recurso_Financeiro__c = :assetToUpsert.Id])
+                                                                            WHERE Recurso_Financeiro__c = :assetId])
         {
             externalOwnerIdToAssetRelationshipMap.put(accountRelation.Account__r.ExternalId__c, accountRelation);
         }
@@ -159,7 +158,7 @@ global without sharing class IntegrationAsset
             AccountFinancialRelationship__c assetOwnerRelationship = new AccountFinancialRelationship__c();
             assetOwnerRelationship.Id = externalOwnerIdToAssetRelationshipMap.get(owner.person.id)?.Id;
             assetOwnerRelationship.Account__c = accountExternalIdToAccountMap.get(owner.person.id).Id;
-            assetOwnerRelationship.Recurso_Financeiro__c = assetToUpsert.Id;
+            assetOwnerRelationship.Recurso_Financeiro__c = assetId;
 
             ownerRelationshipsToUpsert.add(assetOwnerRelationship);
         }
@@ -175,11 +174,14 @@ global without sharing class IntegrationAsset
         ate.CreatedDate__c = System.now();
         ate.CreatedBy__c = UserInfo.getUserId();
 
-        try {
-            if (!Test.isRunningTest()){
+        try 
+        {
+            if (!Test.isRunningTest())
+            {
   				database.insertImmediate(ate);              
             }
-        } catch (Exception e) {
+        } catch (Exception e) 
+        {
             setErrorResponse(500);
         }
     }
@@ -191,7 +193,8 @@ global without sharing class IntegrationAsset
         resp.status = errorCode;
 
         RestResponse res = RestContext.response;
-        if (res == null) {
+        if (res == null) 
+        {
             res = new RestResponse();
             RestContext.response = res;
         }
@@ -208,12 +211,18 @@ global without sharing class IntegrationAsset
         {
             try
             {
-                upsert assetToUpsert;
-                varSuccess = true; 
-            } catch(System.DmlException e)
+                upsertAsset();
+                if(!hasError)
+                {
+					varSuccess = true;                     
+                } else 
+                {
+                	Database.rollback(sp);    
+                }
+            } catch(Exception e)
             {
                 hasError = true;
-                errorMessage =  e.getDmlMessage(0);  
+                errorMessage =  e.getMessage();
                 Database.rollback(sp); 
             }
             if(varSuccess)
@@ -221,16 +230,15 @@ global without sharing class IntegrationAsset
                 try
                 {
                   upsertAccountFinancialRelationship(accountExternalIdToAccountMap);
-                } catch(System.DmlException e)
+                } catch(Exception e)
                 {
                     hasError = true;
-                    errorMessage =  e.getDmlMessage(0);
+                    errorMessage = e.getMessage();
                     Database.rollback(sp); 
                 }
             }
         }
     }
-
     public class AssetResponseData
     {
         public String assetId;

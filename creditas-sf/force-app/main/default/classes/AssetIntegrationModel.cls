@@ -82,14 +82,14 @@ public class AssetIntegrationModel{
 	}
 
 	public static String assetMock() {
-		String json=		'{'+
+		String json=		'{'+ 
 		'  "id": "AST-3FA85F64-5717-4562-B3FC-111111111111",'+
 		'  "version": 1,'+
 		'  "type": "VEHICLE",'+
 		'  "owners": ['+
 		'    {'+
 		'      "person": {'+
-		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111111",'+
+		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111113",'+
 		'        "version": 1'+
 		'      }'+
 		'    },'+
@@ -146,12 +146,74 @@ public class AssetIntegrationModel{
         return json;
 	}
     
-    public static String assetMockErroNull()  {
-		String json=		'{'+
+	public static String assetMockDmlError() {
+		String json=		'{'+ 
 		'  "id": "AST-3FA85F64-5717-4562-B3FC-111111111111",'+
 		'  "version": 1,'+
 		'  "type": "VEHICLE",'+
 		'  "owners": ['+
+		'    {'+
+		'      "person": {'+
+		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111113",'+
+		'        "version": 1'+
+		'      }'+
+		'    },'+
+        '    {'+
+		'      "person": {'+
+		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111112",'+
+		'        "version": 1'+
+		'      }'+
+		'    }'+
+		'  ],'+
+		'  "value": {'+
+		'    "amount": {'+
+		'      "currencyCode": "MXN",'+
+		'      "amount": "30000"'+
+		'    },'+
+		'    "appraisalDate": "2019-05-10"'+
+		'  },'+
+		'  "alienation": {'+
+		'    "financialInstitution": "001"'+
+		'  },'+
+		'  "assetDetail": {'+
+		'    "type": "CAR",'+
+		'    "chassis": "123414141",'+
+		'    "plate": "EIO7016",'+
+		'    "brand": "Ford",'+
+		'    "model": "Fiesta Sedan 1.6 16V Flex Mec.",'+
+		'    "modelYear": 2014,'+
+		'    "manufacturingYear": 2013,'+
+		'    "licensing": {'+
+		'      "address": {'+
+		'        "administrativeAreaLevel1": "Pernambuco",'+
+		'        "administrativeAreaLevel2": "Recife",'+
+		'        "street": "Recife address",'+
+		'        "neighborhood": "Boa Vista",'+
+		'        "streetNumber": "5432",'+
+		'        "complement": "apartment 43",'+
+		'        "zipCode": "87989-000"'+
+		'      }'+
+		'    },'+
+		'    "color": "Azul",'+
+		'    "fuelType": "GASOLINE",'+
+		'    "state": "SP",'+
+		'    "category": "PERSONAL",'+
+		'    "externalCodes": ['+
+		'      {'+
+		'        "origin": "FIPE",'+
+		'        "code": "008026-8"'+
+		'      }'+
+		'    ]'+
+		'  },'+
+		'  "createdAt": "2019-01-10T10:00:01Z",'+
+		'  "updatedAt": "2019-01-10T12:00:01Z"'+
+		'}';
+        return json;
+	}    
+    
+    public static String assetMockErroNull(String param)  {
+        String owners = param == 'nullOwners' ? '"owners": null,'
+        :'  "owners": ['+
 		'    {'+
 		'      "person": {'+
 		'        "id": null,'+
@@ -160,11 +222,16 @@ public class AssetIntegrationModel{
 		'    },'+
         '    {'+
 		'      "person": {'+
-		'        "id": null,'+
+		'        "id": "PER-3FA85F64-5717-4562-B3FC-111111111112",'+
 		'        "version": 1'+
 		'      }'+
 		'    }'+
-		'  ],'+
+		'  ],';
+        
+		String json=		'{'+
+		'  "id": "AST-3FA85F64-5717-4562-B3FC-111111111111",'+
+		'  "version": 1,'+
+		'  "type": "VEHICLE",'+		
 		'  "value": {'+
 		'    "amount": {'+
 		'      "currencyCode": "BRL",'+

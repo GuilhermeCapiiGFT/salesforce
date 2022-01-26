@@ -4,9 +4,7 @@ Global class OpportunityServiceTest {
     static void makeData(){
         Account participant = new Account();
         participant.Name = 'Test';
-        participant.ExternalId__c = 'PER-A74F103F-AE7E-43A6-BA3F-172023B54AFA';
-        //participant.DocumentNumber__c = '21752362004';
-        
+        participant.ExternalId__c = 'PER-A74F103F-AE7E-43A6-BA3F-172023B54AFA';      
         insert participant;
         
         Opportunity loan = new Opportunity();
@@ -31,21 +29,20 @@ Global class OpportunityServiceTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(opportunityMock('success'));
         	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	OpportunityService.putMethod();          
+        	RestContext.response= res;            
+            OpportunityService.putMethod();          
         Test.stopTest();
-        //system.debug(EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString());
+        
         List<Opportunity> createdOpp = [SELECT Id FROM Opportunity];
-        System.assertEquals(1, createdOpp.Size());
+        System.assertEquals(1, createdOpp.Size(),'Opportunity successfully inserted.');
         
         List<Quote> createdQuote = [SELECT Id FROM Quote];
-        System.assertEquals(1, createdQuote.Size());
+        System.assertEquals(1, createdQuote.Size(),'Quote successfully inserted.');
         
         List<OpportunityRole__c> createdOppRole = [SELECT Id FROM OpportunityRole__c];
-        System.assertEquals(1, createdOppRole.Size());
+        System.assertEquals(1, createdOppRole.Size(),'Opp Role successfully inserted.');
         
-		system.assertEquals(res.statusCode, 200);   
+		system.assertEquals(res.statusCode, 200, 'Opportunity successfully inserted.');   
     }   
  
     @isTest
@@ -78,7 +75,7 @@ Global class OpportunityServiceTest {
        
         	OpportunityService.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500);   
+		system.assertEquals(res.statusCode, 500,'Invalid string for JSON format.');   
     } 
 
     @isTest
@@ -94,7 +91,7 @@ Global class OpportunityServiceTest {
        
         	OpportunityService.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500);   
+		system.assertEquals(res.statusCode, 500,'Participant cannot be null.');   
     } 
     
     @isTest
@@ -110,7 +107,7 @@ Global class OpportunityServiceTest {
        
         	OpportunityService.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500);   
+		system.assertEquals(res.statusCode, 500,'DML error inserting opportunity.');   
     }   
     
     @isTest
@@ -126,7 +123,7 @@ Global class OpportunityServiceTest {
        
         	OpportunityService.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500);   
+		system.assertEquals(res.statusCode, 500,'DML error inserting Opportunity Role.');   
     } 
     
     static String opportunityMock(String param){

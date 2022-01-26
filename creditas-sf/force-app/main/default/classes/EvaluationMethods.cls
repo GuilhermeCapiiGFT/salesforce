@@ -10,6 +10,9 @@
  * 1.0       Matheus Fernandes       18/01/2021      Created     Criação da classe para priorização de oportunidades de AtWork
  **********************************************************************************************************************/
 public with sharing class EvaluationMethods {
+  private static Id opportunityAtWorkRecordTypeId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
+  private static final String PENDENCY_RETURN = 'PENDENCY_RETURN';
+
   public static void evaluateAtWorkOpportunities(List<Opportunity> lstOpportunity) {
     List<Opportunity> lstOpportunityToUpdate = new List<Opportunity>();
 
@@ -24,6 +27,20 @@ public with sharing class EvaluationMethods {
     }
   }
 
+  private static void setPriorityPoints(List<Opportunity> lstNewOpportunity) {
+    CustomSetup__c customSetup = getAtWorkCustomSetup();
+    Map<String, Double> mapQueuePoints = createQueuePointsMap(customSetup.CustomQueue__r);
+
+    for (Opportunity opp : lstNewOpportunity) {
+      opp.PriorityPoints__c = mapQueuePoints.containsKey(opp.ProductType__c)
+        ? mapQueuePoints.get(opp.ProductType__c)
+        : 0;
+      if (opp.PendencyReturn__c) {
+        opp.PriorityPoints__c += mapQueuePoints.get(PENDENCY_RETURN);
+      }
+    }
+  }
+
   public static void evaluateAtWorkOpportunities(List<CustomQueue__c> lstCustomQueue) {
     List<Opportunity> lstOpportunityToUpdate = getAtWorkOpportunities(lstCustomQueue);
     if (!lstOpportunityToUpdate.isEmpty()) {
@@ -31,29 +48,19 @@ public with sharing class EvaluationMethods {
     }
   }
 
-  private static Id opportunityAtWorkRecordTypeId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
-
-  private static void setPriorityPoints(List<Opportunity> lOpportunity) {
-    CustomSetup__c customSetup = getAtWorkCustomSetup();
-    Map<String, Double> mapQueuePoints = createQueuePointsMap(customSetup.CustomQueue__r);
-
-    for (Opportunity opp : lOpportunity) {
-      opp.PriorityPoints__c = mapQueuePoints.containsKey(opp.ProductType__c)
-        ? mapQueuePoints.get(opp.ProductType__c)
-        : 0;
-    }
-  }
-
-  private static void updatePriorityPoints(List<Opportunity> lOpportunity) {
+  private static void updatePriorityPoints(List<Opportunity> lstNewOpportunity) {
     List<Opportunity> lOppsToUpdate = new List<Opportunity>();
 
     CustomSetup__c customSetup = getAtWorkCustomSetup();
     Map<String, Double> mapQueuePoints = createQueuePointsMap(customSetup.CustomQueue__r);
 
-    for (Opportunity opp : lOpportunity) {
+    for (Opportunity opp : lstNewOpportunity) {
       opp.PriorityPoints__c = mapQueuePoints.containsKey(opp.ProductType__c)
         ? mapQueuePoints.get(opp.ProductType__c)
         : 0;
+      if (opp.PendencyReturn__c) {
+        opp.PriorityPoints__c += mapQueuePoints.get(PENDENCY_RETURN);
+      }
       lOppsToUpdate.add(opp);
     }
 
@@ -69,22 +76,95 @@ public with sharing class EvaluationMethods {
     return mapQueuePoints;
   }
 
-  private static List<Opportunity> getAtWorkOpportunities(List<CustomQueue__c> lstCustomQueue) {
-    Set<String> setProductType = new Set<String>();
-    for (CustomQueue__c cQueue : lstCustomQueue) {
-      setProductType.add(cQueue.ProductType__c);
-    }
-
+  public static List<Opportunity> getAssignedAtWorkOpportunities() {
     return [
-      SELECT Id, ProductType__c, PriorityPoints__c, RecordTypeId
+      SELECT
+        Id,
+        OwnerId
       FROM Opportunity
-      WHERE RecordTypeId = :opportunityAtWorkRecordTypeId AND ProductType__c IN :setProductType
+      WHERE
+        RecordTypeId = :opportunityAtWorkRecordTypeId
+        AND StageName <> 'Closed'
     ];
   }
 
-  private static CustomSetup__c getAtWorkCustomSetup() {
+  public static List<Opportunity> getAtWorkOpportunities(List<CustomQueue__c> lstCustomQueue) {
+    boolean hasPendencyReturn = false;
+    Set<String> setProductType = new Set<String>();
+
+    for (CustomQueue__c cQueue : lstCustomQueue) {
+      setProductType.add(cQueue.ProductType__c);
+      if (cQueue.ProductType__c == PENDENCY_RETURN) {
+        hasPendencyReturn = true;
+      }
+    }
+
+    if (hasPendencyReturn) {
+      return [
+        SELECT
+          Id,
+          Name,
+          ProductType__c,
+          PriorityPoints__c,
+          RecordTypeId,
+          PendencyReturn__c,
+          CreatedDate,
+          ExternalCreationDate__c,
+          OwnerId
+        FROM Opportunity
+        WHERE
+          RecordTypeId = :opportunityAtWorkRecordTypeId
+          AND (PendencyReturn__c = TRUE
+          OR ProductType__c IN :setProductType)
+          AND StageName <> 'Closed'
+      ];
+    } else {
+      return [
+        SELECT
+          Id,
+          Name,
+          ProductType__c,
+          PriorityPoints__c,
+          RecordTypeId,
+          PendencyReturn__c,
+          CreatedDate,
+          ExternalCreationDate__c,
+          OwnerId
+        FROM Opportunity
+        WHERE RecordTypeId = :opportunityAtWorkRecordTypeId 
+        AND ProductType__c IN :setProductType
+        AND StageName <> 'Closed'
+      ];
+    }
+  }
+
+  public static List<Opportunity> getAtWorkOpportunitiesSorted(List<CustomQueue__c> lstCustomQueue, String dateFilter) {
+    List<Opportunity> lstOpportunity = getAtWorkOpportunities(lstCustomQueue);
+    List<Opportunity> lstOpportunitySorted = new List<Opportunity>();
+
+    if (!lstOpportunity.isEmpty()) {
+      List<OpportunityAtWorkComparable> lstOpptyComp = new List<OpportunityAtWorkComparable>();
+
+      for (Opportunity opp : lstOpportunity) {
+        lstOpptyComp.add(new OpportunityAtWorkComparable(opp, dateFilter));
+      }
+
+      lstOpptyComp.sort();
+
+      for (OpportunityAtWorkComparable oppComp : lstOpptyComp) {
+        lstOpportunitySorted.add(oppComp.oppty);
+      }
+    }
+
+    return lstOpportunitySorted;
+  }
+
+  public static CustomSetup__c getAtWorkCustomSetup() {
     return [
-      SELECT Id, DateFilter__c, (SELECT Id, ProductType__c, Points__c FROM CustomQueue__r)
+      SELECT
+        DateFilter__c,
+        (SELECT ProductType__c, Points__c FROM CustomQueue__r),
+        (SELECT ProductType__c, User__c FROM ProductAssignedUsers__r)
       FROM CustomSetup__c
       WHERE Name = 'Parametrização de Filas e Usuários'
     ];

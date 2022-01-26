@@ -38,7 +38,7 @@ global with sharing class AccountCompanyIntegration {
         }
         else{
             res.statusCode = 400;  
-            return 'CompanyId inválido!';        
+            return 'CompanyId inválido!';
         }
         
         if(!acc.isEmpty()){
@@ -56,7 +56,7 @@ global with sharing class AccountCompanyIntegration {
    			}
                                            
             acc[0].ExternalCompanyId__c		= request.id; //companyId
-            acc[0].ExternalVersion__c		= decimal.valueOf(request.version);
+            acc[0].ExternalVersion__c		= Decimal.valueOf(request.version);
             acc[0].CompanyStatus__c			= request.status;
             acc[0].ExternalCreationDate__c	= createdAtDateTime;
             acc[0].ExternalUpdatedDate__c	= updatedAtDateTime;
@@ -69,7 +69,7 @@ global with sharing class AccountCompanyIntegration {
         } 
         else{
 
-            RecordType recordTypeAcc = [SELECT id FROM RecordType WHERE developerName = 'Pessoa_Juridica'];
+            String recordTypeAcc = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
 
             Account newAcc = new Account();
             
@@ -95,13 +95,13 @@ global with sharing class AccountCompanyIntegration {
             newAcc.Name						= request.businessName;
             newAcc.LegalName__c				= request.legalName;
             newAcc.enabledProducts__c		= products; 
-            newAcc.RecordTypeId             = recordTypeAcc.Id;
+            newAcc.RecordTypeId             = recordTypeAcc;
             
             acc.add(newAcc);
-            System.debug('acc:' + acc);
+            //System.debug('acc:' + acc);
         }
          try {
-            upsert acc;
+            upsert acc ExternalCompanyId__c;
             res.statusCode = 200;
             return 'Registro criado/atualizado com sucesso!';
         } catch (Exception e) {

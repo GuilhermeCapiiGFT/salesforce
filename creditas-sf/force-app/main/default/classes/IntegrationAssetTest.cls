@@ -13,47 +13,92 @@ global with sharing class IntegrationAssetTest {
 
     @TestSetup
     static void makeData(){
-        Account testAcc = new Account(Name = 'test acc', ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664');
+        Account testAcc = new Account(Name = 'Jose', ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111113');
         insert testAcc;       
         
-        Account spouseAcc = new Account(Name = 'spouse test', ExternalId__c = 'PER-EDF4345E-04C2-45C1-87D5-445F52391DA1');
-        insert spouseAcc;
-        
-        FinancialResources__c testIncome = new FinancialResources__c(ExternalId__c = '43a6c3d0-47db-45f3-b410-b63859efd9a2');
+        FinancialResources__c testIncome = new FinancialResources__c(ExternalId__c = 'AST-3FA85F64-5717-4562-B3FC-111111111111');
     	insert testIncome;    
         
-        AccountFinancialRelationship__c accRelationship = new AccountFinancialRelationship__c();
+        AccountFinancialRelationship__c accRelationship = new AccountFinancialRelationship__c(Account__c = testAcc.Id, Recurso_Financeiro__c = testIncome.Id);
 	    insert accRelationship;
     }
  
     @isTest
-    static void testUpsertAssetSuccess(){   
-        Account owner = new Account();
-        owner.Name = 'Jose';
-        owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';
-        
-        insert owner;
+    static void testUpsertAssetSuccess(){       
         
         Test.startTest();
         	RestRequest req = new RestRequest(); 
-        	RestResponse res = new RestResponse();
-        
+        	RestResponse res = new RestResponse();        
         	req.requestURI = '/services/apexrest/IntegrationAsset'; 
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMock());
         	RestContext.request = req;
         	RestContext.response= res;             
-            IntegrationAsset.putMethod();  
-            
-            upsert [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];
+            IntegrationAsset.putMethod();          
         Test.stopTest();
         
-        system.assertEquals(res.statusCode, 200); 
-    }         
+        System.assertEquals(res.statusCode, 200, 'Asset upsert successfully'); 
+        
+        List<FinancialResources__c> assetList = [SELECT Id FROM FinancialResources__c];
+        System.assertEquals(1, assetList.size(),'FinancialResources upsert successfully'); 
+        
+        List<AccountFinancialRelationship__c> accFinancialRelationshipList = [SELECT Id FROM AccountFinancialRelationship__c];
+        System.assertEquals(1, accFinancialRelationshipList.size(),'AccountFinancialRelationship upsert successfully'); 
+    }  
     
     @isTest
-    static void testUpsertAssetError(){ 
+    static void testUpsertAssetDmlError(){      
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockDmlError());        	
+        	RestContext.request = req;
+        	RestContext.response= res;            
+            IntegrationAsset.putMethod();          
+        Test.stopTest();
         
+        System.debug(EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString());
+		system.assertEquals(res.statusCode, 500, 'Error inserting asset.');      
+    }   
+    
+    @isTest
+    static void testParseError(){      
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof('string inválida para formato JSON');        	
+        	RestContext.request = req;
+        	RestContext.response= res;          
+            IntegrationAsset.putMethod();          
+        Test.stopTest();
+        
+		system.assertEquals(res.statusCode, 500,'Invalid string for JSON format.');      
+    }         
+
+	@isTest
+    static void testUpsertAssetNullOwner(){      
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockErroNull('nullOwners'));        	
+        	RestContext.request = req;
+        	RestContext.response= res;          
+        	IntegrationAsset.putMethod();          
+        Test.stopTest();
+        
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+       	system.assertEquals(reqResString, '{"status":500,"message":"The owner(s) was not found on Salesforce.","assetId":null}');   
+		system.assertEquals(res.statusCode, 500,'Owner cannot be null.');      
+    }  
+    
+    @isTest
+    static void testUpsertAssetError(){         
         Account owner = new Account();
         owner.Name = 'Jose';
         owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
@@ -68,19 +113,43 @@ global with sharing class IntegrationAssetTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockCertificate());
         	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	IntegrationAsset.putMethod();  
-			//delete the owner to get the error message
-            delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
+        	RestContext.response= res;
+       		IntegrationAsset.putMethod();
+            delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1]; 
+            IntegrationAsset.putMethod();   	
+		Test.stopTest();
+        
+        List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1]; 
+        
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"The owner(s) was not found on Salesforce.","assetId":null}');
+        system.assertEquals(res.statusCode, 500, 'The owner(s) was not found on Salesforce.');
+    }   
+    
+    @isTest
+    static void testAssetErrorNull(){ 
+		Account owner = new Account();
+        owner.Name = 'Jose';
+        owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
+        insert owner;
+        
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockREAL_ESTATE());
+        	RestContext.request = null;
+        	RestContext.response= null;           
             IntegrationAsset.putMethod(); 
         Test.stopTest();      
-
-        system.assertEquals(res.statusCode, 500, 'The owner(s) was not found on Salesforce.');
-    }  
+        
+        List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
+        system.assertEquals(res.statusCode, null,'Request cannot be null.');    
+    }    
     
-    static void testUpsertAssetNull(){      
-
+    @isTest
+    static void testSetResponseOthers(){         
         Account owner = new Account();
         owner.Name = 'Jose';
         owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
@@ -93,47 +162,18 @@ global with sharing class IntegrationAssetTest {
         	RestResponse res = new RestResponse();      
         	req.requestURI = '/services/apexrest/IntegrationAsset'; 
         	req.httpMethod = 'PUT';
-        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockErroNull('owners'));        	
-        	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	IntegrationAccountIN.putMethod();          
-        Test.stopTest();
-		system.assertEquals(req.requestBody, null,'errorMessage = requestBodyObj.errorMessage' );      
-    }  
-    
-    @isTest
-    static void testSetErrorResponse(){ 
-        
-        Account owner = new Account();
-        owner.Name = 'Jose';
-        owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';
-        
-        insert owner;
-        
-        FinancialResources__c varFinancial = [SELECT Id, Account_Financial_Relationship__c  FROM FinancialResources__c LIMIT 1]; 
-        
-        Test.startTest();
-        	RestRequest req = new RestRequest(); 
-        	RestResponse res = new RestResponse();      
-        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
-        	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockOthers());
         	RestContext.request = req;
-        	RestContext.response= res;             
-       
-        	IntegrationAsset.putMethod();  
-			//delete the owner to get the error message
-            delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
-            IntegrationAsset.putMethod(); 
-        Test.stopTest();      
-
-        system.assertEquals(res.statusCode, 500, 'An error has occurred. Please, contact a Salesforce Administrator.');      
+        	RestContext.response= res;
+        	IntegrationAsset.putMethod();       		
+        Test.stopTest();  
+        
+		List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1]; 
+        system.assertEquals(res.statusCode, 200,'Successfully added Others type.');      
     }  
     
     @isTest
-    static void testAssetMockREAL_ESTATE(){ 
-        
+    static void testAssetMockErrorRealState(){        
         Account owner = new Account();
         owner.Name = 'Jose';
         owner.ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111';        
@@ -146,50 +186,13 @@ global with sharing class IntegrationAssetTest {
         	req.httpMethod = 'PUT';
         	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockREAL_ESTATE());
         	RestContext.request = req;
-        	RestContext.response= res;               
-       
-        	IntegrationAsset.putMethod();  
-			//delete the owner to get the error message
-            delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
-            IntegrationAsset.putMethod(); 
-        Test.stopTest();      
-
-        system.assertEquals(res.statusCode, 500);      
-    }  
-    
-    @isTest
-    static void testAssetErrorNull(){ 
-
-        Test.startTest();
-        	RestRequest req = new RestRequest(); 
-        	RestResponse res = new RestResponse();      
-        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
-        	req.httpMethod = 'PUT';
-        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockREAL_ESTATE());
-        	RestContext.request = null;
-        	RestContext.response= null;             
-
-            IntegrationAsset.putMethod(); 
-        Test.stopTest();      
-
-        system.assertEquals(res.statusCode, null);      
-    }  
-    
-    @isTest
-    static void testAssetOwnersNull(){ 
-
-        Test.startTest();
-        	RestRequest req = new RestRequest(); 
-        	RestResponse res = new RestResponse();      
-        	req.requestURI = '/services/apexrest/IntegrationAsset'; 
-        	req.httpMethod = 'PUT';
-        	req.requestBody = Blob.valueof(AssetIntegrationModel.assetMockOwnersNull());
-        	RestContext.request = null;
-        	RestContext.response = null; 
-     
-            IntegrationAsset.putMethod(); 
-        Test.stopTest();      
-
-        system.assertEquals(res.responseBody, null);      
+        	RestContext.response= res;
+        	IntegrationAsset.putMethod();
+      		delete [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];
+        	IntegrationAsset.putMethod();
+        Test.stopTest();   
+        
+		List<Account> errorAccount = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-3FA85F64-5717-4562-B3FC-111111111111' LIMIT 1];  
+        system.assertEquals(res.statusCode, 500,'Error inserting type Others.');      
     }  
 }
