@@ -9,7 +9,7 @@ global with sharing class IntegrationAccountINTest {
         Account spouseAcc = new Account(Name = 'spouse test', ExternalId__c = 'PER-EDF4345E-04C2-45C1-87D5-445F52391DA1');
         insert spouseAcc;
         
-        Account accDocumentNumber = new Account(Name = 'test doc number', DocumentNumber__c = '91722085037');
+        Account accDocumentNumber = new Account(Name = 'test doc number', DocumentNumber__c = '91722085037', ExternalId__c = 'FAKE_EXTERNAL_ID');
         insert accDocumentNumber;
         
         CommunicationContacts__c testContact = new CommunicationContacts__c(ExternalId__c = '758a54b3-0fbf-49e8-a7bc-5a0397ec3940', Account__c = testAcc.Id);
@@ -101,8 +101,7 @@ global with sharing class IntegrationAccountINTest {
     }  
     
     @isTest
-    static void testInvalidCurrency(){   
-        
+    static void testInvalidCurrency(){          
         Test.startTest();
         	RestRequest req = new RestRequest(); 
         	RestResponse res = new RestResponse();      
@@ -119,6 +118,23 @@ global with sharing class IntegrationAccountINTest {
     }  
     
     @isTest
+    static void testInvalidCurrencyProfessionalIncome(){           
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof(accountMock('invalidCurrencyProfIncome'));
+        	RestContext.request = req;
+        	RestContext.response= res;            
+            IntegrationAccountIN.putMethod();          
+        Test.stopTest();
+        
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		System.assertEquals(reqResString, '{"status":500,"message":"invalid currency code: ERRO","accountId":null}');
+    }      
+    
+    @isTest
     static void testUpsertAccountParseError(){   
         
         Test.startTest();
@@ -131,8 +147,8 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.response= res;             
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-        
-		system.assertEquals(res.statusCode, 500,'Invalid string for JSON format.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString,'{"status":500,"message":"Invalid JSON format.","accountId":null}','Invalid string for JSON format.');      
     }  
     
     @isTest
@@ -148,8 +164,8 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.response= res;             
             IntegrationAccountIN.putMethod();          
         Test.stopTest();
-        
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Account.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString,'{"status":500,"message":"An error has occurred upserting Account object.","accountId":null}','DML error to upsert Account.');      
     }   
     
     @isTest
@@ -165,8 +181,8 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.response= res;             
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-        
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Account.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString,'{"status":500,"message":"An error has occurred upserting Account object.","accountId":null}','DML error to upsert Account.');      
     }   
     
     @isTest
@@ -182,8 +198,8 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.response= res;             
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-        
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Contact.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Contact object.","accountId":null}','DML error to upsert Contact.');      
     }
     
     @isTest
@@ -199,8 +215,8 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.response= res;             
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-        
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Addresses.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Address object.","accountId":null}','DML error to upsert Addresses.');      
     }
     
     @isTest
@@ -217,7 +233,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Relationships.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Relationship object.","accountId":null}','DML error to upsert Relationships.');      
     }
     
     @isTest
@@ -234,7 +251,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Documents.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Document object.","accountId":null}','DML error to upsert Documents.');      
     }    
     
     @isTest
@@ -251,7 +269,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500,'DML error to upsert Income.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Income object.","accountId":null}','DML error to upsert Income.');      
     }
     
     @isTest
@@ -268,7 +287,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500,'DML error to upsert ProfessionalInfo.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Professional Info object.","accountId":null}','DML error to upsert ProfessionalInfo.');      
     }    
     
     @isTest
@@ -285,7 +305,8 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 500,'DML error to upsert ProfessionalIncome.');      
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+		system.assertEquals(reqResString, '{"status":500,"message":"An error has occurred upserting Professional Income object.","accountId":null}','DML error to upsert ProfessionalIncome.');      
     }    
     
     @isTest
@@ -302,7 +323,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Contacts is null and the Account is still being successfully upserted.');      
     }
 
     @isTest
@@ -319,7 +340,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Addresses is null and the Account is still being successfully upserted.');      
     }    
 
     @isTest
@@ -336,7 +357,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Relationship is null and the Account is still being successfully upserted.');      
     }   
     
     @isTest
@@ -353,7 +374,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Documents is null and the Account is still being successfully upserted.');      
     }  
 
     @isTest
@@ -370,7 +391,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Income is null and the Account is still being successfully upserted.');      
     }      
   
     @isTest
@@ -387,7 +408,7 @@ global with sharing class IntegrationAccountINTest {
        
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
-		system.assertEquals(res.statusCode, 200,'Upsert Account successfully.');      
+		system.assertEquals(res.statusCode, 200,'Professional Info is null and the Account is still being successfully upserted.');      
     }      
     
     @isTest
@@ -405,9 +426,25 @@ global with sharing class IntegrationAccountINTest {
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
-        System.assertEquals(reqResString, '{"status":500,"message":"Each professional info. must has only one professional income.","accountId":null}');
-        
+        System.assertEquals(reqResString, '{"status":500,"message":"Each professional info. must has only one professional income.","accountId":null}');        
     }   
+    
+    @isTest
+    static void nullMainDocumentError(){           
+        Test.startTest();
+        	RestRequest req = new RestRequest(); 
+        	RestResponse res = new RestResponse();      
+        	req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+        	req.httpMethod = 'PUT';
+        	req.requestBody = Blob.valueof(accountMock('nullMainDoc'));
+        	RestContext.request = req;
+        	RestContext.response= res;             
+       
+        	IntegrationAccountIN.putMethod();          
+        Test.stopTest();
+        String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
+        System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null","accountId":null}');       
+    } 
       
     static String accountMock(String param){
         String version = param == 'parseError' ? '"version": "A"' : '"version": 27';
@@ -417,13 +454,19 @@ global with sharing class IntegrationAccountINTest {
         String externalAccountId = param == 'documentNumber' ? '"id": null,' : '"id": "PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664",';
         String documentNumber =  param == 'documentNumber' ? '"code": "91722085037"' : '"code": "50450177050"';
         String contactExternalId = param == 'documentNumber' ? '"id": "758a54b2-0fbf-49e8-a7bc-5a0397ec3940",' : '"id": "758a54b3-0fbf-49e8-a7bc-5a0397ec3940",';
-        String currencyCode = param == 'invalidCurrency' ? '"currencyCode": "ERRO",' : '"currencyCode": "BRL",';
+        String currencyCode = (param == 'invalidCurrency')? '"currencyCode": "ERRO",' : '"currencyCode": "BRL",';
+        String currencyCodeProInfo = param == 'invalidCurrencyProfIncome' ? '"currencyCode": "ERRO",' : '"currencyCode": "BRL",';
         String addressType = param == 'addressDmlError' ? '"type": "ERRO",' : '"type": "BILLING",';
         String relationshipType = param == 'relationshipDmlError' ? '"type": "ERRO",' : '"type": "SPOUSE",';
         String documentType = param == 'documentDmlError' ? '"type": "erro",' : '"type": "pis",';
         String incomeType = param == 'incomeDmlError' ? '"type": "ERRO",' : '"type": "MONTHLY_INCOME",';
         String professionalCategory = param == 'professionalInfoDmlError' ? '"category": "ERRO",' : '"category": "ADMINISTRATIVE",';
         String professionalIncomeType = param == 'professionalIncomeDmlError' ? '"type": "ERRO",' : '"type": "MONTHLY_INCOME",';
+        String mainDocument = param == 'nullMainDoc' ? '"mainDocument": null,'
+            : 		'    "mainDocument": {'+
+					'        "type": "CPF",'+
+					documentNumber+
+					'    },';
         String contacts = param == 'nullContact' ? '"contacts": null,'
             : '    "contacts": ['+
             '        {'+
@@ -543,7 +586,7 @@ global with sharing class IntegrationAccountINTest {
             '                {'+
             professionalIncomeType+
             '                    "amount": {'+
-            '                        "currencyCode": "BRL",'+
+            currencyCodeProInfo+
             '                        "amount": "10000"'+
             '                    },'+
             '                    "source": "SALES"'+
@@ -578,10 +621,7 @@ global with sharing class IntegrationAccountINTest {
         
 		String json=		'{'+
 		externalAccountId+
-		'    "mainDocument": {'+
-		'        "type": "CPF",'+
-		documentNumber+
-		'    },'+
+		mainDocument+
 		'    "fullName": "test account",'+
 		'    "additionalProperties": {'+
 		'        "firstName": "Melanie",'+
