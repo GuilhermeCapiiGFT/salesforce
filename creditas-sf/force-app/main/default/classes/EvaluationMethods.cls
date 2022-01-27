@@ -76,18 +76,6 @@ public with sharing class EvaluationMethods {
     return mapQueuePoints;
   }
 
-  public static List<Opportunity> getAssignedAtWorkOpportunities() {
-    return [
-      SELECT
-        Id,
-        OwnerId
-      FROM Opportunity
-      WHERE
-        RecordTypeId = :opportunityAtWorkRecordTypeId
-        AND StageName <> 'Closed'
-    ];
-  }
-
   public static List<Opportunity> getAtWorkOpportunities(List<CustomQueue__c> lstCustomQueue) {
     boolean hasPendencyReturn = false;
     Set<String> setProductType = new Set<String>();
@@ -116,7 +104,7 @@ public with sharing class EvaluationMethods {
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND (PendencyReturn__c = TRUE
           OR ProductType__c IN :setProductType)
-          AND StageName <> 'Closed'
+          AND StageName <> 'Perdido'
       ];
     } else {
       return [
@@ -133,7 +121,7 @@ public with sharing class EvaluationMethods {
         FROM Opportunity
         WHERE RecordTypeId = :opportunityAtWorkRecordTypeId 
         AND ProductType__c IN :setProductType
-        AND StageName <> 'Closed'
+        AND StageName <> 'Perdido'
       ];
     }
   }
@@ -164,7 +152,7 @@ public with sharing class EvaluationMethods {
       SELECT
         DateFilter__c,
         (SELECT ProductType__c, Points__c FROM CustomQueue__r),
-        (SELECT ProductType__c, User__c FROM ProductAssignedUsers__r)
+        (SELECT ProductType__c, User__c, User__r.UserAvailable__c FROM ProductAssignedUsers__r)
       FROM CustomSetup__c
       WHERE Name = 'Parametrização de Filas e Usuários'
     ];

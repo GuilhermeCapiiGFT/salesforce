@@ -6,19 +6,26 @@
             </lightning-tab>
             <lightning-tab label="Dados Pessoais">
                 <lightning-layout multiple-rows="true">
-                    <lightning-layout-item size="6">
-
-                        <lightning-radio-group name="radioGroup" label="Radio Group" options={options} value={value}
-                            onchange={handleChange} type="button"></lightning-radio-group>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6">
-                        <template if:true={isPendenciar}>
-                            <p>
-                                <lightning-input type="text" label="Enter some text" value="ACME Inc.">
-                                </lightning-input>
-                            </p>
-                        </template>
-                    </lightning-layout-item>
+                    <template for:each={items} for:item="item">
+                        <lightning-layout-item size="4" key={item.id}>
+                            <lightning-input class="slds-var-m-right_small" disabled name={item.name}
+                                        type="text" label="Nome do Pai"
+                                        value={item.name}></lightning-input>
+                            
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" key={item.id}>
+                            <lightning-radio-group name="radioGroup" label="Radio Group" options={options} value={value}
+                                onchange={handleChange} type="button"></lightning-radio-group>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" key={item.id}>
+                            <template if:true={item.showField}>
+                                <p>
+                                    <lightning-input type="text" label="Enter some text" value="Lorem Ipsum Dosum">
+                                    </lightning-input>
+                                </p>
+                            </template>
+                        </lightning-layout-item>
+                    </template>
                 </lightning-layout>
             </lightning-tab>
             <lightning-tab label="Dados de Contato">

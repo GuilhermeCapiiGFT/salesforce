@@ -38,7 +38,7 @@ global without sharing class IntegrationAccountIN {
                 }
             }
             if (requestBodyObj.mainDocument == null || String.isBlank(requestBodyObj.mainDocument.code)){
-                errorMessage = 'Main Document cannot be null';
+                errorMessage = 'Main Document cannot be null.';
                 setErrorResponse(500, errorMessage);
                 insertErrorLog(500, errorMessage, requestBodyString);
                 return;
@@ -55,7 +55,7 @@ global without sharing class IntegrationAccountIN {
             if (!hasError){
                 AccountResponseData accResponse = new AccountResponseData();
                 accResponse.accountId = commitReturnMap.get('accountId');
-                accResponse.message = 'Account upserted';
+                accResponse.message = 'Account upserted.';
                 accResponse.status = 200;
 
                 RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
@@ -446,7 +446,7 @@ global without sharing class IntegrationAccountIN {
         } catch (System.DmlException e){
             hasError = true;
             professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
-            professionalInfoReturnMap.put('dmlErrorMessage','An error has occurred upserting Professional Info object.');
+            professionalInfoReturnMap.put('friendlyErrorMessage','An error has occurred upserting Professional Info object.');
             return professionalInfoReturnMap;
         }
 
@@ -483,7 +483,7 @@ global without sharing class IntegrationAccountIN {
                         hasError = true;
                         String errorMessage = 'invalid currency code: ' + currencyCode;
                         professionalInfoReturnMap.put('dmlErrorMessage',errorMessage);
-                        professionalInfoReturnMap.put('dmlErrorMessage', errorMessage);
+                        professionalInfoReturnMap.put('friendlyErrorMessage', errorMessage);
                         return professionalInfoReturnMap;
                     }
                     professionalInfoIncome.Amount__c =  Decimal.valueOf(professionalInfoSF.professionalIncome[0].amount.amount);  
@@ -502,7 +502,7 @@ global without sharing class IntegrationAccountIN {
         } catch (System.DmlException e){
             hasError = true;
             professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
-            professionalInfoReturnMap.put('dmlErrorMessage', 'An error has occurred upserting Professional Income object.');
+            professionalInfoReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Professional Income object.');
             return professionalInfoReturnMap;
         }
   
@@ -533,7 +533,7 @@ global without sharing class IntegrationAccountIN {
         } catch (System.DmlException e){
             hasError = true;
             professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));
-            professionalInfoReturnMap.put('dmlErrorMessage', 'An error has occurred upserting Professional Income object.');
+            professionalInfoReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Professional Income object.');
         }  
         return professionalInfoReturnMap; 
     } 
@@ -664,8 +664,9 @@ global without sharing class IntegrationAccountIN {
                     if (!hasError){
      					varSuccessIncome = true;                   
                     } else {
+                        String errorMessageToReturn = incomeError.contains('currency') ? incomeError : 'An error has occurred upserting Income object.';
                         commitReturnMap.put('dmlErrorMessage', incomeError);
-                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Income object.'); 
+                        commitReturnMap.put('friendlyErrorMessage', errorMessageToReturn); 
                         Database.rollback(sp); 
                     }
                 } catch(Exception e)
