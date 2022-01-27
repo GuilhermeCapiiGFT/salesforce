@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LinkToScheduleMeeting__c</fullName>
+    <description>Link para Agendar Visita no Sistema Admin (Ex.: https://admin.crmvolanty.com/#/agenda?leadId=61ae85c99ff84d31fb254fa9&amp;name=Lucas+Castro&amp;phone=5521984222377&amp;carId=6451306068705280&amp;email=lucascastrosouza%40yahoo.com.br&amp;type=)</description>
+    <externalId>false</externalId>
+    <label>Link para agendar visita</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>
