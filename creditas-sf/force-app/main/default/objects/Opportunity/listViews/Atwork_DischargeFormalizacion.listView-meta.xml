@@ -13,4 +13,7 @@
         <value>DISCHARGE</value>
     </filters>
     <label>[Formalização] Quitação</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

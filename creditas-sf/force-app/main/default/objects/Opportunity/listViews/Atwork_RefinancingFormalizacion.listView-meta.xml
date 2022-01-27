@@ -13,4 +13,7 @@
         <value>REFINANCING</value>
     </filters>
     <label>[Formalização] Refinanciamento</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>
