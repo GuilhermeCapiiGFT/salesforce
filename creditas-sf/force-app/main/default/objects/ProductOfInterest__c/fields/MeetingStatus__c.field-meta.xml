@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MeetingStatus__c</fullName>
+    <description>Status da Visita (Ex.: Agendada)</description>
+    <externalId>false</externalId>
+    <label>Status da visita</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Agendada</fullName>
+                <default>false</default>
+                <label>Agendada</label>
+            </value>
+            <value>
+                <fullName>Realizada</fullName>
+                <default>false</default>
+                <label>Realizada</label>
+            </value>
+            <value>
+                <fullName>Cancelada</fullName>
+                <default>false</default>
+                <label>Cancelada</label>
+            </value>
+            <value>
+                <fullName>Perdida</fullName>
+                <default>false</default>
+                <label>Perdida</label>
+            </value>
+            <value>
+                <fullName>Iniciada</fullName>
+                <default>false</default>
+                <label>Iniciada</label>
+            </value>
+            <value>
+                <fullName>Cancelamento automático</fullName>
+                <default>false</default>
+                <label>Cancelamento automático</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

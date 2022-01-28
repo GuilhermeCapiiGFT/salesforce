@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PI_ChangeNameNotAllowed</fullName>
+    <active>true</active>
+    <description>Regra para prevenir edições no campo Nome</description>
+    <errorConditionFormula>AND (
+				$Profile.Name &lt;&gt; &quot;Administrador do sistema&quot;,
+    $Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+    ISCHANGED(Name)
+   )</errorConditionFormula>
+    <errorDisplayField>Name</errorDisplayField>
+    <errorMessage>Não é permitido fazer alterações no Nome do Produto de Interesse.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BestTimeToContact__c</fullName>
+    <description>Melhor horário para entrar em contato com o Deal</description>
+    <externalId>false</externalId>
+    <label>Melhor horário para contato</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Manhã [das 8hs às 12hs]</fullName>
+                <default>false</default>
+                <label>Manhã [das 8hs às 12hs]</label>
+            </value>
+            <value>
+                <fullName>Tarde [das 12hs às 17hs]</fullName>
+                <default>false</default>
+                <label>Tarde [das 12hs às 17hs]</label>
+            </value>
+            <value>
+                <fullName>Noite [após 18hs]</fullName>
+                <default>false</default>
+                <label>Noite [após 18hs]</label>
+            </value>
+            <value>
+                <fullName>Qualquer horário</fullName>
+                <default>false</default>
+                <label>Qualquer horário</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

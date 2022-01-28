@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <decisions>
+        <name>CheckIfLastDealModificationIsGreaterThanOrEqualToThreeDays</name>
+        <label>Verificar se Última Alteração no Deal foi Há 3 Dias ou Mais</label>
+        <locationX>182</locationX>
+        <locationY>396</locationY>
+        <defaultConnectorLabel>Resultado padrão</defaultConnectorLabel>
+        <rules>
+            <name>LastModificationGreaterThanThreeDays</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>DaysSinceLastModification</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue>
+                    <numberValue>3.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordTypeId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>DealRecordType_AutoSales.Id</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>CloseDealAsDiscontinued</targetReference>
+            </connector>
+            <label>Última Alteração Maior ou Igual a 3 Dias</label>
+        </rules>
+    </decisions>
+    <description>Flow agendado que será executado diariamente para identificar todos os Deals que atendam aos seguintes requisitos:
+- Estão com campo &quot;Contato com Sucesso?&quot; = Não
+- Estão com Data de Última Modificação Maior ou Igual a 3 Dias.
+
+Ao identificar esses registros, realizar as seguintes atualizações:
+- Fase =  &quot;Negócio Descontinuado&quot;;
+- Motivo Descontinuado = &quot;Contato Sem Sucesso&quot;</description>
+    <formulas>
+        <description>Número de Dias desde a última Modificação no Deal</description>
+        <name>DaysSinceLastModification</name>
+        <dataType>Number</dataType>
+        <expression>{!$Flow.CurrentDate} - DATEVALUE({!$Record.LastModifiedDate})</expression>
+        <scale>2</scale>
+    </formulas>
+    <interviewLabel>[Deal] Agendado: Descontinuar Deal e Informar Motivo {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Deal] Agendado: Descontinuar Deal e Informar Motivo</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Obter o Tipo de Registro do Deal: Auto - Vendas para filtrar Registros na Execução do Flow</description>
+        <name>DealRecordType_AutoSales</name>
+        <label>Tipo de Registro de Deal: Auto - Vendas</label>
+        <locationX>182</locationX>
+        <locationY>276</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>CheckIfLastDealModificationIsGreaterThanOrEqualToThreeDays</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Deal__c</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>AutoSales</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Atualizar Fase do Deal para &quot;Negócio Descontinuado&quot;
+Atualizar campo Motivo Descontinuado para &quot;Contato sem Sucesso&quot;</description>
+        <name>CloseDealAsDiscontinued</name>
+        <label>Fechar Deal como Descontinuado</label>
+        <locationX>50</locationX>
+        <locationY>516</locationY>
+        <inputAssignments>
+            <field>DiscontinuedReason__c</field>
+            <value>
+                <stringValue>Contato sem Sucesso</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Phase__c</field>
+            <value>
+                <stringValue>Negócio descontinuado</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>DealRecordType_AutoSales</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SuccessfulContact__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Não</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phase__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Negócio descontinuado</stringValue>
+            </value>
+        </filters>
+        <object>Deal__c</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2022-01-06</startDate>
+            <startTime>23:45:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
