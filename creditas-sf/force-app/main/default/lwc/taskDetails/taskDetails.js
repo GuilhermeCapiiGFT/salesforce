@@ -24,15 +24,12 @@ export default class TaskDetails extends LightningElement {
     taskType;
 
     connectedCallback(){
-        // this.isLoading = true;
         this.getTaskDetails();
     }
 
     getTaskDetails(){
         getTaskDetails({taskId: this.recordId})
         .then( data =>{
-
-            console.log({data});
 
             var updatedListData = []; // Merge da lista TaskDetailSettings(campos)/TaskDetails(valores).
             let listTaskDetailSettings = data.TaskDetailSettings;
@@ -92,23 +89,17 @@ export default class TaskDetails extends LightningElement {
                 updatedListData.push(updatedData);
             }
 
-            console.log('updatedListData');
-            console.log(updatedListData);
             this.tasks = updatedListData;
         })
         .catch(error =>{
-            console.log('ERROR: ' + JSON.stringify(error));
             console.log({error});
         })
-        .finally( ()=>{
-            // this.isLoading = false;
-        });
     }
 
     handleSave(){
         var listTaskDetails = [];
         let isValid = true;
-        let count = 0;
+
         this.template.querySelectorAll(".form-fields").forEach(elem => {
             var objTaskDetails = {};
             let dataId = elem.getAttribute("data-id");
@@ -117,11 +108,9 @@ export default class TaskDetails extends LightningElement {
                 
                 if(elem.fieldRequired == true){
                     let isValidRelationship = elem.getValidityRelationship();
-                    console.log('retorno: '+isValidRelationship);
                     (isValidRelationship != true) ? isValid = false: '';
                 }
             }else if(!elem.checkValidity()) {
-                console.log('Não valido');
                 elem.reportValidity();
                 isValid = false;
             }
@@ -144,18 +133,16 @@ export default class TaskDetails extends LightningElement {
                 objTaskDetails["FieldValue"+dataId+"__c"] = valueField;
                 listTaskDetails.push(objTaskDetails);
             }
-            count++;
         }); 
-        console.log('Count: '+count);
+
         if(isValid){
             this.listRecordSave = JSON.parse(JSON.stringify(listTaskDetails));
-            
-            console.log('Save/Update');
-            console.log(this.listRecordSave);
 
             (this.isRecordUpdate == true)
             ? this.updateTaskDetails()
             : this.insertTaskDetails();
+        }else{
+            this.dispatchShowToast('','Favor revisar os campos do formulário.', 'error');
         }
     }
 
@@ -175,22 +162,10 @@ export default class TaskDetails extends LightningElement {
             this.isRecordUpdate = true;
             this.updateTask();
            
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Registro criado com sucesso.',
-                    variant: 'success'
-                })
-            )
+            this.dispatchShowToast('Success', 'Registro criado com sucesso.', 'success');
         })
         .catch(error => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Erro ao criar o registro.',
-                    message: error.body.message,
-                    variant: 'error',
-                }),
-            );
+            this.dispatchShowToast('Erro ao criar o registro.', error.body.message, 'error');
         });
     }
 
@@ -204,22 +179,10 @@ export default class TaskDetails extends LightningElement {
 
         updateRecord(recordInput)
         .then( taskdetails =>{
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Registro atualizado com sucesso.',
-                    variant: 'success'
-                })
-            )
+            this.dispatchShowToast('Success', 'Registro atualizado com sucesso.', 'success');
         })
         .catch(error => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Erro ao atualizar o registro.',
-                    message: error.body.message,
-                    variant: 'error',
-                }),
-            );
+            this.dispatchShowToast('Erro ao atualizar o registro.', error.body.message, 'error');
         });
     }
 
@@ -249,4 +212,14 @@ export default class TaskDetails extends LightningElement {
         return value === undefined;
     }
 
+    dispatchShowToast(aTitle, aMessage, aVariant){
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: aTitle,
+                message: aMessage,
+                variant: aVariant,
+            }),
+        );
+    }
+    
 }

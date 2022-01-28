@@ -21,4 +21,6 @@ public class TaskDetailsVO {
     @AuraEnabled public String  checkboxGroupValues;
     @AuraEnabled public String  radioGroupValues;
     @AuraEnabled public String  numberPrecision;
+    @AuraEnabled public Boolean  isReadOnly;
+    @AuraEnabled public Boolean  isRequeried;
 }
