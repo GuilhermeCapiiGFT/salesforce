@@ -53,6 +53,7 @@ public without sharing class OpportunityTriggerHandler extends TriggerHandler {
    * 1.0
    **********************************************************************************************************************************/
   public override void afterInsert() {
+    OpportunityAssignment.handleAtWorkOpportunityAssignment(lstNewOpportunity);
   }
 
   /**********************************************************************************************************************************

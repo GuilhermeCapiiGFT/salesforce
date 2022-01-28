@@ -13,4 +13,7 @@
         <value>SALARY_ADVANCE</value>
     </filters>
     <label>[Formalização] Antecipação</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

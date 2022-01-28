@@ -25,6 +25,11 @@
         <default>false</default>
         <label>Quitação</label>
     </customValue>
+    <customValue>
+        <fullName>PENDENCY_RETURN</fullName>
+        <default>false</default>
+        <label>Retorno de Pendência</label>
+    </customValue>
     <masterLabel>Tipo de produto</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

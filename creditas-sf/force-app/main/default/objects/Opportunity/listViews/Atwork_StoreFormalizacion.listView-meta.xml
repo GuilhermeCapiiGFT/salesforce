@@ -13,4 +13,7 @@
         <value>STORE</value>
     </filters>
     <label>[Formalização] Store</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

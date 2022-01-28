@@ -13,4 +13,7 @@
         <value>Opportunity.AtWork</value>
     </filters>
     <label>[Formalização] Todas as propostas</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>
