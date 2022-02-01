@@ -1,12 +1,11 @@
 {
-  "packageDirectories": [
-    {
-      "path": "force-app",
-      "default": true
-    }
-  ],
-  "name": "creditas-sf",
-  "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "53.0"
+    "namespace": "",
+    "packageDirectories": [
+        {
+            "path": "force-app",
+            "default": true
+        }
+    ],
+    "sfdcLoginUrl": "https://test.salesforce.com",
+    "sourceApiVersion": "53.0"
 }

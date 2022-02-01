@@ -1,3 +1,4 @@
 .fundo {
     background-color: aliceblue;
+    --slds-c-accordion-color-border: aqua;
 }

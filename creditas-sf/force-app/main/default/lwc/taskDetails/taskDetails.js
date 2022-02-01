@@ -32,7 +32,7 @@ export default class TaskDetails extends LightningElement {
         getTaskDetails({taskId: this.recordId})
         .then( data =>{
 
-            console.log({data});
+            // console.log({data});
 
             var updatedListData = []; // Merge da lista TaskDetailSettings(campos)/TaskDetails(valores).
             let listTaskDetailSettings = data.TaskDetailSettings;
@@ -92,23 +92,20 @@ export default class TaskDetails extends LightningElement {
                 updatedListData.push(updatedData);
             }
 
-            console.log('updatedListData');
-            console.log(updatedListData);
+            // console.log('updatedListData');
+            // console.log(updatedListData);
             this.tasks = updatedListData;
         })
         .catch(error =>{
-            console.log('ERROR: ' + JSON.stringify(error));
+            // console.log('ERROR: ' + JSON.stringify(error));
             console.log({error});
         })
-        .finally( ()=>{
-            // this.isLoading = false;
-        });
     }
 
     handleSave(){
         var listTaskDetails = [];
         let isValid = true;
-        let count = 0;
+
         this.template.querySelectorAll(".form-fields").forEach(elem => {
             var objTaskDetails = {};
             let dataId = elem.getAttribute("data-id");
@@ -117,11 +114,11 @@ export default class TaskDetails extends LightningElement {
                 
                 if(elem.fieldRequired == true){
                     let isValidRelationship = elem.getValidityRelationship();
-                    console.log('retorno: '+isValidRelationship);
+                    // console.log('retorno: '+isValidRelationship);
                     (isValidRelationship != true) ? isValid = false: '';
                 }
             }else if(!elem.checkValidity()) {
-                console.log('Não valido');
+                // console.log('Não valido');
                 elem.reportValidity();
                 isValid = false;
             }
@@ -144,14 +141,13 @@ export default class TaskDetails extends LightningElement {
                 objTaskDetails["FieldValue"+dataId+"__c"] = valueField;
                 listTaskDetails.push(objTaskDetails);
             }
-            count++;
         }); 
-        console.log('Count: '+count);
+
         if(isValid){
             this.listRecordSave = JSON.parse(JSON.stringify(listTaskDetails));
             
-            console.log('Save/Update');
-            console.log(this.listRecordSave);
+            // console.log('Save/Update');
+            // console.log(this.listRecordSave);
 
             (this.isRecordUpdate == true)
             ? this.updateTaskDetails()

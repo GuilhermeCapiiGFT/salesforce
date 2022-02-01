@@ -66,9 +66,6 @@ export default class SearchComponent extends LightningElement {
                     .catch(error => {
                         console.error('Error:', error);
                     })
-                    .finally( ()=>{
-                        //this.isLoading = false;
-                    });
                 }
             }, DELAY);
         }
@@ -119,7 +116,6 @@ export default class SearchComponent extends LightningElement {
 
         let isValid = true;
         this.template.querySelectorAll(".form-fields-search").forEach(elem => {
-            console.log(elem.tagName);
             if(!elem.checkValidity()){
                 isValid = false;
                 elem.reportValidity();

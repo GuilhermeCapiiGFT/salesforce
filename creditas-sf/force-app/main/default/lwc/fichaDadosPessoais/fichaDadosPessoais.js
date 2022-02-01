@@ -259,13 +259,13 @@ export default class FichaDadosPessoais extends LightningElement {
     // CNH
     this.template.querySelector('lightning-input-field[data-id="cnhRecordTypeId"]').value = this.getRecordTypeId('CNH')
     
-    // RG
+    //RG
     this.template.querySelector('lightning-input-field[data-id="rgRecordTypeId"]').value = this.getRecordTypeId('RG')
 
-    // Phone
+    //Phone
     this.template.querySelector('lightning-input-field[data-id="phoneChannel"]').value = 'SMS'
     
-    // Email
+    //Email
     this.template.querySelector('lightning-input-field[data-id="emailChannel"]').value = 'EMAIL'
       
     if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="phoneInput"]').value)) {
@@ -276,29 +276,31 @@ export default class FichaDadosPessoais extends LightningElement {
       emailForm.submit()
     }
 
-    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaInformadaInput"]').value)) {
-    //   this.template.querySelector('lightning-input-field[data-id="rendaInformadaTypeInput"]').value = 'MONTHLY_INCOME'
-    // }
+    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaInformadaInput"]').value)) {
+      this.template.querySelector('lightning-input-field[data-id="rendaInformadaTypeInput"]').value = 'MONTHLY_INCOME'
+      rendaInformadaForm.submit()
+    }
 
-    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConsideradaInput"]').value)) {
-    //   this.template.querySelector('lightning-input-field[data-id="rendaConsideradaTypeInput"]').value = 'PRESUMED_MONTHLY_INCOME'
-    // }
+    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConsideradaInput"]').value)) {
+      this.template.querySelector('lightning-input-field[data-id="rendaConsideradaTypeInput"]').value = 'PRESUMED_MONTHLY_INCOME'
+      rendaConsideradaForm.submit()
+    }
 
-    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaInput"]').value)) {
-    //   this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaTypeInput"]').value = 'CONFIRMED_MONTHLY_INCOME'
-    // }
+    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaInput"]').value)) {
+      this.template.querySelector('lightning-input-field[data-id="rendaConfirmadaTypeInput"]').value = 'CONFIRMED_MONTHLY_INCOME'
+      rendaConfirmadaForm.submit()
+    }
 
-    // if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rgInput"]').value)) {
-    //   rgForm.submit()
-    // }
+    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="cnhInput"]').value)) {
+      cnhForm.submit()
+    }
 
-    cnhForm.submit()
-    rgForm.submit()
+    if (!this.isBlank(this.template.querySelector('lightning-input-field[data-id="rgInput"]').value)) {
+      rgForm.submit()
+    }
+
     professionalInfoForm.submit()
     addressForm.submit()
-    // rendaInformadaForm.submit()
-    // rendaConsideradaForm.submit()
-    // rendaConfirmadaForm.submit()
     accountPatrimonioForm.submit()
     rendaMinimaOppForm.submit()
 
@@ -309,67 +311,76 @@ export default class FichaDadosPessoais extends LightningElement {
     });
 
     const payload = event.detail
-    // console.log(JSON.stringify(payload))
+    //console.log(JSON.stringify(payload))
 
     this.dispatchEvent(eventToast);
-    
   }
 
   isBlank(value) {
-    return (value === null || value === undefined || '') ? true : false
+    return (value === null || value === undefined || value === '') ? true : false
   }
 
-  // handleInformedIncomeSuccess(event) {
-  //   const fields = {}
+  handleAccountError(event) {
+    console.log('ocorreu um error')
+    console.log(JSON.parse(event))
+  }
 
-  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
-  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+  handleError(event) {
+    console.log('tyumi erro')
+    console.log(event.detail)
+  }
 
-  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
-  //   createRecord(recordInput)
-  //     .then(record => {
-  //       console.log('registro de junção criado')
-  //       console.log(JSON.stringify(recordInput))
-  //     })
-  //     .catch(error => {
-  //     console.log('erro aconteceu')
-  //   })
-  // }
+  handleInformedIncomeSuccess(event) {
+    const fields = {}
 
-  // handlePresumedIncomeSuccess(event) {
-  //   const fields = {}
+    fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+    fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
 
-  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
-  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+    const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+    createRecord(recordInput)
+      .then(record => {
+        console.log('registro de junção criado')
+        console.log(JSON.stringify(recordInput))
+      })
+      .catch(error => {
+      console.log('erro aconteceu')
+    })
+  }
 
-  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
-  //   createRecord(recordInput)
-  //     .then(record => {
-  //       console.log('registro de junção criado')
-  //       console.log(JSON.stringify(recordInput))
-  //     })
-  //     .catch(error => {
-  //     console.log('erro aconteceu')
-  //   })
-  // } 
+  handlePresumedIncomeSuccess(event) {
+    const fields = {}
 
-  // handleConfirmedIncomeSuccess(event) {
-  //   console.log(JSON.parse(JSON.stringify(event.detail)))
-  //   console.log('Financial Resource Id: ', event.detail.id)
+    fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+    fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
 
-  //   const fields = {}
+    const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+    createRecord(recordInput)
+      .then(record => {
+        console.log('registro de junção criado')
+        console.log(JSON.stringify(recordInput))
+      })
+      .catch(error => {
+      console.log('erro aconteceu')
+    })
+  } 
 
-  //   fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
-  //   fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+  handleConfirmedIncomeSuccess(event) {
+    console.log(JSON.parse(JSON.stringify(event.detail)))
+    console.log('Financial Resource Id: ', event.detail.id)
 
-  //   const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
-  //   createRecord(recordInput)
-  //     .then(record => {
-  //       console.log('registro de junção criado')
-  //       console.log(JSON.stringify(recordInput))
-  //     })
-  //     .catch(error => {
-  //     console.log('erro aconteceu')
-  //   })
-  // }
+    const fields = {}
+
+    fields[ACCOUNT_FIELD.fieldApiName] = this.accountid
+    fields[FINANCIAL_RESOURCE_FIELD.fieldApiName] = event.detail.id
+
+    const recordInput = { apiName: ACC_FIN_REL_OBJECT.objectApiName, fields }
+    createRecord(recordInput)
+      .then(record => {
+        console.log('registro de junção criado')
+        console.log(JSON.stringify(recordInput))
+      })
+      .catch(error => {
+      console.log('erro aconteceu')
+    })
+  }
 }

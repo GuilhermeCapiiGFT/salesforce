@@ -76,7 +76,7 @@
 
             <!-- Documents CNH -->
 
-            <lightning-record-edit-form onsubmit={handleCNHSubmit} object-api-name="Documents__c" onerror={handleCNHDocError} onsuccess={handleCNHDocSuccess} record-id={documentIdCNH} data-id="cnhForm" >
+            <lightning-record-edit-form onsubmit={handleCNHSubmit} object-api-name="Documents__c" onerror={handleCNHDocError} record-id={documentIdCNH} data-id="cnhForm" >
                 <lightning-layout multiple-rows="true" >
         
                     <lightning-input-field field-name="Account__c" variant="label-hidden" style="display: none;" data-id="objectAccountId"></lightning-input-field>
@@ -84,7 +84,7 @@
                     
                     <lightning-layout-item size="6" padding="around-small">
                         <label>Número da CNH</label>
-                        <lightning-input-field field-name={cnhNumberField} type="text" variant="label-hidden" label="Número da CNH"></lightning-input-field>
+                        <lightning-input-field data-id="cnhInput" field-name={cnhNumberField} type="text" variant="label-hidden" label="Número da CNH"></lightning-input-field>
                     </lightning-layout-item>
                 
                     <lightning-layout-item size="6" padding="around-small">
@@ -113,7 +113,7 @@
                     
                 <lightning-layout-item size="6" padding="around-small">
                     <label>Número do RG</label>
-                    <lightning-input-field field-name={rgNumberField} type="text" variant="label-hidden" label="Número do RG" required></lightning-input-field>
+                    <lightning-input-field data-id="rgInput" field-name={rgNumberField} type="text" variant="label-hidden" label="Número do RG" required></lightning-input-field>
                 </lightning-layout-item>
             
                 <lightning-layout-item size="6" padding="around-small">
@@ -260,20 +260,20 @@
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <!-- <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={monthlyIncomeId} data-id="rendaInformadaForm" onsuccess={handleInformedIncomeSuccess} >
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={monthlyIncomeId} data-id="rendaInformadaForm" onsuccess={handleInformedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
                     <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaInformadaTypeInput"></lightning-input-field>
                     
                     <lightning-layout-item size="12" padding="around-small">
                         <label>Renda Informada</label>
-                        <lightning-input-field field-name={rendaInformadaField}  variant="label-hidden"></lightning-input-field>
+                        <lightning-input-field field-name={rendaInformadaField}  variant="label-hidden" data-id="rendaInformadaInput"></lightning-input-field>
                     </lightning-layout-item>
     
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={presumedMonthlyIncomeId} data-id="rendaConsideradaForm" onsuccess={handlePresumedIncomeSuccess} >
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" onerror={handleError} record-id={presumedMonthlyIncomeId} data-id="rendaConsideradaForm" onsuccess={handlePresumedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
                     <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaConsideradaTypeInput"></lightning-input-field>
@@ -286,7 +286,7 @@
                 </lightning-layout>
             </lightning-record-edit-form>
 
-            <lightning-record-edit-form  object-api-name="FinancialResources__c" record-id={confirmedMonthlyIncomeId} data-id="rendaConfirmadaForm" onsuccess={handleConfirmedIncomeSuccess} >
+            <lightning-record-edit-form  object-api-name="FinancialResources__c" onerror={handleError} record-id={confirmedMonthlyIncomeId} data-id="rendaConfirmadaForm" onsuccess={handleConfirmedIncomeSuccess} >
                 <lightning-layout  multiple-rows="true" >
                     
                     <lightning-input-field field-name="Type__c"  variant="label-hidden" style="display: none;" data-id="rendaConfirmadaTypeInput"></lightning-input-field>
@@ -297,9 +297,9 @@
                     </lightning-layout-item>
     
                 </lightning-layout>
-            </lightning-record-edit-form> -->
+            </lightning-record-edit-form>
     
-            <lightning-record-edit-form  object-api-name="Account" record-id={accountid} data-id="accountPatrimonioForm">
+            <lightning-record-edit-form  object-api-name="Account" onerror={handleError} record-id={accountid} data-id="accountPatrimonioForm">
                 <lightning-layout  multiple-rows="true" >
                     
                     <lightning-layout-item size="12" padding="around-small">

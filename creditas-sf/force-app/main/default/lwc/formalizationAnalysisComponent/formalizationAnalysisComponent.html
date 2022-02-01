@@ -1,17 +1,18 @@
 <template>
     <div class="slds-box fundo">
+
+
         <lightning-tabset>
             <lightning-tab label="Geral">
                 <p>Geral</p>
             </lightning-tab>
-            <lightning-tab label="Dados Pessoais">
+            <lightning-tab label="Dados Pessoais" icon-name={tabIcon} class="tabPessoal">
                 <lightning-layout multiple-rows="true">
                     <template for:each={items} for:item="item">
                         <lightning-layout-item size="4" key={item.id}>
-                            <lightning-input class="slds-var-m-right_small" disabled name={item.name}
-                                        type="text" label="Nome do Pai"
-                                        value={item.name}></lightning-input>
-                            
+                            <lightning-input class="slds-var-m-right_small" disabled name={item.name} type="text"
+                                label="Nome do Pai" value={item.name}></lightning-input>
+
                         </lightning-layout-item>
                         <lightning-layout-item size="4" key={item.id}>
                             <lightning-radio-group name="radioGroup" label="Radio Group" options={options} value={value}
@@ -28,12 +29,124 @@
                     </template>
                 </lightning-layout>
             </lightning-tab>
-            <lightning-tab label="Dados de Contato">
-                Three Content !
+            <lightning-tab label="Dados de Contato" icon-name={tabIcon} class="tabContatos">
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Aprovar Contatos"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Aprovar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Rejeitar Contatos"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Rejeitar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Pendenciar Contatos"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Pendenciar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+
+                <lightning-accordion class="example-accordion" onsectiontoggle={handleToggleSection}
+                    active-section-name="B">
+
+                    <lightning-accordion-section class="sectionClass" name="A" label="Accordion Title A">
+
+
+                        
+
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="B" label="Accordion Title B">
+
+
+                    </lightning-accordion-section>
+                    <lightning-progress-ring id=p3 value={p3Progress}> </lightning-progress-ring>
+                    <lightning-accordion-section name="C" label="Accordion Title C">
+
+                    </lightning-accordion-section>
+                </lightning-accordion>
             </lightning-tab>
 
             <lightning-tab label="Dados de Endereço">
-                Three Content !
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Aprovar Contatos"
+                    onclick={handleClick2} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Aprovar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Rejeitar Contatos"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Rejeitar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Contatos" label="Pendenciar Contatos"
+                    onclick={handleClick} variant="brand"></lightning-button>
+                <lightning-button class="slds-var-m-right_x-small" value="Pessoal" label="Pendenciar Pessoal"
+                    onclick={handleClick} variant="brand"></lightning-button>
+
+                <ul class="slds-accordion">
+                    <li class="slds-accordion__list-item">
+                        <section class="slds-accordion__section slds-is-open">
+                            <div class="slds-accordion__summary">
+                                <h2 class="slds-accordion__summary-heading">
+                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" onclick={handleClick}
+                                        aria-controls="referenceId-75" aria-expanded="true" title="Geral" value="0">
+                                        <lightning-icon size="small" icon-name={iconName0} class="slds-var-m-right_xx-small"></lightning-icon>
+								        <lightning-progress-ring value={p1Progress} class="slds-var-m-right_small"> </lightning-progress-ring>
+                                        <span class="slds-accordion__summary-content">Accordion summary</span>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div class="slds-accordion__content" id="referenceId-75">
+                                <template for:each={items} for:item="item">
+                                    <lightning-layout-item size="4" key={item.id}>
+                                        <lightning-input class="slds-var-m-right_small" disabled name={item.name} type="text"
+                                            label="Nome do Pai" value={item.name}></lightning-input>
+        
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" key={item.id}>
+                                        <lightning-radio-group name="radioGroup" label="Radio Group" options={options}
+                                            value={value} onchange={handleChange} type="button"></lightning-radio-group>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" key={item.id}>
+                                        <template if:true={item.showField}>
+                                            <p>
+                                                <lightning-input type="text" label="Enter some text" value="Lorem Ipsum Dosum">
+                                                </lightning-input>
+                                            </p>
+                                        </template>
+                                    </lightning-layout-item>
+                                </template>
+                            </div>
+                        </section>
+                    </li>
+                    <li class="slds-accordion__list-item">
+                        <section class="slds-accordion__section">
+                            <div class="slds-accordion__summary">
+                                <h2 class="slds-accordion__summary-heading">
+                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" onclick={handleClick}
+                                        aria-controls="referenceId-76" aria-expanded="false" title="Documentos" value="1">
+                                        <lightning-icon size="small" icon-name={iconName1} class="slds-var-m-right_xx-small"></lightning-icon>
+								        <lightning-progress-ring value={p2Progress} class="slds-var-m-right_small"> </lightning-progress-ring>
+                                        <span class="slds-accordion__summary-content" value="1">Accordion summary</span>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div class="slds-accordion__content" id="referenceId-76">Accordion details - B
+                            </div>
+                        </section>
+                    </li>
+                    <li class="slds-accordion__list-item">
+                        <section class="slds-accordion__section">
+                            <div class="slds-accordion__summary">
+                                <h2 class="slds-accordion__summary-heading">
+                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" onclick={handleClick}
+                                        aria-controls="referenceId-77" aria-expanded="false" title="Endereço" value="2">
+                                        <lightning-icon size="small" icon-name={iconName2} class="slds-var-m-right_xx-small"></lightning-icon>
+								        <lightning-progress-ring value={p3Progress} class="slds-var-m-right_small"> </lightning-progress-ring>
+                                        <span class="slds-accordion__summary-content" value="2">Accordion summary</span>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div class="slds-accordion__content" id="referenceId-77">Accordion details - C
+                            </div>
+                        </section>
+                    </li>
+                </ul>
             </lightning-tab>
 
             <lightning-tab label="Dados de Garantia">
