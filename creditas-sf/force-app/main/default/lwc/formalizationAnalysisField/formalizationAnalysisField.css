@@ -1,0 +1,39 @@
+.customButton{
+    transition: box-shadow 215ms ease-in-out, color 215ms ease-in-out;
+    border-style: solid;
+    padding-right: 1rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    padding-left: 1rem;
+    border-width: 0.1rem;
+    border-color: rgb(155, 179, 190);
+    border-radius: .5rem;
+    text-align: center;
+}
+
+.buttonApprove{
+    --slds-c-button-text-color: rgb(63, 240, 116);
+}
+.buttonApprove:hover{
+    box-shadow: 0 0 2rem 2rem rgb(4, 241, 75) inset;
+    --slds-c-button-text-color: rgb(0, 0, 0);
+}
+.buttonReject{
+    --slds-c-button-text-color: rgb(255, 26, 26);
+}
+.buttonReject:hover{
+    box-shadow: 0 0 2rem 2rem rgb(255, 26, 26) inset;
+    --slds-c-button-text-color: rgb(0, 0, 0);
+}
+
+.buttonPendency{
+    --slds-c-button-text-color: rgb(252, 182, 30);
+}
+.buttonPendency:hover{
+    box-shadow: 0 0 2rem 2rem rgb(252, 182, 30) inset;
+    --slds-c-button-text-color: rgb(0, 0, 0);
+}
+
+.buttonInactive{
+    pointer-events: none;
+}

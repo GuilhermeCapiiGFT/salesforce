@@ -2,4 +2,5 @@
     <aura:attribute name="recordId" type="String"/>
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
     <c:formalizationAnalysisComponent recordId="{!v.recordId}"/>
+    <c:proposalAnalysis/>
 </aura:component>

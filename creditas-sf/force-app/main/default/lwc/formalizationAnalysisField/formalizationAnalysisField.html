@@ -1,0 +1,55 @@
+<template>
+    
+        <div class="slds-var-m-around_x-small">
+            <!-- COMPONENT LAYOUT -->
+            <lightning-layout>
+                <!-- INPUT FIELD -->
+                <lightning-layout-item size="5" padding="around-small">
+                    <div class="slds-text-align_center">
+                        <lightning-input type={inputType} name={inputName} label={inputLabel} disabled={inputDisabled} value={inputValue}></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <!-- BUTTON & FIELDS -->
+                <lightning-layout-item size="7" padding="around-small">
+                    <lightning-layout>
+                        <!-- BUTTONS -->
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <button class="slds-button customButton buttonApprove" onclick={handleApprove}> Aprovar </button>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <button class="slds-button customButton buttonReject" onclick={handleReject}> Rejeitar </button>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto" padding="around-small">
+                            <button class="slds-button customButton buttonPendency" onclick={handlePendency}> Pendenciar </button>
+                        </lightning-layout-item>                       
+                        <!-- CONDITIONAL FIELDS -->
+                        <template if:true={isReject}>
+                            <lightning-layout-item flexibility="auto" padding="around-small">
+                                <lightning-combobox
+                                        name="progress"
+                                        label="Motivo de Rejeição"
+                                        value={value}
+                                        placeholder="Select Progress"
+                                        options={options}
+                                        onchange={handleChange}>
+                                </lightning-combobox>
+                            </lightning-layout-item>  
+                        </template>
+                        <template if:true={isPendency}>
+                            <lightning-layout-item flexibility="auto" padding="around-small">
+                                <lightning-combobox
+                                        name="progress"
+                                        label="Motivo de Pendência"
+                                        value={value}
+                                        placeholder="Select Progress"
+                                        options={options}
+                                        onchange={handleChange}>
+                                </lightning-combobox>
+                            </lightning-layout-item>  
+                        </template>
+                    </lightning-layout>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+   
+</template>

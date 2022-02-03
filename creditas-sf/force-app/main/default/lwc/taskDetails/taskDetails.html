@@ -25,7 +25,7 @@
                             value={fields.value}
                             variant="label-hidden"
                             step={fields.numberPrecision}
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}> 
                         </lightning-input>
                     </template>
@@ -43,7 +43,7 @@
                             value={fields.value}
                             variant="label-hidden"
                             step={fields.numberPrecision}
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}> 
                         </lightning-input>
                     </template>
@@ -54,7 +54,7 @@
                             obj-name={fields.relatedObject}
                             icon-name="standard:contact"
                             label-name={fields.fieldName}
-                            field-required={fields.isRequeried}
+                            field-required={fields.isRequired}
                             field-readonly={fields.isReadOnly}
                             placeholder="Search" 
                             fields={fields}
@@ -82,7 +82,7 @@
                             value={fields.value}
                             variant="label-hidden"
                             onchange={handleChange}
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-input>
                     </template>  
@@ -97,7 +97,7 @@
                             data-fieldkey={fields.fieldKey} 
                             data-name={fields.fieldName}
                             checked={fields.value}
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-input>
                     </template>
@@ -115,7 +115,7 @@
                             data-fieldkey={fields.fieldKey}
                             data-name={fields.fieldName}
                             class="form-fields"
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-checkbox-group>
                     </template>
@@ -134,7 +134,7 @@
                             placeholder="Picklist options"
                             class="form-fields"
                             options={fields.picklistValues}
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-combobox>
                     </template>
@@ -153,7 +153,7 @@
                             variant="label-hidden"
                             value={fields.value}
                             size="3"
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-dual-listbox>
                     </template>
@@ -172,7 +172,7 @@
                             variant="label-hidden"
                             class="form-fields" 
                             type="radio"
-                            required={fields.isRequeried}
+                            required={fields.isRequired}
                             disabled={fields.isReadOnly}>
                         </lightning-radio-group>
                     </template>

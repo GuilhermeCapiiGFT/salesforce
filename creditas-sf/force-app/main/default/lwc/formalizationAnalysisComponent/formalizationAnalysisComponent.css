@@ -2,3 +2,6 @@
     background-color: aliceblue;
     --slds-c-accordion-color-border: aqua;
 }
+.progressCSS {
+    line-height: 100% !important;
+}

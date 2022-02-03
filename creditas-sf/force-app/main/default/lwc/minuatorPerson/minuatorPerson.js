@@ -8,6 +8,7 @@ export default class MinuatorPerson extends LightningElement {
 	@track persons = [];
 	showPersonSectionVar = false;
 	showPersonData1 = false;
+	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
 	participationOptions = [
 		{ label: 'Proprietário', value: 'owner' },
@@ -31,8 +32,9 @@ export default class MinuatorPerson extends LightningElement {
 		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";
 	}
 
-	showPersonDataSection1(){
-		this.showPersonData1 = !this.showPersonData1;
+	showPersonDataSection(event){
+		let actualPerson = this.persons.filter(person => { return person.name === event.currentTarget.textContent });
+		actualPerson[0].showSection = !actualPerson[0].showSection
 	}
 
     connectedCallback(){
@@ -220,8 +222,13 @@ export default class MinuatorPerson extends LightningElement {
 		'';
 
         this.personObject = JSON.parse(this.personString);
+		var i = 0;
 		this.personObject.persons.forEach(person => {
-			this.persons.push(person)		
+			i++;
+			person.id = 'person'+i;
+			person.showSection = false;
+			person.cpf = person.documents.filter(doc => { return doc.type == 'CPF'})[0]?.number;
+			this.persons.push(person);	
 		});
 		
 

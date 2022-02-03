@@ -1,0 +1,162 @@
+<template>
+	<div class="slds-card slds-p-left_medium" style="overflow: hidden;">
+		<div class="slds-accordion">
+
+			<div class="slds-progress slds-progress_vertical">
+				<div class="slds-progress__list">
+
+					<div class="slds-progress__item ">
+						<div class="slds-progress__marker completed"></div>
+						<div class="slds-progress__item_content" onclick={handleAccordionToggle} data-id="progressItem"
+							style="cursor: pointer;">
+							<div class="slds-accordion__list-item">
+								<section class="slds-is-open">
+									<span class="geral">Geral</span>
+
+                  <template if:true={personalInfoVariant}>
+										<lightning-progress-ring value="100" variant={personalInfoVariant} class="slds-m-left_small">
+										</lightning-progress-ring>
+									</template>
+								</section>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="slds-progress__item" style="align-items: start;">
+						<div class=" slds-progress__marker completed"></div>
+						<div class="slds-progress__item_content " style="margin-top: 0px;">
+							<div class="slds-accordion__list-item">
+								<section class="slds-is-open">
+									
+                  <span data-id="sectionPersonal" class="dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;">Dados Pessoais</span>
+
+                  <template if:true={personalInfoVariant}>
+                    <lightning-progress-ring value="100" variant={personalInfoVariant} class="slds-m-left_small">
+                    </lightning-progress-ring>
+                  </template>
+
+                  <lightning-progress-ring value="30" variant={personalInfoVariant} class="slds-m-left_small">
+                  </lightning-progress-ring>
+                  
+									<div class="slds-accordion__content" id="referenceId-37">
+										<div class="container">
+											<div class="field">
+												<label class="slds-text-heading_small slds-p-bottom_x-small">Nome</label>
+												<input type="text" class="slds-text-heading_small" value="Maria Candido"/>
+											</div>
+
+											<div class="checkbox-options slds-p-top_x-small">
+												<div class="form-control aprovado">
+													<label for="checkboxNameAprovado" class="slds-text-heading_small">Aprovado</label>
+
+													<input id="checkboxNameAprovado" data-value={preValue} name="AccountName" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control pendenciado">
+													<label for="checkboxNamePendenciado" class="slds-text-heading_small">Pendenciado</label>
+													<input id="checkboxNamePendenciado" data-value={preValue} name="AccountName" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control reprovado">
+													<label for="checkboxNameReprovado" class="slds-text-heading_small">Reprovado</label>
+													<input id="checkboxNameReprovado" data-value={preValue} name="AccountName"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
+												</div>
+											</div>
+
+
+										</div>
+
+										<div class="container">
+											<div class="field">
+												<label class="slds-text-heading_small slds-p-bottom_x-small">Nome da Mãe</label>
+												<input type="text" class="slds-text-heading_small" value="Adriana Obama" />
+											</div>
+
+											<div class="checkbox-options slds-p-top_x-small">
+												<div class="form-control aprovado">
+													<label for="checkboxMotherAprovado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxMotherAprovado" data-value={preValue} name="AccountMother" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control pendenciado">
+													<label for="checkboxMotherPendenciado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxMotherPendenciado" data-value={preValue} name="AccountMother" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control reprovado">
+													<label for="checkboxMotherReprovado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxMotherReprovado" data-value={preValue} name="AccountMother"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
+												</div>
+											</div>
+										</div>
+
+										<div class="container">
+											<div class="field">
+												<label class="slds-text-heading_small slds-p-bottom_x-small">CPF</label>
+
+												<div style="display: flex;">
+													<input style="width: 100%;"  type="text" class="slds-text-heading_small " value="495.454.542-50" />
+													<lightning-icon style="cursor: pointer;" data-id={cpf_document} onclick={handleDocumentModal}
+														class="slds-p-left_small" icon-name='utility:file' alternative-text='file' size='small'
+														title='file'>
+													</lightning-icon>
+
+												</div>
+											</div>
+
+											<div class="checkbox-options slds-p-top_x-small">
+												<div class="form-control aprovado">
+													<label for="checkboxCPFAprovado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxCPFAprovado" data-value={preValue} name="AccountCPF" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control pendenciado">
+													<label for="checkboxCPFPendenciado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxCPFPendenciado" data-value={preValue} name="AccountCPF" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
+												</div>
+
+												<div class="form-control reprovado">
+													<label for="checkboxCPFReprovado" class="slds-text-heading_small">&nbsp;</label>
+													<input id="checkboxCPFReprovado" data-value={preValue} name="AccountCPF"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</section>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="slds-progress__item ">
+						<div class="slds-progress__marker"></div>
+						<div class="slds-progress__item_content slds-grid">
+							<span>Dados de Contato</span>
+							<lightning-progress-ring value="100" variant="expired" class="slds-m-left_small">
+							</lightning-progress-ring>
+						</div>
+					</div>
+
+					<div class="slds-progress__item ">
+						<div class="slds-progress__marker"></div>
+						<div class="slds-progress__item_content slds-grid">
+							<span>Dados de Endereço</span>
+							<lightning-progress-ring value="100" variant="warning" class="slds-m-left_small">
+							</lightning-progress-ring>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<template if:true={openModalDocument}>
+			<c-modal-image
+				source-img={sourceImg}
+				onclosemodal={handlerCloseDocumentModal}
+			></c-modal-image>
+		</template>
+	</div>
+</template>

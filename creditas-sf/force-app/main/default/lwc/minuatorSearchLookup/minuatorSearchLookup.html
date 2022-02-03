@@ -1,79 +1,80 @@
 <template>
-    <div class={formElementClass}>
-        <div if:false={isLabelHidden}>
-            <label class="slds-form-element__label" for="combobox-input">
-                <template if:true={_required}>
-                    <abbr class="slds-required vk-cs-required" title="required">🞲</abbr>
-                </template>
-                {label}
-            </label>
-            <lightning-helptext if:true={showHelpText} content={_helpText}></lightning-helptext>
-        </div>
+    <div style="margin-left: 4px; margin-right: 4px;" class="slds-form-element">
         <div class="slds-form-element__control">
-            <div class={cbContainerClassClass}>
-                <div class={cbComputedClass} aria-expanded={isAriaExpanded} aria-haspopup="listbox" role="combobox" onclick={handleTriggerClick}>
-                    <div class={cfeComputedClass} role="none">
-                        <span if:true={isOptionSelected}>
-                            <span if:true={hasIcon} class={entityIcon.class} title={entityIcon.title}>
-                                <svg class={entityIcon.iconClass} aria-hidden="true">
-                                    <use xlink:href={entityIcon.url}></use>
-                                </svg>
-                                <span class="slds-assistive-text">{entityIcon.title}</span>
+            <div class="slds-combobox_container">
+                <div data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                        <lightning-input 
+                                        data-id="search" 
+                                        label="Lead" 
+                                        name="searchText" 
+                                        placeholder="Buscar por ID" 
+                                        value={selectedOption}
+                                        onchange={getLeads}
+                                        > 
+                        </lightning-input>
+                        <div if:true={showIconSearch}>
+                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                                <lightning-icon 
+                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                            icon-name="utility:search" 
+                                            size="x-small" 
+                                            style="margin-top: 9px;"
+                                            alternative-text="icon" >
+                                </lightning-icon>
                             </span>
-                        </span> 
-                        <input id="combobox-input" 
-                            type="text" 
-                            role="textbox" 
-                            value={selectedOption.label} 
-                            readonly={_readOnly} 
-                            required={_required} 
-                            placeholder={_placeHolder} 
-                            autocomplete="off"
-                            aria-controls="listbox-id" 
-                            class={inputClass}
-                            onkeyup={handleKeyUp} 
-                            onfocus={handleFocus}
-                            onblur={handleBlur} />
-                        <div class="slds-input__icon-group slds-input__icon-group_right">
-                            <span if:false={isOptionSelected} class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" title="Search">
-                                <svg class={searchIconClass} aria-hidden="true">
-                                    <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#search"></use>
-                                </svg>
-                                <span class="slds-assistive-text">Search</span>
-                            </span>
-                            <button if:true={isOptionSelected} class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Remove selected option" onclick={removeSelectedOption}>
-                                <svg class={closeIconClass} aria-hidden="true">
-                                    <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
-                                </svg>
-                                <span class="slds-assistive-text">Remove selected option</span>
+                        </div>
+                        <div if:true={showIconClean}>
+                            <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon iconheight" onclick={removeSelectedOption}>
+                                <lightning-icon 
+                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                            icon-name="utility:clear" 
+                                            size="x-small"
+                                            alternative-text="icon" 
+                                            style="margin-top: 28px;" >
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Clean</span>
                             </button>
                         </div>
-                    </div>
-                    <div id="listbox-id" role="listbox" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" style="margin-top: 0;"
-						onmousedown={handleDropdownMouseDown} onmouseup={handleDropdownMouseUp} onmouseleave={handleDropdownMouseLeave}>
+                    </div> 
+
+                    <!-- EXIBITION LIST -->
+                    <div if:true={showList} id="listbox-id-1" style="z-index: 0; position: relative;" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
                         <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                            <template for:each={optionsToDisplay} for:item="option">
-                                <li role="presentation" class={option.outerClass} key={option.index} id={option.index} onclick={handleSelection}>
-                                    <div class={option.innerClass} role="option">
-                                        <span if:true={hasIcon} class="slds-media__figure slds-listbox__option-icon">
-                                            <span class="slds-icon_container">
-                                                <lightning-icon icon-name={iconName} size={_iconSize} class="slds-icon-text-default"></lightning-icon>
-                                            </span>
-                                        </span>
-                                        <span class="slds-media__body">
-                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">
-                                                {option.label}
-                                            </span>
-                                        </span>
-                                    </div>
-                                </li>
-                            </template>
-                            <li if:true={noResultsFound} class="slds-p-left_small"> No results found</li>
+                            <li if:true={data} role="presentation" class="slds-listbox__item">
+                                <div data-id={name} data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickOption}>
+                                    <span class="slds-media__figure">
+                                        <span class="slds-icon_container"> </span>
+                                    </span>                   
+                                    <span class="slds-media__body">
+                                        <lightning-icon 
+                                            class="slds-text-color_inverse" 
+                                            icon-name="standard:avatar"
+                                            size="small"
+                                            alternative-text="icon"
+                                            >
+                                        </lightning-icon>
+                                        <h3 class="slds-truncate"  title={name} > {name} </h3>
+                                        <h3 style="margin-left: 33px; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
+                                    </span>                 
+                                </div>        
+                            </li>
+                            <li if:true={showSpinner} role="presentation" class="slds-listbox__item">
+                                <div data-id={name} data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                    <span class="slds-media__figure">
+                                        <span class="slds-icon_container"> </span>
+                                    </span>
+                                    <span class="slds-media__body">
+                                        <div class="exampleHolder">
+                                            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+                                        </div>
+                                    </span>
+                                </div>
+                            </li>        
                         </ul>
                     </div>
                 </div>
             </div>
-            <div if:true={showMessage} role="alert" class="slds-form-element__help slds-is-absolute">{errorMessage}</div>
-        </div>        
-    </div>
+        </div>
+    </div>    
 </template>

@@ -24,15 +24,12 @@ export default class TaskDetails extends LightningElement {
     taskType;
 
     connectedCallback(){
-        // this.isLoading = true;
         this.getTaskDetails();
     }
 
     getTaskDetails(){
         getTaskDetails({taskId: this.recordId})
         .then( data =>{
-
-            // console.log({data});
 
             var updatedListData = []; // Merge da lista TaskDetailSettings(campos)/TaskDetails(valores).
             let listTaskDetailSettings = data.TaskDetailSettings;
@@ -92,12 +89,9 @@ export default class TaskDetails extends LightningElement {
                 updatedListData.push(updatedData);
             }
 
-            // console.log('updatedListData');
-            // console.log(updatedListData);
             this.tasks = updatedListData;
         })
         .catch(error =>{
-            // console.log('ERROR: ' + JSON.stringify(error));
             console.log({error});
         })
     }
@@ -114,11 +108,9 @@ export default class TaskDetails extends LightningElement {
                 
                 if(elem.fieldRequired == true){
                     let isValidRelationship = elem.getValidityRelationship();
-                    // console.log('retorno: '+isValidRelationship);
                     (isValidRelationship != true) ? isValid = false: '';
                 }
             }else if(!elem.checkValidity()) {
-                // console.log('Não valido');
                 elem.reportValidity();
                 isValid = false;
             }
@@ -145,9 +137,6 @@ export default class TaskDetails extends LightningElement {
 
         if(isValid){
             this.listRecordSave = JSON.parse(JSON.stringify(listTaskDetails));
-            
-            // console.log('Save/Update');
-            // console.log(this.listRecordSave);
 
             (this.isRecordUpdate == true)
             ? this.updateTaskDetails()
@@ -198,7 +187,7 @@ export default class TaskDetails extends LightningElement {
     }
 
     updateTask(){ 
-        updateRecordTask({ aTaskId: this.recordId, aTaskDetailsId: this.recordTaskDetailsId} )
+        updateRecordTask({ taskId: this.recordId, taskDetailsId: this.recordTaskDetailsId} )
         .then()
         .catch(error => {
             console.log('ERRO: '+JSON.stringify(error));

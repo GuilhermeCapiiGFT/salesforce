@@ -1,33 +1,47 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getOpportunityInfo from '@salesforce/apex/formalizationAnalysisController.getOpportunnityInfo';
 
- 
+//CONSTANTS
+const CHEVRON_RIGHT = 'utility:chevronright';
+const CHEVRON_DOWN = 'utility:chevrondown';
+const VARIANT_BASE = 'base-autocomplete';
+class eventResponseWrapper {
+    constructor(key,value){
+        this.key = key,
+        this.value = value
+    }
+}
 export default class FormalizationAnalysis extends LightningElement {
-    p1Progress = 0;
     @api recordId;
     opportunity;
     error;
-    value = '';
-    valor;
-    tabIcon = 'utility:warning';
-    isPendenciar = false;
+    //ProgressRing Variables
+    p0Progress = 0;
     p1Progress = 0;
     p2Progress = 0;
-    p3Progress = 0;
-    isOpened = true;
-    @track iconName0 = 'utility:chevrondown';
-    @track iconName1 = 'utility:chevronright';
-    @track iconName2 = 'utility:chevronright';
+    p0Variant = VARIANT_BASE;
+    p1Variant = VARIANT_BASE;
+    p2Variant = VARIANT_BASE;
+    //Accordeon Variables
+    iconName0 = CHEVRON_DOWN;
+    iconName1 = CHEVRON_RIGHT;
+    iconName2 = CHEVRON_RIGHT;
+    //EventResponses
+    eventResponses = new Map();
     
-    get options() {
-        return [
-            { label: 'Aprovar', value: 'aprovar' },
-            { label: 'Rejeitar', value: 'rejeitar' },
-            { label: 'Pendenciar', value: 'pendenciar' },
-        ];
-    }
-    items = [ {id: 1, name: "Joao", label: "Nome do Pai",showField: false}, {id:2, name: "Maria",label: "Nome da Mãe",showField: false}, {id: 3, name: "111.222.333-44", label: "CPF",showField: false}, {id:4, name: "33.452.132-12",label: "RG",showField: false}];
+    items = [ 
+        {id: 1, inputValue: "Joao", inputLabel: "Nome do Pai", inputDisabled: true, inputType: 'text', inputSection: 'Geral'}, 
+        {id: 2, inputValue: "Maria", inputLabel: "Nome da Mãe", inputDisabled: true, inputType: 'text', inputSection: 'Geral'}, 
+        {id: 3, inputValue: "111.222.333-44", inputLabel: "CPF",inputDisabled: true, inputType: 'text', inputSection: 'Geral'}, 
+        {id: 4, inputValue: "33.452.132-12", inputLabel: "RG", inputDisabled: false, inputType: 'text', inputSection: 'Geral'}];
+
+    items2 = [ 
+        {id: 1, inputValue: "Centro", inputLabel: "Bairro", inputDisabled: true, inputType: 'text', inputSection: 'Endereço'}, 
+        {id: 2, inputValue: "SP", inputLabel: "Estado", inputDisabled: true, inputType: 'text', inputSection: 'Endereço'}, 
+        {id: 3, inputValue: "Brasil", inputLabel: "País",inputDisabled: true, inputType: 'text', inputSection: 'Endereço'},
+        {id: 4, inputValue: "Rua Jose Garcia, 246", inputLabel: "Rua",inputDisabled: false, inputType: 'text', inputSection: 'Endereço'}, 
+        {id: 5, inputValue: "34", inputLabel: "Numero", inputDisabled: false, inputType: 'text', inputSection: 'Endereço'}];
 
     @wire (getOpportunityInfo, {aOpportunityId : '$recordId'} )
     opportunity({error,data}){
@@ -39,23 +53,38 @@ export default class FormalizationAnalysis extends LightningElement {
             this.error = error;
         }
     }
-
-    handleChange(event){
-        this.valor = event.detail.value;
-        console.dir(event.detail);
-        this.isPendenciar = event.detail.value === 'pendenciar' ? true : false;
-        if(event.detail.value === 'rejeitar'){
-            this.showToast('Aviso!','Ao rejeitar o campo a proposta toda será rejeitada!','warning');
-            this.p1Progress = 0;
-          }
-        if(event.detail.value === 'aprovar'){
-        this.p1Progress = 100;
+    
+    handleProgress(event){
+        if(event.detail.section === 'Geral'){
+       
+            if(event.detail.variant === 'reject'){
+                
+                this.showToast('Aviso!','Ao rejeitar o campo, a proposta inteira será rejeitada.','warning');
+            }
+            this.eventResponses.set(event.detail.position, event.detail.variant );
+            this.readEventResponses();
         }
+        
     }
 
+    readEventResponses(){
+        let value = 100/this.items.length;
+        
+        this.p1Progress = this.eventResponses.size * value;
+       
+        let values = Array.from(this.eventResponses.values()) ;
+        
+        if(values.includes('reject')) { 
+            this.p1Variant = 'expired';
+        } else if(values.includes('pendency')) { 
+            this.p1Variant = 'warning';
+        } else {
+            this.p1Variant = VARIANT_BASE;
+        }
+        
+    }
 
-    handleClick(event){
-               
+    handleAccordeon(event){         
         let elementValue;
         if(event.target.value === undefined || event.target.localName === 'lightning-progress-ring'){
             elementValue = event.target.parentElement.value;
@@ -64,85 +93,33 @@ export default class FormalizationAnalysis extends LightningElement {
         }
         let elemControls = this.getElementsByClassName('slds-accordion__section');
         let ariaControls = this.getElementsByClassName('slds-accordion__summary-action');
-        //let iconControls = this.getElementsByClassName('slds-var-m-right_xx-small');
         let i;     
         for(i = 0;  i < elemControls.length; i++){
             elemControls[i].classList.remove('slds-is-open');
             ariaControls[i].setAttribute('aria-expanded','false');
-            /*
-            iconControls[i].setAttribute('icon-name','utility:chevronright');
-            iconControls[i].classList.remove('slds-icon-utility-chevrondown');
-            iconControls[i].classList.add('slds-icon-utility-chevronright');
-            */
         }
         elemControls[elementValue].classList.add('slds-is-open');
         ariaControls[elementValue].setAttribute('aria-expanded','true');
         this.changeIcon(elementValue);
 
-
-        /*
-        iconControls[event.target.parentElement.value].setAttribute('icon-name','utility:chevrondown');
-        iconControls[event.target.parentElement.value].classList.remove('slds-icon-utility-chevronright');
-        iconControls[event.target.parentElement.value].classList.add('slds-icon-utility-chevrondown');
-        */
       }
       changeIcon(stringPos){
         if(stringPos === '0') {  
-            this.iconName0 = 'utility:chevrondown';
-            this.iconName1 = 'utility:chevronright';
-            this.iconName2 = 'utility:chevronright';
+            this.iconName0 = CHEVRON_DOWN;
+            this.iconName1 = CHEVRON_RIGHT;
+            this.iconName2 = CHEVRON_RIGHT;
         }
         if(stringPos === '1') {  
-            this.iconName0 = 'utility:chevronright';
-            this.iconName1 = 'utility:chevrondown';
-            this.iconName2 = 'utility:chevronright';
+            this.iconName0 = CHEVRON_RIGHT;
+            this.iconName1 = CHEVRON_DOWN;
+            this.iconName2 = CHEVRON_RIGHT;
          }
         if(stringPos === '2') {  
-            this.iconName0 = 'utility:chevronright';
-            this.iconName1 = 'utility:chevronright';
-            this.iconName2 = 'utility:chevrondown'; 
+            this.iconName0 = CHEVRON_RIGHT;
+            this.iconName1 = CHEVRON_RIGHT;
+            this.iconName2 = CHEVRON_DOWN; 
         }
       }
-
-      handleToggleSection(event) {
-        //console.log(JSON.stringify(event.target));
-        //console.log(JSON.stringify(event.detail));
-        //let apendingChild = this.getElementsByClassName('sectionClass');
-        //let i = 1;
-        //console.log( apendingChild.size() );
-        //console.dir( apendingChild[0].firstChild );
-        //console.log(JSON.stringify( apendingChild[0].firstChild ));
-        //console.log(JSON.stringify( apendingChild[0].innerHTML ));
-        //console.log(JSON.stringify( apendingChild[0].children ));
-        //apendingChild[0].appendChild(this.addNewChildElement(1));
-    }
-    /*
-    handleClick(event){
-        //console.log(JSON.stringify(event.target));
-        //console.log(JSON.stringify(event.detail));
-        let targetName = `tab${event.target.value}`;
-        console.log(targetName);
-        let apendingChild = this.getElementsByClassName(targetName);
-        console.dir(apendingChild);
-
-        let typeOfIcon = event.target.label.split(' ')[0];
-        let iconName;
-        if(typeOfIcon === 'Aprovar'){
-            iconName = 'utility:success';
-        } else if(typeOfIcon === 'Rejeitar'){
-            iconName = 'utility:error';
-        } else if (typeOfIcon === 'Pendenciar'){
-            iconName = 'utility:warning';
-        }
-        console.log(iconName);
-        console.dir( apendingChild[0].getAttribute('icon-name') );
-        console.dir( apendingChild[0].getAttribute('iconName') );
-        apendingChild[0].setAttribute('icon-name', iconName);
-        apendingChild[0].re
-        render();
-        
-    }
-    */
 
     showToast(title, message, variant){
         const event = new ShowToastEvent({
