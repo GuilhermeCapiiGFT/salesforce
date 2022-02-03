@@ -1,0 +1,20 @@
+.exampleHolder{
+    position: relative;
+    width: 150px;
+    display: inline-block;
+    height: 20px;
+    --lwc-brandPrimary: rgb(12, 130, 209);
+
+}
+
+.slds-truncate2{
+    --lwc-brandPrimary: rgb(128, 128, 128);
+    margin-top: 5px;
+    margin-left: 25px;
+
+}
+
+.slds-truncate{
+    margin-left: 10px;
+}
+

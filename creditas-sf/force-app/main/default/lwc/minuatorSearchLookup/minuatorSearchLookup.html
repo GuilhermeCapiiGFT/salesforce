@@ -1,0 +1,80 @@
+<template>
+    <div style="margin-left: 4px; margin-right: 4px;" class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <div data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                        <lightning-input 
+                                        data-id="search" 
+                                        label="Lead" 
+                                        name="searchText" 
+                                        placeholder="Buscar por ID" 
+                                        value={selectedOption}
+                                        onchange={getLeads}
+                                        > 
+                        </lightning-input>
+                        <div if:true={showIconSearch}>
+                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                                <lightning-icon 
+                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                            icon-name="utility:search" 
+                                            size="x-small" 
+                                            style="margin-top: 9px;"
+                                            alternative-text="icon" >
+                                </lightning-icon>
+                            </span>
+                        </div>
+                        <div if:true={showIconClean}>
+                            <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon iconheight" onclick={removeSelectedOption}>
+                                <lightning-icon 
+                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                            icon-name="utility:clear" 
+                                            size="x-small"
+                                            alternative-text="icon" 
+                                            style="margin-top: 28px;" >
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Clean</span>
+                            </button>
+                        </div>
+                    </div> 
+
+                    <!-- EXIBITION LIST -->
+                    <div if:true={showList} id="listbox-id-1" style="z-index: 0; position: relative;" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
+                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                            <li if:true={data} role="presentation" class="slds-listbox__item">
+                                <div data-id={name} data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickOption}>
+                                    <span class="slds-media__figure">
+                                        <span class="slds-icon_container"> </span>
+                                    </span>                   
+                                    <span class="slds-media__body">
+                                        <lightning-icon 
+                                            class="slds-text-color_inverse" 
+                                            icon-name="standard:avatar"
+                                            size="small"
+                                            alternative-text="icon"
+                                            >
+                                        </lightning-icon>
+                                        <h3 class="slds-truncate"  title={name} > {name} </h3>
+                                        <h3 style="margin-left: 33px; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
+                                    </span>                 
+                                </div>        
+                            </li>
+                            <li if:true={showSpinner} role="presentation" class="slds-listbox__item">
+                                <div data-id={name} data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                    <span class="slds-media__figure">
+                                        <span class="slds-icon_container"> </span>
+                                    </span>
+                                    <span class="slds-media__body">
+                                        <div class="exampleHolder">
+                                            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+                                        </div>
+                                    </span>
+                                </div>
+                            </li>        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</template>
