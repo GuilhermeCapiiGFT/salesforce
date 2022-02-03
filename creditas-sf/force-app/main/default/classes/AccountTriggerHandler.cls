@@ -61,7 +61,6 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterInsert() 
     {
-        this.verifyDocumentDuplicates();
     }
     
     /**********************************************************************************************************************************
@@ -92,7 +91,6 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterUpdate() 
     {
-        this.verifyDocumentDuplicates();
     }
 
     /**********************************************************************************************************************************
@@ -179,23 +177,26 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     {
         for(Account varAccount : lstNewAccount)
         {
-            if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
+            if(varAccount.RecordTypeId != null)
             {
-                validaDocumento(varAccount);
-
-                if(String.isNotBlank(varAccount.DocumentNumber__c))
+                if(varAccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_FISICA))
                 {
-                    String cpf = Util.getMaskedCPF(varAccount.DocumentNumber__c);
-                    varAccount.DocumentNumber__c = cpf;
-                }
-            } else if(varaccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_JURIDICA))
-            {
-                validaDocumento(varAccount);
-
-                if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    validaDocumento(varAccount);
+    
+                    if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    {
+                        String cpf = Util.getMaskedCPF(varAccount.DocumentNumber__c);
+                        varAccount.DocumentNumber__c = cpf;
+                    }
+                } else if(varaccount.RecordTypeId.equals(RECORDTYPE_CONTA_PESSOA_JURIDICA))
                 {
-                    String cnpj = Util.getMaskedCNPJ(varAccount.DocumentNumber__c);
-                    varAccount.DocumentNumber__c = cnpj;
+                    validaDocumento(varAccount);
+    
+                    if(String.isNotBlank(varAccount.DocumentNumber__c))
+                    {
+                        String cnpj = Util.getMaskedCNPJ(varAccount.DocumentNumber__c);
+                        varAccount.DocumentNumber__c = cnpj;
+                    }
                 }
             }
         }
@@ -222,45 +223,6 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
             else if(!Util.isValidDocumentNumber(varAccount.DocumentNumber__c) && varAccount.DocumentType__c.equals('CNPJ'))
             {
                 varAccount.DocumentNumber__c.addError('O CNPJ não é válido.');
-            }
-        }
-    }
-
-    /* ================================================================================================================================
-    * @description fazer validação do cpf
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Gabriel Vidal          06/10/21
-    **********************************************************************************************************************************/
-    public void verifyDocumentDuplicates()
-    {
-        Set<String> documentKeysNew = new Set<String>();
-        Set<String> existingDocumentKeys = new Set<String>();
-
-        for(Account varAccount : lstNewAccount)
-        {
-            if (documentKeysNew.contains(varAccount.DocumentKey__c) && varAccount.DocumentNumber__c != null)
-            {
-                varAccount.DocumentNumber__c.addError('Já existe uma conta com este número de documento.');
-            } else
-            {
-                documentKeysNew.add(varAccount.DocumentKey__c);
-            }
-
-        }
-
-        for(Account acc : [SELECT DocumentKey__c FROM Account WHERE DocumentKey__c IN :documentKeysNew AND Id NOT IN :mapNewAccount.keySet()])
-        {
-            existingDocumentKeys.add(acc.DocumentKey__c);
-        }
-
-        for(Account varAccount : lstNewAccount)
-        {
-            if (existingDocumentKeys.contains(varAccount.DocumentKey__c) && varAccount.DocumentNumber__c != null)
-            {
-                varAccount.DocumentNumber__c.addError('Já existe uma conta com este número de documento.');
             }
         }
     }
