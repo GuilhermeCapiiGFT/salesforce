@@ -1,0 +1,106 @@
+.container-img,
+.viewer-toolbar{
+    position:relative; 
+    display: flex;
+    height: 400px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.viewer-toolbar > ul{
+    display: flex;
+    margin: 0 auto 5px;
+    overflow: hidden;
+    padding: 6px 3px;
+    justify-content: center;
+    align-items: center;
+}
+.viewer-toolbar > ul > li button{
+    width: 100%;
+    height: 100%;
+}
+.viewer-toolbar > ul > li {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    float: left;
+    height: 25px;
+    overflow: hidden;
+    -webkit-transition: background-color 0.15s;
+    transition: background-color 0.15s;
+    width: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.viewer-toolbar > ul > li svg{
+    fill: #ffff;
+    width: 100%;
+    height: 65%;
+}
+.viewer-toolbar > ul > li:focus, 
+.viewer-toolbar > ul > li:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.viewer-toolbar button:focus{
+    border:none;
+}
+.viewer-toolbar li {
+    margin: 2px;
+}
+.viewer-toolbar li button:focus{
+    border: none;
+    box-shadow: none;
+}
+.modal-content{
+    height: 100vh;
+}
+.modal-btns{
+    position: relative;
+    bottom: 15vh;
+}
+.viewer-canvas{
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.close-modal{
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    z-index: 1;
+}
+.close-modal:focus{
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+.viewer-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    height: 80px;
+    overflow: hidden;
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    -webkit-transition: background-color 0.15s;
+    transition: background-color 0.15s;
+    width: 80px;
+    z-index: 1;
+}
+.close-modal:focus  .viewer-button {
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: none;
+    outline: 0;
+}
+.container-img img{
+    transition-duration: 0.8s;
+    transition-property: height, width, transform;
+    max-width: none;
+    max-height: none;
+}

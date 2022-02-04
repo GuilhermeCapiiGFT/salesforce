@@ -24,6 +24,21 @@ export default class FormalizationAnalysisField extends LightningElement {
         this.isReject = false;
         this.isPendency = false;
         this.sendProgressEvent('approve');
+        event.target.classList.add('buttonApproveClicked');
+        let hasReject = this.template.querySelector('.buttonRejectIcon');
+        console.dir(hasReject);
+        if(hasReject){
+            hasReject.classList.remove('buttonRejectIcon');
+        }
+        /*
+        setTimeout(() => {
+            let approveButton = this.template.querySelector('.buttonApproveRotate');
+            //console.dir(approveButton);
+            approveButton.classList.remove('buttonApproveRotate');
+            approveButton.classList.add('buttonApproveIcon');
+        }, 777);
+        */
+        
 
     }
 
@@ -31,6 +46,18 @@ export default class FormalizationAnalysisField extends LightningElement {
         this.isReject = true;
         this.isPendency = false;
         this.sendProgressEvent('reject');
+        event.target.classList.add('buttonRejectRotate');
+        let hasApprove = this.template.querySelector('.buttonApproveIcon');
+        if(hasApprove){
+            hasApprove.classList.remove('buttonApproveClicked');
+        }
+
+        setTimeout(() => {
+            let approveButton = this.template.querySelector('.buttonRejectRotate');
+            //console.dir(approveButton);
+            approveButton.classList.remove('buttonRejectRotate');
+            approveButton.classList.add('buttonRejectIcon');
+        }, 777);
         
     }
 

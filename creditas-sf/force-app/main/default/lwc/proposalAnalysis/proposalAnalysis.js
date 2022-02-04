@@ -6,9 +6,12 @@ export default class ProposalAnalysis extends LightningElement {
   @api accountid
 
   generalVariant = ''
-  personalInfoVariant = 'base-autocomplete'
+  personalInfoVariant = ''
   contactInfoVariant = ''
-  addressesInfoVariant = ''
+  addressesInfoVariant = 'expired'
+
+  personalInfoValue = ''
+
   value = [];
   preValue = [];
 
@@ -37,7 +40,47 @@ export default class ProposalAnalysis extends LightningElement {
         elem.checked = true
       }
       elem.setAttribute('data-value', newValue)
+
+      // console.log(elem.value + ' '+ elem.checked)
     })
+
+
+    this.getPercentage(event)
+  }
+
+  getPercentage(event) {
+    let returnedId = event.target.closest("div[data-id]").getAttribute("data-id")
+    let myDiv = this.template.querySelector('div[data-id="' + returnedId + '"]')
+    
+    let allCheckboxes = (myDiv.querySelectorAll('input[type="checkbox"]').length) / 3
+    let selectedCheckboxes = myDiv.querySelectorAll('input[type="checkbox"]:checked')
+
+    // console.log({allCheckboxes})
+    // console.log({selectedCheckboxes})
+    // console.log({returnedId})
+    // console.log(myDiv)
+
+    selectedCheckboxes.forEach(element => {
+      console.log(element.value)
+
+      if (element.value === 'aprovado') {
+        this.personalInfoVariant = 'base-autocomplete'
+      }
+
+      if (element.value === 'pendenciado') {
+        this.personalInfoVariant = 'warning'
+      }
+
+      if (element.value === 'reprovado') {
+        this.personalInfoVariant = 'expired'
+      }
+      
+    })
+    
+    
+    this.personalInfoValue = (selectedCheckboxes.length / allCheckboxes) * 100
+    
+    selectedCheckboxes = 0;
   }
 
 
@@ -54,13 +97,14 @@ export default class ProposalAnalysis extends LightningElement {
   handleAccordionToggle(event) {
     
     // console.log(event.target.classList)
-    console.log(event.target.parentElement.classList)
+
+    // console.log(event.target.parentElement.classList)
     // console.log(event.target.previousSibling)
 
     // let sectionPersonal = event.target.getElement('data-id')
     // this.template.querySelector('#' + sectionPersonal).toggle('slds-is-open')
 
-    event.target.parentElement.classList.toggle('slds-is-open')
+    event.target.parentElement.parentElement.parentElement.classList.toggle('slds-is-open')
 
   }
 

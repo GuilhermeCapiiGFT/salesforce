@@ -131,346 +131,343 @@
                 </div>
 
                 <lightning-card>
-                    <div class="slds-align_absolute-center" style="height:5rem; margin-bottom:100px">                                
+                    <div class="slds-align_absolute-center" style="height:5rem; margin-bottom:120px">                                
                         <c-minuator-search-lookup onnotfound={changeNotFound} ongenericerror={changeError}> </c-minuator-search-lookup>                                      
                     </div>
-                </lightning-card>
-                
+                </lightning-card>                
         </div> 
 
-        <div if:true={showScreenNotFound} class="slds-illustration slds-illustration_small">
+        <!-- Show screen Not Found-->
+        <div if:true={showScreenNotFound} class="slds-illustration slds-illustration_small" style="margin-top: 60px;margin-bottom:150px">
             <svg class="slds-illustration__svg" viewBox="0 0 424 253" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g transform="translate(-90.000000, -75.000000)">
-                  <g>
-                    <g transform="translate(362.500000, 251.000000) scale(-1, 1) translate(-362.500000, -251.000000) translate(212.000000, 176.000000)">
-                      <g transform="translate(11.000000, 61.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
-                        <path vector-effect="non-scaling-stroke" d="M205.678404,88.7060547 C241.204839,79.6402995 264.385375,73.6529948 275.22001,70.7441406 C284.386465,68.2831552 288.919667,66.3692913 289.659463,63.6132812 C290.231312,61.482937 289.575954,58.5184063 280.531534,56.4824219 C263.69169,53.375 221.886026,49.1894531 211.291014,47.6064453 C200.696003,46.0234375 163.447549,43.4306641 163.531534,32.3076172 C163.615518,21.1845703 191.456338,18.3017578 202.277343,16.6347656 C213.098347,14.9677734 215.910155,12.1396484 215.910155,9.08691406 C215.910155,7.05175781 210.827893,4.38736979 200.66337,1.09375"
-                          transform="translate(226.670882, 44.899902) scale(-1, 1) translate(-226.670882, -44.899902) "></path>
-                        <path vector-effect="non-scaling-stroke" d="M1.31221526,0.5 C13.3068171,2.21419271 20.5131973,3.86816406 22.9313559,5.46191406 C26.5585938,7.85253906 27.8242188,13.1230469 21.7255859,15.6025391 C17.6598307,17.2555339 12.7158203,18.8808594 6.89355469,20.4785156 C2.33626302,22.3964844 0.0576171875,24.4661458 0.0576171875,26.6875 C0.0576171875,30.0195313 2.96846526,31.8701172 10.9206137,33.125 C18.8727621,34.3798828 78.7253012,39.5429688 83.3229575,39.7568359 C87.9206137,39.9707031 163.017293,45.9052734 190.737997,53.4716797 C218.4587,61.0380859 230.180095,69.3007812 231.721395,75.7050781 C232.748929,79.9746094 231.513997,83.4833984 228.016602,86.2314453"
-                          transform="translate(116.064507, 43.365723) scale(-1, 1) translate(-116.064507, -43.365723) "></path>
-                      </g>
-                      <path vector-effect="non-scaling-stroke" d="M0.96484375,61.5 L241.929687,61.5" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
-                      <polyline vector-effect="non-scaling-stroke" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="40 61 113.5 0 171.5 45"></polyline>
-                      <polyline vector-effect="non-scaling-stroke" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="155 30.9433962 171.5 16 227 60"></polyline>
-                      <path vector-effect="non-scaling-stroke" d="M230.968213,39.968973 L234.46647,56.4296875 L228.542446,61.0018357 L223.607422,61.3664012 L229.020498,39.9319979 C229.155728,39.3965247 229.699439,39.0720629 230.234912,39.2072921 C230.604556,39.3006424 230.888959,39.5960527 230.968213,39.968973 Z"
-                        class="slds-illustration__fill-secondary" transform="translate(229.036946, 50.271507) scale(-1, 1) translate(-229.036946, -50.271507) "></path>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(-90.000000, -75.000000)">
+                        <g>
+                            <g transform="translate(362.500000, 251.000000) scale(-1, 1) translate(-362.500000, -251.000000) translate(212.000000, 176.000000)">
+                                <g transform="translate(11.000000, 61.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                                    <path vector-effect="non-scaling-stroke" d="M205.678404,88.7060547 C241.204839,79.6402995 264.385375,73.6529948 275.22001,70.7441406 C284.386465,68.2831552 288.919667,66.3692913 289.659463,63.6132812 C290.231312,61.482937 289.575954,58.5184063 280.531534,56.4824219 C263.69169,53.375 221.886026,49.1894531 211.291014,47.6064453 C200.696003,46.0234375 163.447549,43.4306641 163.531534,32.3076172 C163.615518,21.1845703 191.456338,18.3017578 202.277343,16.6347656 C213.098347,14.9677734 215.910155,12.1396484 215.910155,9.08691406 C215.910155,7.05175781 210.827893,4.38736979 200.66337,1.09375"
+                                    transform="translate(226.670882, 44.899902) scale(-1, 1) translate(-226.670882, -44.899902) "></path>
+                                    <path vector-effect="non-scaling-stroke" d="M1.31221526,0.5 C13.3068171,2.21419271 20.5131973,3.86816406 22.9313559,5.46191406 C26.5585938,7.85253906 27.8242188,13.1230469 21.7255859,15.6025391 C17.6598307,17.2555339 12.7158203,18.8808594 6.89355469,20.4785156 C2.33626302,22.3964844 0.0576171875,24.4661458 0.0576171875,26.6875 C0.0576171875,30.0195313 2.96846526,31.8701172 10.9206137,33.125 C18.8727621,34.3798828 78.7253012,39.5429688 83.3229575,39.7568359 C87.9206137,39.9707031 163.017293,45.9052734 190.737997,53.4716797 C218.4587,61.0380859 230.180095,69.3007812 231.721395,75.7050781 C232.748929,79.9746094 231.513997,83.4833984 228.016602,86.2314453"
+                                    transform="translate(116.064507, 43.365723) scale(-1, 1) translate(-116.064507, -43.365723) "></path>
+                                </g>
+                                <path vector-effect="non-scaling-stroke" d="M0.96484375,61.5 L241.929687,61.5" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
+                                <polyline vector-effect="non-scaling-stroke" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="40 61 113.5 0 171.5 45"></polyline>
+                                <polyline vector-effect="non-scaling-stroke" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="155 30.9433962 171.5 16 227 60"></polyline>
+                                <path vector-effect="non-scaling-stroke" d="M230.968213,39.968973 L234.46647,56.4296875 L228.542446,61.0018357 L223.607422,61.3664012 L229.020498,39.9319979 C229.155728,39.3965247 229.699439,39.0720629 230.234912,39.2072921 C230.604556,39.3006424 230.888959,39.5960527 230.968213,39.968973 Z"
+                                class="slds-illustration__fill-secondary" transform="translate(229.036946, 50.271507) scale(-1, 1) translate(-229.036946, -50.271507) "></path>
+                            </g>
+                            <g transform="translate(129.000000, 130.000000)">
+                                <g transform="translate(25.000000, 0.000000)" class="slds-illustration__fill-secondary">
+                                    <path vector-effect="non-scaling-stroke" d="M24.5,121.514719 L24.5,5 L7.5,0 L7.5,167.671875 C7.48762464,169.600647 6.8735755,171.502553 6,173.377594 C5.1264245,175.252635 2.90714031,177.62677 0,179.5 L32,179.5 C29.1883458,177.694031 27.6521991,175.597198 26.5,174.209503 C25.3478009,172.821808 24.717281,170.944682 24.5,168.578125 L24.5,138.367434 C24.7249438,138.219742 24.4382699,138.047012 24.636039,137.849242 L45.8492424,116.636039 C47.4113396,115.073942 47.4113396,112.541282 45.8492424,110.979185 L43.0208153,108.150758 C41.4587181,106.58866 38.9260582,106.58866 37.363961,108.150758 L24.5,121.514719 Z"></path>
+                                </g>
+                                <g transform="translate(32.000000, 0.000000)" fill="#FFFFFF">
+                                    <polygon vector-effect="non-scaling-stroke" points="1.56762695 0.629394531 16.9477539 5.69604492 16.9477539 9.03393555 0.170410156 4.12597656"></polygon>
+                                </g>
+                                <g>
+                                    <path vector-effect="non-scaling-stroke" d="M49.5,121.514719 L49.5,5 L32.5,0 L32.5,167.671875 C32.4876246,169.600647 31.8735755,171.502553 31,173.377594 C30.1264245,175.252635 27.9071403,177.62677 25,179.5 L57,179.5 C54.1883458,177.694031 52.6521991,175.597198 51.5,174.209503 C50.3478009,172.821808 49.717281,170.944682 49.5,168.578125 L49.5,138.367434 C49.7249438,138.219742 49.4382699,138.047012 49.636039,137.849242 L70.8492424,116.636039 C72.4113396,115.073942 72.4113396,112.541282 70.8492424,110.979185 L68.0208153,108.150758 C66.4587181,106.58866 63.9260582,106.58866 62.363961,108.150758 L49.5,121.514719 Z"
+                                    class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M9,179.5 L81,179.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M0,179.5 L3,179.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M57.9821839,168.453786 L60,179 L54,179 L56.0178161,168.453786 C56.1216026,167.911341 56.6454769,167.555738 57.1879221,167.659524 C57.5904065,167.736532 57.9051763,168.051302 57.9821839,168.453786 Z"
+                                    class="slds-illustration__fill-primary"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M61.9685597,171.091165 L64,179 L58,179 L60.0314403,171.091165 C60.1688385,170.556245 60.7138607,170.233989 61.2487814,170.371387 C61.6020064,170.462115 61.8778313,170.73794 61.9685597,171.091165 Z"
+                                    class="slds-illustration__fill-primary"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M22.9685597,171.091165 L25,179 L19,179 L21.0314403,171.091165 C21.1688385,170.556245 21.7138607,170.233989 22.2487814,170.371387 C22.6020064,170.462115 22.8778313,170.73794 22.9685597,171.091165 Z"
+                                    class="slds-illustration__fill-primary"></path>
+                                </g>
+                            </g>
+                            <g transform="translate(91.000000, 147.000000)">
+                                <g class="slds-illustration__fill-secondary">
+                                    <path vector-effect="non-scaling-stroke" d="M4,0 L152,0 C154.209139,-1.61026889e-14 156,1.790861 156,4 L156,92 C156,94.209139 154.209139,96 152,96 L4,96 C1.790861,96 2.705415e-16,94.209139 0,92 L0,75.9353173 L5.99999907,73.6003702 L0,71.8894428 L0,67.2234547 L9.99999846,63.907068 L0,59.2127597 L0,4 C-2.705415e-16,1.790861 1.790861,4.05812251e-16 4,0 Z"></path>
+                                </g>
+                                <g>
+                                    <polygon vector-effect="non-scaling-stroke" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0.5 0.5 156.5 0.5 156.5 96.5 0.5 96.5 0.5 76.4355469 6.5 74.1005859 0.5 72.3896484 0.5 67.7236328 10.5 64.4072266 0.5 59.7128906"></polygon>
+                                    <path vector-effect="non-scaling-stroke" d="M155,32.5 L0,32.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linejoin="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M155,64.5 L9,64.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linejoin="round"></path>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="146" cy="10" r="3"></circle>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="146" cy="86" r="3"></circle>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="10" cy="10" r="3"></circle>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="10" cy="86" r="3"></circle>
+                                </g>
+                                <g transform="translate(2.000000, 2.000000)" fill="#FFFFFF">
+                                    <path vector-effect="non-scaling-stroke" d="M55.8642363,32.9353041 C53.419953,36.6948065 52,41.1815794 52,46 C52,59.254834 62.745166,70 76,70 C80.8184206,70 85.3051935,68.580047 89.0646959,66.1357637 L55.8642363,32.9353041 Z M62.9353041,25.8642363 L96.1357637,59.0646959 C98.580047,55.3051935 100,50.8184206 100,46 C100,32.745166 89.254834,22 76,22 C71.1815794,22 66.6948065,23.419953 62.9353041,25.8642363 Z M76,80 C57.2223185,80 42,64.7776815 42,46 C42,27.2223185 57.2223185,12 76,12 C94.7776815,12 110,27.2223185 110,46 C110,64.7776815 94.7776815,80 76,80 Z"></path>
+                                    <rect x="0" y="0" width="153" height="3"></rect>
+                                </g>
+                            </g>
+                            <g transform="translate(408.500000, 207.500000)">
+                                <g fill="#FFFFFF">
+                                    <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
+                                </g>
+                                <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                                    <polygon vector-effect="non-scaling-stroke" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
+                                    <path vector-effect="non-scaling-stroke" d="M17,4.6953125 C17,43.0456294 17,62.6471919 17,63.5 C17,62.6471919 17,43.0456294 17,4.6953125 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
+                                </g>
+                            </g>
+                            <g transform="translate(435.000000, 174.500000)">
+                                <g transform="translate(1.000000, 0.000000)" fill="#FFFFFF">
+                                    <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
+                                </g>
+                                <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                                    <polygon vector-effect="non-scaling-stroke" points="26.5 0 52.5 87 0.5 87"></polygon>
+                                    <path vector-effect="non-scaling-stroke" d="M26.5,3.58642578 C26.5,64.0261034 26.5,94.9972948 26.5,96.5 C26.5,94.9972948 26.5,64.0261034 26.5,3.58642578 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M16.6478873,37 C22.6478873,41.4120254 25.6478873,43.7453587 25.6478873,44 C25.6478873,43.7453587 22.6478873,41.4120254 16.6478873,37 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z"></path>
+                                </g>
+                            </g>
+                            <g transform="translate(172.000000, 76.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
+                                <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
+                                <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
+                                <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
+                            </g>
+                            <g transform="translate(316.000000, 121.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
+                                <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
+                                <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
+                                <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
+                            </g>
+                        </g>
                     </g>
-                    <g transform="translate(129.000000, 130.000000)">
-                      <g transform="translate(25.000000, 0.000000)" class="slds-illustration__fill-secondary">
-                        <path vector-effect="non-scaling-stroke" d="M24.5,121.514719 L24.5,5 L7.5,0 L7.5,167.671875 C7.48762464,169.600647 6.8735755,171.502553 6,173.377594 C5.1264245,175.252635 2.90714031,177.62677 0,179.5 L32,179.5 C29.1883458,177.694031 27.6521991,175.597198 26.5,174.209503 C25.3478009,172.821808 24.717281,170.944682 24.5,168.578125 L24.5,138.367434 C24.7249438,138.219742 24.4382699,138.047012 24.636039,137.849242 L45.8492424,116.636039 C47.4113396,115.073942 47.4113396,112.541282 45.8492424,110.979185 L43.0208153,108.150758 C41.4587181,106.58866 38.9260582,106.58866 37.363961,108.150758 L24.5,121.514719 Z"></path>
-                      </g>
-                      <g transform="translate(32.000000, 0.000000)" fill="#FFFFFF">
-                        <polygon vector-effect="non-scaling-stroke" points="1.56762695 0.629394531 16.9477539 5.69604492 16.9477539 9.03393555 0.170410156 4.12597656"></polygon>
-                      </g>
-                      <g>
-                        <path vector-effect="non-scaling-stroke" d="M49.5,121.514719 L49.5,5 L32.5,0 L32.5,167.671875 C32.4876246,169.600647 31.8735755,171.502553 31,173.377594 C30.1264245,175.252635 27.9071403,177.62677 25,179.5 L57,179.5 C54.1883458,177.694031 52.6521991,175.597198 51.5,174.209503 C50.3478009,172.821808 49.717281,170.944682 49.5,168.578125 L49.5,138.367434 C49.7249438,138.219742 49.4382699,138.047012 49.636039,137.849242 L70.8492424,116.636039 C72.4113396,115.073942 72.4113396,112.541282 70.8492424,110.979185 L68.0208153,108.150758 C66.4587181,106.58866 63.9260582,106.58866 62.363961,108.150758 L49.5,121.514719 Z"
-                          class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path vector-effect="non-scaling-stroke" d="M9,179.5 L81,179.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round"></path>
-                        <path vector-effect="non-scaling-stroke" d="M0,179.5 L3,179.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round"></path>
-                        <path vector-effect="non-scaling-stroke" d="M57.9821839,168.453786 L60,179 L54,179 L56.0178161,168.453786 C56.1216026,167.911341 56.6454769,167.555738 57.1879221,167.659524 C57.5904065,167.736532 57.9051763,168.051302 57.9821839,168.453786 Z"
-                          class="slds-illustration__fill-primary"></path>
-                        <path vector-effect="non-scaling-stroke" d="M61.9685597,171.091165 L64,179 L58,179 L60.0314403,171.091165 C60.1688385,170.556245 60.7138607,170.233989 61.2487814,170.371387 C61.6020064,170.462115 61.8778313,170.73794 61.9685597,171.091165 Z"
-                          class="slds-illustration__fill-primary"></path>
-                        <path vector-effect="non-scaling-stroke" d="M22.9685597,171.091165 L25,179 L19,179 L21.0314403,171.091165 C21.1688385,170.556245 21.7138607,170.233989 22.2487814,170.371387 C22.6020064,170.462115 22.8778313,170.73794 22.9685597,171.091165 Z"
-                          class="slds-illustration__fill-primary"></path>
-                      </g>
-                    </g>
-                    <g transform="translate(91.000000, 147.000000)">
-                      <g class="slds-illustration__fill-secondary">
-                        <path vector-effect="non-scaling-stroke" d="M4,0 L152,0 C154.209139,-1.61026889e-14 156,1.790861 156,4 L156,92 C156,94.209139 154.209139,96 152,96 L4,96 C1.790861,96 2.705415e-16,94.209139 0,92 L0,75.9353173 L5.99999907,73.6003702 L0,71.8894428 L0,67.2234547 L9.99999846,63.907068 L0,59.2127597 L0,4 C-2.705415e-16,1.790861 1.790861,4.05812251e-16 4,0 Z"></path>
-                      </g>
-                      <g>
-                        <polygon vector-effect="non-scaling-stroke" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0.5 0.5 156.5 0.5 156.5 96.5 0.5 96.5 0.5 76.4355469 6.5 74.1005859 0.5 72.3896484 0.5 67.7236328 10.5 64.4072266 0.5 59.7128906"></polygon>
-                        <path vector-effect="non-scaling-stroke" d="M155,32.5 L0,32.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linejoin="round"></path>
-                        <path vector-effect="non-scaling-stroke" d="M155,64.5 L9,64.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linejoin="round"></path>
-                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="146" cy="10" r="3"></circle>
-                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="146" cy="86" r="3"></circle>
-                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="10" cy="10" r="3"></circle>
-                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="10" cy="86" r="3"></circle>
-                      </g>
-                      <g transform="translate(2.000000, 2.000000)" fill="#FFFFFF">
-                        <path vector-effect="non-scaling-stroke" d="M55.8642363,32.9353041 C53.419953,36.6948065 52,41.1815794 52,46 C52,59.254834 62.745166,70 76,70 C80.8184206,70 85.3051935,68.580047 89.0646959,66.1357637 L55.8642363,32.9353041 Z M62.9353041,25.8642363 L96.1357637,59.0646959 C98.580047,55.3051935 100,50.8184206 100,46 C100,32.745166 89.254834,22 76,22 C71.1815794,22 66.6948065,23.419953 62.9353041,25.8642363 Z M76,80 C57.2223185,80 42,64.7776815 42,46 C42,27.2223185 57.2223185,12 76,12 C94.7776815,12 110,27.2223185 110,46 C110,64.7776815 94.7776815,80 76,80 Z"></path>
-                        <rect x="0" y="0" width="153" height="3"></rect>
-                      </g>
-                    </g>
-                    <g transform="translate(408.500000, 207.500000)">
-                      <g fill="#FFFFFF">
-                        <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
-                      </g>
-                      <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
-                        <polygon vector-effect="non-scaling-stroke" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
-                        <path vector-effect="non-scaling-stroke" d="M17,4.6953125 C17,43.0456294 17,62.6471919 17,63.5 C17,62.6471919 17,43.0456294 17,4.6953125 Z"></path>
-                        <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
-                      </g>
-                    </g>
-                    <g transform="translate(435.000000, 174.500000)">
-                      <g transform="translate(1.000000, 0.000000)" fill="#FFFFFF">
-                        <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
-                      </g>
-                      <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
-                        <polygon vector-effect="non-scaling-stroke" points="26.5 0 52.5 87 0.5 87"></polygon>
-                        <path vector-effect="non-scaling-stroke" d="M26.5,3.58642578 C26.5,64.0261034 26.5,94.9972948 26.5,96.5 C26.5,94.9972948 26.5,64.0261034 26.5,3.58642578 Z"></path>
-                        <path vector-effect="non-scaling-stroke" d="M16.6478873,37 C22.6478873,41.4120254 25.6478873,43.7453587 25.6478873,44 C25.6478873,43.7453587 22.6478873,41.4120254 16.6478873,37 Z"></path>
-                        <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z"></path>
-                      </g>
-                    </g>
-                    <g transform="translate(172.000000, 76.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-                      <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
-                      <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
-                      <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
-                      <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
-                    </g>
-                    <g transform="translate(316.000000, 121.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-                      <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
-                      <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
-                      <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
-                      <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
-                    </g>
-                  </g>
                 </g>
-              </g>
             </svg>
             <div class="slds-text-longform">
-                <h3 class="slds-text-heading_medium">Lorem ipsum dolor</h3>
-              </div>
-
-              <lightning-button variant="brand" label="Brand" title="Primary action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
-            </div>
+                <h4 class="slds-text-heading_medium"> Não encontrado </h4>
+                <h3 class="slds-text-body_small" style="margin-top: 8px;"> O ID não foi encontrado, confira se está tudo correto e tente novamente </h3>
+                <lightning-button icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </div>              
+        </div>
  
 
-
-            <div if:true={showScreenError} class="slds-illustration slds-illustration_small">
-                <svg class="slds-illustration__svg" viewBox="0 0 396 237" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <!-- Show screen any Error-->
+        <div if:true={showScreenError} class="slds-illustration slds-illustration_small" style="margin-top: 60px;">
+            <svg class="slds-illustration__svg" viewBox="0 0 396 237" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g transform="translate(-102.000000, -79.000000)">
-                <g>
-                <g transform="translate(226.000000, 271.000000)" class="slds-illustration__fill-secondary">
-                <g transform="translate(0.293436, 0.054545)">
-                <path vector-effect="non-scaling-stroke" d="M247.428708,41.9454545 L82.0995433,41.9454545 C82.0336615,41.2089487 82,40.4630069 82,39.7090909 C82,26.2132599 92.7866531,15.2727273 106.092664,15.2727273 C109.749202,15.2727273 113.215485,16.0989227 116.31995,17.5772977 C121.571203,7.14424616 132.271428,0 144.617597,0 C158.063626,0 169.557389,8.47383452 174.186248,20.441159 C175.900275,19.5768947 177.832406,19.0909091 179.876448,19.0909091 C182.211783,19.0909091 184.401037,19.7252784 186.285841,20.8333889 C190.997403,14.2263569 198.663488,9.92727273 207.320028,9.92727273 C220.043441,9.92727273 230.627152,19.2146805 232.834755,31.4671412 C233.487388,31.3631046 234.156394,31.3090909 234.837838,31.3090909 C241.117096,31.3090909 246.340238,35.8953699 247.428708,41.9454545 Z"></path>
-                <path vector-effect="non-scaling-stroke" d="M130.668705,41.9099036 C127.932299,35.4597639 121.65134,30.9483651 114.340456,30.9483651 C112.326227,30.9483651 110.390176,31.2908087 108.584891,31.9218937 C105.158045,26.6158811 99.2739697,23.115309 92.5903529,23.115309 C86.1978312,23.115309 80.5367222,26.3175969 77.0574148,31.2390213 C75.6655593,30.4136156 74.0488794,29.9410886 72.3243243,29.9410886 C70.814878,29.9410886 69.388074,30.303088 68.1223309,30.9468584 C64.7040965,22.0326767 56.2163941,15.7207144 46.2870194,15.7207144 C37.1698473,15.7207144 29.2681419,21.0422982 25.3902942,28.8136368 C23.0977671,27.7124276 20.5380502,27.0970138 17.8378378,27.0970138 C9.14391415,27.0970138 1.90644813,33.4767543 0.354185118,41.9099036 L130.668705,41.9099036 Z"></path>
+                    <g transform="translate(-102.000000, -79.000000)">
+                        <g>
+                            <g transform="translate(226.000000, 271.000000)" class="slds-illustration__fill-secondary">
+                                <g transform="translate(0.293436, 0.054545)">
+                                    <path vector-effect="non-scaling-stroke" d="M247.428708,41.9454545 L82.0995433,41.9454545 C82.0336615,41.2089487 82,40.4630069 82,39.7090909 C82,26.2132599 92.7866531,15.2727273 106.092664,15.2727273 C109.749202,15.2727273 113.215485,16.0989227 116.31995,17.5772977 C121.571203,7.14424616 132.271428,0 144.617597,0 C158.063626,0 169.557389,8.47383452 174.186248,20.441159 C175.900275,19.5768947 177.832406,19.0909091 179.876448,19.0909091 C182.211783,19.0909091 184.401037,19.7252784 186.285841,20.8333889 C190.997403,14.2263569 198.663488,9.92727273 207.320028,9.92727273 C220.043441,9.92727273 230.627152,19.2146805 232.834755,31.4671412 C233.487388,31.3631046 234.156394,31.3090909 234.837838,31.3090909 C241.117096,31.3090909 246.340238,35.8953699 247.428708,41.9454545 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M130.668705,41.9099036 C127.932299,35.4597639 121.65134,30.9483651 114.340456,30.9483651 C112.326227,30.9483651 110.390176,31.2908087 108.584891,31.9218937 C105.158045,26.6158811 99.2739697,23.115309 92.5903529,23.115309 C86.1978312,23.115309 80.5367222,26.3175969 77.0574148,31.2390213 C75.6655593,30.4136156 74.0488794,29.9410886 72.3243243,29.9410886 C70.814878,29.9410886 69.388074,30.303088 68.1223309,30.9468584 C64.7040965,22.0326767 56.2163941,15.7207144 46.2870194,15.7207144 C37.1698473,15.7207144 29.2681419,21.0422982 25.3902942,28.8136368 C23.0977671,27.7124276 20.5380502,27.0970138 17.8378378,27.0970138 C9.14391415,27.0970138 1.90644813,33.4767543 0.354185118,41.9099036 L130.668705,41.9099036 Z"></path>
+                                </g>
+                            </g>
+                            <g transform="translate(104.000000, 228.000000)">
+                                <g transform="translate(35.000000, 0.000000)">
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="36" cy="77" r="7"></circle>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="53" cy="77" r="7"></circle>
+                                    <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="70" cy="77" r="7"></circle>
+                                    <path vector-effect="non-scaling-stroke" d="M47.5993204,62 C47.5993204,62 45.3234189,54.9545453 55.0548818,54.9545455 C64.7863447,54.9545456 60.64481,54.9545466 68.525098,54.9545455 C76.4053859,54.9545443 75.8197996,45.1551939 68.7795875,45.0909091 L27.7910035,45.0909091 C27.7910035,45.0909091 10.4867295,45.1551939 6.38851862,45.0909091 C-2.1315161,45.1551939 -2.12749607,32.4090909 6.38851862,32.4090909 L91.0476222,32.4090909 C104.446387,32.4090909 104.102146,16.8434669 91.306569,16.9090909 C78.5109918,16.8434669 49.4432546,16.9090909 36.9059317,16.9090909 C33.2180637,16.9090909 26.6356862,16.5042063 26.6356862,8.45454545 C26.6356862,3.50059894 26.4270933,2.2662402 26.4270933,0"
+                                    class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" transform="translate(50.500000, 31.000000) scale(-1, 1) translate(-50.500000, -31.000000) "></path>
+                                </g>
+                                <g transform="translate(0.000000, 70.000000)" class="slds-illustration__stroke-primary" stroke-width="3">
+                                    <path vector-effect="non-scaling-stroke" d="M22,16.5 L392,16.5" stroke-linecap="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M0,16.5 L12,16.5" stroke-linecap="round"></path>
+                                    <circle vector-effect="non-scaling-stroke" cx="71" cy="7" r="7"></circle>
+                                    <circle vector-effect="non-scaling-stroke" cx="88" cy="7" r="7"></circle>
+                                    <circle vector-effect="non-scaling-stroke" cx="105" cy="7" r="7"></circle>
+                                </g>
+                            </g>
+                                <g transform="translate(259.000000, 246.000000)">
+                                    <g transform="translate(1.000000, 0.000000)" class="slds-illustration__fill-secondary">
+                                    <polygon vector-effect="non-scaling-stroke" points="35.8310547 0.381835938 101.723633 0.381835938 137.061523 68.3183594 0.555664062 68.3183594"></polygon>
+                                    </g>
+                                    <g transform="translate(38.000000, 1.000000)" fill="#FFFFFF">
+                                        <rect x="0" y="0" width="66" height="4"></rect>
+                                    </g>
+                                    <g class="slds-illustration__stroke-primary" stroke-width="3">
+                                        <path vector-effect="non-scaling-stroke" d="M36.5,0.5 L102.390018,0.5 C102.764581,0.5 103.107738,0.709319657 103.279154,1.04235657 L137.249742,67.0423566 C137.502492,67.5334127 137.309306,68.1363863 136.81825,68.3891358 C136.676702,68.4619916 136.519804,68.5 136.360607,68.5 L73.2120254,68.5 C72.4670674,68.5 71.7838465,68.0859594 71.4390883,67.4255775 L36.5,0.5 Z"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M36.5,3 L36.5,68"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M36.5,0.5 L2.5,68" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M73.5,55 L73.5,67" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M1.5,55 L1.5,67" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                </g>
+                                <g transform="translate(420.500000, 252.500000)">
+                                    <g class="slds-illustration__fill-secondary">
+                                        <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
+                                    </g>
+                                    <g class="slds-illustration__stroke-primary" stroke-linecap="round" stroke-width="3">
+                                        <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
+                                        <path vector-effect="non-scaling-stroke" d="M17,3.6953125 C17,42.0456294 17,61.6471919 17,62.5 C17,61.6471919 17,42.0456294 17,3.6953125 Z"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" stroke-linejoin="round" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
+                                    </g>
+                                </g>
+                                <g transform="translate(377.000000, 219.500000)">
+                                    <g transform="translate(1.000000, 0.000000)" class="slds-illustration__fill-secondary">
+                                        <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
+                                    </g>
+                                    <g class="slds-illustration__stroke-primary" stroke-linecap="round" stroke-width="3">
+                                        <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="26.5 0 52.5 87 0.5 87"></polygon>
+                                        <path vector-effect="non-scaling-stroke" d="M26.5,2.58642578 C26.5,63.0261034 26.5,93.9972948 26.5,95.5 C26.5,93.9972948 26.5,63.0261034 26.5,2.58642578 Z"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M15.6478873,42 C22.9812207,49.078692 26.6478873,52.7453587 26.6478873,53 C26.6478873,52.7453587 22.9812207,49.078692 15.6478873,42 Z" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z" stroke-linejoin="round"></path>
+                                    </g>
+                                </g>
+                            <g transform="translate(167.000000, 81.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                <path vector-effect="non-scaling-stroke" d="M226.3,102.0625 L224.56612,108.874639"></path>
+                                <path vector-effect="non-scaling-stroke" d="M184.3,102.0625 L183.259672,106.149783"></path>
+                                <path vector-effect="non-scaling-stroke" d="M205.3,102.0625 L201.83224,115.686778"></path>
+                                <path vector-effect="non-scaling-stroke" d="M163.3,102.0625 L159.83224,115.686778"></path>
+                                <path vector-effect="non-scaling-stroke" d="M180.8,116.125 L177.33224,129.749278"></path>
+                                <path vector-effect="non-scaling-stroke" d="M174.5,140.734375 L172.072568,150.271369"></path>
+                                <path vector-effect="non-scaling-stroke" d="M17,88 L15.9596721,92.0872833"></path>
+                                <path vector-effect="non-scaling-stroke" d="M13.5,102.0625 L10.0322405,115.686778"></path>
+                                <path vector-effect="non-scaling-stroke" d="M5.8,129.484375 L3.37256834,139.021369"></path>
+                                <path vector-effect="non-scaling-stroke" d="M199,126.671875 L192.758033,151.195575"></path>
+                                <path vector-effect="non-scaling-stroke" d="M157,126.671875 L150.758033,151.195575"></path>
+                                <path vector-effect="non-scaling-stroke" d="M142.3,102.0625 L138.83224,115.686778"></path>
+                                <path vector-effect="non-scaling-stroke" d="M136,126.671875 L129.758033,151.195575"></path>
+                                <path vector-effect="non-scaling-stroke" d="M38.7,89.40625 L35.2322405,103.030528"></path>
+                                <path vector-effect="non-scaling-stroke" d="M32.4,114.015625 L26.1580329,138.539325"></path>
+                                <path vector-effect="non-scaling-stroke" d="M81.4,90.8125 L77.9322405,104.436778"></path>
+                                <path vector-effect="non-scaling-stroke" d="M75.1,115.421875 L68.8580329,139.945575"></path>
+                                <path vector-effect="non-scaling-stroke" d="M101.7,99.953125 L97.5386886,116.302258"></path>
+                                <path vector-effect="non-scaling-stroke" d="M94,126.671875 L89.8386886,143.021008"></path>
+                                <path vector-effect="non-scaling-stroke" d="M87,154.796875 L84.0524044,166.377511"></path>
+                                <path vector-effect="non-scaling-stroke" d="M121.138798,101.359375 L106.054044,160.624983"></path>
+                                <path vector-effect="non-scaling-stroke" d="M103.43388,170.96875 L101.7,177.780889"></path>
+                                <path vector-effect="non-scaling-stroke" d="M220.7,125.265625 L217.579016,137.527475"></path>
+                                <path vector-effect="non-scaling-stroke" d="M60.4,90.109375 L58.6661202,96.9215138"></path>
+                                <path vector-effect="non-scaling-stroke" d="M54.8,113.3125 L51.6790164,125.57435"></path>
+                                <path vector-effect="non-scaling-stroke" d="M214.4,148.46875 L209.545137,167.542739"></path>
+                                <path vector-effect="non-scaling-stroke" d="M204.938291,39.1462149 C204.342287,17.4337165 184.913843,0 161.034014,0 C142.403463,0 126.482381,10.6115523 120.100036,25.5876483 C115.538401,22.1480724 109.723853,20.0869565 103.391156,20.0869565 C90.8143443,20.0869565 80.2812321,28.2165019 77.547482,39.1281323 C75.3538627,37.4973286 72.5685916,36.5217391 69.537415,36.5217391 C65.5969778,36.5217391 62.0721016,38.170408 59.722337,40.7639307 C56.7670463,33.9695432 49.9838717,29.2173913 42.0884354,29.2173913 C32.4122981,29.2173913 24.4067079,36.3548251 23.0702494,45.6416111 C20.8424354,44.4846498 18.2803152,43.826087 15.5544218,43.826087 C6.96395183,43.826087 0,50.3666228 0,58.4347826 C0,66.2144681 6.47486708,73.0551929 14.6394558,73.5 L99.7999878,73.5 C101.975319,80.1067045 107.895618,84.5 121.690476,84.5 C123.298766,84.5 124.822237,84.5740007 126.265306,84.5 L245.210884,84.5 C258.430681,84.055267 269,73.4973746 269,61.173913 C269,48.5674133 257.939606,38.3478261 244.295918,38.3478261 C236.887527,38.3478261 230.24079,41.3609546 225.712845,46.1332433 C222.437463,41.4418761 216.820965,38.3478261 210.442177,38.3478261 C208.524337,38.3478261 206.675405,38.6275152 204.938291,39.1462149 Z"
+                                fill="#FFFFFF" stroke-linejoin="round"></path>
+                                <path vector-effect="non-scaling-stroke" d="M99.7311854,73.8280126 C98.0122872,67.5511913 98.667688,62.3733162 101.697388,58.2943874 C102.919856,56.6485604 106.579333,54.0219021 109.897803,54.1131869" stroke-linejoin="round"></path>
+                            </g>
+                         </g>
+                    </g>
                 </g>
-                </g>
-                <g transform="translate(104.000000, 228.000000)">
-                <g transform="translate(35.000000, 0.000000)">
-                <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="36" cy="77" r="7"></circle>
-                <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="53" cy="77" r="7"></circle>
-                <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-secondary" cx="70" cy="77" r="7"></circle>
-                <path vector-effect="non-scaling-stroke" d="M47.5993204,62 C47.5993204,62 45.3234189,54.9545453 55.0548818,54.9545455 C64.7863447,54.9545456 60.64481,54.9545466 68.525098,54.9545455 C76.4053859,54.9545443 75.8197996,45.1551939 68.7795875,45.0909091 L27.7910035,45.0909091 C27.7910035,45.0909091 10.4867295,45.1551939 6.38851862,45.0909091 C-2.1315161,45.1551939 -2.12749607,32.4090909 6.38851862,32.4090909 L91.0476222,32.4090909 C104.446387,32.4090909 104.102146,16.8434669 91.306569,16.9090909 C78.5109918,16.8434669 49.4432546,16.9090909 36.9059317,16.9090909 C33.2180637,16.9090909 26.6356862,16.5042063 26.6356862,8.45454545 C26.6356862,3.50059894 26.4270933,2.2662402 26.4270933,0"
-                class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round" transform="translate(50.500000, 31.000000) scale(-1, 1) translate(-50.500000, -31.000000) "></path>
-                </g>
-                <g transform="translate(0.000000, 70.000000)" class="slds-illustration__stroke-primary" stroke-width="3">
-                <path vector-effect="non-scaling-stroke" d="M22,16.5 L392,16.5" stroke-linecap="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M0,16.5 L12,16.5" stroke-linecap="round"></path>
-                <circle vector-effect="non-scaling-stroke" cx="71" cy="7" r="7"></circle>
-                <circle vector-effect="non-scaling-stroke" cx="88" cy="7" r="7"></circle>
-                <circle vector-effect="non-scaling-stroke" cx="105" cy="7" r="7"></circle>
-                </g>
-                </g>
-                <g transform="translate(259.000000, 246.000000)">
-                <g transform="translate(1.000000, 0.000000)" class="slds-illustration__fill-secondary">
-                <polygon vector-effect="non-scaling-stroke" points="35.8310547 0.381835938 101.723633 0.381835938 137.061523 68.3183594 0.555664062 68.3183594"></polygon>
-                </g>
-                <g transform="translate(38.000000, 1.000000)" fill="#FFFFFF">
-                <rect x="0" y="0" width="66" height="4"></rect>
-                </g>
-                <g class="slds-illustration__stroke-primary" stroke-width="3">
-                <path vector-effect="non-scaling-stroke" d="M36.5,0.5 L102.390018,0.5 C102.764581,0.5 103.107738,0.709319657 103.279154,1.04235657 L137.249742,67.0423566 C137.502492,67.5334127 137.309306,68.1363863 136.81825,68.3891358 C136.676702,68.4619916 136.519804,68.5 136.360607,68.5 L73.2120254,68.5 C72.4670674,68.5 71.7838465,68.0859594 71.4390883,67.4255775 L36.5,0.5 Z"
-                stroke-linecap="round" stroke-linejoin="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M36.5,3 L36.5,68"></path>
-                <path vector-effect="non-scaling-stroke" d="M36.5,0.5 L2.5,68" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M73.5,55 L73.5,67" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M1.5,55 L1.5,67" stroke-linecap="round" stroke-linejoin="round"></path>
-                </g>
-                </g>
-                <g transform="translate(420.500000, 252.500000)">
-                <g class="slds-illustration__fill-secondary">
-                <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
-                </g>
-                <g class="slds-illustration__stroke-primary" stroke-linecap="round" stroke-width="3">
-                <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
-                <path vector-effect="non-scaling-stroke" d="M17,3.6953125 C17,42.0456294 17,61.6471919 17,62.5 C17,61.6471919 17,42.0456294 17,3.6953125 Z"></path>
-                <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" stroke-linejoin="round" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
-                </g>
-                </g>
-                <g transform="translate(377.000000, 219.500000)">
-                <g transform="translate(1.000000, 0.000000)" class="slds-illustration__fill-secondary">
-                <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
-                </g>
-                <g class="slds-illustration__stroke-primary" stroke-linecap="round" stroke-width="3">
-                <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="26.5 0 52.5 87 0.5 87"></polygon>
-                <path vector-effect="non-scaling-stroke" d="M26.5,2.58642578 C26.5,63.0261034 26.5,93.9972948 26.5,95.5 C26.5,93.9972948 26.5,63.0261034 26.5,2.58642578 Z"></path>
-                <path vector-effect="non-scaling-stroke" d="M15.6478873,42 C22.9812207,49.078692 26.6478873,52.7453587 26.6478873,53 C26.6478873,52.7453587 22.9812207,49.078692 15.6478873,42 Z" stroke-linejoin="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z" stroke-linejoin="round"></path>
-                </g>
-                </g>
-                <g transform="translate(167.000000, 81.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-                <path vector-effect="non-scaling-stroke" d="M226.3,102.0625 L224.56612,108.874639"></path>
-                <path vector-effect="non-scaling-stroke" d="M184.3,102.0625 L183.259672,106.149783"></path>
-                <path vector-effect="non-scaling-stroke" d="M205.3,102.0625 L201.83224,115.686778"></path>
-                <path vector-effect="non-scaling-stroke" d="M163.3,102.0625 L159.83224,115.686778"></path>
-                <path vector-effect="non-scaling-stroke" d="M180.8,116.125 L177.33224,129.749278"></path>
-                <path vector-effect="non-scaling-stroke" d="M174.5,140.734375 L172.072568,150.271369"></path>
-                <path vector-effect="non-scaling-stroke" d="M17,88 L15.9596721,92.0872833"></path>
-                <path vector-effect="non-scaling-stroke" d="M13.5,102.0625 L10.0322405,115.686778"></path>
-                <path vector-effect="non-scaling-stroke" d="M5.8,129.484375 L3.37256834,139.021369"></path>
-                <path vector-effect="non-scaling-stroke" d="M199,126.671875 L192.758033,151.195575"></path>
-                <path vector-effect="non-scaling-stroke" d="M157,126.671875 L150.758033,151.195575"></path>
-                <path vector-effect="non-scaling-stroke" d="M142.3,102.0625 L138.83224,115.686778"></path>
-                <path vector-effect="non-scaling-stroke" d="M136,126.671875 L129.758033,151.195575"></path>
-                <path vector-effect="non-scaling-stroke" d="M38.7,89.40625 L35.2322405,103.030528"></path>
-                <path vector-effect="non-scaling-stroke" d="M32.4,114.015625 L26.1580329,138.539325"></path>
-                <path vector-effect="non-scaling-stroke" d="M81.4,90.8125 L77.9322405,104.436778"></path>
-                <path vector-effect="non-scaling-stroke" d="M75.1,115.421875 L68.8580329,139.945575"></path>
-                <path vector-effect="non-scaling-stroke" d="M101.7,99.953125 L97.5386886,116.302258"></path>
-                <path vector-effect="non-scaling-stroke" d="M94,126.671875 L89.8386886,143.021008"></path>
-                <path vector-effect="non-scaling-stroke" d="M87,154.796875 L84.0524044,166.377511"></path>
-                <path vector-effect="non-scaling-stroke" d="M121.138798,101.359375 L106.054044,160.624983"></path>
-                <path vector-effect="non-scaling-stroke" d="M103.43388,170.96875 L101.7,177.780889"></path>
-                <path vector-effect="non-scaling-stroke" d="M220.7,125.265625 L217.579016,137.527475"></path>
-                <path vector-effect="non-scaling-stroke" d="M60.4,90.109375 L58.6661202,96.9215138"></path>
-                <path vector-effect="non-scaling-stroke" d="M54.8,113.3125 L51.6790164,125.57435"></path>
-                <path vector-effect="non-scaling-stroke" d="M214.4,148.46875 L209.545137,167.542739"></path>
-                <path vector-effect="non-scaling-stroke" d="M204.938291,39.1462149 C204.342287,17.4337165 184.913843,0 161.034014,0 C142.403463,0 126.482381,10.6115523 120.100036,25.5876483 C115.538401,22.1480724 109.723853,20.0869565 103.391156,20.0869565 C90.8143443,20.0869565 80.2812321,28.2165019 77.547482,39.1281323 C75.3538627,37.4973286 72.5685916,36.5217391 69.537415,36.5217391 C65.5969778,36.5217391 62.0721016,38.170408 59.722337,40.7639307 C56.7670463,33.9695432 49.9838717,29.2173913 42.0884354,29.2173913 C32.4122981,29.2173913 24.4067079,36.3548251 23.0702494,45.6416111 C20.8424354,44.4846498 18.2803152,43.826087 15.5544218,43.826087 C6.96395183,43.826087 0,50.3666228 0,58.4347826 C0,66.2144681 6.47486708,73.0551929 14.6394558,73.5 L99.7999878,73.5 C101.975319,80.1067045 107.895618,84.5 121.690476,84.5 C123.298766,84.5 124.822237,84.5740007 126.265306,84.5 L245.210884,84.5 C258.430681,84.055267 269,73.4973746 269,61.173913 C269,48.5674133 257.939606,38.3478261 244.295918,38.3478261 C236.887527,38.3478261 230.24079,41.3609546 225.712845,46.1332433 C222.437463,41.4418761 216.820965,38.3478261 210.442177,38.3478261 C208.524337,38.3478261 206.675405,38.6275152 204.938291,39.1462149 Z"
-                fill="#FFFFFF" stroke-linejoin="round"></path>
-                <path vector-effect="non-scaling-stroke" d="M99.7311854,73.8280126 C98.0122872,67.5511913 98.667688,62.3733162 101.697388,58.2943874 C102.919856,56.6485604 106.579333,54.0219021 109.897803,54.1131869" stroke-linejoin="round"></path>
-                </g>
-                </g>
-                </g>
-                </g>
-                </svg>
-                <div class="slds-text-longform">
-                <h3 class="slds-text-heading_medium">Lorem ipsum dolor</h3>
-                </div>
-                <lightning-button variant="brand" label="Brand" title="Primary action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
-                </div>
-
-           
-
-          <div if:true={showScreenUnavailableEdit} class="slds-illustration slds-illustration_small">
-            <svg class="slds-illustration__svg" viewBox="0 0 454 212" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g transform="translate(-70.000000, -95.000000)">
-            <g>
-            <g transform="translate(124.500000, 222.000000)">
-            <g fill="#FFFFFF">
-            <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
-            </g>
-            <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-            <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
-            <path vector-effect="non-scaling-stroke" d="M17,4.6953125 C17,43.0456294 17,62.6471919 17,63.5 C17,62.6471919 17,43.0456294 17,4.6953125 Z"></path>
-            <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" stroke-linejoin="round" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
-            </g>
-            </g>
-            <g transform="translate(145.000000, 194.000000)">
-            <g transform="translate(1.000000, 0.000000)" fill="#FFFFFF">
-            <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
-            </g>
-            <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-            <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="26.5 0 52.5 87 0.5 87"></polygon>
-            <path vector-effect="non-scaling-stroke" d="M26.5,2.58642578 C26.5,61.0261034 26.5,90.9972948 26.5,92.5 C26.5,90.9972948 26.5,61.0261034 26.5,2.58642578 Z"></path>
-            <path vector-effect="non-scaling-stroke" d="M15.6478873,42 C22.314554,49.078692 25.6478873,52.7453587 25.6478873,53 C25.6478873,52.7453587 22.314554,49.078692 15.6478873,42 Z" stroke-linejoin="round"></path>
-            <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z" stroke-linejoin="round"></path>
-            </g>
-            </g>
-            <g transform="translate(404.500000, 245.000000) scale(-1, 1) translate(-404.500000, -245.000000) translate(348.000000, 226.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
-            <g>
-            <polyline vector-effect="non-scaling-stroke" points="0 38 47.5 0 80.5 26"></polyline>
-            <polyline vector-effect="non-scaling-stroke" points="71 17 80.5 9 113 36"></polyline>
-            </g>
-            </g>
-            <g transform="translate(72.000000, 262.500000)">
-            <path vector-effect="non-scaling-stroke" d="M153.962142,26.4644491 C151.225735,20.0143094 144.944776,15.5029106 137.633892,15.5029106 C135.619663,15.5029106 133.683612,15.8453541 131.878328,16.4764392 C128.451481,11.1704266 122.567406,7.66985447 115.883789,7.66985447 C109.491267,7.66985447 103.830159,10.8721423 100.350851,15.7935668 C98.9589956,14.968161 97.3423157,14.4956341 95.6177606,14.4956341 C94.1083143,14.4956341 92.6815102,14.8576334 91.4157672,15.5014039 C87.9975328,6.58722215 79.5098304,0.275259875 69.5804557,0.275259875 C60.4632836,0.275259875 52.5615782,5.59684366 48.6837305,13.3681823 C46.3912034,12.266973 43.8314865,11.6515593 41.1312741,11.6515593 C32.4373504,11.6515593 25.1998844,18.0312998 23.6476214,26.4644491 L153.962142,26.4644491 Z"
-            class="slds-illustration__fill-secondary"></path>
-            <path vector-effect="non-scaling-stroke" d="M13,25 L143,25" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
-            <path vector-effect="non-scaling-stroke" d="M0,25 L450,25" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
-            </g>
-            <g transform="translate(344.000000, 247.000000)">
-            <g transform="translate(0.293436, 0.054545)">
-            <path vector-effect="non-scaling-stroke" d="M165.428708,41.9454545 L0.0995432562,41.9454545 C0.0336614956,41.2089487 0,40.4630069 0,39.7090909 C0,26.2132599 10.7866531,15.2727273 24.0926641,15.2727273 C27.7492016,15.2727273 31.215485,16.0989227 34.3199502,17.5772977 C39.5712028,7.14424616 50.271428,0 62.6175975,0 C76.0636257,0 87.5573893,8.47383452 92.1862485,20.441159 C93.9002755,19.5768947 95.8324059,19.0909091 97.8764479,19.0909091 C100.211783,19.0909091 102.401037,19.7252784 104.285841,20.8333889 C108.997403,14.2263569 116.663488,9.92727273 125.320028,9.92727273 C138.043441,9.92727273 148.627152,19.2146805 150.834755,31.4671412 C151.487388,31.3631046 152.156394,31.3090909 152.837838,31.3090909 C159.117096,31.3090909 164.340238,35.8953699 165.428708,41.9454545 Z"
-            class="slds-illustration__fill-secondary"></path>
-            <path vector-effect="non-scaling-stroke" d="M32.7065637,40.4454545 L173.706564,40.4454545" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
-            </g>
-            </g>
-            <g transform="translate(105.000000, 203.000000)">
-            <g transform="translate(106.000000, 0.000000)" fill="#FFFFFF">
-            <polygon vector-effect="non-scaling-stroke" points="121.5 48.5 158.5 48.5 158.5 34.5 47.5 34.5 47.5 48.5 93.5 48.5 93.5 69.5 121.5 69.5 121.5 48.5"></polygon>
-            <path vector-effect="non-scaling-stroke" d="M33.9882812,0.21875 C36.5611979,0.21875 70.6126302,0.21875 136.142578,0.21875 L152.384766,11.1132813 C155.083088,16.811292 155.656656,19.677503 154.105469,19.7119141 C152.554281,19.7463252 116.293865,17.6717809 45.3242187,13.4882812 C35.1940104,4.64192708 31.4153646,0.21875 33.9882812,0.21875 Z"></path>
-            <path vector-effect="non-scaling-stroke" d="M32.6708984,2.02246094 L21.5554199,0.374195518 L17.6036034,0.374195518 L5.77148437,7.90429688 C3.09089817,12.6737672 3.09089817,15.2284547 5.77148437,15.5683594 C8.45207058,15.9082641 16.1278518,14.3268839 28.7988281,10.8242188 L42.9921875,7.90429688 L41.0699892,5.68448183 L32.6708984,2.02246094 Z"></path>
-            <rect x="0" y="34" width="48" height="14"></rect>
-            </g>
-            <g transform="translate(106.000000, 5.000000)" class="slds-illustration__fill-secondary">
-            <polygon vector-effect="non-scaling-stroke" points="93.3109375 43.4566406 93.3109375 64.6722656 120.925 64.6722656 121.823047 44.1324219 158.5 43.4566406 158.5 97.5 48.5 97.5 48.5 43.6933594"></polygon>
-            <path vector-effect="non-scaling-stroke" d="M132.670898,7.66300119e-19 C125.172201,-2.55433373e-19 94.1907552,-2.55433373e-19 39.7265625,7.66300119e-19 L31.8183594,12.5058594 L29.7050781,28.2714844 L157.78125,28.2714844 L157.78125,15.4775391 C148.539714,5.15917969 140.169596,1.78803361e-18 132.670898,7.66300119e-19 Z"></path>
-            <path vector-effect="non-scaling-stroke" d="M37.8266602,0 C34.4632704,0 29.4181858,0 22.6914062,0 C16.1624349,0 9.53808594,3.83528646 2.81835938,11.5058594 L0.705078125,30.2714844 L48.4101562,30.2714844 L48.4101562,14.4775391 L48.1789909,12.3275853 C43.283405,4.10919509 39.832628,0 37.8266602,0 Z"></path>
-            <rect x="0.5" y="43.5" width="48" height="54"></rect>
-            </g>
-            <g>
-            <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="154.5" y="34.5" width="110" height="68"></rect>
-            <polygon vector-effect="non-scaling-stroke" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="264.5 48.5 264.5 34.5 154.5 34.5 154.5 48.5 199.5 48.5 199.5 69.5 227.5 69.5 227.5 48.5"></polygon>
-            <path vector-effect="non-scaling-stroke" d="M130.5,0.5 L234.5,0.5 C251.068542,0.5 264.5,13.9314575 264.5,30.5 L264.5,34.5 L106.5,34.5 L106.5,24.5 C106.5,11.245166 117.245166,0.5 130.5,0.5 Z" class="slds-illustration__stroke-primary"
-            stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path vector-effect="non-scaling-stroke" d="M130.5,0.5 L130.5,0.5 C143.754834,0.5 154.5,11.245166 154.5,24.5 L154.5,34.5 L106.5,34.5 L106.5,24.5 C106.5,11.245166 117.245166,0.5 130.5,0.5 Z" class="slds-illustration__stroke-primary"
-            stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-            <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="106.5" y="48.5" width="48" height="54"></rect>
-            <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="106.5" y="34.5" width="48" height="14"></rect>
-            <path vector-effect="non-scaling-stroke" d="M219,52 C219,54.765 216.765,57 214,57 C211.235,57 209,54.765 209,52 C209,49.235 211.235,47 214,47 C216.765,47 219,49.235 219,52 Z" class="slds-illustration__fill-primary"></path>
-            <path vector-effect="non-scaling-stroke" d="M214,55 L214,60" class="slds-illustration__stroke-primary" stroke-width="4" stroke-linecap="round"></path>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="164" cy="58" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="164" cy="93" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="255" cy="58" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="255" cy="93" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="145" cy="58" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="145" cy="93" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="116" cy="58" r="3"></circle>
-            <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="116" cy="93" r="3"></circle>
-            <path vector-effect="non-scaling-stroke" d="M289.928751,82.2971422 L298,102.518658 L280,102.518658 L288.071249,82.2971422 C288.275982,81.784207 288.857768,81.5343604 289.370703,81.7390942 C289.625359,81.8407378 289.827108,82.0424867 289.928751,82.2971422 Z"
-            class="slds-illustration__fill-primary"></path>
-            <path vector-effect="non-scaling-stroke" d="M300.428751,89.8132712 L305.5,102.518658 L293.5,102.518658 L298.571249,89.8132712 C298.775982,89.300336 299.357768,89.0504894 299.870703,89.2552232 C300.125359,89.3568668 300.327108,89.5586158 300.428751,89.8132712 Z"
-            class="slds-illustration__fill-primary"></path>
-            <path vector-effect="non-scaling-stroke" d="M93.4287513,82.2971422 L101.5,102.518658 L83.5,102.518658 L91.5712487,82.2971422 C91.7759825,81.784207 92.3577681,81.5343604 92.8707033,81.7390942 C93.1253588,81.8407378 93.3271077,82.0424867 93.4287513,82.2971422 Z"
-            class="slds-illustration__fill-primary" transform="translate(92.500000, 92.517446) scale(-1, 1) translate(-92.500000, -92.517446) "></path>
-            <path vector-effect="non-scaling-stroke" d="M76.9287513,89.8132712 L82,102.518658 L70,102.518658 L75.0712487,89.8132712 C75.2759825,89.300336 75.8577681,89.0504894 76.3707033,89.2552232 C76.6253588,89.3568668 76.8271077,89.5586158 76.9287513,89.8132712 Z"
-            class="slds-illustration__fill-primary" transform="translate(76.000000, 96.275510) scale(-1, 1) translate(-76.000000, -96.275510) "></path>
-            <path vector-effect="non-scaling-stroke" d="M360,102.5 L372,102.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path vector-effect="non-scaling-stroke" d="M0,102.5 L350,102.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
-            </g>
-            <g transform="translate(150.000000, 96.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-            <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
-            <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
-            <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
-            <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
-            </g>
-            <g transform="translate(271.000000, 135.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-            <g>
-            <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
-            <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
-            <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
-            <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
-            </g>
-            </g>
-            <g transform="translate(402.000000, 164.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
-            <g transform="translate(31.713442, 25.088326) rotate(-15.000000) translate(-31.713442, -25.088326) translate(4.713442, 6.588326)">
-            <path vector-effect="non-scaling-stroke" d="M31.0360707,3.43528591 C31.0360707,3.43528591 40.5802283,0.671893051 42.6488424,10.6908663" transform="translate(36.842457, 6.888440) rotate(41.000000) translate(-36.842457, -6.888440) "></path>
-            <path vector-effect="non-scaling-stroke" d="M40.4282002,10.1797377 C40.4282002,10.1797377 49.9723578,7.4163448 52.0409719,17.435318" transform="translate(46.234586, 13.632892) scale(-1, 1) rotate(-41.000000) translate(-46.234586, -13.632892) "></path>
-            <path vector-effect="non-scaling-stroke" d="M0.730284783,29.5865514 C0.730284783,29.5865514 10.2744424,26.8231586 12.3430565,36.8421318"></path>
-            <path vector-effect="non-scaling-stroke" d="M12.7302848,29.5865514 C12.7302848,29.5865514 22.2744424,26.8231586 24.3430565,36.8421318" transform="translate(18.536671, 33.039705) scale(-1, 1) translate(-18.536671, -33.039705) "></path>
-            </g>
-            </g>
-            </g>
-            </g>
-            </g>
             </svg>
-            <div class="slds-text-longform">
-            <h3 class="slds-text-heading_medium">Lorem ipsum dolor</h3>
-            </div>
-            <lightning-button variant="brand" label="Brand" title="Primary action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
-            </div>
-          
-
-          
-
-    </lightning-card> 
+                <div class="slds-text-longform">
+                    <h3 class="slds-text-heading_medium">Encontramos dificuldades por aqui</h3>
+                    <h3 class="slds-text-heading_medium">No momento não temos como fazer essa busca. Tente novamente mais tarde.</h3>
+                    <lightning-button icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+                </div>            
+        </div>
+           
+        <!-- Show screen Unavailable for Edit-->
+        <div if:true={showScreenUnavailableEdit} class="slds-illustration slds-illustration_small" style="margin-top: 60px;">
+            <svg class="slds-illustration__svg" viewBox="0 0 454 212" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(-70.000000, -95.000000)">
+                        <g>
+                            <g transform="translate(124.500000, 222.000000)">
+                                <g fill="#FFFFFF">
+                                    <path vector-effect="non-scaling-stroke" d="M18.9209988,1.95433401 L33.259296,51.443436 C33.5666778,52.5043744 32.9557995,53.613617 31.8948612,53.9209988 C31.7139843,53.9734036 31.5266126,54 31.3382972,54 L2.6617028,54 C1.5571333,54 0.661702805,53.1045695 0.661702805,52 C0.661702805,51.8116846 0.688299176,51.6243129 0.74070397,51.443436 L15.0790012,1.95433401 C15.386383,0.893395645 16.4956256,0.282517358 17.556564,0.589899164 C18.2152102,0.780726338 18.7301717,1.29568777 18.9209988,1.95433401 Z"></path>
+                                </g>
+                                <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="17 0.323943662 34 54 -1.81721305e-12 54"></polygon>
+                                    <path vector-effect="non-scaling-stroke" d="M17,4.6953125 C17,43.0456294 17,62.6471919 17,63.5 C17,62.6471919 17,43.0456294 17,4.6953125 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M17,29.3239437 C22.3333333,35.7851611 25,39.1184944 25,39.3239437 C25,39.1184944 22.3333333,35.7851611 17,29.3239437 Z" stroke-linejoin="round" transform="translate(21.000000, 34.323944) scale(-1, 1) translate(-21.000000, -34.323944) "></path>
+                                </g>
+                            </g>
+                            <g transform="translate(145.000000, 194.000000)">
+                                <g transform="translate(1.000000, 0.000000)" fill="#FFFFFF">
+                                    <path vector-effect="non-scaling-stroke" d="M25.6478873,0 L50.879042,84.4273253 C51.1953215,85.4856452 50.5937789,86.5999782 49.535459,86.9162577 C49.3496374,86.9717906 49.1567264,87 48.9627843,87 L2.33299037,87 C1.22842087,87 0.332990367,86.1045695 0.332990367,85 C0.332990367,84.8060578 0.361199757,84.6131469 0.416732643,84.4273253 L25.6478873,0 Z"></path>
+                                </g>
+                                <g class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <polygon vector-effect="non-scaling-stroke" stroke-linejoin="round" points="26.5 0 52.5 87 0.5 87"></polygon>
+                                    <path vector-effect="non-scaling-stroke" d="M26.5,2.58642578 C26.5,61.0261034 26.5,90.9972948 26.5,92.5 C26.5,90.9972948 26.5,61.0261034 26.5,2.58642578 Z"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M15.6478873,42 C22.314554,49.078692 25.6478873,52.7453587 25.6478873,53 C25.6478873,52.7453587 22.314554,49.078692 15.6478873,42 Z" stroke-linejoin="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M27.6478873,68 C36.9812207,57.078692 41.6478873,51.7453587 41.6478873,52 C41.6478873,51.7453587 36.9812207,57.078692 27.6478873,68 Z" stroke-linejoin="round"></path>
+                                </g>
+                            </g>
+                                <g transform="translate(404.500000, 245.000000) scale(-1, 1) translate(-404.500000, -245.000000) translate(348.000000, 226.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+                                    <g>
+                                        <polyline vector-effect="non-scaling-stroke" points="0 38 47.5 0 80.5 26"></polyline>
+                                        <polyline vector-effect="non-scaling-stroke" points="71 17 80.5 9 113 36"></polyline>
+                                    </g>
+                                </g>
+                                <g transform="translate(72.000000, 262.500000)">
+                                    <path vector-effect="non-scaling-stroke" d="M153.962142,26.4644491 C151.225735,20.0143094 144.944776,15.5029106 137.633892,15.5029106 C135.619663,15.5029106 133.683612,15.8453541 131.878328,16.4764392 C128.451481,11.1704266 122.567406,7.66985447 115.883789,7.66985447 C109.491267,7.66985447 103.830159,10.8721423 100.350851,15.7935668 C98.9589956,14.968161 97.3423157,14.4956341 95.6177606,14.4956341 C94.1083143,14.4956341 92.6815102,14.8576334 91.4157672,15.5014039 C87.9975328,6.58722215 79.5098304,0.275259875 69.5804557,0.275259875 C60.4632836,0.275259875 52.5615782,5.59684366 48.6837305,13.3681823 C46.3912034,12.266973 43.8314865,11.6515593 41.1312741,11.6515593 C32.4373504,11.6515593 25.1998844,18.0312998 23.6476214,26.4644491 L153.962142,26.4644491 Z"
+                                    class="slds-illustration__fill-secondary"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M13,25 L143,25" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M0,25 L450,25" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
+                                </g>
+                                <g transform="translate(344.000000, 247.000000)">
+                                    <g transform="translate(0.293436, 0.054545)">
+                                        <path vector-effect="non-scaling-stroke" d="M165.428708,41.9454545 L0.0995432562,41.9454545 C0.0336614956,41.2089487 0,40.4630069 0,39.7090909 C0,26.2132599 10.7866531,15.2727273 24.0926641,15.2727273 C27.7492016,15.2727273 31.215485,16.0989227 34.3199502,17.5772977 C39.5712028,7.14424616 50.271428,0 62.6175975,0 C76.0636257,0 87.5573893,8.47383452 92.1862485,20.441159 C93.9002755,19.5768947 95.8324059,19.0909091 97.8764479,19.0909091 C100.211783,19.0909091 102.401037,19.7252784 104.285841,20.8333889 C108.997403,14.2263569 116.663488,9.92727273 125.320028,9.92727273 C138.043441,9.92727273 148.627152,19.2146805 150.834755,31.4671412 C151.487388,31.3631046 152.156394,31.3090909 152.837838,31.3090909 C159.117096,31.3090909 164.340238,35.8953699 165.428708,41.9454545 Z"
+                                        class="slds-illustration__fill-secondary"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M32.7065637,40.4454545 L173.706564,40.4454545" class="slds-illustration__stroke-secondary" stroke-width="3" stroke-linecap="round"></path>
+                                    </g>
+                                </g>
+                                <g transform="translate(105.000000, 203.000000)">
+                                    <g transform="translate(106.000000, 0.000000)" fill="#FFFFFF">
+                                        <polygon vector-effect="non-scaling-stroke" points="121.5 48.5 158.5 48.5 158.5 34.5 47.5 34.5 47.5 48.5 93.5 48.5 93.5 69.5 121.5 69.5 121.5 48.5"></polygon>
+                                        <path vector-effect="non-scaling-stroke" d="M33.9882812,0.21875 C36.5611979,0.21875 70.6126302,0.21875 136.142578,0.21875 L152.384766,11.1132813 C155.083088,16.811292 155.656656,19.677503 154.105469,19.7119141 C152.554281,19.7463252 116.293865,17.6717809 45.3242187,13.4882812 C35.1940104,4.64192708 31.4153646,0.21875 33.9882812,0.21875 Z"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M32.6708984,2.02246094 L21.5554199,0.374195518 L17.6036034,0.374195518 L5.77148437,7.90429688 C3.09089817,12.6737672 3.09089817,15.2284547 5.77148437,15.5683594 C8.45207058,15.9082641 16.1278518,14.3268839 28.7988281,10.8242188 L42.9921875,7.90429688 L41.0699892,5.68448183 L32.6708984,2.02246094 Z"></path>
+                                        <rect x="0" y="34" width="48" height="14"></rect>
+                                    </g>
+                                    <g transform="translate(106.000000, 5.000000)" class="slds-illustration__fill-secondary">
+                                        <polygon vector-effect="non-scaling-stroke" points="93.3109375 43.4566406 93.3109375 64.6722656 120.925 64.6722656 121.823047 44.1324219 158.5 43.4566406 158.5 97.5 48.5 97.5 48.5 43.6933594"></polygon>
+                                        <path vector-effect="non-scaling-stroke" d="M132.670898,7.66300119e-19 C125.172201,-2.55433373e-19 94.1907552,-2.55433373e-19 39.7265625,7.66300119e-19 L31.8183594,12.5058594 L29.7050781,28.2714844 L157.78125,28.2714844 L157.78125,15.4775391 C148.539714,5.15917969 140.169596,1.78803361e-18 132.670898,7.66300119e-19 Z"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M37.8266602,0 C34.4632704,0 29.4181858,0 22.6914062,0 C16.1624349,0 9.53808594,3.83528646 2.81835938,11.5058594 L0.705078125,30.2714844 L48.4101562,30.2714844 L48.4101562,14.4775391 L48.1789909,12.3275853 C43.283405,4.10919509 39.832628,0 37.8266602,0 Z"></path>
+                                        <rect x="0.5" y="43.5" width="48" height="54"></rect>
+                                    </g>
+                                    <g>
+                                        <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="154.5" y="34.5" width="110" height="68"></rect>
+                                        <polygon vector-effect="non-scaling-stroke" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="264.5 48.5 264.5 34.5 154.5 34.5 154.5 48.5 199.5 48.5 199.5 69.5 227.5 69.5 227.5 48.5"></polygon>
+                                        <path vector-effect="non-scaling-stroke" d="M130.5,0.5 L234.5,0.5 C251.068542,0.5 264.5,13.9314575 264.5,30.5 L264.5,34.5 L106.5,34.5 L106.5,24.5 C106.5,11.245166 117.245166,0.5 130.5,0.5 Z" class="slds-illustration__stroke-primary"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M130.5,0.5 L130.5,0.5 C143.754834,0.5 154.5,11.245166 154.5,24.5 L154.5,34.5 L106.5,34.5 L106.5,24.5 C106.5,11.245166 117.245166,0.5 130.5,0.5 Z" class="slds-illustration__stroke-primary"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="106.5" y="48.5" width="48" height="54"></rect>
+                                        <rect class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="106.5" y="34.5" width="48" height="14"></rect>
+                                        <path vector-effect="non-scaling-stroke" d="M219,52 C219,54.765 216.765,57 214,57 C211.235,57 209,54.765 209,52 C209,49.235 211.235,47 214,47 C216.765,47 219,49.235 219,52 Z" class="slds-illustration__fill-primary"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M214,55 L214,60" class="slds-illustration__stroke-primary" stroke-width="4" stroke-linecap="round"></path>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="164" cy="58" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="164" cy="93" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="255" cy="58" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="255" cy="93" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="145" cy="58" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="145" cy="93" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="116" cy="58" r="3"></circle>
+                                        <circle vector-effect="non-scaling-stroke" class="slds-illustration__fill-primary" cx="116" cy="93" r="3"></circle>
+                                        <path vector-effect="non-scaling-stroke" d="M289.928751,82.2971422 L298,102.518658 L280,102.518658 L288.071249,82.2971422 C288.275982,81.784207 288.857768,81.5343604 289.370703,81.7390942 C289.625359,81.8407378 289.827108,82.0424867 289.928751,82.2971422 Z"
+                                        class="slds-illustration__fill-primary"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M300.428751,89.8132712 L305.5,102.518658 L293.5,102.518658 L298.571249,89.8132712 C298.775982,89.300336 299.357768,89.0504894 299.870703,89.2552232 C300.125359,89.3568668 300.327108,89.5586158 300.428751,89.8132712 Z"
+                                        class="slds-illustration__fill-primary"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M93.4287513,82.2971422 L101.5,102.518658 L83.5,102.518658 L91.5712487,82.2971422 C91.7759825,81.784207 92.3577681,81.5343604 92.8707033,81.7390942 C93.1253588,81.8407378 93.3271077,82.0424867 93.4287513,82.2971422 Z"
+                                        class="slds-illustration__fill-primary" transform="translate(92.500000, 92.517446) scale(-1, 1) translate(-92.500000, -92.517446) "></path>
+                                        <path vector-effect="non-scaling-stroke" d="M76.9287513,89.8132712 L82,102.518658 L70,102.518658 L75.0712487,89.8132712 C75.2759825,89.300336 75.8577681,89.0504894 76.3707033,89.2552232 C76.6253588,89.3568668 76.8271077,89.5586158 76.9287513,89.8132712 Z"
+                                        class="slds-illustration__fill-primary" transform="translate(76.000000, 96.275510) scale(-1, 1) translate(-76.000000, -96.275510) "></path>
+                                        <path vector-effect="non-scaling-stroke" d="M360,102.5 L372,102.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M0,102.5 L350,102.5" class="slds-illustration__stroke-primary" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                </g>
+                                <g transform="translate(150.000000, 96.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
+                                    <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
+                                </g>
+                                <g transform="translate(271.000000, 135.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <g>
+                                        <path vector-effect="non-scaling-stroke" d="M44,17.5 L63,17.5 C62.2789714,12.0723971 64.081543,7.53186978 68.4077148,3.87841797 C73.3754883,-0.195556641 79.2734375,0.717773438 82.440918,2.12353516 C85.6083984,3.52929687 87.9606934,5.46069336 89.5913086,9.10524041 C90.2822266,10.6397351 90.7517904,11.9379883 91,13"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M83,20.5 C84.0558268,16.8461914 86.2227376,14.4572754 89.5007324,13.333252 C94.4177246,11.6472168 99.0800781,13.8925781 100.942383,16.1518555 C102.804687,18.4111328 103.39502,20.2260742 103.746582,22.1201172 C103.980957,23.3828125 104.06543,24.8427734 104,26.5 C108.141764,26.3313802 110.918945,27.1647135 112.331543,29 C114.040039,31.1936035 114.215332,33.817627 113.593018,35.75 C112.970703,37.682373 110.894531,40.5 107,40.5 L28,40.5"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M18,27.5 L83.0004985,27.5"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M0,27.5 L8,27.5"></path>
+                                    </g>
+                                </g>
+                                <g transform="translate(402.000000, 164.000000)" class="slds-illustration__stroke-secondary" stroke-linecap="round" stroke-width="3">
+                                    <g transform="translate(31.713442, 25.088326) rotate(-15.000000) translate(-31.713442, -25.088326) translate(4.713442, 6.588326)">
+                                        <path vector-effect="non-scaling-stroke" d="M31.0360707,3.43528591 C31.0360707,3.43528591 40.5802283,0.671893051 42.6488424,10.6908663" transform="translate(36.842457, 6.888440) rotate(41.000000) translate(-36.842457, -6.888440) "></path>
+                                        <path vector-effect="non-scaling-stroke" d="M40.4282002,10.1797377 C40.4282002,10.1797377 49.9723578,7.4163448 52.0409719,17.435318" transform="translate(46.234586, 13.632892) scale(-1, 1) rotate(-41.000000) translate(-46.234586, -13.632892) "></path>
+                                        <path vector-effect="non-scaling-stroke" d="M0.730284783,29.5865514 C0.730284783,29.5865514 10.2744424,26.8231586 12.3430565,36.8421318"></path>
+                                        <path vector-effect="non-scaling-stroke" d="M12.7302848,29.5865514 C12.7302848,29.5865514 22.2744424,26.8231586 24.3430565,36.8421318" transform="translate(18.536671, 33.039705) scale(-1, 1) translate(-18.536671, -33.039705) "></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </svg>                
+                <div class="slds-text-longform">
+                    <h3 class="slds-text-heading_medium"> Indisponível para edição </h3>
+                    <h3 class="slds-text-heading_medium"> O ID foi encontrado, porém ainda não está preparado para a fase de edição de minuta </h3>
+                    <lightning-button-icon icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button-icon>
+                </div>                
+            </div>      
+        </lightning-card> 
     </div>
 </template>

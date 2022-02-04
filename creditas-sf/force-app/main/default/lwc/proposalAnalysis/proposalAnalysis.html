@@ -1,155 +1,177 @@
 <template>
-	<div class="slds-card slds-p-left_medium" style="overflow: hidden;">
-		<div class="slds-accordion">
+	<div class="slds-card slds-p-horizontal_medium" style="overflow: hidden;">
+		
+    <div class="slds-progress slds-progress_vertical">
+      <ol class="slds-accordion slds-progress__list">
 
-			<div class="slds-progress slds-progress_vertical">
-				<div class="slds-progress__list">
-
+        <!-- 1th Accordion -->
 					<div class="slds-progress__item ">
-						<div class="slds-progress__marker completed"></div>
-						<div class="slds-progress__item_content" onclick={handleAccordionToggle} data-id="progressItem"
-							style="cursor: pointer;">
-							<div class="slds-accordion__list-item">
-								<section class="slds-is-open">
-									<span class="geral">Geral</span>
+						<lightning-progress-ring value="100" variant={personalInfoVariant} class="progressCircle"> </lightning-progress-ring>
 
-                  <template if:true={personalInfoVariant}>
-										<lightning-progress-ring value="100" variant={personalInfoVariant} class="slds-m-left_small">
-										</lightning-progress-ring>
-									</template>
+						<div class="slds-progress__item_content" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+							<li class="slds-accordion__list-item">
+								<section class="slds-accordion__section slds-is-open">
+                  <div class="slds-accordion__summary">
+                    <h2 class="slds-accordion__summary-heading">
+
+                      <span class="geral slds-accordion__summary-content">Geral</span>
+                    </h2>
+                  </div>
+                  <div class="slds-accordion__content" id="referenceId-75">
+                    
+                    Accordion details - Geral
+                  </div>
 								</section>
-							</div>
-
+							</li>
 						</div>
 					</div>
 
-					<div class="slds-progress__item" style="align-items: start;">
-						<div class=" slds-progress__marker completed"></div>
-						<div class="slds-progress__item_content " style="margin-top: 0px;">
-							<div class="slds-accordion__list-item">
-								<section class="slds-is-open">
-									
-                  <span data-id="sectionPersonal" class="dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;">Dados Pessoais</span>
+          <!-- 2th Accordion -->
+					<div class="slds-progress__item">
+            <lightning-progress-ring value={personalInfoValue} variant={personalInfoVariant} class="progressCircle"> </lightning-progress-ring>
 
-                  <template if:true={personalInfoVariant}>
-                    <lightning-progress-ring value="100" variant={personalInfoVariant} class="slds-m-left_small">
-                    </lightning-progress-ring>
-                  </template>
-
-                  <lightning-progress-ring value="30" variant={personalInfoVariant} class="slds-m-left_small">
-                  </lightning-progress-ring>
-                  
-									<div class="slds-accordion__content" id="referenceId-37">
-										<div class="container">
-											<div class="field">
-												<label class="slds-text-heading_small slds-p-bottom_x-small">Nome</label>
-												<input type="text" class="slds-text-heading_small" value="Maria Candido"/>
+						<div class="slds-progress__item_content">
+							<li class="slds-accordion__list-item">
+								<section class="slds-accordion__section slds-is-open">
+									<div class="slds-accordion__summary" >
+                    <h2 class="slds-accordion__summary-heading">
+                      <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;" >Dados Pessoais</span>
+                    </h2>
+                  </div>
+            
+									<div class="slds-accordion__content" id="referenceId-37" data-id="dadosPessoaisContainer">
+										<div class="slds-grid container">
+											<div class="slds-size_5-of-12 field">
+												<label class="slds-p-bottom_x-small">Nome</label>
+												<input type="text" class="" value="Maria Candido"/>
 											</div>
 
-											<div class="checkbox-options slds-p-top_x-small">
-												<div class="form-control aprovado">
-													<label for="checkboxNameAprovado" class="slds-text-heading_small">Aprovado</label>
+                      <div class="slds-size_2-of-12"></div>
+
+											<div class="slds-grid slds-size_5-of-12 checkbox-options">
+												<div class="slds-size_4-of-12 form-control aprovado">
+													<label for="checkboxNameAprovado" class="slds-p-bottom_x-small" style="overflow-wrap: break-word; ">Aprovado</label>
 
 													<input id="checkboxNameAprovado" data-value={preValue} name="AccountName" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control pendenciado">
-													<label for="checkboxNamePendenciado" class="slds-text-heading_small">Pendenciado</label>
+												<div class="slds-size_4-of-12 form-control pendenciado">
+													<label for="checkboxNamePendenciado" class="slds-p-bottom_x-small" style="overflow-wrap: break-word; ">Pendenciado</label>
 													<input id="checkboxNamePendenciado" data-value={preValue} name="AccountName" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control reprovado">
-													<label for="checkboxNameReprovado" class="slds-text-heading_small">Reprovado</label>
+												<div class="slds-size_4-of-12 form-control reprovado">
+													<label for="checkboxNameReprovado" class="slds-p-bottom_x-small" style="overflow-wrap: break-word; ">Reprovado</label>
 													<input id="checkboxNameReprovado" data-value={preValue} name="AccountName"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
 												</div>
 											</div>
-
-
 										</div>
 
-										<div class="container">
-											<div class="field">
-												<label class="slds-text-heading_small slds-p-bottom_x-small">Nome da Mãe</label>
-												<input type="text" class="slds-text-heading_small" value="Adriana Obama" />
+										<div class="slds-grid container">
+											<div class="slds-size_5-of-12 field">
+												<label class=" slds-p-bottom_x-small">Nome da Mãe</label>
+												<input type="text" class="" value="Adriana Obama" />
 											</div>
 
-											<div class="checkbox-options slds-p-top_x-small">
-												<div class="form-control aprovado">
-													<label for="checkboxMotherAprovado" class="slds-text-heading_small">&nbsp;</label>
+                      <div class="slds-size_2-of-12"></div>
+
+											<div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small">
+												<div class="slds-size_4-of-12 form-control aprovado">
+													<label for="checkboxMotherAprovado" class="">&nbsp;</label>
 													<input id="checkboxMotherAprovado" data-value={preValue} name="AccountMother" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control pendenciado">
-													<label for="checkboxMotherPendenciado" class="slds-text-heading_small">&nbsp;</label>
+												<div class="slds-size_4-of-12 form-control pendenciado">
+													<label for="checkboxMotherPendenciado" class="">&nbsp;</label>
 													<input id="checkboxMotherPendenciado" data-value={preValue} name="AccountMother" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control reprovado">
-													<label for="checkboxMotherReprovado" class="slds-text-heading_small">&nbsp;</label>
+												<div class="slds-size_4-of-12 form-control reprovado">
+													<label for="checkboxMotherReprovado" class="">&nbsp;</label>
 													<input id="checkboxMotherReprovado" data-value={preValue} name="AccountMother"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
 												</div>
 											</div>
 										</div>
 
-										<div class="container">
-											<div class="field">
-												<label class="slds-text-heading_small slds-p-bottom_x-small">CPF</label>
-
-												<div style="display: flex;">
-													<input style="width: 100%;"  type="text" class="slds-text-heading_small " value="495.454.542-50" />
-													<lightning-icon style="cursor: pointer;" data-id={cpf_document} onclick={handleDocumentModal}
-														class="slds-p-left_small" icon-name='utility:file' alternative-text='file' size='small'
-														title='file'>
-													</lightning-icon>
-
-												</div>
+										<div class="slds-grid container">
+											<div class="slds-size_5-of-12 field">
+												<label class="slds-p-bottom_x-small">CPF</label>
+												<input style="width: 100%;"  type="text" value="495.454.542-50" />
 											</div>
 
-											<div class="checkbox-options slds-p-top_x-small">
-												<div class="form-control aprovado">
-													<label for="checkboxCPFAprovado" class="slds-text-heading_small">&nbsp;</label>
+											<div class="slds-size_2-of-12 file-icon">
+												<lightning-icon style="cursor: pointer;" data-id={cpf_document} onclick={handleDocumentModal}
+												class="slds-p-left_small" icon-name='utility:file' alternative-text='file' size='small'
+												title='file'>
+												</lightning-icon>
+											</div>
+
+											<div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small">
+												<div class="slds-size_4-of-12 form-control aprovado">
+													<label for="checkboxCPFAprovado" >&nbsp;</label>
 													<input id="checkboxCPFAprovado" data-value={preValue} name="AccountCPF" type="checkbox" value="aprovado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control pendenciado">
-													<label for="checkboxCPFPendenciado" class="slds-text-heading_small">&nbsp;</label>
+												<div class="slds-size_4-of-12 form-control pendenciado">
+													<label for="checkboxCPFPendenciado" >&nbsp;</label>
 													<input id="checkboxCPFPendenciado" data-value={preValue} name="AccountCPF" type="checkbox" value="pendenciado" onchange={handleChangeCheckbox}/>
 												</div>
 
-												<div class="form-control reprovado">
-													<label for="checkboxCPFReprovado" class="slds-text-heading_small">&nbsp;</label>
+												<div class="slds-size_4-of-12 form-control reprovado">
+													<label for="checkboxCPFReprovado" >&nbsp;</label>
 													<input id="checkboxCPFReprovado" data-value={preValue} name="AccountCPF"  type="checkbox" value="reprovado" onchange={handleChangeCheckbox}/>
 												</div>
 											</div>
 										</div>
 									</div>
 								</section>
-							</div>
+							</li>
 
 						</div>
 					</div>
 
+          <!-- 3th Accordion -->
 					<div class="slds-progress__item ">
-						<div class="slds-progress__marker"></div>
+						<lightning-progress-ring value="50" variant="warning" class="progressCircle"> </lightning-progress-ring>
 						<div class="slds-progress__item_content slds-grid">
-							<span>Dados de Contato</span>
-							<lightning-progress-ring value="100" variant="expired" class="slds-m-left_small">
-							</lightning-progress-ring>
+              <li class="slds-accordion__list-item">
+                <section class="slds-accordion__section">
+                  <div class="slds-accordion__summary">
+                    <h2 class="slds-accordion__summary-heading">
+                      <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;" >Dados de Contato</span>
+                    </h2>
+                  </div>
+                  <div class="slds-accordion__content" id="referenceId-77">
+                    
+                    Accordion details - Contato
+                </div>
+                </section>
+              </li>		
 						</div>
 					</div>
 
+					<!-- 4th Accordion -->
 					<div class="slds-progress__item ">
-						<div class="slds-progress__marker"></div>
+						<lightning-progress-ring value="75" variant={addressesInfoVariant} class="progressCircle"> </lightning-progress-ring>
 						<div class="slds-progress__item_content slds-grid">
-							<span>Dados de Endereço</span>
-							<lightning-progress-ring value="100" variant="warning" class="slds-m-left_small">
-							</lightning-progress-ring>
+              <li class="slds-accordion__list-item">
+                <section class="slds-accordion__section">
+                  <div class="slds-accordion__summary">
+                    <h2 class="slds-accordion__summary-heading">
+                      <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;" >Dados de Endereço</span>
+                    </h2>
+                  </div>
+                  <div class="slds-accordion__content" id="referenceId-78">
+                    
+                    Accordion details - Endereço
+                </div>
+                </section>
+              </li>		
 						</div>
 					</div>
 
-				</div>
-			</div>
-
+				
+			</ol>
 		</div>
 
 		<template if:true={openModalDocument}>

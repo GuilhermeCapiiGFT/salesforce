@@ -1,7 +1,46 @@
+:host{
+    --lwc-colorRed: rgb(255, 26, 26);
+    --lwc-colorOrange: rgb(252, 182, 30);
+    --lwc-colorGreen: rgb(48, 180, 87);
+    --lwc-colorlightBlue: rgb(155, 179, 190);
+    --lwc-colorBlack: rgb(0, 0, 0);
+}
+
 .fundo {
     background-color: aliceblue;
-    --slds-c-accordion-color-border: aqua;
 }
 .progressCSS {
+    display: flex;
     line-height: 100% !important;
+    vertical-align: middle;
+    position: static !important;
+    z-index: 5;
+    justify-content: center;
+    margin-right: var(--lwc-spacingMedium,1rem);
+}
+.slds-progress__marker{
+    border: 0px;
+}
+
+.slds-progress_vertical .slds-progress__item:before, .slds-progress_vertical .slds-progress__item:after {
+    left: 11px;
+}
+
+.slds-progress_vertical .slds-progress__item_content {
+    margin-top: 0;
+    padding-bottom: 0;
+}
+
+.slds-accordion__section {
+    /*padding-top: var(--slds-c-accordion-section-spacing-block-start, var(--sds-c-accordion-section-spacing-block-start, var(--lwc-spacingSmall,0.75rem)));
+    padding-bottom: var(--slds-c-accordion-section-spacing-block-end, var(--sds-c-accordion-section-spacing-block-end, var(--lwc-spacingSmall,0.75rem)));
+    padding-left: var(--slds-c-accordion-section-spacing-inline-start, var(--sds-c-accordion-section-spacing-inline-start, var(--lwc-spacingSmall,0.75rem)));*/
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    padding-left: 0;
+}
+
+.slds-progress_vertical .slds-progress__item {
+    align-items: flex-start;
+    position: revert;
 }

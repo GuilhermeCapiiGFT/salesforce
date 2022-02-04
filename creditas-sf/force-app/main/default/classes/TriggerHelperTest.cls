@@ -3,27 +3,26 @@ public class TriggerHelperTest {
     
     @testSetup
     static void TestSetup(){
-        Id lPessoaFisicaRT = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-        Account lconta = TestSetup.getAccount('Teste Account', false);
-        lConta.RecordTypeId = lPessoaFisicaRT;
-        lConta.DocumentNumber__c = '81357651007';
-        insert lconta;
+        Account lAcc = AccountSetup.createAccount('Teste Account', 'Pessoa_Fisica');
+        lAcc.MigrationRecord__c = false;
+        insert lAcc;
     }
     
-    static testMethod void changeFieldTest(){
-        List<Account> lAcc =  [SELECT Id,Name FROM Account ];
-
+    @isTest
+    private static void changeFieldTest(){
+        List<Account> lAcc =  [SELECT Id FROM Account ];
         Test.startTest();
         lAcc[0].Name = 'changedField';
         lAcc[0].BillingStreet = 'billyJean';
         update lAcc;
         Test.stopTest();
         
-        Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
-        System.assert(lAccResponse.MigrationRecord__c == true,'o campo aField não foi alterado ');
+        Account lAccResponse = [SELECT MigrationRecord__c FROM Account LIMIT 1];
+        System.assert(lAccResponse.MigrationRecord__c,'o campo aField não foi alterado ');
     }
     
-    static testMethod void changedFieldList(){
+    @isTest
+    private static void changedFieldList(){
         
         List<Account> lAcc = [SELECT Id,Name,BillingStreet FROM Account LIMIT 1];
         
@@ -36,7 +35,8 @@ public class TriggerHelperTest {
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true,' Nenhum dos campos em aFields foi alterado');
     }
-    static testMethod void notChangedField(){
+    @isTest
+    private static void notChangedField(){
         
         
         List<Account> lAcc = [SELECT id,Name,BillingStreet FROM Account ];
@@ -49,7 +49,8 @@ public class TriggerHelperTest {
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true,'o campo aField não foi alterado ');
     }
-    static testMethod void notChangedFieldList(){
+    @isTest
+    private static void notChangedFieldList(){
         List<Account> lAcc = [SELECT id,Name,BillingStreet FROM Account ];
   
         Test.startTest();
@@ -59,45 +60,47 @@ public class TriggerHelperTest {
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true,'nenhum dos campos em aFields foi alterado');
     }
-    static testMethod void changedToExpectedValue(){
+    @isTest
+    private static void changedToExpectedValue(){
         List<Account> lAcc = [SELECT id,Name,BillingStreet FROM Account ];
-        
-        
         
         Test.startTest();
             lAcc[0].Name = 'changedToExpectedValue';
             lAcc[0].BillingStreet = 'Rua 2';
             update lAcc;
         Test.stopTest();
+        
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true,'determinado campo foi alterado para o valor esperado');
     }
     
-    static testMethod void changedFromTo(){
+    @isTest
+    private static void changedFromTo(){
         List<Account> lAcc = [SELECT id,Name,BillingStreet FROM Account  ];
         lAcc[0].BillingStreet = 'Rua 1';
         update lAcc;
-        
         
         Test.startTest();
         lAcc[0].Name = 'changedFromTo';
         lAcc[0].BillingStreet = 'Rua 2';
         update lAcc;
         Test.stopTest();
+
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true,'determinado campo foi alterado do valor esperado para valor esperado ');
     } 
-     static testMethod void changedFrom(){
+    @isTest
+    private static void changedFrom(){
         List<Account> lAcc = [SELECT id,Name,BillingStreet FROM Account  ];
          lAcc[0].BillingStreet = 'Rua 2';
          update lAcc;
-        
         
         Test.startTest();
             lAcc[0].Name = 'changedFrom';
             lAcc[0].BillingStreet = 'Rua 3';
             update lAcc;
         Test.stopTest();
+
         Account lAccResponse = [SELECT MigrationRecord__c FROM Account ];
         System.assert(lAccResponse.MigrationRecord__c == true , 'determinado campo foi alterado do valor esperado ');
     }
