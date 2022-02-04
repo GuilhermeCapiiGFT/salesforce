@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DocumentKey__c</fullName>
+    <caseSensitive>false</caseSensitive>
     <externalId>false</externalId>
-    <formula>TEXT(DocumentType__c) &amp; &quot; - &quot; &amp; DocumentNumber__c</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>DocumentKey</label>
+    <label>Chave do documento</label>
+    <length>100</length>
     <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
     <type>Text</type>
-    <unique>false</unique>
+    <unique>true</unique>
 </CustomField>
