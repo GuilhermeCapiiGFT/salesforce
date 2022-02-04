@@ -11,6 +11,7 @@
  **********************************************************************************************************************/
 @IsTest
 private class OpportunityAssignmentTest {
+  //Global Variables that will be used throughout the test class
   static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
   static DateTime secondDttm = firstDttm.addSeconds(1);
   static Id accountId;
@@ -26,7 +27,7 @@ private class OpportunityAssignmentTest {
     insert cSetup;
     cSetupId = cSetup.Id;
 
-    // Add Queues
+    // Creates a CustomQueue with a number of points for each type of queue
     List<CustomQueue__c> lstCustomQueue = new List<CustomQueue__c>();
     lstCustomQueue.add(makeCustomQueue('DISCHARGE', 10));
     lstCustomQueue.add(makeCustomQueue('REFINANCING', 20));
@@ -36,10 +37,19 @@ private class OpportunityAssignmentTest {
     lstCustomQueue.add(makeCustomQueue('PENDENCY_RETURN', 100));
     insert lstCustomQueue;
 
-    // Users
-    List<User> lstUsers = TestSetup.getUsers(5, true);
+    // Create users with different LastAttendance__c atribute.
+    // LastAttendance__c is the date/time when user finished attending it's last @work ooportunity
+    // @Work opportunity assignment considers LastAttendance__c (user with least recent date/time has priority)
+    List<User> lstUsers = TestSetup.getUsers(5, false);
+    lstUsers[0].LastAttendance__c = DateTime.newInstance(2020, 12, 20);
+    lstUsers[1].LastAttendance__c = DateTime.newInstance(2020, 12, 19);
+    lstUsers[2].LastAttendance__c = DateTime.newInstance(2020, 12, 18);
+    lstUsers[3].LastAttendance__c = DateTime.newInstance(2020, 12, 17);
+    lstUsers[4].LastAttendance__c = DateTime.newInstance(2020, 12, 16);
+    insert lstUsers;
 
-    // Add assigned queues
+    // Creates a list of Users assigned to a specific type of queue, only users assigned to that queue are able to recieve an opportunity
+    //From the list of users, EX: only user in position [0] named Test0, is only able to recieve opportunities with 'DISCHARGE' and so on
     List<ProductAssignedUser__c> lstProductUser = new List<ProductAssignedUser__c>();
     lstProductUser.add(makeProductAssignedUser('DISCHARGE', lstUsers[0].Id));
     lstProductUser.add(makeProductAssignedUser('DISCHARGE', lstUsers[1].Id));
@@ -52,15 +62,12 @@ private class OpportunityAssignmentTest {
     lstProductUser.add(makeProductAssignedUser('SALARY_ADVANCE', lstUsers[4].Id));
     insert lstProductUser;
 
-    // Account
+    // Create default Account
     Account acc = AccountSetup.createAccount('Test Account', 'Pessoa_Fisica');
     insert acc;
     accountId = acc.Id;
-  }
 
-  @isTest
-  static void testOpportunityWithOwner(){
-
+    // Create several Opportunities with different product types and External Created Dates
     List<Opportunity> lstOppty = new List<Opportunity>();
     lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm));
     lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm));
@@ -68,53 +75,70 @@ private class OpportunityAssignmentTest {
     lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm));
     lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm));
     lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm));
+    lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm));
+    lstOppty.add(makeOppty(8, 'STORE', secondDttm));
     lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm));
-    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm));
+    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm));    
+    insert lstOppty;
+  }
 
-    Opportunity opp7 = makeOppty(7, 'REFINANCING', secondDttm);
-    Opportunity opp8 = makeOppty(8, 'REFINANCING', secondDttm);
+  @isTest
+  static void testOpportunityWithOwner(){
 
-    opp7.OwnerId = [SELECT Id FROM User WHERE Name = 'Test0'].Id;
-    opp8.OwnerId = [SELECT Id FROM User WHERE Name = 'Test3'].Id;
+    List<Opportunity> lstOpptyAssignFirst = new List<Opportunity>();
+    List<Opportunity> lstOpptyAssignSecond = new List<Opportunity>();
 
-    lstOppty.addAll(new List<Opportunity>{opp7, opp8});
+    // Change opportunities to trigger the assignments
+    List<Opportunity> lstOppty = [SELECT Id, Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    for (Opportunity op : lstOppty) {
+      op.StageName = 'Formalização';
+      if (op.Name == 'Test Oppty 7' || op.Name == 'Test Oppty 8') {
+        lstOpptyAssignFirst.add(op);
+      } else {
+        lstOpptyAssignSecond.add(op);
+      }
+    }
 
     Test.startTest();
-
-    insert lstOppty;
+    
+    // First update will assign users Test2 and Test3, making them unavailable for the next assignment
+    // This behavior is them validated on the test asserts
+    update lstOpptyAssignFirst;
+    update lstOpptyAssignSecond;
 
     Test.stopTest();
 
-    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
 
+    // Auxiliary table to verify the asserts, sorted by Priority
     // Oppty Name Prod Type       Ext Date    Expected Owner
     // Oppty 5   'SALARY_ADVANCE' firstDttm   Test4
     // Oppty 10  'SALARY_ADVANCE' secondDttm  
     // Oppty 4   'PAYROLL_LOAN'   firstDttm   
     // Oppty 9   'PAYROLL_LOAN'   secondDttm  
-    // Oppty 3   'STORE'          firstDttm   Test2
+    // Oppty 3   'STORE'          firstDttm   
     // Oppty 8   'STORE'          secondDttm  Test3
     // Oppty 2   'REFINANCING'    firstDttm   Test1
-    // Oppty 7   'REFINANCING'    secondDttm  Test0
-    // Oppty 1   'DISCHARGE'      firstDttm   
+    // Oppty 7   'REFINANCING'    secondDttm  Test2
+    // Oppty 1   'DISCHARGE'      firstDttm   Test0
     // Oppty 6   'DISCHARGE'      secondDttm  
 
     for (Opportunity opp : lstOppty) {
       switch on opp.Name {
-        when 'Test Oppty 5' {
-          System.assertEquals('Test4', opp.Owner.Name, 'Incorrect owner assignment');
-        }
-        when 'Test Oppty 3' {
-          System.assertEquals('Test2', opp.Owner.Name, 'Incorrect owner assignment');
-        }
-        when 'Test Oppty 8' {
-          System.assertEquals('Test3', opp.Owner.Name, 'Incorrect owner assignment');
+        when 'Test Oppty 1' {
+          System.assertEquals('Test0', opp.Owner.Name, 'Incorrect owner assignment');
         }
         when 'Test Oppty 2' {
           System.assertEquals('Test1', opp.Owner.Name, 'Incorrect owner assignment');
         }
+        when 'Test Oppty 5' {
+          System.assertEquals('Test4', opp.Owner.Name, 'Incorrect owner assignment');
+        }
         when 'Test Oppty 7' {
-          System.assertEquals('Test0', opp.Owner.Name, 'Incorrect owner assignment');
+          System.assertEquals('Test2', opp.Owner.Name, 'Incorrect owner assignment');
+        }
+        when 'Test Oppty 8' {
+          System.assertEquals('Test3', opp.Owner.Name, 'Incorrect owner assignment');
         }
         when else {
           System.assert(
@@ -131,26 +155,21 @@ private class OpportunityAssignmentTest {
   @isTest
   static void testOpportunityWithoutOwner() {
 
-    List<Opportunity> lstOppty = new List<Opportunity>();
-    lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm));
-    lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm));
-    lstOppty.add(makeOppty(3, 'STORE', firstDttm));
-    lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm));
-    lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm));
-    lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm));
-    lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm));
-    lstOppty.add(makeOppty(8, 'STORE', secondDttm));
-    lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm));
-    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm));
+    // Change opportunities to trigger the assignments
+    List<Opportunity> lstOppty = [SELECT Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    for (Opportunity op : lstOppty) {
+      op.StageName = 'Formalização';
+    }
 
     Test.startTest();
 
-    insert lstOppty;
+    update lstOppty;
 
     Test.stopTest();
 
-    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
 
+    // Auxiliary table to verify the asserts, sorted by Priority
     // Oppty Name Prod Type       Ext Date    Expected Owner
     // Oppty 5   'SALARY_ADVANCE' firstDttm   Test4
     // Oppty 10  'SALARY_ADVANCE' secondDttm  
@@ -195,34 +214,29 @@ private class OpportunityAssignmentTest {
   @isTest
   static void testUnavailableUser(){
 
-    User u1 = [SELECT Id FROM User WHERE Name = 'Test0'];
-    User u2 = [SELECT Id FROM User WHERE Name = 'Test3'];
+    // Make users unavailable for assignment
+    List<User> lstUser = [SELECT Id FROM User WHERE Name IN ('Test0', 'Test3')];
+    for (User u : lstUser) {
+      u.UserAvailable__c = false;
+    }
 
-    u1.UserAvailable__c = false;
-    u2.UserAvailable__c = false;
+    update lstUser;
 
-    update new List<User>{u1, u2};
-
-    List<Opportunity> lstOppty = new List<Opportunity>();
-    lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm));
-    lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm));
-    lstOppty.add(makeOppty(3, 'STORE', firstDttm));
-    lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm));
-    lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm));
-    lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm));
-    lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm));
-    lstOppty.add(makeOppty(8, 'STORE', secondDttm));
-    lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm));
-    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm));    
+    // Change opportunities to trigger the assignments
+    List<Opportunity> lstOppty = [SELECT Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    for (Opportunity op : lstOppty) {
+      op.StageName = 'Formalização';
+    }    
 
     Test.startTest();
 
-    insert lstOppty;
+    update lstOppty;
 
     Test.stopTest();
 
-    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
 
+    //Auxiliary table to verify the asserts, sorted by Priority
     // Oppty Name Prod Type       Ext Date    Expected Owner
     // Oppty 5   'SALARY_ADVANCE' firstDttm   Test4
     // Oppty 10  'SALARY_ADVANCE' secondDttm  
@@ -237,14 +251,14 @@ private class OpportunityAssignmentTest {
 
     for (Opportunity opp : lstOppty) {
       switch on opp.Name {
-        when 'Test Oppty 5' {
-          System.assertEquals('Test4', opp.Owner.Name, 'Incorrect owner assignment');
+        when 'Test Oppty 2' {
+          System.assertEquals('Test1', opp.Owner.Name, 'Incorrect owner assignment');
         }
         when 'Test Oppty 3' {
           System.assertEquals('Test2', opp.Owner.Name, 'Incorrect owner assignment');
         }
-        when 'Test Oppty 2' {
-          System.assertEquals('Test1', opp.Owner.Name, 'Incorrect owner assignment');
+        when 'Test Oppty 5' {
+          System.assertEquals('Test4', opp.Owner.Name, 'Incorrect owner assignment');
         }
         when else {
           System.assert(
@@ -258,23 +272,27 @@ private class OpportunityAssignmentTest {
     }      
   }
 
+  //Auxiliary method to return opportunties
   static Opportunity makeOppty(Integer num, String prodType, Datetime externalCreatedDttm) {
     Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opp.Name = 'Test Oppty ' + num;
+    opp.StageName = 'Assinatura';
+    opp.StatusDeFormalizacao__c = 'Nova Proposta';    
     opp.ProductType__c = prodType;
     opp.ExternalCreationDate__c = externalCreatedDttm;
     return opp;
   }
 
+  //Auxiliary method to return ProductAssignedUser
   static ProductAssignedUser__c makeProductAssignedUser(String prodType, Id userId) {
     return new ProductAssignedUser__c(
-      Name = 'Test',
       CustomSetupUser__c = cSetupId,
       ProductType__c = prodType,
       User__c = userId
     );
   }
 
+  //Auxiliary method to return CustomQueue
   static CustomQueue__c makeCustomQueue(String prodType, Double points) {
     return new CustomQueue__c(Name = 'Test', ProductType__c = prodType, CustomSetup__c = cSetupId, Points__c = points);
   }

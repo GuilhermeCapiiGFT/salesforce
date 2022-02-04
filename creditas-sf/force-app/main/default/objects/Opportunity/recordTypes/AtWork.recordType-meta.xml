@@ -5,67 +5,6 @@
     <businessProcess>%40Work - Creditas</businessProcess>
     <label>@Work</label>
     <picklistValues>
-        <picklist>BankAccountType__c</picklist>
-        <values>
-            <fullName>CHECKINGS</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SAVINGS</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>ExternalTenant__c</picklist>
-        <values>
-            <fullName>creditasbr</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>creditasmx</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Flow_Stage__c</picklist>
-        <values>
-            <fullName>Ajuste de Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Antecipação da Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Identificada Pendência para Emissão</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Não há pendência para Emissão</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Não é possível Antecipar a Minuta</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendência de Assinatura</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Surprise de Formalização</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Surprise de Formalização%28 Conferência %29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Validação de Minuta</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>ForecastCategoryName</picklist>
         <values>
             <fullName>Best Case</fullName>
@@ -85,21 +24,6 @@
         </values>
         <values>
             <fullName>Pipeline</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>IsSynchEnabled__c</picklist>
-        <values>
-            <fullName>DISABLED</fullName>
-            <default>true</default>
-        </values>
-        <values>
-            <fullName>ENABLED</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SYNCHING</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -147,67 +71,13 @@
         </values>
     </picklistValues>
     <picklistValues>
-        <picklist>Loss_Reason__c</picklist>
-        <values>
-            <fullName>Lost to Competitor</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>No Budget %2F Lost Funding</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>No Decision %2F Non-Responsive</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Other</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Price</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>ProductType__c</picklist>
-        <values>
-            <fullName>DISCHARGE</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>PAYROLL_LOAN</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>REFINANCING</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>SALARY_ADVANCE</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>STORE</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>StatusDeFormalizacao__c</picklist>
         <values>
-            <fullName>Aguardando OPS</fullName>
+            <fullName>Aguardando Análise</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Block-list %28Fraude Confirmada%29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Casos Suspeitos</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Desistentes</fullName>
+            <fullName>Aprovado</fullName>
             <default>false</default>
         </values>
         <values>
@@ -220,6 +90,10 @@
         </values>
         <values>
             <fullName>Nova Proposta</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Pendenciado</fullName>
             <default>false</default>
         </values>
         <values>
@@ -228,6 +102,10 @@
         </values>
         <values>
             <fullName>Recusados</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejeitado</fullName>
             <default>false</default>
         </values>
     </picklistValues>
