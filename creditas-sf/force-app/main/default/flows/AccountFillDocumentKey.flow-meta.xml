@@ -47,6 +47,21 @@
         <connector>
             <targetReference>FillDocumentKey</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DocumentNumber__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DocumentType__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </filters>
         <object>Account</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
