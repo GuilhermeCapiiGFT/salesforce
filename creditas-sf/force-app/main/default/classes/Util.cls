@@ -719,4 +719,12 @@ public class Util {
         }
     }
 
+     /*****************************************************************************************************************************
+	 * VERSION			AUTHOR				DATE				DETAIL 			Description
+	 * 1.0 				Thales Yumiya 	    23/12/2021 			Created 		Retorna o nome do sObject a partir do record id                                                                        
+	*****************************************************************************************************************************/    
+    public static String getSObjectNameById(Id recordId)
+    {
+        return recordId.getSObjectType().getDescribe().getName();
+    }   
 }
