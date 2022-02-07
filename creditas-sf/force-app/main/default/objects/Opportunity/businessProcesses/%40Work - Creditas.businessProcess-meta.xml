@@ -7,27 +7,19 @@
         <default>false</default>
     </values>
     <values>
-        <fullName>Distrato</fullName>
+        <fullName>Financiamento</fullName>
         <default>false</default>
     </values>
     <values>
-        <fullName>Emissão e Pré-Assinatura</fullName>
+        <fullName>Formalização</fullName>
         <default>false</default>
     </values>
     <values>
-        <fullName>Pago</fullName>
+        <fullName>HR</fullName>
         <default>false</default>
     </values>
     <values>
         <fullName>Perdido</fullName>
-        <default>false</default>
-    </values>
-    <values>
-        <fullName>Protocolo</fullName>
-        <default>false</default>
-    </values>
-    <values>
-        <fullName>Registro</fullName>
         <default>false</default>
     </values>
 </BusinessProcess>
