@@ -12,6 +12,11 @@
 public with sharing class EvaluationMethods {
   private static Id opportunityAtWorkRecordTypeId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
   private static final String PENDENCY_RETURN = 'PENDENCY_RETURN';
+  private static final Set<String> OPEN_FORMALIZATION = new Set<String>{
+    'Nova Proposta',
+    'Aguardando Análise',
+    'Em Análise'
+  };
 
   public static void evaluateAtWorkOpportunities(List<Opportunity> lstOpportunity) {
     List<Opportunity> lstOpportunityToUpdate = new List<Opportunity>();
@@ -106,7 +111,7 @@ public with sharing class EvaluationMethods {
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND (PendencyReturn__c = TRUE
           OR ProductType__c IN :setProductType)
-          AND StatusDeFormalizacao__c IN ('Nova Proposta', 'Aguardando Análise', 'Em Análise')
+          AND StatusDeFormalizacao__c IN :OPEN_FORMALIZATION
       ];
     } else {
       return [
@@ -126,7 +131,7 @@ public with sharing class EvaluationMethods {
         WHERE
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND ProductType__c IN :setProductType
-          AND StatusDeFormalizacao__c IN ('Nova Proposta', 'Aguardando Análise', 'Em Análise')
+          AND StatusDeFormalizacao__c IN :OPEN_FORMALIZATION
       ];
     }
   }
@@ -159,7 +164,8 @@ public with sharing class EvaluationMethods {
         (SELECT ProductType__c, Points__c FROM CustomQueue__r),
         (
           SELECT ProductType__c, User__c, User__r.UserAvailable__c, User__r.LastAttendance__c
-          FROM ProductAssignedUsers__r ORDER BY User__r.LastAttendance__c ASC
+          FROM ProductAssignedUsers__r
+          ORDER BY User__r.LastAttendance__c ASC
         )
       FROM CustomSetup__c
       LIMIT 1
