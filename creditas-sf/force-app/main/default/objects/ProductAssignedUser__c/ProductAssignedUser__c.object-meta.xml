@@ -154,11 +154,12 @@
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
     <gender>Feminine</gender>
-    <label>ProductAssignedUser</label>
+    <label>Usuário por fila</label>
     <nameField>
+        <displayFormat>UPF - {0000}</displayFormat>
         <label>Name</label>
         <trackHistory>false</trackHistory>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>ProductAssignedUsers</pluralLabel>
     <searchLayouts></searchLayouts>
