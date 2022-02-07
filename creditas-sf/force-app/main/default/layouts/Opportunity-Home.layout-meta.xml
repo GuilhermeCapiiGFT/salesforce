@@ -22,10 +22,6 @@
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>CivilStatus__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>SumIncome__c</field>
             </layoutItems>
@@ -313,10 +309,6 @@
         <fields>OWNER.FIRST_NAME</fields>
         <fields>CREATED_DATE</fields>
         <relatedList>OpportunityProcess__c.Opportunity__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>PersonalData__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

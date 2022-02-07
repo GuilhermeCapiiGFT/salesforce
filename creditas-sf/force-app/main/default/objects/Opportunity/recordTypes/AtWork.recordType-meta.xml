@@ -195,19 +195,11 @@
     <picklistValues>
         <picklist>StatusDeFormalizacao__c</picklist>
         <values>
-            <fullName>Aguardando OPS</fullName>
+            <fullName>Aguardando Análise</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Block-list %28Fraude Confirmada%29</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Casos Suspeitos</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Desistentes</fullName>
+            <fullName>Aprovado</fullName>
             <default>false</default>
         </values>
         <values>
@@ -220,6 +212,10 @@
         </values>
         <values>
             <fullName>Nova Proposta</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Pendenciado</fullName>
             <default>false</default>
         </values>
         <values>
@@ -228,6 +224,10 @@
         </values>
         <values>
             <fullName>Recusados</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejeitado</fullName>
             <default>false</default>
         </values>
     </picklistValues>
