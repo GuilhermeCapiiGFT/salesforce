@@ -19,6 +19,10 @@
                 <behavior>Edit</behavior>
                 <field>Titular_da_Conta__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ReportedIncome__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
