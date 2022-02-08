@@ -12,19 +12,6 @@ public class Util {
     
     public class UtilException extends Exception {}
 
-    
-    /*****************************************************************************************************************************
-	 * Purpose: Método de auxílio para a obtenção do RecordTypeId através do nome.
-	 * Parameters: String objectName, String strRecordTypeName
-	 * Returns: RecordTypeId
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION			AUTHOR				DATE				DETAIL 			Description
-	 * 1.0 				Thales Yumiya 	    11/08/2021 			Created 		Retorna o RecordTypeId correspondente ao
-     *                                                                          RecordTypeName 
-	*****************************************************************************************************************************/    
     private static Map<String, Map<String, Id>> lMapAllSobjRT = new Map<String, Map<String, Id>>();
     
     public static Id getRecordTypeIdbyName(String objType, String recordTypeName) {
@@ -42,37 +29,13 @@ public class Util {
         lMapAllSobjRT.put(objType.toLowerCase(), lMapSobjRT);
         return lMapSobjRT.get(recordTypeName);
     }             
-    
-    /*****************************************************************************************************************************
-	 * Purpose: Método de auxílio para obtenção do  RecordTypeName através do Id.
-	 * Parameters: String objectName, Id strRecordTypeId
-	 * Returns: RecordTypeName
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION			AUTHOR				DATE				DETAIL 			Description
-	 * 1.0 				Thales Yumiya 	    11/08/2021 			Created 		Retorna o RecordTypeName correspondente ao
-     *                                                                          RecordTypeId 
-	*****************************************************************************************************************************/    
+     
     public static String getRecordTypeNameById(String objectName, Id strRecordTypeId)
     {
         return Schema.getGlobalDescribe().get(objectName).getDescribe().getRecordTypeInfosById().get(strRecordTypeId).getName();
     }   
             
-    /*****************************************************************************************************************************
-	 * Purpose: Método de auxílio para cálculo de tempo decorrido entre dois intervalos.
-	 * Parameters: Time startTime, Time endTime
-	 * Returns: Time
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
-	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Retorna Time com horas, minutos, segundos e
-     *                                                                          milisegundos correspondentes ao tempo decorrido
-     *                                                                          entre os intervalos startTime e endTime.
-	*****************************************************************************************************************************/
+    
     public static Time getElapsedTime(Time startTime, Time endTime) {
         
         if(startTime == null || endTime == null) {
@@ -87,48 +50,10 @@ public class Util {
         return Time.newInstance(elapsedHours, elapsedMinutes, elapsedSeconds, elapsedMiliseconds);
     }
     
-    /*****************************************************************************************************************************
-	 * Purpose: Método de auxílio para cálculo de tempo decorrido entre dois intervalos em segundos.
-	 * Parameters: Time startTime, Time endTime
-	 * Returns: Integer
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
-	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Chama Utils.GetElapsedTime; retorna tempo
-     *                                                                          decorrido entre startTime e endTime em
-     *                                                                          segundos.
-	*****************************************************************************************************************************/
     public static Integer getSecondsElapsed(Time startTime, Time endTime) {
         return GetElapsedTime(startTime, endTime).second();
     }
     
-    /*****************************************************************************************************************************
-	 * Purpose: Atualização de associação de contas a territórios
-	 * Parameters: String, Account
-	 * Returns: Account
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
-	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Adiciona o território territoryName de
-     *                                                                          Account__r.Territorios__c e retorna a
-     *                                                                          conta.
-	*****************************************************************************************************************************/    
-    
-    /*****************************************************************************************************************************
-	 * Purpose: Obtem valores de picklist por apIObjeto e apiCampo
-	 * Parameters: String ObjectApi_name, String Field_name
-	 * Returns: List<String>
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
-	 * 1.0 			Thales Yumiya					11/08/2021 		Created 	getPicklistValues - Obter valores de picklist
-	*****************************************************************************************************************************/
     public static List<Schema.PicklistEntry> getPicklistValues(String objectApiName,String fieldName){ 
         
         List<Schema.PicklistEntry> lstPickvals = new List<Schema.PicklistEntry>();
@@ -150,17 +75,6 @@ public class Util {
         return lstPickvals;
     }
     
-    /*****************************************************************************************************************************
-	 * Purpose: Gerar string randomica. 
-	 * Parameters: strLength (Integer)
-	 * Returns: string
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
-	 * 1.0 			Thales Yumiya					11/08/2021 		Created 	Method generateRandomString
-	*****************************************************************************************************************************/
     public static String generateRandomString(Integer strLength) {
         final String chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
         String randStr = '';
@@ -171,18 +85,6 @@ public class Util {
         return randStr; 
     }
     
-    /*****************************************************************************************************************************
-     * Purpose: Obter os campos do field set
-     * Parameters: SObject varSObject
-     *             String varSObjectField
-     * Returns: Object
-     * Throws -
-     * 
-     * History
-     * --------
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Obtém o valor do campo do objeto
-     *****************************************************************************************************************************/
     public static Object getSObjectFieldValueByFieldName(SObject sObj, String fieldReference)
     {
         if(String.isBlank(fieldReference))
@@ -207,19 +109,6 @@ public class Util {
         return fieldValue;
     }
     
-        
-    /*****************************************************************************************************************************
-     * Purpose: Obter todos os campos do objeto informado
-     * Parameters: String varSObjectName
-     *             Id varSObjectId
-     * Returns: String
-     * Throws -
-     * 
-     * History
-     * --------
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
-     *****************************************************************************************************************************/
     private static List<String> selectAllFields(String varSObjectName, Id varSObjectId)
     {
         List<String> lstSObjectField = new List<String>();
@@ -246,68 +135,22 @@ public class Util {
         return lstSObjectField;
     }
     
-    /*****************************************************************************************************************************
-     * Purpose: Obter todos os campos do objeto informado pelo nome
-     * Parameters: String varSObjectName
-     * Returns: String
-     * Throws -
-     * 
-     * History
-     * --------
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
-     *****************************************************************************************************************************/
     public static List<String> selectAllFields(String varSObjectName)
     {
         return selectAllFields(varSObjectName, null);
     }
     
-    /*****************************************************************************************************************************
-     * Purpose: Obter todos os campos do objeto informado pelo ID
-     * Parameters: Id varSObjectId
-     * Returns: String
-     * Throws -
-     * 
-     * History
-     * --------
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
-     *****************************************************************************************************************************/
     public static List<String> selectAllFields(Id varSObjectId)
     {
         return selectAllFields(null, varSObjectId);
-    }
-    
-    /*****************************************************************************************************************************
-	 * Purpose: Método de auxílio para a obtenção de todos os RecordTypeId através de um objeto específico.
-	 * Parameters: String objectName, String strRecordTypeName
-	 * Returns:  Map<Id, Schema.RecordTypeInfo>
-	 * Throws -
-	 * 
-	 * History
-	 * --------
-	 * VERSION			AUTHOR				DATE				DETAIL 			Description
-	 * 1.0 				Thales Yumiya    	11/08/2021 			Created 		Retorna do Map com os RecordTypeIds do Objeto
-	*****************************************************************************************************************************/    
+    }    
+	    
     public static Map<Id, Schema.RecordTypeInfo> getRecordTypesBySObject(String objectName)
     {
         Map<Id, Schema.RecordTypeInfo> mapRecTypeSObject = Schema.getGlobalDescribe().get(objectName).getDescribe().getRecordTypeInfosById();
     	return mapRecTypeSObject;
     }
     
-    /*****************************************************************************************************************************
-     * Purpose: Atualizar o campo do objeto com o valor informado
-     * Parameters: SObject varSObject
-     *             String varFieldName
-     *             Object varFieldValue
-     * Returns: void
-     * Throws -
-     * 
-     * History
-     * --------
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Atualiza o campo do objeto com o valor informado
-     *****************************************************************************************************************************/
     public static void updateSObjectField(SObject varSObject, String varFieldName, Object varFieldValue)
     {
         Schema.DisplayType varSObjectFieldType = varSObject.getSObjectType().getDescribe().fields.getMap().get(varFieldName).getDescribe().getType();
@@ -327,19 +170,6 @@ public class Util {
         }
     }
     
-    /*****************************************************************************************************************************
-    * Purpose: 
-    * Parameters: Datetime
-    * Returns: void
-    * Throws -
-    * 
-    * History
-    * --------
-    * VERSION      AUTHOR                            DATE            DETAIL      Description
-    * 1.0          Thales Yumiya                     13/11/2021      Created     Retorna Datetime em String conforme a 
-    *                                                                            ISO 8601; recupera fuso horário de acordo
-    *                                                                            com o local do usuário que o executa.
-    *****************************************************************************************************************************/
     public static String dateTimeToString(Datetime dt) {
 
         TimeZone timeZone = UserInfo.getTimeZone();
@@ -367,16 +197,6 @@ public class Util {
         return dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss') + stringOffset;
     }
 
-    /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description atualizar campo isExternallySynced da Conta quando for PF
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           13/08/21                    Atualizar o campo isExternallySynched na Account para os objetos
-                                                                      relacionados
-    **********************************************************************************************************************************/
     public static void updateIsExternallySynced(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
     {
         Set<Id> setAccountIds = new Set<Id>();
@@ -428,15 +248,6 @@ public class Util {
         TriggerHandler.clearBypass('AccountTriggerHandler');
     }
 
- /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description Update field isExternallySynced of Opportunity 
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Nathalia Rosa           17/12/2021                  Update field isExternallySynced of Opportunity and related objects
-    **********************************************************************************************************************************/
     public static void updateIsExternallySyncedOpportunity(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
     {
         Set<Id> setOpportunityIds = new Set<Id>();
@@ -487,16 +298,7 @@ public class Util {
         }
         TriggerHandler.clearBypass('OpportunityTriggerHandler');
     }
-    
-    /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description Update field isExternallySynced of Opportunity 
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Nathalia Rosa           17/12/2021                  Update field isExternallySynced of Opportunity for Quote
-    **********************************************************************************************************************************/
+   
     public static void updateIsExternallySyncedQuoteOpportunity(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
     {
         Set<Id> setOpportunityIds = new Set<Id>();
@@ -547,12 +349,7 @@ public class Util {
         }
         TriggerHandler.clearBypass('OpportunityTriggerHandler');
     }
-    
-
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    
-    **********************************************************************************************************************************/
+   
     private static Integer calcularDigito(String str, List<Integer> peso) 
     {
         Integer soma = 0;
@@ -567,10 +364,6 @@ public class Util {
         return soma > 9 ? 0 : soma;
     }
 
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    verifica se o cpf é válido
-    **********************************************************************************************************************************/
     public static boolean isValidCPF(String cpf) 
     {
         List<Integer> pesoCPF = new List<Integer>{11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
@@ -588,10 +381,6 @@ public class Util {
         }
     }
 
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    verifica se o cnpj é válido
-    **********************************************************************************************************************************/
     public static boolean isValidCNPJ(String cnpj) 
     {
         List<Integer> pesoCNPJ = new List<Integer>{6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
@@ -605,10 +394,6 @@ public class Util {
         return cnpj.equals(cnpj.substring(0,12) + digito1 + digito2) && !(isAllTheSameCaracter(cnpj));
     }
 
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    gera a string do documento com a máscara
-    **********************************************************************************************************************************/
     public static String getMaskedCPF(String cpf){
         String p1;
         String p2;
@@ -626,11 +411,7 @@ public class Util {
         }
         return maskedStr;
     }
-
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    gera a string do documento com a máscara
-    **********************************************************************************************************************************/
+    
     public static String getMaskedCNPJ(String cnpj){
         String p1;
         String p2;
@@ -651,10 +432,6 @@ public class Util {
         return maskedStr;
     }
 
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    verifica se o documento contém números iguais
-    **********************************************************************************************************************************/
     public static boolean isAllTheSameCaracter(String numDoc)
     {
         if(numDoc.length() == 11)
@@ -681,10 +458,6 @@ public class Util {
         }
     }
     
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    método para retornar apenas números
-    **********************************************************************************************************************************/
     public static String getNumbersOnly(String varString)
     {
         Pattern varPattern = Pattern.compile('[^0-9]');
@@ -692,10 +465,6 @@ public class Util {
         return formattedString;
     }
     
-    /**********************************************************************************************************************************
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Thales Yumiya           28/09/21                    verifica se o documento é válido
-    **********************************************************************************************************************************/
     public static Boolean isValidDocumentNumber(String documentNumber)
     {
         String formattedDocument = getNumbersOnly(documentNumber); 
@@ -718,11 +487,7 @@ public class Util {
             return false;
         }
     }
-
-     /*****************************************************************************************************************************
-	 * VERSION			AUTHOR				DATE				DETAIL 			Description
-	 * 1.0 				Thales Yumiya 	    23/12/2021 			Created 		Retorna o nome do sObject a partir do record id                                                                        
-	*****************************************************************************************************************************/    
+   
     public static String getSObjectNameById(Id recordId)
     {
         return recordId.getSObjectType().getDescribe().getName();
