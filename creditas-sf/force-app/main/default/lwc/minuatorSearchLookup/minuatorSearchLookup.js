@@ -1,4 +1,4 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track} from 'lwc';
 import getLead from '@salesforce/apex/MinuatorSearchController.getLead';
 
 export default class MinuatorSearchLookup extends LightningElement {   
@@ -26,16 +26,23 @@ export default class MinuatorSearchLookup extends LightningElement {
             
             getLead({friendlyId: event.detail.value})
             .then((result) => {
-                this.data = JSON.parse(result);            
+                console.log(result.infos);
+                this.data = JSON.parse(result.infos);            
                 this.name = this.data.persons[0].name;
                 this.friendlyId = event.detail.value;
+                console.log(event.detail.value);
                 this.showList = true;                
                 
             })
-            .catch((error) => {
+            .catch((error) => {                          
+                if(error.message == 'no content to map to Object due to end of input'){
+                    this.dispatchEvent(new CustomEvent('notfound'));
+                }else{
+                    this.dispatchEvent(new CustomEvent('genericerror'));
+                }
                 this.showList = false;
             })
-            .finally(() => {
+            .finally(() => {                
                 this.showSpinner = false;
             });
 
@@ -43,6 +50,7 @@ export default class MinuatorSearchLookup extends LightningElement {
         }
 
     onclickOption(event){
+        console.log(event.currentTarget.dataset.id);
         this.selectedOption = event.currentTarget.dataset.id;
         this.showList = false;
         this.showIconSearch = false;

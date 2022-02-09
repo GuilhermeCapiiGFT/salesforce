@@ -1,0 +1,25 @@
+.form-reason{
+    cursor: pointer;
+}
+.form-reason input{
+    cursor: pointer;
+}
+.content-modal-reason{
+    min-height: 30vh;
+}
+
+.slds-modal__footer .slds-button_brand:not(:disabled){
+    background: #4bca81;
+    color: #ffff;
+    font-weight: 500;
+    border: #4bca81;
+}
+.slds-modal__footer .slds-button_brand:focus,
+.slds-modal__footer .slds-button_brand:hover{
+    background: #589f76;
+}
+
+.slds-modal__footer .slds-button_brand:disabled {
+    cursor: default;
+    background-color: #a9a9a9;
+}

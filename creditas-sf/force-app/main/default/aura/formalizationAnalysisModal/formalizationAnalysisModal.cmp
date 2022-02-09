@@ -1,0 +1,17 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader, force:hasRecordId">
+    <aura:html tag="style">
+    .slds-modal__container{
+    max-width: 60rem !important;
+    width:60% !important;
+    height: auto;
+    }
+    .modal-body{ 
+        height : 65vh !important; 
+        max-height: 65vh !important; 
+      } 
+    </aura:html>  
+   
+    <aura:attribute name="recordId" type="String"/>
+    <c:formalizationAnalysisComponent recordId="{!v.recordId}" onclose="{!c.closeModal}"/>
+    
+</aura:component>

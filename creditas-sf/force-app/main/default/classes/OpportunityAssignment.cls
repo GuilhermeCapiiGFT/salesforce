@@ -16,7 +16,7 @@ public with sharing class OpportunityAssignment {
     boolean runAssignment = false;
 
     for (Opportunity opp : lstOpportunity) {
-      if (opp.RecordTypeId == opportunityAtWorkRecordTypeId) {
+      if (isFormalizationAssignment(opp)) {
         runAssignment = true;
         break;
       }
@@ -25,6 +25,17 @@ public with sharing class OpportunityAssignment {
     if (runAssignment) {
       runAtWorkOpportunityAssignment();
     }
+  }
+
+  private static boolean isFormalizationAssignment(Opportunity opp) {
+    Boolean isAtWork = opp.RecordTypeId == opportunityAtWorkRecordTypeId;
+    Boolean isNewFormalization = (Trigger.isInsert) && opp.StageName == 'Formalização';
+    Boolean isUpdatedFormalization =
+      (Trigger.isUpdate) &&
+      (TriggerHelper.changedToExpectedValue(opp, 'StageName', 'Formalização') ||
+      TriggerHelper.changedFrom(opp, 'StatusDeFormalizacao__c', 'Em Análise'));
+
+    return isAtWork && (isNewFormalization || isUpdatedFormalization);
   }
 
   private static void runAtWorkOpportunityAssignment() {
@@ -39,28 +50,18 @@ public with sharing class OpportunityAssignment {
       return;
     }
 
-    Set<Id> setAllUsers = new Set<Id>();
-    Set<Id> setUnavailableUsers = new Set<Id>();
-
-    for (ProductAssignedUser__c prodUser : cSetup.ProductAssignedUsers__r) {
-      setAllUsers.add(prodUser.User__c);
-      if (!prodUser.User__r.UserAvailable__c) {
-        setUnavailableUsers.add(prodUser.User__c);
-      }
-    }
-
-    for (Opportunity op : lstAtWorkOpportunities) {
-      if (setAllUsers.contains(op.OwnerId)) {
-        setUnavailableUsers.add(op.OwnerId);
-      }
-    }
-
+    Set<Id> setUnavailableUsers = getUnavailableUsers(lstAtWorkOpportunities, cSetup.ProductAssignedUsers__r);
     Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
+
     List<Opportunity> lstOpptyToAssign = new List<Opportunity>();
 
     for (Opportunity op : lstAtWorkOpportunities) {
       if (mapUsersByProductType.isEmpty()) {
         break;
+      }
+
+      if (op.StageName != 'Formalização' || op.StatusDeFormalizacao__c != 'Nova Proposta') {
+        continue;
       }
 
       List<Id> lstProductTypeUsers = mapUsersByProductType.get(op.ProductType__c);
@@ -96,6 +97,26 @@ public with sharing class OpportunityAssignment {
     }
 
     update lstOpptyToAssign;
+  }
+
+  private static Set<Id> getUnavailableUsers(List<Opportunity> lstOpp, List<ProductAssignedUser__c> lstProductUser) {
+    Set<Id> setAllUsers = new Set<Id>();
+    Set<Id> setUnavailableUsers = new Set<Id>();
+
+    for (ProductAssignedUser__c prodUser : lstProductUser) {
+      setAllUsers.add(prodUser.User__c);
+      if (!prodUser.User__r.UserAvailable__c) {
+        setUnavailableUsers.add(prodUser.User__c);
+      }
+    }
+
+    for (Opportunity op : lstOpp) {
+      if (setAllUsers.contains(op.OwnerId)) {
+        setUnavailableUsers.add(op.OwnerId);
+      }
+    }
+
+    return setUnavailableUsers;
   }
 
   private static Map<String, List<Id>> createMapUsersByProductType(List<ProductAssignedUser__c> lstProductUser) {

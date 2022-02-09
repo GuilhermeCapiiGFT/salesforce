@@ -17,3 +17,7 @@
 .slds-truncate{
     margin-left: 10px;
 }
+
+.placeholder input{
+    padding-left: 0px;
+}

@@ -103,4 +103,7 @@
     transition-property: height, width, transform;
     max-width: none;
     max-height: none;
+    height: 400px; 
+    position: relative; 
+    width: 400px;
 }

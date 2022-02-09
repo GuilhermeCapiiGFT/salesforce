@@ -4,6 +4,17 @@
     --lwc-colorGreen: rgb(48, 180, 87);
     --lwc-colorlightBlue: rgb(155, 179, 190);
     --lwc-colorBlack: rgb(0, 0, 0);
+    --lwc-colorCreditas: #49e295;
+    --lwc-colorCreditasDarker: #3fbe7f;
+    --slds-c-button-success-color-background: var(--lwc-colorCreditas);
+    --slds-c-button-success-color-background-active: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-background-hover: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-border: var(--lwc-colorCreditas);
+    --slds-c-button-success-color-border-active: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-border-hover: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-text-color: white;
+    --slds-c-button-success-text-color-active: black;
+    --slds-c-button-success-text-color-hover: black;
 }
 
 .fundo {
@@ -43,4 +54,8 @@
 .slds-progress_vertical .slds-progress__item {
     align-items: flex-start;
     position: revert;
+}
+
+.buttonBoxShadow:hover{
+    box-shadow: rgb(0 0 0 / 16%) 0px 16px 12px -8px, rgb(0 0 0 / 12%) 0px 16px 8px -12px;
 }

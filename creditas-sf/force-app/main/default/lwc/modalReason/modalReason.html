@@ -1,0 +1,44 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{modalHeader}</h1>
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handlerClose}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium content-modal-reason" id="modal-content-id-1">
+                <lightning-combobox              
+                    name="Motivo"
+                    label="Motivo:"
+                    placeholder="Selecione um motivo"
+                    class="form-reason"
+                    options={optionsReason}
+                    onchange={handlerSelectReason}>
+                </lightning-combobox>
+                <template if:true={openSubReason}>
+                    <lightning-combobox
+                        name="Sub-motivo"
+                        label="Sub-motivo:"
+                        placeholder="Selecione um sub motivo"
+                        class="form-reason slds-m-top_small"
+                        options={optionsSubReason}
+                        onchange={handlerSelectSubReason}>
+                    </lightning-combobox>
+                </template>
+                <template if:true={openNote}>
+                    <lightning-textarea name="Observação" class="form-reason slds-m-top_small" label="Observação:" ></lightning-textarea>
+                </template>
+            </div>
+            <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={handlerClose}>Cancel</button>
+                <button class="slds-button slds-button_brand" disabled={saveDisabled} onclick={handlerSave}>Save</button>
+            </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</template>

@@ -1,5 +1,5 @@
-import { LightningElement,api } from 'lwc';
- 
+import { LightningElement, api, wire } from 'lwc';
+
 export default class FormalizationAnalysisField extends LightningElement {
     @api input
     inputType;
@@ -8,8 +8,11 @@ export default class FormalizationAnalysisField extends LightningElement {
     inputSection;
     inputDisabled;
     inputValue;
-    isReject = false;
-    isPendency = false;
+    dateStyle = '';
+    //Events Variables
+    openModalReason = false;
+    modalReasonField;
+    modalType;
 
     connectedCallback(){
         this.inputName = this.input.inputName;
@@ -17,54 +20,46 @@ export default class FormalizationAnalysisField extends LightningElement {
         this.inputLabel = this.input.inputLabel;
         this.inputDisabled = this.input.inputDisabled;
         this.inputValue = this.input.inputValue;
-        this.inputSection = this.input.inputSection;
-
+        this.inputSection = this.input.inputSection;       
     }
-    handleApprove(event){
-        this.isReject = false;
-        this.isPendency = false;
-        this.sendProgressEvent('approve');
-        event.target.classList.add('buttonApproveClicked');
-        let hasReject = this.template.querySelector('.buttonRejectIcon');
-        console.dir(hasReject);
-        if(hasReject){
-            hasReject.classList.remove('buttonRejectIcon');
-        }
-        /*
-        setTimeout(() => {
-            let approveButton = this.template.querySelector('.buttonApproveRotate');
-            //console.dir(approveButton);
-            approveButton.classList.remove('buttonApproveRotate');
-            approveButton.classList.add('buttonApproveIcon');
-        }, 777);
-        */
-        
+    
+    renderedCallback(){
+        this.configureFields();
+    }
 
+    configureFields(){
+        if(this.inputType === 'Date' || this.inputType === "DateTime"){
+            this.dateStyle = 'short';
+        }
+    }
+
+    handleCheckboxChange(event){
+   
+        this.template.querySelectorAll('.isCheckBox').forEach(elem => {
+            elem.checked = false;
+        });
+        
+        event.target.checked = true;
+    }
+    
+    handleApprove(event){
+        this.sendProgressEvent('approve');
+        
     }
 
     handleReject(event){
-        this.isReject = true;
-        this.isPendency = false;
         this.sendProgressEvent('reject');
-        event.target.classList.add('buttonRejectRotate');
-        let hasApprove = this.template.querySelector('.buttonApproveIcon');
-        if(hasApprove){
-            hasApprove.classList.remove('buttonApproveClicked');
-        }
-
-        setTimeout(() => {
-            let approveButton = this.template.querySelector('.buttonRejectRotate');
-            //console.dir(approveButton);
-            approveButton.classList.remove('buttonRejectRotate');
-            approveButton.classList.add('buttonRejectIcon');
-        }, 777);
-        
+        this.openModalReason = true;
+        this.modalReasonField = this.inputLabel;
+        this.modalType = 'reject';
+                    
     }
 
-    handlePendency(event){
-        this.isPendency = true;
-        this.isReject = false;
+    handlePendency(event){   
         this.sendProgressEvent('pendency');
+        this.openModalReason = true;
+        this.modalReasonField = this.inputLabel;
+        this.modalType = 'pendency';
     }
 
     sendProgressEvent(typeOfVariant){
@@ -72,15 +67,8 @@ export default class FormalizationAnalysisField extends LightningElement {
         this.dispatchEvent(clickEvent);
     }
 
-    get options() {
-        return [
-            { label: 'New', value: 'new' },
-            { label: 'In Progress', value: 'inProgress' },
-            { label: 'Finished', value: 'finished' },
-        ];
+    handleCloseModalReason(event){
+        this.openModalReason = false;
     }
 
-    handleChange(event) {
-        this.value = event.detail.value;
-    }
 }

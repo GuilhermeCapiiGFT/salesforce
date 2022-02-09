@@ -14,29 +14,43 @@ public class Util {
 
     
     /*****************************************************************************************************************************
+	 * Purpose: Método de auxílio para a obtenção do RecordTypeId através do nome.
+	 * Parameters: String objectName, String strRecordTypeName
+	 * Returns: RecordTypeId
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION			AUTHOR				DATE				DETAIL 			Description
 	 * 1.0 				Thales Yumiya 	    11/08/2021 			Created 		Retorna o RecordTypeId correspondente ao
      *                                                                          RecordTypeName 
 	*****************************************************************************************************************************/    
-    	private static Map<String, Map<String, Id>> lMapAllSobjRT = new Map<String, Map<String, Id>>();
+    private static Map<String, Map<String, Id>> lMapAllSobjRT = new Map<String, Map<String, Id>>();
     
-		public static Id getRecordTypeIdbyName(String objType, String recordTypeName) {
-            Map<String, Id> lMapSobjRT = lMapAllSobjRT.get(objType.toLowerCase());
-            if (lMapSobjRT != null && !lMapSobjRT.isEmpty()) { return lMapSobjRT.get(recordTypeName); }
-            
-            Map<String, Schema.RecordTypeInfo> lMapRTInfo = Schema.getGlobalDescribe().get(objType).getDescribe().getRecordTypeInfosByDeveloperName();
-            if (lMapRTInfo == null) { return null; }
-            
-            lMapSobjRT = new Map<String, Id>();
-            for (String iRtDevName: lMapRTInfo.keyset())
-            {
-                lMapSobjRT.put(iRtDevName, lMapRTInfo.get(iRtDevName).getRecordTypeId());
-            }
-            lMapAllSobjRT.put(objType.toLowerCase(), lMapSobjRT);
-            return lMapSobjRT.get(recordTypeName);
-        }        
+    public static Id getRecordTypeIdbyName(String objType, String recordTypeName) {
+        Map<String, Id> lMapSobjRT = lMapAllSobjRT.get(objType.toLowerCase());
+        if (lMapSobjRT != null && !lMapSobjRT.isEmpty()) { return lMapSobjRT.get(recordTypeName); }
+        
+        Map<String, Schema.RecordTypeInfo> lMapRTInfo = Schema.getGlobalDescribe().get(objType).getDescribe().getRecordTypeInfosByDeveloperName();
+        if (lMapRTInfo == null) { return null; }
+        
+        lMapSobjRT = new Map<String, Id>();
+        for (String iRtDevName: lMapRTInfo.keyset())
+        {
+            lMapSobjRT.put(iRtDevName, lMapRTInfo.get(iRtDevName).getRecordTypeId());
+        }
+        lMapAllSobjRT.put(objType.toLowerCase(), lMapSobjRT);
+        return lMapSobjRT.get(recordTypeName);
+    }             
     
     /*****************************************************************************************************************************
+	 * Purpose: Método de auxílio para obtenção do  RecordTypeName através do Id.
+	 * Parameters: String objectName, Id strRecordTypeId
+	 * Returns: RecordTypeName
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION			AUTHOR				DATE				DETAIL 			Description
 	 * 1.0 				Thales Yumiya 	    11/08/2021 			Created 		Retorna o RecordTypeName correspondente ao
      *                                                                          RecordTypeId 
@@ -47,6 +61,13 @@ public class Util {
     }   
             
     /*****************************************************************************************************************************
+	 * Purpose: Método de auxílio para cálculo de tempo decorrido entre dois intervalos.
+	 * Parameters: Time startTime, Time endTime
+	 * Returns: Time
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
 	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Retorna Time com horas, minutos, segundos e
      *                                                                          milisegundos correspondentes ao tempo decorrido
@@ -67,6 +88,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+	 * Purpose: Método de auxílio para cálculo de tempo decorrido entre dois intervalos em segundos.
+	 * Parameters: Time startTime, Time endTime
+	 * Returns: Integer
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
 	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Chama Utils.GetElapsedTime; retorna tempo
      *                                                                          decorrido entre startTime e endTime em
@@ -76,8 +104,28 @@ public class Util {
         return GetElapsedTime(startTime, endTime).second();
     }
     
-
     /*****************************************************************************************************************************
+	 * Purpose: Atualização de associação de contas a territórios
+	 * Parameters: String, Account
+	 * Returns: Account
+	 * Throws -
+	 * 
+	 * History
+	 * --------
+	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
+	 * 1.0 			Thales Yumiya 	                11/08/2021 		Created 	Adiciona o território territoryName de
+     *                                                                          Account__r.Territorios__c e retorna a
+     *                                                                          conta.
+	*****************************************************************************************************************************/    
+    
+    /*****************************************************************************************************************************
+	 * Purpose: Obtem valores de picklist por apIObjeto e apiCampo
+	 * Parameters: String ObjectApi_name, String Field_name
+	 * Returns: List<String>
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
 	 * 1.0 			Thales Yumiya					11/08/2021 		Created 	getPicklistValues - Obter valores de picklist
 	*****************************************************************************************************************************/
@@ -103,6 +151,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+	 * Purpose: Gerar string randomica. 
+	 * Parameters: strLength (Integer)
+	 * Returns: string
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION 		AUTHOR 							DATE 			DETAIL 		Description
 	 * 1.0 			Thales Yumiya					11/08/2021 		Created 	Method generateRandomString
 	*****************************************************************************************************************************/
@@ -117,6 +172,14 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+     * Purpose: Obter os campos do field set
+     * Parameters: SObject varSObject
+     *             String varSObjectField
+     * Returns: Object
+     * Throws -
+     * 
+     * History
+     * --------
      * VERSION      AUTHOR          DATE            DETAIL      Description
      * 1.0          Thales Yumiya   11/08/2021      Created     Obtém o valor do campo do objeto
      *****************************************************************************************************************************/
@@ -146,6 +209,14 @@ public class Util {
     
         
     /*****************************************************************************************************************************
+     * Purpose: Obter todos os campos do objeto informado
+     * Parameters: String varSObjectName
+     *             Id varSObjectId
+     * Returns: String
+     * Throws -
+     * 
+     * History
+     * --------
      * VERSION      AUTHOR          DATE            DETAIL      Description
      * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
      *****************************************************************************************************************************/
@@ -176,6 +247,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+     * Purpose: Obter todos os campos do objeto informado pelo nome
+     * Parameters: String varSObjectName
+     * Returns: String
+     * Throws -
+     * 
+     * History
+     * --------
      * VERSION      AUTHOR          DATE            DETAIL      Description
      * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
      *****************************************************************************************************************************/
@@ -185,6 +263,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+     * Purpose: Obter todos os campos do objeto informado pelo ID
+     * Parameters: Id varSObjectId
+     * Returns: String
+     * Throws -
+     * 
+     * History
+     * --------
      * VERSION      AUTHOR          DATE            DETAIL      Description
      * 1.0          Thales Yumiya   11/08/2021      Created     Obtém todos os campos do objeto informado
      *****************************************************************************************************************************/
@@ -194,6 +279,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+	 * Purpose: Método de auxílio para a obtenção de todos os RecordTypeId através de um objeto específico.
+	 * Parameters: String objectName, String strRecordTypeName
+	 * Returns:  Map<Id, Schema.RecordTypeInfo>
+	 * Throws -
+	 * 
+	 * History
+	 * --------
 	 * VERSION			AUTHOR				DATE				DETAIL 			Description
 	 * 1.0 				Thales Yumiya    	11/08/2021 			Created 		Retorna do Map com os RecordTypeIds do Objeto
 	*****************************************************************************************************************************/    
@@ -204,6 +296,15 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
+     * Purpose: Atualizar o campo do objeto com o valor informado
+     * Parameters: SObject varSObject
+     *             String varFieldName
+     *             Object varFieldValue
+     * Returns: void
+     * Throws -
+     * 
+     * History
+     * --------
      * VERSION      AUTHOR          DATE            DETAIL      Description
      * 1.0          Thales Yumiya   11/08/2021      Created     Atualiza o campo do objeto com o valor informado
      *****************************************************************************************************************************/
@@ -227,33 +328,13 @@ public class Util {
     }
     
     /*****************************************************************************************************************************
-     * VERSION      AUTHOR          DATE            DETAIL      Description
-     * 1.0          Thales Yumiya   11/08/2021      Created     Busca o mapeamento de campos do custom metadata type
-     *****************************************************************************************************************************/
-    // public static void syncSObjectFields(SObject varSObjectOrigin, SObject varSObjectDestination)
-    // {
-    //     String varSObjectOriginApiName = varSObjectOrigin.getSObjectType().getDescribe().Name;
-    //     String varSObjectDestinationApiName = varSObjectDestination.getSObjectType().getDescribe().Name;
-        
-    //     for(Custom_Field_Sync_Map__mdt varCustomFieldSyncMap : [SELECT CampoOrigem__r.QualifiedApiName, CampoDestino__r.QualifiedApiName 
-    //                                                             FROM Custom_Field_Sync_Map__mdt 
-    //                                                             WHERE ObjetoOrigem__r.QualifiedApiName = :varSObjectOriginApiName 
-    //                                                               AND ObjetoDestino__r.QualifiedApiName = :varSObjectDestinationApiName])
-    //     {
-            
-    //         Schema.SObjectType obj = Schema.getGlobalDescribe().get(varSObjectDestinationApiName);
-    //         Schema.DescribeSObjectResult resObj = obj.getDescribe();
-    //         Schema.DescribeFieldResult field = resObj.fields.getMap().get(varCustomFieldSyncMap.CampoDestino__r.QualifiedApiName).getDescribe();
-            
-    //         if (field.getType() == Schema.DisplayType.Boolean && varSObjectOrigin.get(varCustomFieldSyncMap.CampoOrigem__r.QualifiedApiName) == null) {
-    //             varSObjectDestination.put(varCustomFieldSyncMap.CampoDestino__r.QualifiedApiName, false);    
-    //         } else {
-    //         	varSObjectDestination.put(varCustomFieldSyncMap.CampoDestino__r.QualifiedApiName, varSObjectOrigin.get(varCustomFieldSyncMap.CampoOrigem__r.QualifiedApiName));    
-    //         }
-    //     }
-    // }
-    
-    /*****************************************************************************************************************************
+    * Purpose: 
+    * Parameters: Datetime
+    * Returns: void
+    * Throws -
+    * 
+    * History
+    * --------
     * VERSION      AUTHOR                            DATE            DETAIL      Description
     * 1.0          Thales Yumiya                     13/11/2021      Created     Retorna Datetime em String conforme a 
     *                                                                            ISO 8601; recupera fuso horário de acordo
@@ -346,130 +427,6 @@ public class Util {
         }
         TriggerHandler.clearBypass('AccountTriggerHandler');
     }
-
-    /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description atualizar campo isExternallySynced de Oportunidade
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Nathalia Rosa           17/12/2021                  Atualizar o campo isExternallySynched em Opportunity para os objetos
-                                                                      relacionados
-    **********************************************************************************************************************************/
-    public static void updateIsExternallySyncedOpportunity(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
-    {
-        Set<Id> setOpportunityIds = new Set<Id>();
-        List<Opportunity> listOpportunityToUpdate = new List<Opportunity>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Opportunity, SObject> mapOpportunitySObject = new Map<Opportunity, SObject>();  
-
-        for(SObject newSObject : lstNewRecord)
-        {   
-            setOpportunityIds.add((Id) newSObject.get('Opportunity__c'));
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Opportunity> mapOpportunity = new Map<Id, Opportunity>([SELECT Id, IsExternallySynched__c FROM Opportunity WHERE Id IN: setOpportunityIds]); 
-        
-        for(SObject newSObject : lstNewRecord)
-        {
-            SObject oldSObject = mapOldRecord.get(newSObject.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newSObject.get(trackedField) != oldSObject.get(trackedField))
-                {     
-                    mapOpportunitySObject.put(mapOpportunity.get((Id) oldSObject.get('Opportunity__c')), oldSObject);
-                }
-            }
-        }
-
-        if(!mapOpportunitySObject.isEmpty())
-        {
-            for(Opportunity varOpportunity : mapOpportunitySObject.keySet())
-            {
-                varOpportunity.IsExternallySynched__c = false;
-                listOpportunityToUpdate.add(varOpportunity);
-            }
-        }
-
-        TriggerHandler.bypass('OpportunityTriggerHandler');
-        if(!listOpportunityToUpdate.isEmpty())
-        {
-            update listOpportunityToUpdate;
-        }
-        TriggerHandler.clearBypass('OpportunityTriggerHandler');
-    }
-    
-    /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description Atualizar o campo isExternallySynched em Opportunity para o objeto Quote
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Nathalia Rosa           17/12/2021                  Atualizar o campo isExternallySynched em Opportunity para o objeto Quote
-    **********************************************************************************************************************************/
-    public static void updateIsExternallySyncedQuoteOpportunity(String varSObjectApiName, List<SObject> lstNewRecord, Map<Id, SObject> mapOldRecord)
-    {
-        Set<Id> setOpportunityIds = new Set<Id>();
-        List<Opportunity> listOpportunityQuoteToUpdate = new List<Opportunity>();
-        Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
-        Map<Opportunity, SObject> mapOpportunitySObject = new Map<Opportunity, SObject>();  
-
-        for(SObject newSObject : lstNewRecord)
-        {   
-            setOpportunityIds.add((Id) newSObject.get('OpportunityId'));
-        }
-
-        for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
-                                                                    FROM Custom_Field_Tracking_Map__mdt
-                                                                    WHERE ObjetoRastreado__r.QualifiedApiName =: varSObjectApiName])
-        {
-            mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
-        }
-
-        Map<Id, Opportunity> mapOpportunity = new Map<Id, Opportunity>([SELECT Id, IsExternallySynched__c FROM Opportunity WHERE Id IN: setOpportunityIds]); 
-        
-        for(SObject newSObject : lstNewRecord)
-        {
-            SObject oldSObject = mapOldRecord.get(newSObject.Id);
-            
-            for(String trackedField : mapTrackedFields.keySet())
-            {
-                if(newSObject.get(trackedField) != oldSObject.get(trackedField))
-                {     
-                    mapOpportunitySObject.put(mapOpportunity.get((Id) oldSObject.get('OpportunityId')), oldSObject);
-                }
-            }
-        }
-
-        if(!mapOpportunitySObject.isEmpty())
-        {
-            for(Opportunity varOpportunity : mapOpportunitySObject.keySet())
-            {
-                varOpportunity.IsExternallySynched__c = false;
-                listOpportunityQuoteToUpdate.add(varOpportunity);
-            }
-        }
-
-        TriggerHandler.bypass('OpportunityTriggerHandler');
-        if(!listOpportunityQuoteToUpdate.isEmpty())
-        {
-            update listOpportunityQuoteToUpdate;
-        }
-        TriggerHandler.clearBypass('OpportunityTriggerHandler');
-    }
-    
-    
-    
 
     /**********************************************************************************************************************************
     * VERSION     AUTHOR                  DATE            DETAIL      Description
@@ -641,12 +598,4 @@ public class Util {
         }
     }
 
-    /*****************************************************************************************************************************
-	 * VERSION			AUTHOR				DATE				DETAIL 			Description
-	 * 1.0 				Thales Yumiya 	    23/12/2021 			Created 		Retorna o nome do sObject a partir do record id                                                                        
-	*****************************************************************************************************************************/    
-    public static String getSObjectNameById(Id recordId)
-    {
-        return recordId.getSObjectType().getDescribe().getName();
-    }   
 }

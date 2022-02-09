@@ -61,7 +61,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterInsert() 
     {
-        this.verifyDocumentDuplicates();
+        //this.verifyDocumentDuplicates();
     }
     
     /**********************************************************************************************************************************
@@ -92,7 +92,7 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     public override void afterUpdate() 
     {
-        this.verifyDocumentDuplicates();
+        //this.verifyDocumentDuplicates();
     }
 
     /**********************************************************************************************************************************
@@ -237,16 +237,16 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
     * VERSION     AUTHOR                  DATE            DETAIL      Description
     * 1.0         Gabriel Vidal          06/10/21
     **********************************************************************************************************************************/
-    public void verifyDocumentDuplicates()
+    /*public void verifyDocumentDuplicates()
     {
         Set<String> documentKeysNew = new Set<String>();
         Set<String> existingDocumentKeys = new Set<String>();
 
         for(Account varAccount : lstNewAccount)
         {
-            if (documentKeysNew.contains(varAccount.DocumentKey__c) && varAccount.DocumentNumber__c != null)
+            if (documentKeysNew.contains(varAccount.DocumentKey__c) && varAccount.DocumentNumber__c != null && varAccount.DocumentType__c != null)
             {
-                varAccount.DocumentNumber__c.addError('Já existe uma conta com este número de documento.');
+                varAccount.DocumentNumber__c.addError('Já existe uma conta com este número de documento: ' + varAccount.DocumentNumber__c );
             } else
             {
                 documentKeysNew.add(varAccount.DocumentKey__c);
@@ -266,5 +266,5 @@ public without sharing class AccountTriggerHandler extends TriggerHandler
                 varAccount.DocumentNumber__c.addError('Já existe uma conta com este número de documento.');
             }
         }
-    }
+    }*/
 }

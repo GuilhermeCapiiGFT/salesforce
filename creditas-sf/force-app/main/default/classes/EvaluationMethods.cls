@@ -98,13 +98,15 @@ public with sharing class EvaluationMethods {
           PendencyReturn__c,
           CreatedDate,
           ExternalCreationDate__c,
+          StageName,
+          StatusDeFormalizacao__c,
           OwnerId
         FROM Opportunity
         WHERE
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND (PendencyReturn__c = TRUE
           OR ProductType__c IN :setProductType)
-          AND StageName <> 'Perdido'
+          AND StatusDeFormalizacao__c IN ('Nova Proposta', 'Aguardando Análise', 'Em Análise')
       ];
     } else {
       return [
@@ -117,11 +119,14 @@ public with sharing class EvaluationMethods {
           PendencyReturn__c,
           CreatedDate,
           ExternalCreationDate__c,
+          StageName,
+          StatusDeFormalizacao__c,
           OwnerId
         FROM Opportunity
-        WHERE RecordTypeId = :opportunityAtWorkRecordTypeId 
-        AND ProductType__c IN :setProductType
-        AND StageName <> 'Perdido'
+        WHERE
+          RecordTypeId = :opportunityAtWorkRecordTypeId
+          AND ProductType__c IN :setProductType
+          AND StatusDeFormalizacao__c IN ('Nova Proposta', 'Aguardando Análise', 'Em Análise')
       ];
     }
   }
@@ -152,9 +157,12 @@ public with sharing class EvaluationMethods {
       SELECT
         DateFilter__c,
         (SELECT ProductType__c, Points__c FROM CustomQueue__r),
-        (SELECT ProductType__c, User__c, User__r.UserAvailable__c FROM ProductAssignedUsers__r)
+        (
+          SELECT ProductType__c, User__c, User__r.UserAvailable__c, User__r.LastAttendance__c
+          FROM ProductAssignedUsers__r ORDER BY User__r.LastAttendance__c ASC
+        )
       FROM CustomSetup__c
-      WHERE Name = 'Parametrização de Filas e Usuários'
+      LIMIT 1
     ];
   }
 }

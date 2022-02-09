@@ -11,16 +11,21 @@
  **********************************************************************************************************************/
 @isTest
 private class EvaluationMethodsTest {
+
+  // Utility variables for tests
   static Id accountId;
   static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
   static DateTime secondDttm = firstDttm.addSeconds(1);
 
+  // Utility method for tests: make opportunity list
   static List<Opportunity> makeOpportunityList(Integer numOpps, Id accountId, String productType) {
     List<Opportunity> lstOpp = new List<Opportunity>();
 
     for (Integer i = 1; i <= numOpps; i++) {
       Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
       opp.Name = 'Opportunity Test ' + i;
+      opp.StageName = 'Assinatura';
+      opp.StatusDeFormalizacao__c = 'Nova Proposta';
       opp.ProductType__c = productType;
       lstOpp.add(opp);
     }
@@ -28,6 +33,7 @@ private class EvaluationMethodsTest {
     return lstOpp;
   }
 
+  // Utility method for tests: make @work custom setup object
   static CustomSetup__c makeCustomSetup(String name, String dateFilter) {
     CustomSetup__c cSetup = new CustomSetup__c();
     cSetup.Name = name;
@@ -35,6 +41,7 @@ private class EvaluationMethodsTest {
     return cSetup;
   }
 
+  // Utility method for tests: make @work custom queue object
   static CustomQueue__c makeCustomQueue(Id cSetupId, String name, String productType, Double points) {
     CustomQueue__c cQueue = new CustomQueue__c();
     cQueue.Name = name;
@@ -47,10 +54,14 @@ private class EvaluationMethodsTest {
 
   @TestSetup
   static void runSetup() {
+    // @work custom setup
     CustomSetup__c cSetup = makeCustomSetup('Parametrização de Filas e Usuários', 'Data de Solicitação');
 
     insert cSetup;
 
+    // @work custom queues with priority points
+    // A custom queue is actually a product type, a property from each @work opportunity.
+    // Custom queue have diferent priorities, determined by a system of points.
     List<CustomQueue__c> lstCustomQueue = new List<CustomQueue__c>();
     lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Quitação', 'DISCHARGE', 10));
     lstCustomQueue.add(makeCustomQueue(cSetup.Id, 'Refinanciamento', 'REFINANCING', 20));

@@ -11,27 +11,28 @@
                                         placeholder="Buscar por ID" 
                                         value={selectedOption}
                                         onchange={getLeads}
+                                        class="placeholder"
                                         > 
                         </lightning-input>
                         <div if:true={showIconSearch}>
                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
                                 <lightning-icon 
-                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                            icon-name="utility:search" 
-                                            size="x-small" 
-                                            style="margin-top: 9px;"
-                                            alternative-text="icon" >
+                                        class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                        icon-name="utility:search" 
+                                        size="x-small" 
+                                        style="margin-top: 9px;"
+                                        alternative-text="icon" >
                                 </lightning-icon>
                             </span>
                         </div>
                         <div if:true={showIconClean}>
                             <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon iconheight" onclick={removeSelectedOption}>
                                 <lightning-icon 
-                                            class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                            icon-name="utility:clear" 
-                                            size="x-small"
-                                            alternative-text="icon" 
-                                            style="margin-top: 28px;" >
+                                        class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                        icon-name="utility:clear" 
+                                        size="x-small"
+                                        alternative-text="icon" 
+                                        style="margin-top: 28px;" >
                                 </lightning-icon>
                                 <span class="slds-assistive-text">Clean</span>
                             </button>
@@ -55,7 +56,7 @@
                                             >
                                         </lightning-icon>
                                         <h3 class="slds-truncate"  title={name} > {name} </h3>
-                                        <h3 style="margin-left: 33px; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
+                                        <h3 style="margin-right: 75px; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
                                     </span>                 
                                 </div>        
                             </li>
