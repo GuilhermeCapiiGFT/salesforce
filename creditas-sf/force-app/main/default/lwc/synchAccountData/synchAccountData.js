@@ -37,7 +37,7 @@ export default class SynchAccountData extends LightningElement {
         getAccountData({accountId: this.recordId}) 
             .then(result => { 
                 this.account = result;
-                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c){
+                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c || result.IsSynchEnabled__c == 'ENABLED'){
                     this.showComponent = true;
                     this.showSynchButton = true;
                 } else if (result.IsSynchEnabled__c == 'SYNCHING'){
