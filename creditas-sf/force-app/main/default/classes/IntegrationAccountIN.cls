@@ -6,10 +6,10 @@
 * History
 * -------
 * VERSION   AUTHORS                  DATE           DETAIL     Description
-* 1.0       Gabriel Vidal        20/09/2021         Created     Implementação das requisições REST do web service de Account
-            Nathália Rosa 
-            Gabriel Vidal        25/01/2022         Updated     Refatoração da classe para atender às boas práticas 
-                                                                e ajustes de mensagens de erro         
+* 1.0       Gabriel Vidal,        20/09/2021         Created     Implementação das requisições REST do web service de Account
+            Nathália Rosa
+            Gabriel Vidal         25/01/2022         Updated     Refatoração da classe para atender às boas práticas 
+                                                                e ajustes de mensagens de erro  
 **********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAccountIN/*')
 global without sharing class IntegrationAccountIN { 
@@ -146,6 +146,8 @@ global without sharing class IntegrationAccountIN {
         }
 
         accountToUpsert.Id = requestBodyObj.salesforceId;
+        accountToUpsert.IsExternallySynched__c = true;
+        accountToUpsert.IsSynchEnabled__c = 'ENABLED';
         Map<String, String> accountReturnMap = new Map<String, String>();
         try {
             upsert accountToUpsert;            
@@ -344,13 +346,10 @@ global without sharing class IntegrationAccountIN {
         }
 
         Set<String> validCurrency = new Set<String>();
-        //String currencyListString = '';
         Schema.DescribeFieldResult currencyCodes = Pricebook2.CurrencyIsoCode.getDescribe();
         for (Schema.PicklistEntry pick : currencyCodes.getPicklistValues()){
             validCurrency.add(pick.getValue());
-            //currencyListString += pick.getValue() + ', ';
         }
-        //currencyListString = currencyListString.removeEnd(', ');
 
         List<FinancialResources__c> incomesToUpsert = new List<FinancialResources__c>();      
         for (AccountIntegrationModel.incomeModel inc : incomeToUpsert){
