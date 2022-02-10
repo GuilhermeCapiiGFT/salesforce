@@ -71,45 +71,6 @@
         </values>
     </picklistValues>
     <picklistValues>
-        <picklist>StatusDeFormalizacao__c</picklist>
-        <values>
-            <fullName>Aguardando Análise</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Aprovado</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Em Análise</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Finalizados com Sucesso</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Nova Proposta</fullName>
-            <default>true</default>
-        </values>
-        <values>
-            <fullName>Pendenciado</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pendências</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Recusados</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Rejeitado</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
         <picklist>Type</picklist>
         <values>
             <fullName>Existing Business</fullName>

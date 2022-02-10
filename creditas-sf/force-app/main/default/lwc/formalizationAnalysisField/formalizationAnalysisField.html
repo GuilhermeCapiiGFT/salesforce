@@ -1,0 +1,52 @@
+<template>
+    
+        <div class="slds-var-m-top_xx-small">
+            <!-- COMPONENT LAYOUT -->
+            <lightning-layout>
+                <!-- INPUT FIELD -->
+                <lightning-layout-item size="6" padding="horizontal-small">
+                    <div class="slds-text-align_center">
+                        <lightning-input type={inputType} required name={inputName} label={inputLabel} disabled={inputDisabled} value={inputValue} date-style={dateStyle}></lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <!-- BUTTON & FIELDS -->
+                <lightning-layout-item size="6" padding="horizontal-small">
+                    <lightning-layout>
+                        <!-- CHECKBOXES -->
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <div class="form-control aprovado">
+                                    <label for="checkboxAprovado" class="slds-var-m-bottom_small">Aprovar</label>
+                                    <input id="checkboxAprovado" name={inputSection} 
+                                           class="isCheckBox" type="checkbox" value="aprovado"
+                                           onchange={handleCheckboxChange} onclick={handleApprove}/>
+                                </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <div class="form-control reprovado">
+                                    <label for="checkboxReprovado" class="slds-var-m-bottom_small">Rejeitar</label>
+                                    <input id="checkboxReprovado" name={inputSection} 
+                                           class="isCheckBox" type="checkbox" value="reprovado"
+                                           onchange={handleCheckboxChange} onclick={handleReject}/>
+                                </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto" padding="horizontal-small">
+                                <div class="form-control pendenciado">
+                                    <label for="checkboxPendenciado" class="slds-var-m-bottom_small">Pendenciar</label>
+                                    <input id="checkboxPendenciado" name={inputSection} 
+                                           class="isCheckBox" type="checkbox" value="pendenciado"
+                                           onchange={handleCheckboxChange} onclick={handlePendency}/>
+                                </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={openModalReason}>
+                <c-modal-reason
+                    onclosemodal={handleCloseModalReason}
+                    type-reason={modalType}
+                    field={modalReasonField}>
+                </c-modal-reason>
+            </template>
+        </div>
+   
+</template>
