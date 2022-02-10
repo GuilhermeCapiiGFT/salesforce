@@ -1,0 +1,61 @@
+:host{
+    --lwc-colorRed: rgb(255, 26, 26);
+    --lwc-colorOrange: rgb(252, 182, 30);
+    --lwc-colorGreen: rgb(48, 180, 87);
+    --lwc-colorlightBlue: rgb(155, 179, 190);
+    --lwc-colorBlack: rgb(0, 0, 0);
+    --lwc-colorCreditas: #49e295;
+    --lwc-colorCreditasDarker: #3fbe7f;
+    --slds-c-button-success-color-background: var(--lwc-colorCreditas);
+    --slds-c-button-success-color-background-active: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-background-hover: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-border: var(--lwc-colorCreditas);
+    --slds-c-button-success-color-border-active: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-color-border-hover: var(--lwc-colorCreditasDarker);
+    --slds-c-button-success-text-color: white;
+    --slds-c-button-success-text-color-active: black;
+    --slds-c-button-success-text-color-hover: black;
+}
+
+.fundo {
+    background-color: aliceblue;
+}
+.progressCSS {
+    display: flex;
+    line-height: 100% !important;
+    vertical-align: middle;
+    position: static !important;
+    z-index: 5;
+    justify-content: center;
+    margin-right: var(--lwc-spacingMedium,1rem);
+}
+.slds-progress__marker{
+    border: 0px;
+}
+
+.slds-progress_vertical .slds-progress__item:before, .slds-progress_vertical .slds-progress__item:after {
+    left: 11px;
+}
+
+.slds-progress_vertical .slds-progress__item_content {
+    margin-top: 0;
+    padding-bottom: 0;
+}
+
+.slds-accordion__section {
+    /*padding-top: var(--slds-c-accordion-section-spacing-block-start, var(--sds-c-accordion-section-spacing-block-start, var(--lwc-spacingSmall,0.75rem)));
+    padding-bottom: var(--slds-c-accordion-section-spacing-block-end, var(--sds-c-accordion-section-spacing-block-end, var(--lwc-spacingSmall,0.75rem)));
+    padding-left: var(--slds-c-accordion-section-spacing-inline-start, var(--sds-c-accordion-section-spacing-inline-start, var(--lwc-spacingSmall,0.75rem)));*/
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    padding-left: 0;
+}
+
+.slds-progress_vertical .slds-progress__item {
+    align-items: flex-start;
+    position: revert;
+}
+
+.buttonBoxShadow:hover{
+    box-shadow: rgb(0 0 0 / 16%) 0px 16px 12px -8px, rgb(0 0 0 / 12%) 0px 16px 8px -12px;
+}

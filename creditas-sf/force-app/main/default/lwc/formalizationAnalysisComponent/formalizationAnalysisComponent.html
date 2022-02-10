@@ -1,0 +1,248 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card>         
+            <!-- SPINNER LOADING -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+            </template>
+            <!-- ACCORDEON START-->
+            <div class="slds-progress slds-progress_vertical slds-var-m-left_medium">
+                <ol class="slds-accordion slds-progress__list">
+                    <!-- FIRST ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p0Progress} variant={p0Variant} class="progressCSS"> </lightning-progress-ring>
+                            <div class="slds-progress__item_content">
+                                <li class="slds-accordion__list-item">
+                                    <section class="slds-accordion__section">
+                                        <div class="slds-accordion__summary">
+                                            <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                            <h2 class="slds-accordion__summary-heading">
+                                                <button class="slds-button" onclick={handleAccordeon}
+                                                    aria-controls="referenceId-75" aria-expanded="true" title="Geral" value="0">                                                    
+                                                    <span class="slds-accordion__summary-content">Geral</span>
+                                                </button>
+                                            </h2>
+                                        </div>
+                                        <!-- ACCORDEON CONTENT -->
+                                        <div class="slds-accordion__content" id="referenceId-75">
+                                            <!-- FIELDS COMPONENT -->
+                                            <template for:each={dataGeneral} for:item="item">
+                                                <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                            </template>
+                                            <!-- SAVE BUTTON -->
+                                            <div class="slds-text-align_center slds-float_right slds-scrollable_none">
+                                                <lightning-button class="buttonBoxShadow" variant="success" label="Salvar" title="Salvar" disabled={p0Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </li>
+                            </div>
+                    </div>
+                    <!-- SECOND ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p1Progress} variant={p1Variant} class="progressCSS"> </lightning-progress-ring>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-76" aria-expanded="false" title="Dados Pessoais" value="1">                                                
+                                                <span class="slds-accordion__summary-content">Dados Pessoais</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <!-- ACCORDEON CONTENT -->
+                                    <div class="slds-accordion__content" id="referenceId-76">
+                                        <!-- FIELD COMPONENT -->
+                                        <template for:each={dataPersonal} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-text-align_center slds-float_right">
+                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p1Disabled} onclick={handleSave}></lightning-button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
+                    </div>
+                    <!-- THIRD ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p2Progress} variant={p2Variant} class="progressCSS"> </lightning-progress-ring>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-77" aria-expanded="false" title="Dados de Contato" value="2">                                                
+                                                <span class="slds-accordion__summary-content">Dados de Contato</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div class="slds-accordion__content" id="referenceId-77">
+                                        <!-- FIELD COMPONENT -->
+                                        <template for:each={dataContact} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-text-align_center slds-float_right">
+                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p2Disabled} onclick={handleSave}></lightning-button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
+                    </div>
+                    <!-- FOURTH ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p3Progress} variant={p3Variant} class="progressCSS"> </lightning-progress-ring>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-78" aria-expanded="false" title="Dados de Endereço" value="3">                                                
+                                                <span class="slds-accordion__summary-content">Dados de Endereço</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div class="slds-accordion__content" id="referenceId-78">
+                                        <!-- FIELD COMPONENT -->
+                                        <template for:each={dataAddress} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-text-align_center slds-float_right">
+                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p3Disabled} onclick={handleSave}></lightning-button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
+                    </div>
+                    <!-- FIFTH ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p4Progress} variant={p4Variant} class="progressCSS"> </lightning-progress-ring>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-79" aria-expanded="false" title="Dados Bancários" value="4">                                                
+                                                <span class="slds-accordion__summary-content">Dados Bancários</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div class="slds-accordion__content" id="referenceId-79">
+                                        <!-- FIELD COMPONENT -->
+                                        <template for:each={dataBank} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-text-align_center slds-float_right">
+                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p4Disabled} onclick={handleSave}></lightning-button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
+                    </div>
+                    <!-- SIXTH ACCORDEON TAB -->
+                    <div class="slds-progress__item">
+                        <!-- PROGRESS RING REPLACES MARKER-->
+                        <lightning-progress-ring value={p5Progress} variant={p5Variant} class="progressCSS"> </lightning-progress-ring>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-80" aria-expanded="false" title="Dados da Empresa" value="5">
+                                                <span class="slds-accordion__summary-content">Dados da Empresa</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div class="slds-accordion__content" id="referenceId-80">
+                                        <!-- FIELD COMPONENT -->
+                                        <template for:each={dataCompany} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-text-align_center slds-float_right">
+                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p5Disabled} onclick={handleSave}></lightning-button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
+                    </div>
+                    <!-- SEVENTH ACCORDEON TAB -->
+                    <!--
+                        <div class="slds-progress__item">
+                           < *******PROGRESS RING REPLACES MARKER
+                            <lightning-progress-ring value={p6Progress} variant={p6Variant} class="progressCSS"> </lightning-progress-ring>
+                            <div class="slds-progress__item_content">
+                                <li class="slds-accordion__list-item">
+                                    <section class="slds-accordion__section">
+                                        <div class="slds-accordion__summary">
+                                           <******CLICKABLE HEADER WITH FUNCTIONS 
+                                            <h2 class="slds-accordion__summary-heading">
+                                                <button class="slds-button" onclick={handleAccordeon}
+                                                    aria-controls="referenceId-81" aria-expanded="false" title="Links Rápidos" value="6">                                                
+                                                    <span class="slds-accordion__summary-content">Links Rápidos</span>
+                                                </button>
+                                            </h2>
+                                        </div>
+                                        <div class="slds-accordion__content" id="referenceId-81">
+                                            <*****ACCORDEON CONTENT HERE 
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://www.brscan.com.br/brflow.html" label="BRFlow" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://api.clearsale.com.br/docs/data-trust#authentication-section" label="Data Trust" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://app.emailage.com/login" label="Emailege" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://www.allcheck.info/" label="All Check" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://vtex.com/" label="VTEX" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                            <div class="slds-box">
+                                                <lightning-formatted-url value="https://www.oititec.com.br/" label="OITI" target="_blank"></lightning-formatted-url>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </li>
+                            </div>
+                        </div>
+                    -->
+                </ol>
+            </div>
+        
+        <footer class="slds-modal__footer slds-m-top_small">
+            <div class="slds-align_absolute-center">
+                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="success" label="Aprovar" title="Aprovar" disabled={approveDisabled}></lightning-button>
+                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="destructive" label ="Reprovar" title="Reprovar" disabled={rejectDisabled}></lightning-button>
+                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="neutral" label="Pendenciar" title="Pendenciar" disabled={pendencyDisabled}></lightning-button>
+                <lightning-button class="slds-float_right buttonBoxShadow" variant="neutral" label="Comitê" title="Comitê" disabled={approveDisabled}></lightning-button>
+            </div>  
+        </footer>
+    </lightning-card>
+</template>
