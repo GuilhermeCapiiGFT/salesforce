@@ -5,7 +5,6 @@
     <externalId>false</externalId>
     <label>CustomSetupUser</label>
     <referenceTo>CustomSetup__c</referenceTo>
-    <relationshipLabel>ProductAssignedUsers</relationshipLabel>
     <relationshipName>ProductAssignedUsers</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
