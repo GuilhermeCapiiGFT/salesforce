@@ -6,8 +6,10 @@
 * History
 * -------
 * VERSION   AUTHORS                  DATE           DETAIL     Description
-* 1.0       Gabriel Vidal        20/09/2021         Created     Implementação das requisições REST do web service de Account
-            Nathália Rosa          
+* 1.0       Gabriel Vidal,        20/09/2021         Created     Implementação das requisições REST do web service de Account
+            Nathália Rosa
+            Gabriel Vidal         25/01/2022         Updated     Refatoração da classe para atender às boas práticas 
+                                                                e ajustes de mensagens de erro  
 **********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAccountIN/*')
 global without sharing class IntegrationAccountIN { 
