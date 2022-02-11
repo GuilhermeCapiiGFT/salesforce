@@ -19,20 +19,7 @@ export default class SynchAccountData extends LightningElement {
 
     connectedCallback(){
         let myComponent = this;
-
         this.subscribeSynchAccountEvent(myComponent)
-        // var messageCallback = function(response) {
-        //     console.log('evento recxebido');
-        //     updateScreen();
-        // };
-
-        // subscribe(this.channelName, -1, messageCallback)       
-        // .then(response => {
-        //     console.log('Subscription request sent to: ', JSON.stringify(response.channel));
-        //     this.subscription = response;
-        // });
-            
-            
 
         getAccountData({accountId: this.recordId}) 
             .then(result => { 
@@ -64,14 +51,12 @@ export default class SynchAccountData extends LightningElement {
     
     subscribeSynchAccountEvent(myComponent){
         const messageCallback = function(response) {
-            console.log('evento recebido');
             myComponent.showSynchingScreen = false;
             myComponent.showEventReceived = true;
         };
 
         subscribe(myComponent.channelName, -1, messageCallback)       
         .then(response => {
-            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
             myComponent.subscription = response;
         });
     }
