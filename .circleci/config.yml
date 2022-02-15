@@ -263,6 +263,10 @@ workflows:
       - SFCheckPartial:
           requires:
               - SFDXTryInstall
+          filters:
+            branches:
+                only:
+                    - test
       - PartialApproval:
           type: approval
           requires: 
@@ -282,6 +286,10 @@ workflows:
       - SFCheckProd:
           requires:
               - SFDXTryInstall
+          filters:
+            branches:
+                only:
+                    - test
       - ProdApproval:
           type: approval
           requires: 
