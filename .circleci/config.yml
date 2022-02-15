@@ -240,9 +240,9 @@ workflows:
     jobs:
       - SFDXTryInstall
       - SFCheckTest:
-        requires: 
-            - SFDXTryInstall
-        filters:
+          requires:
+              - SFDXTryInstall
+          filters:
             branches:
                 only:
                     - develop
@@ -264,9 +264,9 @@ workflows:
                 only:
                     - test
       - SFCheckPartial:
-        requires: 
-            - SFDXTryInstall
-        filters:
+          requires:
+              - SFDXTryInstall
+          filters:
             branches:
                 only:
                     - partial
@@ -287,9 +287,9 @@ workflows:
                 only:
                     - partial
       - SFCheckProd:
-        requires: 
-            - SFDXTryInstall
-        filters:
+          requires:
+              - SFDXTryInstall
+          filters:
             branches:
                 only:
                     - main
