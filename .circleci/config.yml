@@ -157,7 +157,14 @@ version: 2.1
 orbs:
   sfdx: circleci/salesforce-sfdx@2.2.0
 jobs:
-  SFAuthTest:
+  SFDXTryInstall:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - run:
+          command: . build/choose_branch.sh
+  SFCheckTest:
     executor: sfdx/default
     steps:
       - checkout
@@ -168,13 +175,134 @@ jobs:
           defaultusername: circleci@creditas.com.test
           instanceUrl: https://test.salesforce.com
       - run:
+          command: . build/check_code_test.sh
+  SFDeployTest:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com.test
+          instanceUrl: https://test.salesforce.com
+      - run:
+          command: . build/deploy_code_test.sh
+  SFCheckPartial:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: PARTIAL_CONSUMER_KEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com.partial
+          instanceUrl: https://test.salesforce.com
+      - run:
+          command: . build/check_code_partial.sh
+  SFDeployPartial:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: PARTIAL_CONSUMER_KEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com.partial
+          instanceUrl: https://test.salesforce.com
+      - run:
+          command: . build/deploy_code_partial.sh
+  SFCheckProd:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: PROD_CONSUMERKEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com
+          instanceUrl: https://login.salesforce.com
+      - run:
+          command: . build/check_code.sh
+  SFDeployProd:
+    executor: sfdx/default
+    steps:
+      - checkout
+      - sfdx/install
+      - sfdx/auth:
+          consumerKey: PROD_CONSUMERKEY
+          jwtKey: SFDX_JWT_KEY
+          defaultusername: circleci@creditas.com
+          instanceUrl: https://login.salesforce.com
+      - run:
           command: . build/deploy_code.sh
 workflows:
   version: 2
-  deploytosandbox:
+  test_and_deploy:
     jobs:
-      - SFAuthTest:
-        filters:
+      - SFDXTryInstall
+      - SFCheckTest:
+          requires:
+              - SFDXTryInstall
+      - TestApproval:
+          type: approval
+          requires: 
+              - SFCheckTest
+          filters:
             branches:
                 only:
                     - test
+      - SFDeployTest:
+          requires:
+              - SFCheckTest
+              - TestApproval
+          filters:
+            branches:
+                only:
+                    - test
+      - SFCheckPartial:
+          requires:
+              - SFDXTryInstall
+          filters:
+            branches:
+                only:
+                    - test
+      - PartialApproval:
+          type: approval
+          requires: 
+              - SFCheckPartial
+          filters:
+            branches:
+                only:
+                    - partial
+      - SFDeployProd:
+          requires:
+              - SFCheckPartial
+              - PartialApproval
+          filters:
+            branches:
+                only:
+                    - partial
+      - SFCheckProd:
+          requires:
+              - SFDXTryInstall
+          filters:
+            branches:
+                only:
+                    - test
+      - ProdApproval:
+          type: approval
+          requires: 
+              - SFCheckProd
+          filters:
+            branches:
+                only:
+                    - main
+      - SFDeployProd:
+          requires:
+              - SFCheckProd
+              - ProdApproval
+          filters:
+            branches:
+                only:
+                    - main
