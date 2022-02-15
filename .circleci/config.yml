@@ -162,6 +162,9 @@ jobs:
     steps:
       - checkout
       - sfdx/install
+      - run: # print the name of the branch we're on
+          name: "What branch am I on?"
+          command: echo ${CIRCLE_BRANCH}
   SFCheckTest:
     executor: sfdx/default
     steps:
