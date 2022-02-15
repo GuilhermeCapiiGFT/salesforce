@@ -157,7 +157,7 @@ version: 2.1
 orbs:
   sfdx: circleci/salesforce-sfdx@2.2.0
 jobs:
-  SFDXInstall:
+  SFDXTryInstall:
     executor: sfdx/default
     steps:
       - checkout
@@ -165,6 +165,8 @@ jobs:
   SFCheckTest:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: TEST_CONSUMER_KEY
           jwtKey: SFDX_JWT_KEY
@@ -175,6 +177,8 @@ jobs:
   SFDeployTest:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: TEST_CONSUMER_KEY
           jwtKey: SFDX_JWT_KEY
@@ -185,6 +189,8 @@ jobs:
   SFCheckPartial:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: PARTIAL_CONSUMER_KEY
           jwtKey: SFDX_JWT_KEY
@@ -195,6 +201,8 @@ jobs:
   SFDeployPartial:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: PARTIAL_CONSUMER_KEY
           jwtKey: SFDX_JWT_KEY
@@ -205,6 +213,8 @@ jobs:
   SFCheckProd:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: PROD_CONSUMERKEY
           jwtKey: SFDX_JWT_KEY
@@ -215,6 +225,8 @@ jobs:
   SFDeployProd:
     executor: sfdx/default
     steps:
+      - checkout
+      - sfdx/install
       - sfdx/auth:
           consumerKey: PROD_CONSUMERKEY
           jwtKey: SFDX_JWT_KEY
@@ -226,8 +238,10 @@ workflows:
   version: 2
   test_and_deploy:
     jobs:
-      - SFDXInstall
+      - SFDXTryInstall
       - SFCheckTest:
+        requires: 
+            - SFDXTryInstall
         filters:
             branches:
                 only:
@@ -250,6 +264,8 @@ workflows:
                 only:
                     - test
       - SFCheckPartial:
+        requires: 
+            - SFDXTryInstall
         filters:
             branches:
                 only:
@@ -271,6 +287,8 @@ workflows:
                 only:
                     - partial
       - SFCheckProd:
+        requires: 
+            - SFDXTryInstall
         filters:
             branches:
                 only:
