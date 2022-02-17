@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-	<types>
-		<members>CustomSetup__c.DateFilter__c</members>
-		<name>CustomField</name>
-	</types>
-	<types>
-		<members>CustomSetup__c</members>
-		<members>ProductAssignedUser__c</members>
-		<name>CustomObject</name>
-	</types>
-	<types>
-		<members>CustomSetup__c.AtWork</members>
-		<name>RecordType</name>
-	</types>
+    <types>
+        <members>Employee__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Account-[AtWork] Pessoa Fisica</members>
+        <members>Account-[AtWork] Pessoa Juridica</members>
+        <name>Layout</name>
+    </types>
 	<version>53.0</version>
 </Package>
