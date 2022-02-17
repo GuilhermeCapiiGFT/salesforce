@@ -1,23 +1,27 @@
 /***********************************************************************************************************************
  * Copyright © 2021 Creditas
  * =======================================================================================================================
- * @description Trigger on CustomQueue__c
+ * @description Utility methods for Strings
  * 
  =======================================================================================================================
  * History
  * -------
  * VERSION   AUTHOR                  DATE            DETAIL      Description
- * 1.0       Guilherme Sampaio                       Created     Trigger creation
- * 1.1       Matheus Fernandes       16/02/2021      Changed     Now calling CustomQueueTriggerController
+ * 1.0       Matheus Fernandes       16/02/2021      Created     Class creation
  **********************************************************************************************************************/
-trigger CustomQueueTrigger on CustomQueue__c(
-  before insert,
-  after insert,
-  before update,
-  after update,
-  before delete,
-  after delete
-) {
-  new CustomQueueTriggerController().run();
+public with sharing class StringUtils {
+  public static String singleQuoteThis(String value) {
+    String singleQuote = '\'';
+    return singleQuote + value + singleQuote;
+  }
 
+  public static String getSingleQuotedSeparatedValues(List<String> values, String separator) {
+    String singleQuotedSeparatedValues = '';
+
+    for (String value : values) {
+      singleQuotedSeparatedValues += singleQuoteThis(value) + separator;
+    }
+
+    return singleQuotedSeparatedValues.removeEnd(separator);
+  }
 }
