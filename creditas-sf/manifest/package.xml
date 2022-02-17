@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <types>
-        <members>Employee__c</members>
-        <name>CustomObject</name>
-    </types>
-    <types>
-        <members>Account-[AtWork] Pessoa Fisica</members>
-        <members>Account-[AtWork] Pessoa Juridica</members>
-        <name>Layout</name>
-    </types>
+	<types>
+		<members>OpportunityRole__c.AccountOwner__c</members>
+		<name>CustomField</name>
+	</types>
+	<types>
+		<members>Employee__c</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>Account-%5BAtWork%5D Pessoa Fisica</members>
+		<members>Account-%5BAtWork%5D Pessoa Juridica</members>
+		<name>Layout</name>
+	</types>
+	<types>
+		<members>Account.Pessoa_Fisica</members>
+		<members>Account.Pessoa_Juridica</members>
+		<name>RecordType</name>
+	</types>
 	<version>53.0</version>
 </Package>
