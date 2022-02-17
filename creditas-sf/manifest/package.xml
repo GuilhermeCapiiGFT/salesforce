@@ -1,75 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Package xmlns="http://soap.sforce.com/2006/04/metadata">   
-    <!-- Somente realizar o retrieve pelo manifesto deste tipo de objetos do ambiente de test
-         para classes de desenvolvimento, realizar o retrieve manual de cada objeto para
-         não poluir os metadados com classes sem teste completo e aprovado
-    <types>
-        <members>*</members>
-        <name>ApexClass</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexPage</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>AuraDefinitionBundle</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>LightningComponentBundle</name>
-    </types>
-    -->
-
-    <!-- Para o retrieve dos perfis, os objetos que precisam de permissionamento também precisar ter 
-        o retrieve na mesma chamada de retrieve para que os permissionantes sejam baixados para os
-        metadados, ex: Baixar Profile e CustomObject para baixar os permissionamentos de Accounts
-    -->
-    <types>
-        <members>*</members>
-        <name>Profile</name>
-    </types>
-    <!--
-    <types>
-        <members>*</members>
-        <name>StaticResource</name>
-    </types>
-    <types>
-        <members>Sharing</members>
-        <name>Settings</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>CustomObject</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>Layout</name>
-    </types>   
-    <types>
-        <members>*</members>
-        <name>FlexiPage</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>Queue</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>CustomTab</name>
-    </types>
-    -->
-    <version>53.0</version>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	<types>
+		<members>CustomSetup__c.DateFilter__c</members>
+		<name>CustomField</name>
+	</types>
+	<types>
+		<members>CustomSetup__c</members>
+		<members>ProductAssignedUser__c</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>CustomSetup__c.AtWork</members>
+		<name>RecordType</name>
+	</types>
+	<version>53.0</version>
 </Package>
