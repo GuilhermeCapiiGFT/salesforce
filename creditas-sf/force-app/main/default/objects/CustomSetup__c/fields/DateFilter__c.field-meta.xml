@@ -12,12 +12,12 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Data de Criação</fullName>
+                <fullName>CreatedDate</fullName>
                 <default>true</default>
                 <label>Data de Criação</label>
             </value>
             <value>
-                <fullName>Data de Solicitação</fullName>
+                <fullName>RequestDate</fullName>
                 <default>false</default>
                 <label>Data de Solicitação</label>
             </value>
