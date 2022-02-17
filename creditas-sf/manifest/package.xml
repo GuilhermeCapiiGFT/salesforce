@@ -18,5 +18,9 @@
 		<members>Account.Pessoa_Juridica</members>
 		<name>RecordType</name>
 	</types>
+	<types>
+		<members>AccountType</members>
+		<name>StandardValueSet</name>
+	</types>
 	<version>53.0</version>
 </Package>
