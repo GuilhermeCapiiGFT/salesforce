@@ -14,7 +14,7 @@ public with sharing class OpportunityEvaluationController {
     List<CustomQueue__c> allCustomQueues = CustomSetupController.selectCustomQueues();
 
     OpportunityEvaluationService evaluation = new OpportunityEvaluationService();
-    evaluation.setPriorityPointsMap(OpportunityEvaluationService.getProducts(allCustomQueues));
+    evaluation.setPriorityPointsMap(OpportunityEvaluationService.createPriorityPointsMap(allCustomQueues));
     evaluation.setProducts(allCustomQueues);
     evaluation.setOpportunities(opportunities);
     evaluation.evaluateOpportunities();
@@ -30,7 +30,7 @@ public with sharing class OpportunityEvaluationController {
     List<CustomQueue__c> allCustomQueues = CustomSetupController.selectCustomQueues();
 
     OpportunityEvaluationService evaluation = new OpportunityEvaluationService();
-    evaluation.setPriorityPointsMap(OpportunityEvaluationService.getProducts(allCustomQueues));
+    evaluation.setPriorityPointsMap(OpportunityEvaluationService.createPriorityPointsMap(allCustomQueues));
     evaluation.setProducts(customQueues);
     evaluation.selectOpportunities();
     evaluation.evaluateOpportunities();

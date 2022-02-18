@@ -119,6 +119,32 @@ public class OpportunityEvaluationTest {
   }
 
   @isTest
+  private static void testEvaluateByOpportunityBulk() {
+    Id accountId = [SELECT Id FROM Account].Id;
+    List<Opportunity> opportunities = new List<Opportunity>();
+
+    // create 200 ooportunities
+    do {
+      Opportunity opportunity = OpportunitySetup.createOpportunity(accountId, 'AtWork');
+      opportunity.ProductType__c = 'DISCHARGE';
+      opportunities.add(opportunity);
+    } while (opportunities.size() <= 200);
+
+
+    Test.startTest();
+
+    insert opportunities;
+
+    Test.stopTest();
+
+    opportunities = [SELECT PriorityPoints__c FROM Opportunity];
+
+    for (Opportunity opportunity : opportunities) {
+      System.assertEquals(10, opportunity.PriorityPoints__c, 'Incorrect Opportunity.PriorityPoints__c value');
+    }    
+  }  
+
+  @isTest
   public static void testEvaluateByCustomQueue() {
     Id accountId = [SELECT Id FROM Account].Id;
 
