@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <formulas>
+        <name>DocumentKey</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.RecordType.Name} &amp; &quot; - &quot; &amp; {!$Record.DocumentNumber__c}</expression>
+    </formulas>
+    <interviewLabel>DocumentKey2 {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>DocumentKey2</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>PreencherDocumentKey</name>
+        <label>PreencherDocumentKey</label>
+        <locationX>176</locationX>
+        <locationY>319</locationY>
+        <inputAssignments>
+            <field>DocumentKey__c</field>
+            <value>
+                <elementReference>DocumentKey</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>49</locationY>
+        <connector>
+            <targetReference>PreencherDocumentKey</targetReference>
+        </connector>
+        <object>Documents__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
