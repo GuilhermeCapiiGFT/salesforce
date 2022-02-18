@@ -99,7 +99,7 @@ public without sharing class QuotesSynchTriggerHandler extends TriggerHandler
     **********************************************************************************************************************************/
     private void updateMethod()
     {
-        Util.updateIsExternallySyncedQuoteOpportunity('OpportunityId', lstNewQuotes, mapOldQuotes);
+        Util.updateIsExternallySyncedOpportunity('Quote', lstNewQuotes, mapOldQuotes);
     }
 
      /**********************************************************************************************************************************

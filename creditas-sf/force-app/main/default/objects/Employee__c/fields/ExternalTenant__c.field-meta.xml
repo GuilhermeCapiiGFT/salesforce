@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>DateFilter__c</fullName>
+    <fullName>ExternalTenant__c</fullName>
+    <description>Esse campo representa a região da conta (Região de origem do registro - br/mx)</description>
     <externalId>false</externalId>
-    <label>Data de Filtro</label>
-    <required>true</required>
+    <label>Tenant</label>
+    <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
@@ -12,14 +13,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>CreatedDate</fullName>
-                <default>true</default>
-                <label>Data de Criação</label>
+                <fullName>creditasmx</fullName>
+                <default>false</default>
+                <label>creditasmx</label>
             </value>
             <value>
-                <fullName>RequestDate</fullName>
+                <fullName>creditasbr</fullName>
                 <default>false</default>
-                <label>Data de Solicitação</label>
+                <label>creditasbr</label>
             </value>
         </valueSetDefinition>
     </valueSet>
