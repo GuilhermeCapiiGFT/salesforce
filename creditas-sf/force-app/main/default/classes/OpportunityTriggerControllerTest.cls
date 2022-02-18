@@ -1,21 +1,21 @@
 /**********************************************************************************************************************************
 * Copyright © 2021 Creditas
 * ================================================================================================================================
-* Purpose: Classe de teste para a classe Handler do botão sincronizar do OpportunityTriggerHandler
+* Purpose: Testing Class for the OpportunityTriggerController
 * ================================================================================================================================
 * History
 * -------
 * VERSION   AUTHOR                  DATE            DETAIL      Description
-* 1.0       Nathalia Rosa           23/12/2021      Created     Classe de teste para o OpportunityTriggerHandler
+* 1.0       Nathalia Rosa           23/12/2021      Created     Testing Class for the OpportunityTriggerController
 **********************************************************************************************************************************/
 @isTest
-public class OpportunityTriggerHandlerTest {  
+public class OpportunityTriggerControllerTest {  
     
     private static final Id RECORDTYPE_HOME = Schema.SObjectType.Opportunity.getRecordTypeInfosByDeveloperName().get('Home').getRecordTypeId();
 
     @TestSetup
     static void makeData()
-    {        
+    {   //Account and Opportunity to create a role setting     
         Account varAccount = TestSetup.getAccount('Joao', false);
         varAccount.DocumentNumber__c = '276.050.350-04';       
         insert varAccount; 
@@ -29,7 +29,8 @@ public class OpportunityTriggerHandlerTest {
     @isTest
     static void updateIsExternallySync() 
         
-    {   String varSObjectApiName = 'Opportunity';
+    {   //Create a setting of Account/Opportunity to update IsExternallySync field       
+        String varSObjectApiName = 'Opportunity';
      
         Account varAccount = [SELECT Id, Name FROM Account LIMIT 1]; 
      
@@ -39,7 +40,7 @@ public class OpportunityTriggerHandlerTest {
         
         varOpportunity.ExternalId__c = '3213213231';
         varOpportunity.IsSynchEnabled__c = 'ENABLED';
-        varOpportunity.RecordTypeId = OpportunityTriggerHandler.getOpportunityRecordTypeId('Home'); 
+        varOpportunity.RecordTypeId = OpportunityTriggerController.getOpportunityRecordTypeId('Home'); 
         varOpportunity.ExternalTenant__c = 'creditasbr';
      
      	Custom_Field_Tracking_Map__mdt newCustomMdt = new Custom_Field_Tracking_Map__mdt();
@@ -47,6 +48,7 @@ public class OpportunityTriggerHandlerTest {
         newCustomMdt.ObjetoRastreado__c = 'IsSynchEnabled__c';
      
         Test.startTest();
+        //Testing Update field
         try{ 
             varOpportunity.ExternalTenant__c = 'creditasmx';
             update varOpportunity;
@@ -55,8 +57,9 @@ public class OpportunityTriggerHandlerTest {
         } 
         
         Test.stopTest();
-
+		//Assert for the field IsExternallySynched__c need to be false
         System.assertEquals(false, varOpportunity.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
+        //Assert for the field IsSynchEnabled__c need to be ENABLED
         System.assertEquals('ENABLED', varOpportunity.IsSynchEnabled__c, 'O campo isSynchEnabled não foi mudado para Enabled');
     }  
 }
