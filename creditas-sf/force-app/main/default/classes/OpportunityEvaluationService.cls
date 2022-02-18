@@ -20,7 +20,7 @@ public with sharing class OpportunityEvaluationService {
 
   private List<Opportunity> opportunities;
 
-  private List<Opportunity> changedOpportunitites;
+  private List<Opportunity> changedOpportunities;
 
   private String query;
 
@@ -43,7 +43,7 @@ public with sharing class OpportunityEvaluationService {
   }
 
   public OpportunityEvaluationService() {
-    this.changedOpportunitites = new List<Opportunity>();
+    this.changedOpportunities = new List<Opportunity>();
     this.products = new List<String>();
   }
 
@@ -63,7 +63,7 @@ public with sharing class OpportunityEvaluationService {
   }
 
   public List<Opportunity> getChangedOpportunities() {
-    return this.changedOpportunitites;
+    return this.changedOpportunities;
   }
 
   public void selectOpportunities() {
@@ -135,7 +135,7 @@ public with sharing class OpportunityEvaluationService {
       String opportunityRecordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opp.RecordTypeId);
       if (this.priorityPointsMap.containsKey(opportunityRecordTypeName)) {
         opp.PriorityPoints__c = this.getPriorityPoints(opp, opportunityRecordTypeName);
-        this.changedOpportunitites.add(opp);
+        this.changedOpportunities.add(opp);
       }
     }
   }
