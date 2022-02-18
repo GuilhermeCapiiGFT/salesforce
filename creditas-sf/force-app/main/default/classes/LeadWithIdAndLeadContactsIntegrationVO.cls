@@ -1,10 +1,10 @@
 /**********************************************************************************************************************************
 * Copyright © 2021 Creditas
 * ================================================================================================================================
-* Purpose: VO Class to LeadWithIdAndLeadContactsIntegration Class.
+* Purpose: VO Class for Lead With Id And Lead Contacts Integration
 * ================================================================================================================================
 * VERSION   AUTHOR                  DATE            DETAIL      Description
-* 1.0       Erika Togniolo          28/12/2021      Created     VO Class to LeadWithIdAndLeadContactsIntegration Class.
+* 1.0       Erika Togniolo          28/12/2021      Created     VO Class for Lead With Id And Lead Contacts Integration
 **********************************************************************************************************************************/
 
 public class LeadWithIdAndLeadContactsIntegrationVO{
