@@ -89,7 +89,7 @@ public with sharing class OpportunityEvaluationService {
     }
 
     if (String.isNotBlank(soqlWhere)) {
-      soqlWhere = soqlWhere.replaceFirst(' AND', ' WHERE');
+      soqlWhere = soqlWhere.replaceFirst(' OR', ' WHERE');
       return soqlSelect + soqlWhere;
     }
 
@@ -113,7 +113,7 @@ public with sharing class OpportunityEvaluationService {
       }
     }
 
-    return ' AND (RecordTypeId = ' +
+    return ' OR (RecordTypeId = ' +
       StringUtils.singleQuoteThis(recordTypeId) +
       ' AND (' +
       filterProductsCriteria +
