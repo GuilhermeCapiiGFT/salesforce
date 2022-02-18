@@ -23,7 +23,7 @@ public without sharing class OpportunityTriggerController extends TriggerHandler
     }
   
     public override void beforeInsert() {
-      //OpportunityEvaluationController.evaluateByOpportunity(lstNewOpportunity);
+      OpportunityEvaluationController.evaluateByOpportunity(lstNewOpportunity);
     }
   
     public override void afterInsert() {
