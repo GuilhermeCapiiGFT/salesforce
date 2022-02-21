@@ -31,22 +31,20 @@ public with sharing class OpportunityAssignmentService {
 
       List<Opportunity> opportunities = inputOppList;
 	  
-      if (cSetup.ProductAssignedUsers__r.isEmpty() || opportunities.isEmpty()) { return opportunityMap.values(); }
+      if (cSetup.ProductAssignedUsers__r.isEmpty() || opportunities.isEmpty()) { return opportunityMap; }
 
       Set<Id> setUnavailableUsers = getUnavailableUsers(opportunities, cSetup.ProductAssignedUsers__r);
 
       Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
 
-      Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId');
+      Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId');
 
       for (Opportunity op : opportunities) {
 
-        if(accountUserIdMap != null){
-          if(accountUserIdMap.containsKey(op.AccountId)){
+        if(accountUserIdMap.containsKey(op.AccountId) ){
             op.OwnerId = accountUserIdMap.get(op.AccountId);
             setUnavailableUsers.add(accountUserIdMap.get(op.AccountId));
             continue;
-          }
         }
 
         if (mapUsersByProductType.isEmpty()) { break; }
@@ -79,7 +77,7 @@ public with sharing class OpportunityAssignmentService {
         }
       }
 
-      if (opportunityMap.isEmpty()) { return opportunityMap.values(); }
+      if (opportunityMap.isEmpty()) { return opportunityMap; }
 
       return opportunityMap;
     }
@@ -158,5 +156,18 @@ public with sharing class OpportunityAssignmentService {
             }
       
             return lstOpportunitySorted;
+    }
+
+    public static Set<Id> updateOpportunities(Map<Id,Opportunity> opportunitiesToUpdate){
+
+      List<Database.SaveResult> saveResultList = Database.update(opportunitiesToUpdate.values(), false);
+
+      Set<Id> successOpportunityId = new Set<Id>();
+      for(Database.SaveResult updatedResult : saveResultList){
+        if(updatedResult.isSuccess()){
+          successOpportunityId.add(updateResult.getId());
+        }
+      }
+      return successOpportunityId;
     }
 }

@@ -22,7 +22,7 @@ private with sharing class SendCustomNotificationTest {
         
         Set<Id> opportunityIdSet = new Set<Id>{opportunity.Id};
         Test.startTest();    
-        SendCustomNotificationController.SendCustomNotification(opportunityIdSet);
+        SendCustomNotificationController.SendCustomOpportunityNotification(opportunityIdSet);
         Test.stopTest();
     }
 
