@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Opportunity.FormalizationStatus__c</members>
-		<members>OpportunityRole__c.AccountOwner__c</members>
+		<members>IncomeDataSection__c.ConfirmedMonthlyIncomeObservation__c</members>
+		<members>IncomeDataSection__c.ConfirmedMonthlyIncomeReason__c</members>
+		<members>IncomeDataSection__c.ConfirmedMonthlyIncomeStatus__c</members>
+		<members>IncomeDataSection__c.ConfirmedMonthlyIncomeSubReason__c</members>
+		<members>IncomeDataSection__c.MinimalRequiredIncomeObservation__c</members>
+		<members>IncomeDataSection__c.MinimalRequiredIncomeReason__c</members>
+		<members>IncomeDataSection__c.MinimalRequiredIncomeStatus__c</members>
+		<members>IncomeDataSection__c.MinimalRequiredIncomeSubReason__c</members>
+		<members>IncomeDataSection__c.MonthlyIncomeObservation__c</members>
+		<members>IncomeDataSection__c.MonthlyIncomeReason__c</members>
+		<members>IncomeDataSection__c.MonthlyIncomeStatus__c</members>
+		<members>IncomeDataSection__c.MonthlyIncomeSubReason__c</members>
+		<members>IncomeDataSection__c.NetWorthObservation__c</members>
+		<members>IncomeDataSection__c.NetWorthReason__c</members>
+		<members>IncomeDataSection__c.NetWorthStatus__c</members>
+		<members>IncomeDataSection__c.NetWorthSubReason__c</members>
+		<members>IncomeDataSection__c.PresumedMonthlyIncomeObservation__c</members>
+		<members>IncomeDataSection__c.PresumedMonthlyIncomeReason__c</members>
+		<members>IncomeDataSection__c.PresumedMonthlyIncomeStatus__c</members>
+		<members>IncomeDataSection__c.PresumedMonthlyIncomeSubReason__c</members>
+		<members>IncomeDataSection__c.ProfessionObservation__c</members>
+		<members>IncomeDataSection__c.ProfessionReason__c</members>
+		<members>IncomeDataSection__c.ProfessionStatus__c</members>
+		<members>IncomeDataSection__c.ProfessionSubReason__c</members>
+		<members>IncomeDataSection__c.ProfessionalSituationObservation__c</members>
+		<members>IncomeDataSection__c.ProfessionalSituationReason__c</members>
+		<members>IncomeDataSection__c.ProfessionalSituationStatus__c</members>
+		<members>IncomeDataSection__c.ProfessionalSituationSubReason__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
-		<members>Employee__c</members>
+		<members>IncomeDataSection__c</members>
 		<name>CustomObject</name>
-	</types>
-	<types>
-		<members>Account-%5BAtWork%5D Pessoa Fisica</members>
-		<members>Account-%5BAtWork%5D Pessoa Juridica</members>
-		<name>Layout</name>
-	</types>
-	<types>
-		<members>Account.Pessoa_Fisica</members>
-		<members>Account.Pessoa_Juridica</members>
-		<name>RecordType</name>
-	</types>
-	<types>
-		<members>AccountType</members>
-		<name>StandardValueSet</name>
 	</types>
 	<version>53.0</version>
 </Package>
