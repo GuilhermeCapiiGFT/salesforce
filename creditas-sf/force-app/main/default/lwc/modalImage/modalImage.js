@@ -15,8 +15,11 @@ export default class ModalImage extends LightningElement {
         this.zoom = IMG_SIZE;
         this.rotate = 0;
     }
+
     handlerLoadImage(){
         this.imgLoaded = true;
+        document.body.style.overflow = 'hidden';
+        this.template.querySelector('.container-img').addEventListener('click', this.handleClose);
     }
   
     handleDecreaseImg(){ 
@@ -47,6 +50,7 @@ export default class ModalImage extends LightningElement {
         documentImg.style.transform = 'rotate('+newRotate+'deg)';
         this.rotate = newRotate;
     }
+
     handlerWheel(e){
         if(e.deltaY < 0){
             this.handleIncreaseImg();
@@ -56,7 +60,8 @@ export default class ModalImage extends LightningElement {
     }
 
     handleClose(){
-        this.reset();
+        // this.reset();
+        document.body.style.overflow = 'visible';
         const selectedEvent = new CustomEvent('closemodal', {
             bubbles    : true,
             composed   : true,

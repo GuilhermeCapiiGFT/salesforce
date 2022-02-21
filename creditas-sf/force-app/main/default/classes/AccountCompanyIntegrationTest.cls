@@ -50,9 +50,9 @@ private with sharing class AccountCompanyIntegrationTest {
         String lResponse = AccountCompanyIntegration.upsertCompany();    
         Test.stopTest();
         System.assertEquals(200, res.statusCode, 'Status code incorreto');
-        Account lAcc = [SELECT DocumentNumber__c,ExternalCompanyId__c, Name FROM Account LIMIT 1];
+        Account lAcc = [SELECT DocumentNumber__c,ExternalId__c, Name FROM Account LIMIT 1];
         System.assertEquals('89.584.475/0001-86', lAcc.DocumentNumber__c, 'Wrong DocumentNumber');
-        System.assertEquals('867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20', lAcc.ExternalCompanyId__c, 'Wrong External Company');
+        System.assertEquals('867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20', lAcc.ExternalId__c, 'Wrong External Company');
         System.assertEquals('Registro criado/atualizado com sucesso!', lResponse, 'Registro não foi inserido');
       }
 
@@ -80,7 +80,7 @@ private with sharing class AccountCompanyIntegrationTest {
         '	 } '; 
         
         Account lNewAcc = AccountSetup.createAccount('Test', 'Pessoa_Juridica');
-        lNewAcc.ExternalCompanyId__c = '867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20';
+        lNewAcc.ExternalId__c = '867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20';
         insert lNewAcc;
         
         Test.startTest();
@@ -97,9 +97,9 @@ private with sharing class AccountCompanyIntegrationTest {
 		String lResponse = AccountCompanyIntegration.upsertCompany();      
         Test.stopTest();
         System.assertEquals(200, res.statusCode, 'Status code incorreto');
-        Account lAcc = [SELECT DocumentNumber__c,ExternalCompanyId__c, Name FROM Account LIMIT 1];
+        Account lAcc = [SELECT DocumentNumber__c,ExternalId__c, Name FROM Account LIMIT 1];
         System.assertEquals('89.584.475/0001-86', lAcc.DocumentNumber__c, 'Wrong DocumentNumber');
-        System.assertEquals('867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20', lAcc.ExternalCompanyId__c, 'Wrong External Company');
+        System.assertEquals('867d112e-8a8d-4dd9-a7ad-37c83a5bf7e20', lAcc.ExternalId__c, 'Wrong External Company');
         System.assertEquals('Testando 1', lAcc.Name, 'Wrong Name');
         System.assertEquals('Registro criado/atualizado com sucesso!', lResponse, 'Registro não foi atualizado');
     }

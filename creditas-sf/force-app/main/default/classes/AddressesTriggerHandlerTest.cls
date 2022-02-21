@@ -37,16 +37,12 @@ public class AddressesTriggerHandlerTest {
         update varAddress;
         Test.stopTest();
 
-        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
+        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__c, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
                               ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
                               CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
                               FROM Account
                               WHERE Id =: varAddress.Account__c
                               LIMIT 1];
-
-        System.debug('TYUMI');
-        System.debug(varAddress);
-        System.debug(varAccount);
 
         System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
@@ -79,8 +75,6 @@ public class AddressesTriggerHandlerTest {
         Test.stopTest();
 
         Account varAccountUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Account Where Name = 'Francisco' LIMIT 1];
-
-        System.debug('tyumi account => ' + varAccountUpdate);
 
         System.assertEquals(false, varAccountUpdate.IsExternallySynched__c);
     }

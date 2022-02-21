@@ -43,9 +43,6 @@ public class CommunicationContactTriggerHandlerTest {
                               WHERE Id =: varCommunicationContact.Account__c
                               LIMIT 1];
 
-        System.debug(varCommunicationContact);
-        System.debug(varAccount);
-
         System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 
@@ -77,9 +74,7 @@ public class CommunicationContactTriggerHandlerTest {
         Test.stopTest();
 
         Account varAccountUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Account Where Name = 'Francisco' LIMIT 1];
-
-        System.debug('tyumi account => ' + varAccountUpdate);
-
+        
         System.assertEquals(false, varAccountUpdate.IsExternallySynched__c);
     }
 
@@ -138,22 +133,5 @@ public class CommunicationContactTriggerHandlerTest {
         Account varAccountUpdated = [SELECT Id, Name, IsExternallySynched__c FROM Account WHERE Name = 'Jose' LIMIT 1];
 
         System.assertEquals(false, varAccountUpdated.IsExternallySynched__c);
-    }
-
-    @isTest
-    static void notUpdateIsExternallySync() 
-    {
-        CommunicationContacts__c varCommunicationContact = [SELECT Id, Name, Account__c, Code__c FROM CommunicationContacts__c LIMIT 1]; 
-
-        Test.startTest();
-        update varCommunicationContact;
-        Test.stopTest();
-
-        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C FROM Account WHERE Id =: varCommunicationContact.Account__c LIMIT 1];
-
-        System.debug(varCommunicationContact);
-        System.debug(varAccount);
-
-        System.assertNotEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 }

@@ -6,8 +6,10 @@
 * History
 * -------
 * VERSION   AUTHORS                  DATE           DETAIL     Description
-* 1.0       Gabriel Vidal        20/09/2021         Created     Implementação das requisições REST do web service de Account
-            Nathália Rosa          
+* 1.0       Gabriel Vidal,       20/09/2021         Created     Implementação das requisições REST do web service de Account
+            Nathália Rosa       
+            Gabriel Vidal        25/01/2022         Updated     Refatoração da classe para atender às boas práticas 
+                                                                e ajustes de mensagens de erro     
 **********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAccountIN/*')
 global without sharing class IntegrationAccountIN { 
@@ -144,6 +146,8 @@ global without sharing class IntegrationAccountIN {
         }
 
         accountToUpsert.Id = requestBodyObj.salesforceId;
+        accountToUpsert.IsExternallySynched__c = true;
+        accountToUpsert.IsSynchEnabled__c = 'ENABLED';
         Map<String, String> accountReturnMap = new Map<String, String>();
         try {
             upsert accountToUpsert;            
@@ -157,23 +161,22 @@ global without sharing class IntegrationAccountIN {
                
     private static String upsertContacts(AccountIntegrationModel requestBodyObj, Id accountId){
         List<AccountIntegrationModel.contactsModel> accountContactsToUpsert = requestBodyObj.contacts;  
+        List<CommunicationContacts__c> contactsToUpsert = new List<CommunicationContacts__c>(); 
         if(accountContactsToUpsert == null){
             return '';
         }
         Set<String> contactsExternalIds = new Set<String>();
         for (AccountIntegrationModel.contactsModel cm : accountContactsToUpsert){
             contactsExternalIds.add(cm.id);
-        }
+        }  
 
         Map<String, CommunicationContacts__c> contactExternalIdToCommunicationContactMap = new Map<String, CommunicationContacts__c>();
-
-        for (CommunicationContacts__c cnt : [SELECT Id, ExternalId__c FROM CommunicationContacts__c WHERE ExternalId__c IN :contactsExternalIds AND Account__c = :accountId]){
+        for (CommunicationContacts__c cnt : [SELECT Id, ExternalId__c FROM CommunicationContacts__c WHERE ExternalId__c IN :contactsExternalIds]){         
             contactExternalIdToCommunicationContactMap.put(cnt.ExternalId__c, cnt);
-        }      
-
-        List<CommunicationContacts__c> contactsToUpsert = new List<CommunicationContacts__c>();                
+        }   
         for (AccountIntegrationModel.contactsModel cm : accountContactsToUpsert){
-            CommunicationContacts__c cnt = new CommunicationContacts__c(Account__c = accountId);
+            CommunicationContacts__c cnt = new CommunicationContacts__c();
+            cnt.Account__c = accountId;
             cnt.Id = contactExternalIdToCommunicationContactMap.get(cm.id)?.Id;
             cnt.ExternalId__c = cm.id;
             cnt.Channel__c = cm.channel;
@@ -181,7 +184,14 @@ global without sharing class IntegrationAccountIN {
             cnt.Type__c = cm.type;
 
             contactsToUpsert.add(cnt);  
-        }   
+        }
+
+        for (CommunicationContacts__c cnt : [SELECT Id, ExternalId__c FROM CommunicationContacts__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :contactsExternalIds]){         
+            cnt.Account__c = null;
+            contactsToUpsert.add(cnt);  
+        }  
+            
+   
         try {
             upsert contactsToUpsert;
         } catch (System.DmlException e){
@@ -210,7 +220,8 @@ global without sharing class IntegrationAccountIN {
         
         List<Addresses__c> addressesToUpsert = new List<Addresses__c>();                     
         for (AccountIntegrationModel.adressesModel am : accountAddressesToupsert){            
-            Addresses__c adr = new Addresses__c(Account__c = accountId);
+            Addresses__c adr = new Addresses__c();
+            adr.Account__c = accountId;
             adr.Id = addressExternalIdToSalesForceAddressMap.get(am.id)?.Id;
             adr.ExternalAddressId__c = am.id;
             adr.Type__c = am.type;
@@ -228,6 +239,12 @@ global without sharing class IntegrationAccountIN {
 
             addressesToUpsert.add(adr);                              
         }    
+
+        for (Addresses__c addr : [SELECT Id, ExternalAddressId__c FROM Addresses__c WHERE Account__c = :accountId AND ExternalAddressId__c NOT IN :addressesExternalIds]){         
+            addr.Account__c = null;
+            addressesToUpsert.add(addr);  
+        }           
+
         try {
             upsert addressesToUpsert;
         } catch (System.DmlException e){
@@ -261,6 +278,7 @@ global without sharing class IntegrationAccountIN {
             relationshipPersonIdToAccountMap.put(acc.ExternalId__c, acc);
         }
 
+
         List<AccountRelationships__c> accountRelationshipsToUpsert = new List<AccountRelationships__c>();             
         for (AccountIntegrationModel.relationshipsModel rm : relationshipsToupsert){
             Account relationshipAccount = relationshipPersonIdToAccountMap.get(rm.personId);
@@ -276,8 +294,15 @@ global without sharing class IntegrationAccountIN {
             
             accountRelationshipsToUpsert.add(art);
         }
+        
+        List<AccountRelationships__c> arsToDelete = new List<AccountRelationships__c>();
+        for (AccountRelationships__c ars : [SELECT PrimaryRelationship__c FROM AccountRelationships__c WHERE PrimaryRelationship__c = :accountId AND ExternalId__c NOT IN :relationshipsExternalIds]){
+            arsToDelete.add(ars);
+        }
+
         try {
             upsert accountRelationshipsToUpsert;
+            delete arsToDelete;
         } catch (System.DmlException e){
             hasError = true;
             return e.getDmlMessage(0);
@@ -296,14 +321,15 @@ global without sharing class IntegrationAccountIN {
         }
                 
         Map<String, Documents__c> documentsExternalIdsToSalesForceDocumentsMap = new Map<String, Documents__c>();
-        for (Documents__c documents : [SELECT Id, Account__c, ExternalId__c FROM Documents__c  WHERE ExternalId__c IN :documentsExternalIds AND Account__c = :accountId]){
+        for (Documents__c documents : [SELECT Id, Account__c, ExternalId__c FROM Documents__c  WHERE ExternalId__c IN :documentsExternalIds]){
             documentsExternalIdsToSalesForceDocumentsMap.put(documents.ExternalId__c, documents);
         }     
 
         List<Documents__c> docsToUpsert = new List<Documents__c>();     
         if(documentsToUpsert != null){
             for (AccountIntegrationModel.documentsModel doc : documentsToUpsert){              
-                Documents__c documentsSF = new Documents__c(Account__c = accountId);
+                Documents__c documentsSF = new Documents__c();
+                documentsSF.Account__c = accountId;
                 documentsSF.Id = documentsExternalIdsToSalesForceDocumentsMap.get(doc.id)?.Id;
                 documentsSF.ExternalId__c = doc.id;
                 documentsSF.DocumentType__c = doc.type;
@@ -317,6 +343,12 @@ global without sharing class IntegrationAccountIN {
                 docsToUpsert.add(documentsSF);                  
             }
         }      
+
+        for (Documents__c doc : [SELECT Account__c FROM Documents__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :documentsExternalIds]){         
+            doc.Account__c = null;
+            docsToUpsert.add(doc);  
+        }             
+
         try {
             upsert docsToUpsert;
         } catch (System.DmlException e){
@@ -342,13 +374,10 @@ global without sharing class IntegrationAccountIN {
         }
 
         Set<String> validCurrency = new Set<String>();
-        //String currencyListString = '';
         Schema.DescribeFieldResult currencyCodes = Pricebook2.CurrencyIsoCode.getDescribe();
         for (Schema.PicklistEntry pick : currencyCodes.getPicklistValues()){
             validCurrency.add(pick.getValue());
-            //currencyListString += pick.getValue() + ', ';
         }
-        //currencyListString = currencyListString.removeEnd(', ');
 
         List<FinancialResources__c> incomesToUpsert = new List<FinancialResources__c>();      
         for (AccountIntegrationModel.incomeModel inc : incomeToUpsert){
@@ -388,6 +417,13 @@ global without sharing class IntegrationAccountIN {
                                                     WHERE Account__c = :accountId AND Recurso_Financeiro__c IN :incomeIds]){
             accountFinancialRelationshipKeys.put(afr.Account__c + '_' + afr.Recurso_Financeiro__c, afr.Id);                                         
         }
+
+        List<AccountFinancialRelationship__c> afrToDelete = new List<AccountFinancialRelationship__c>();
+        for (AccountFinancialRelationship__c afr : [SELECT Id, Account__c, Recurso_Financeiro__c 
+                                                    FROM AccountFinancialRelationship__c
+                                                    WHERE Account__c = :accountId AND Recurso_Financeiro__c NOT IN :incomeIds]){
+            afrToDelete.add(afr);                                            
+        }
         
         List<AccountFinancialRelationship__c> accountRelationshipToUpsert = new List<AccountFinancialRelationship__c>();
         for (FinancialResources__c income : incomesToUpsert){
@@ -399,6 +435,7 @@ global without sharing class IntegrationAccountIN {
         }
         try {
             upsert accountRelationshipToUpsert;
+            delete afrToDelete;
         } catch (System.DmlException e){
             hasError = true;
             return e.getDmlMessage(0);
@@ -424,7 +461,8 @@ global without sharing class IntegrationAccountIN {
                                   
         List<ProfessionalInfo__c> professionalsInfoToUpsert = new List<ProfessionalInfo__c>();
         for (AccountIntegrationModel.professionalInfoModel professionalInfoSF :professionalInfoToUpsert){
-            ProfessionalInfo__c professionalObj = new ProfessionalInfo__c(Account__c = accountId);     
+            ProfessionalInfo__c professionalObj = new ProfessionalInfo__c();     
+            professionalObj.Account__c = accountId;
             professionalObj.Id = professionalInfoExternalIdToSalesForceProfessionalInfoMap.get(professionalInfoSF.id)?.Id;
             professionalObj.JobTitle__c = professionalInfoSF.jobTitle;
             professionalObj.CompanyName__c = professionalInfoSF.companyName;
@@ -441,6 +479,12 @@ global without sharing class IntegrationAccountIN {
             }           
             professionalsInfoToUpsert.add(professionalObj);               
         }
+
+        for (ProfessionalInfo__c profInfo : [SELECT Account__c FROM ProfessionalInfo__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :professionalInfoExternalIds]){
+            profInfo.Account__c = null;
+            professionalsInfoToUpsert.add(profInfo);
+        }
+
         try {
             upsert professionalsInfoToUpsert;
         } catch (System.DmlException e){
@@ -528,8 +572,16 @@ global without sharing class IntegrationAccountIN {
             
             professionalRelationshipToUpsert.add(professionalIncomeRelationship);
         }   
+
+        List<AccountFinancialRelationship__c> professionalRelationshipToDelete = new List<AccountFinancialRelationship__c>();
+        for (AccountFinancialRelationship__c afr : [SELECT Account__c FROM AccountFinancialRelationship__c WHERE Account__c = :accountId AND Recurso_Financeiro__c NOT IN :financialResourceIds]){
+            professionalRelationshipToDelete.add(afr);
+        }
+
+
         try {
             upsert professionalRelationshipToUpsert;
+            delete professionalRelationshipToDelete;
         } catch (System.DmlException e){
             hasError = true;
             professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));

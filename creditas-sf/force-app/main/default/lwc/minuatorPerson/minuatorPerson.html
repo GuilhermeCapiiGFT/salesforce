@@ -6,11 +6,6 @@
             <div class="slds-accordion__summary" onclick={showPersonSection}>
               <h2 class="slds-accordion__summary-heading">
                 <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-72" aria-expanded="true" title="Accordion summary">
-                  <span style=" font-family: Segoe UI;
-                                font-style: normal;
-                                font-weight: bold;
-                                font-size: 16px;
-                                line-height: 24px;">1</span>
                   <lightning-icon icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>
                   <lightning-progress-ring value="25" style="margin-left:12px"> 1 </lightning-progress-ring>
                   <!-- <div class="slds-progress-ring" style="margin-left:12px">
@@ -170,15 +165,119 @@
                     </li> -->
                     <li class="slds-progress__item slds-is-active">
                       <div class="slds-progress__marker"></div>
-                      <div class="slds-progress__item_content slds-grid slds-grid_align-spread">Relacionamentos</div>
+                      <div onclick={showRelationshipSection} style="cursor: pointer" class="slds-progress__item_content slds-grid slds-grid_align-spread">Relacionamentos</div>
+                      <template if:true={showRelationshipSectionVar}>
+                        <div class="slds-grid slds-wrap" style="width:100%">
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="person1Name" label="Pessoa" disabled="true" value='JOANA MACHADO'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              >>> 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="relationship" label="Relationamento" disabled="true" value='Casada com'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              >>> 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="person2Name" label="Pessoa" disabled="true" value='HENRIQUE MACHADO'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              can 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              <lightning-combobox
+                                name="regime  "
+                                label="Regime"
+                                value=""
+                                placeholder="Selecione..."
+                                options={regimeOptions}
+                                required="true"
+                                ></lightning-combobox>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              Dados da escritura pública de declaração de união estável 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="date" name="datedAt" label="Datado em" value="2020/09/12"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <div class="slds-form-element">
+                              <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Dados do registro</span>
+                                <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" />
+                                <span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
+                                  <span class="slds-checkbox_faux"></span>
+                                  <span class="slds-checkbox_on">Mostrar</span>
+                                  <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              <lightning-input type="text" name="draftedAt" label="Lavrado em" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              Dados do registro da escritura
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="checkbox" name="draftedAt" label="Registro de pacto concomitante"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="text" name="bookNumberRegister" label="Livro n°" value="541867478"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="text" name="registerNumber" label="Registro n°" value="4188135113"></lightning-input>
+                            </span>
+                          </div>
+                        </div>  
+                      </template>
                     </li>
                     <li class="slds-progress__item slds-is-active">
                       <div class="slds-progress__marker"></div>
                       <div class="slds-progress__item_content slds-grid slds-grid_align-spread">Endereço de Correspondência</div>
                     </li>
                   </ol>
-                  <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" role="progressbar">
-                    <span class="slds-assistive-text">Progress: 25%</span>
+                  <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" role="progressbar">
+                    <span class="slds-assistive-text"></span>
                   </div>
                 </div>
               </template>
@@ -190,11 +289,6 @@
             <div class="slds-accordion__summary">
               <h2 class="slds-accordion__summary-heading">
                 <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-73" aria-expanded="false" title="Accordion summary">
-                  <span style=" font-family: Segoe UI;
-                  font-style: normal;
-                  font-weight: bold;
-                  font-size: 16px;
-                  line-height: 24px;">2</span>
                   <lightning-icon icon-name="utility:chevronright" size="x-small" style="margin-left:12px"></lightning-icon>
                   <lightning-progress-ring value="0" style="margin-left:12px"> </lightning-progress-ring>
                   <span class="slds-accordion__summary-content" style="margin-left:12px; 
@@ -214,11 +308,6 @@
             <div class="slds-accordion__summary">
               <h2 class="slds-accordion__summary-heading">
                 <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-74" aria-expanded="false" title="Accordion summary">
-                  <span style=" font-family: Segoe UI;
-                  font-style: normal;
-                  font-weight: bold;
-                  font-size: 16px;
-                  line-height: 24px;">3</span>
                   <lightning-icon icon-name="utility:chevronright" size="x-small" style="margin-left:12px"></lightning-icon>
                   <lightning-progress-ring value="0" style="margin-left:12px"> </lightning-progress-ring>
                   <span class="slds-accordion__summary-content" style="margin-left:12px; 

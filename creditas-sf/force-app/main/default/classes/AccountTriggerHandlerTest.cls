@@ -33,39 +33,31 @@ public class AccountTriggerHandlerTest {
         insert userTest;
         
         List<Account> lstTestAccounts = new List<Account>();
-        for(Integer i=0; i<3; i++)
-        {
-            Account testAccount = new Account(Name = 'TestAccount'+i, MigrationRecord__c = false, IsExternallySynched__c = true);
-            Integer aux = integer.valueof(crypto.getRandomLong());
-             
-            if(math.mod(i, 2) == 0)
-            {
-                testAccount.RecordTypeId = RECORDTYPE_CONTA_FISICA;
-                testAccount.DocumentNumber__c = i > 1 ? '38496403025' : '73155938000154';
-            } else
-            {
-                testAccount.RecordTypeId = RECORDTYPE_CONTA_JURIDICA;
-                testAccount.DocumentNumber__c = i > 1 ? '66239925020' : '11428540000197';
-            }
-            
-            if(i > 1)
-            {
-                testAccount.ExternalTenant__c = 'creditasbr';
-            }
-            lstTestAccounts.add(testAccount);
-        }
+
+        Account testAccount = new Account(Name = 'TestAccount1', MigrationRecord__c = false, IsExternallySynched__c = true);
+        Integer aux = integer.valueof(crypto.getRandomLong());
+        testAccount.RecordTypeId = RECORDTYPE_CONTA_FISICA;
+        testAccount.DocumentNumber__c = '66239925020';
+        testAccount.ExternalTenant__c = 'creditasbr';
+
+        lstTestAccounts.add(testAccount);
+
+        testAccount = new Account(Name = 'TestAccount2', MigrationRecord__c = false, IsExternallySynched__c = true);
+        aux = integer.valueof(crypto.getRandomLong());
+        testAccount.RecordTypeId = RECORDTYPE_CONTA_JURIDICA;
+        testAccount.DocumentNumber__c = '73155938000154';
+        testAccount.ExternalTenant__c = 'creditasbr';
+
+        lstTestAccounts.add(testAccount);
 
         insert lstTestAccounts;
         
-        // Account testTerritoryAccount = TestSetup.getAccount('testAccount', false);
-        // testTerritoryAccount.Territorios__c = '123';
-        // insert testTerritoryAccount;   
     }
 
     @isTest
     static void updateIsExternallySync() 
     {
-        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
+        Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__c, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
                               ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
                               CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
                               FROM Account LIMIT 1];
@@ -73,10 +65,14 @@ public class AccountTriggerHandlerTest {
         varAccount.ExternalId__c = '3213213231';
         varAccount.IsSynchEnabled__c = 'ENABLED';
 
-        System.debug(varAccount);
-
         Test.startTest();
         update varAccount;
+
+        varAccount = [SELECT Id, ExternalId__c, isExternallySynched__c, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
+        ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
+        CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
+        FROM Account LIMIT 1];
+
         Test.stopTest();
 
         System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');

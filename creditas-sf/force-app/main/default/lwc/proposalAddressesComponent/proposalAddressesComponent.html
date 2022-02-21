@@ -1,0 +1,150 @@
+<template>
+  <section class="slds-accordion__section">
+    <div class="slds-accordion__summary">
+      <h2 class="slds-accordion__summary-heading">
+        <span
+          data-id="sectionPersonal"
+          class="slds-accordion__summary-content dadosPessoais"
+          onclick={handleAccordionToggle}
+          style="cursor: pointer;"
+          >Dados de Endereço</span
+        >
+      </h2>
+    </div>
+
+    <div
+      class="slds-accordion__content"
+      id="referenceId-40"
+      data-id="dadosEndereçoContainer"
+    >
+      <div class="slds-grid container">
+        <div class="slds-size_5-of-12 field">
+          <label class="slds-p-bottom_x-small">Endereço</label>
+          <input type="text" class="" value="Rua da Glória" />
+        </div>
+
+        <div class="slds-size_2-of-12"></div>
+
+        <div class="slds-grid slds-size_5-of-12 checkbox-options">
+          <div class="slds-size_4-of-12 form-control aprovado">
+            <label
+              for="checkboxEnderecoAprovado"
+              class="slds-p-bottom_x-small"
+              style="overflow-wrap: break-word; "
+              >Aprovado</label
+            >
+
+            <input
+              id="checkboxEnderecoAprovado"
+              data-value={preValue}
+              name="AddressStreet"
+              type="checkbox"
+              value="aprovado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+
+          <div class="slds-size_4-of-12 form-control pendenciado">
+            <label
+              for="checkboxEnderecoPendenciado"
+              class="slds-p-bottom_x-small"
+              style="overflow-wrap: break-word; "
+              >Pendenciado</label
+            >
+            <input
+              id="checkboxEnderecoPendenciado"
+              data-value={preValue}
+              name="AddressStreet"
+              type="checkbox"
+              value="pendenciado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+
+          <div class="slds-size_4-of-12 form-control reprovado">
+            <label
+              for="checkboxEnderecoReprovado"
+              class="slds-p-bottom_x-small"
+              style="overflow-wrap: break-word; "
+              >Reprovado</label
+            >
+            <input
+              id="checkboxEnderecoReprovado"
+              data-value={preValue}
+              name="AddressStreet"
+              type="checkbox"
+              value="reprovado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="slds-grid container">
+        <div class="slds-size_5-of-12 field">
+          <label class="slds-p-bottom_x-small">Numero</label>
+          <input type="text" class="" value="94" />
+        </div>
+
+        <div class="slds-size_2-of-12"></div>
+
+        <div
+          class="
+            slds-grid
+            slds-size_5-of-12
+            checkbox-options
+            slds-p-top_x-small
+          "
+        >
+          <div class="slds-size_4-of-12 form-control aprovado">
+            <label for="checkboxNumeroAprovado" class=""
+              >&nbsp;</label
+            >
+            <input
+              id="checkboxNumeroAprovado"
+              data-value={preValue}
+              name="ContactNumero"
+              type="checkbox"
+              value="aprovado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+
+          <div class="slds-size_4-of-12 form-control pendenciado">
+            <label for="checkboxNumeroPendenciado" class=""
+              >&nbsp;</label
+            >
+            <input
+              id="checkboxNumeroPendenciado"
+              data-value={preValue}
+              name="ContactNumero"
+              type="checkbox"
+              value="pendenciado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+
+          <div class="slds-size_4-of-12 form-control reprovado">
+            <label for="checkboxNumeroReprovado" class=""
+              >&nbsp;</label
+            >
+            <input
+              id="checkboxNumeroReprovado"
+              data-value={preValue}
+              name="ContactNumero"
+              type="checkbox"
+              value="reprovado"
+              onchange={handleChangeCheckbox}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn" onclick={handleSaveSection}>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </section>
+</template>

@@ -5,6 +5,7 @@ export default class MinuatorSearchLookup extends LightningElement {
     @track showIconClean = false;
     @track showIconSearch = true;
     @track data;
+    @track error;
     @track name = '';
     @track friendlyId = '';
     @track showList = false;
@@ -12,7 +13,7 @@ export default class MinuatorSearchLookup extends LightningElement {
     @track showSpinner = false;
     searchText;
 
-    getLeads(event){
+   getLeads(event){
         this.showIconClean = false;
         this.showIconSearch = true;
         this.showList = false;
@@ -23,31 +24,36 @@ export default class MinuatorSearchLookup extends LightningElement {
         if(event.detail.value.length == 7){
             this.showSpinner = true;
             this.showList = true;
-            
-            getLead({friendlyId: event.detail.value})
+            let userId = event.detail.value.toUpperCase();
+            event.detail.value = userId
+          
+            getLead({friendlyId: userId})
             .then((result) => {
-                console.log(result.infos);
-                this.data = JSON.parse(result.infos);            
-                this.name = this.data.persons[0].name;
-                this.friendlyId = event.detail.value;
-                console.log(event.detail.value);
-                this.showList = true;                
-                
+                if(result.error){
+                    this.error = result.message;                
+                    if(result.message == 'Lead not found'){
+                        this.dispatchEvent(new CustomEvent('notfound'));
+                    }else if(result.message == 'Lead does not have credit analysis yet'){
+                        this.dispatchEvent(new CustomEvent('nothavecredit')); 
+                    }else{
+                        this.dispatchEvent(new CustomEvent('genericerror'));
+                    }
+                    this.showList = false;
+                } else {                    
+                    this.data = result.infos;            
+                    this.name = this.data.persons[0].name;
+                    this.friendlyId = userId;                    
+                    this.showList = true;               
+                }              
             })
-            .catch((error) => {                          
-                if(error.message == 'no content to map to Object due to end of input'){
-                    this.dispatchEvent(new CustomEvent('notfound'));
-                }else{
-                    this.dispatchEvent(new CustomEvent('genericerror'));
-                }
-                this.showList = false;
+            .catch((error) => {             
+
             })
             .finally(() => {                
                 this.showSpinner = false;
             });
-
-            }  
-        }
+       }  
+    }
 
     onclickOption(event){
         console.log(event.currentTarget.dataset.id);

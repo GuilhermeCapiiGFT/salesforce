@@ -62,15 +62,12 @@ public virtual class TriggerHandler
 			this.afterInsert();
 		} else if(this.context == TriggerContext.AFTER_UPDATE)
 		{
-			//System.debug('Entrou afterUpdate()');
 			this.afterUpdate();
 		} else if(this.context == TriggerContext.AFTER_DELETE)
 		{
-			//System.debug('Entrou afterDelete()');
 			this.afterDelete();
 		} else if(this.context == TriggerContext.AFTER_UNDELETE)
 		{
-			//System.debug('Entrou afterUndelete()');
 			this.afterUndelete();
 		}
 

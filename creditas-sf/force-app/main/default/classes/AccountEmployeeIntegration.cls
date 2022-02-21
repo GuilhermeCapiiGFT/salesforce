@@ -23,16 +23,8 @@ global with sharing class AccountEmployeeIntegration {
     if (request.personId != '') {
       acc = [
         SELECT
-          AdmissionDate__c,
-          EmployeeId__c,
-          EmployeeStatus__c,
-          EmployeeType__c,
-          ExternalCompanyId__c,
-          ExternalEmployeeVersion__c,
           ExternalId__c,
           ExternalTenant__c,
-          Margin__c,
-          Salary__c,
           Type,
           ExternalVersion__c,
           DocumentNumber__c,
@@ -64,18 +56,16 @@ global with sharing class AccountEmployeeIntegration {
         Integer.valueOf(lstSplitDate[2])
       );
 
-      acc[0].AdmissionDate__c = admissionDateFormatted;
-      acc[0].EmployeeId__c = request.id;
-      acc[0].EmployeeStatus__c = request.status;
-      acc[0].EmployeeType__c = request.employeeType;
-      acc[0].ExternalCompanyId__c = request.companyId;
-      acc[0].ExternalEmployeeVersion__c = decimal.valueOf(
-        request.personVersion
-      );
+      //acc[0].AdmissionDate__c = admissionDateFormatted;
+      //acc[0].EmployeeId__c = request.id;
+      //acc[0].EmployeeStatus__c = request.status;
+      //acc[0].EmployeeType__c = request.employeeType;
+      //acc[0].ExternalCompanyId__c = request.companyId;
+      //acc[0].ExternalEmployeeVersion__c = decimal.valueOf( request.personVersion );
       acc[0].ExternalId__c = request.personId;
       acc[0].ExternalTenant__c = request.tenant;
-      acc[0].Margin__c = request.margin.amount;
-      acc[0].Salary__c = request.salary.amount;
+      //acc[0].Margin__c = request.margin.amount;
+      //acc[0].Salary__c = request.salary.amount;
       acc[0].ExternalVersion__c = decimal.valueOf(request.version);
       acc[0].DocumentNumber__c = request.mainDocument.code;
       acc[0].DocumentType__c = request.mainDocument.type;
@@ -92,18 +82,16 @@ global with sharing class AccountEmployeeIntegration {
         Integer.valueOf(lstSplitDate[2])
       );
 
-      newAcc.AdmissionDate__c = admissionDateFormatted;
-      newAcc.EmployeeId__c = request.id;
-      newAcc.EmployeeStatus__c = request.status;
-      newAcc.EmployeeType__c = request.employeeType;
-      newAcc.ExternalCompanyId__c = request.companyId;
-      newAcc.ExternalEmployeeVersion__c = decimal.valueOf(
-        request.personVersion
-      );
+      //newAcc.AdmissionDate__c = admissionDateFormatted;
+      //newAcc.EmployeeId__c = request.id;
+      //newAcc.EmployeeStatus__c = request.status;
+      //newAcc.EmployeeType__c = request.employeeType;
+      //newAcc.ExternalCompanyId__c = request.companyId;
+      //newAcc.ExternalEmployeeVersion__c = decimal.valueOf( request.personVersion );
       newAcc.ExternalId__c = request.personId;
       newAcc.ExternalTenant__c = request.tenant;
-      newAcc.Margin__c = request.margin.amount;
-      newAcc.Salary__c = request.salary.amount;
+      //newAcc.Margin__c = request.margin.amount;
+      //newAcc.Salary__c = request.salary.amount;
       newAcc.ExternalVersion__c = decimal.valueOf(request.version);
       newAcc.DocumentNumber__c = request.mainDocument.code;
       newAcc.DocumentType__c = request.mainDocument.type;

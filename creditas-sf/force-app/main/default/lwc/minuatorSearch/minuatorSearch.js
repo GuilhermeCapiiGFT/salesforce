@@ -7,8 +7,7 @@ export default class MinuatorSearch extends LightningElement {
     @track showScreenDefault = true
 
 
-    changeNotFound(){
-        console.log('change');
+    changeNotFound(){       
         this.showScreenNotFound = true;
         this.showScreenUnavailableEdit = false;
         this.showScreenDefault = false;

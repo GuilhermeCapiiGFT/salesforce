@@ -1,0 +1,62 @@
+.slds-progress__marker {
+    border-color: #cbcbca; 
+    background: #cbcbca; 
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.content-header{
+    display: flex;
+    align-items: center;
+}
+.content-header h1{
+    font-size: 18px;
+    font-weight: 500;
+}
+.slds-icon-standard-contract {
+    background-color: #FFFF;
+    fill: #4bca81;
+    color: #4bca81;
+    --lwc-colorTextIconInverse: #4bca81;
+}
+.title-section{
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.slds-progress_vertical .slds-progress__item{
+    position: initial;
+}
+.slds-progress__marker.completed{
+    border-color: #4bca81; 
+    background: #4bca81;    
+}
+.btn-container {
+    display: flex;
+    flex-direction: row-reverse;
+    padding-top: 2em;
+    gap: 0.5em;
+}
+.btn-container button {
+    border: 0;
+    padding: 10px 20px;
+    color: white;
+    font-family: sans-serif;
+    border-radius: 5px;
+    transition: filter 0.2s;
+    cursor: pointer;
+    background: #4bca81;
+}
+.btn-container button:not(:disabled):hover {
+    filter: brightness(0.9);
+}
+.btn-container button:disabled {
+    cursor: no-drop;
+    background: #a9a9a9;
+}
+.btn-container button.outlined {
+    background: #fff;
+    border: 1px solid #4bca81;
+    color: #4bca81;
+}

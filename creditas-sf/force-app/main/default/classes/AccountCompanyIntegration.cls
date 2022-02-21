@@ -23,7 +23,7 @@ global with sharing class AccountCompanyIntegration {
     	AccountCompanyIntegrationVO request = (AccountCompanyIntegrationVO) System.JSON.deserialize(req.requestBody.toString(), AccountCompanyIntegrationVO.class);
         
         if(request.Id != ''){
-            acc = [SELECT ExternalCompanyId__c,
+            acc = [SELECT ExternalId__c,
                  		  ExternalVersion__c,
                   		  CompanyStatus__c,
                   		  ExternalCreationDate__c,
@@ -34,7 +34,7 @@ global with sharing class AccountCompanyIntegration {
                   		  LegalName__c,
                   		  enabledProducts__c
                   FROM Account
-                  WHERE ExternalCompanyId__c =: request.Id];
+                  WHERE ExternalId__c =: request.Id];
         }
         else{
             res.statusCode = 400;  
@@ -55,7 +55,7 @@ global with sharing class AccountCompanyIntegration {
     			products += request.enabledProducts[i] + ';';
    			}
                                            
-            acc[0].ExternalCompanyId__c		= request.id; //companyId
+            acc[0].ExternalId__c = request.id; //companyId
             acc[0].ExternalVersion__c		= Decimal.valueOf(request.version);
             acc[0].CompanyStatus__c			= request.status;
             acc[0].ExternalCreationDate__c	= createdAtDateTime;
@@ -85,7 +85,7 @@ global with sharing class AccountCompanyIntegration {
     			products += request.enabledProducts[i] + ';';
    			}
                 
-            newAcc.ExternalCompanyId__c		= request.Id;
+            newAcc.ExternalId__c = request.Id;
             newAcc.ExternalVersion__c		= decimal.valueOf(request.version);
             newAcc.CompanyStatus__c			= request.status;
             newAcc.ExternalCreationDate__c	= createdAtDateTime;
@@ -98,10 +98,9 @@ global with sharing class AccountCompanyIntegration {
             newAcc.RecordTypeId             = recordTypeAcc;
             
             acc.add(newAcc);
-            //System.debug('acc:' + acc);
         }
          try {
-            upsert acc ExternalCompanyId__c;
+            upsert acc ExternalId__c;
             res.statusCode = 200;
             return 'Registro criado/atualizado com sucesso!';
         } catch (Exception e) {

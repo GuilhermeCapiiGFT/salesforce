@@ -1,8 +1,7 @@
 <template> 
     <div>
     <lightning-card>
-        <div if:true={showScreenDefault} >
-            <div class="slds-illustration slds-illustration_small"> 
+        <div if:true={showScreenDefault} class="slds-illustration slds-illustration_small">
             <svg class="slds-illustration__svg" viewBox="0 0 500 300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" style="margin-top: 60px;">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                     <g transform="translate(-54.000000, -75.000000)">
@@ -126,15 +125,14 @@
                     </g>
                 </g>
             </svg>
-        
-                <div class="slds-text-longform" style="margin-top: 30px;">
+                <div class="slds-text-longform" style="margin-top: 30px">
                     <h4 class="slds-text-heading_medium">Comece encontrando o lead que deseja trabalhar</h4>
                     <h3 class="slds-text-body_small" style="margin-top: 8px;"> Busque o lead desejado pelo ID e comece a edição da minuta</h3>
                 </div>
-            </div>
-                <lightning-card>
-                    <div class="slds-align_absolute-center" style="height:5rem; margin-bottom:100px">                                
-                        <c-minuator-search-lookup onnotfound={changeNotFound} ongenericerror={changeError}> </c-minuator-search-lookup>                                      
+
+                <lightning-card>                    
+                    <div class="slds-align_absolute-center" style="height:5rem; margin-bottom:100px">                             
+                        <c-minuator-search-lookup onnotfound={changeNotFound} ongenericerror={changeError} onnothavecredit={changeUnavailableEdit}> </c-minuator-search-lookup>                                      
                     </div>
                 </lightning-card>                
         </div> 
@@ -238,8 +236,7 @@
                 <h3 class="slds-text-body_small" style="margin-top: 8px;"> O ID não foi encontrado, confira se está tudo correto e tente novamente </h3>
                 <lightning-button icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
             </div>              
-        </div>
- 
+        </div> 
 
         <!-- Show screen any Error-->
         <div if:true={showScreenError} class="slds-illustration slds-illustration_small" style="margin-top: 60px;">
@@ -341,9 +338,9 @@
                     </g>
                 </g>
             </svg>
-                <div class="slds-text-longform" style="margin-bottom:150px; margin-top:50px">                  
-                    <h4 class="slds-text-heading_medium"> Encontramos dificuldades por aqui </h4>
-                    <h3 class="slds-text-body_small" style="margin-top: 8px;"> No momento não temos como fazer essa busca. Tente novamente mais tarde. </h3>
+                <div class="slds-text-longform" style="margin-bottom:150px; margin-top:50px">
+                    <h4 class="slds-text-heading_medium">Encontramos dificuldades por aqui</h4>
+                    <h3 class="slds-text-body_small" style="margin-top: 8px;">No momento não temos como fazer essa busca. Tente novamente mais tarde.</h3>
                     <lightning-button icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
                 </div>            
         </div>
@@ -464,11 +461,11 @@
                         </g>
                     </g>
                 </svg>                
-                <div class="slds-text-longform" style="margin-bottom:150px; margin-top:50px">                    
+                <div class="slds-text-longform" style="margin-bottom:150px; margin-top:50px">
                     <h4 class="slds-text-heading_medium"> Indisponível para edição </h4>
                     <h3 class="slds-text-body_small" style="margin-top: 8px;"> O ID foi encontrado, porém ainda não está preparado para a fase de edição de minuta </h3>
-                    <lightning-button-icon icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button-icon>
-                </div>                
+                    <lightning-button icon-name="utility:back" variant="brand" label="Voltar para busca" title="Voltar para busca" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+                </div>            
             </div>      
         </lightning-card> 
     </div>

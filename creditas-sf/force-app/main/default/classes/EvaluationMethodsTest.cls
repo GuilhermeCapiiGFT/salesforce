@@ -25,7 +25,7 @@ private class EvaluationMethodsTest {
       Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
       opp.Name = 'Opportunity Test ' + i;
       opp.StageName = 'Assinatura';
-      opp.StatusDeFormalizacao__c = 'Nova Proposta';
+      // opp.StatusDeFormalizacao__c = 'Nova Proposta';
       opp.ProductType__c = productType;
       lstOpp.add(opp);
     }

@@ -7,6 +7,21 @@ export default class ProposalFormalizationComponent extends LightningElement {
   @api recordId
   account
   accountId
+  showContract = false;
+
+  handlerAnaylisApprovement() {
+
+    let openSections = this.template.querySelectorAll("section")
+
+    openSections.forEach(section => {
+      section.classList.remove('slds-is-open')
+    })
+
+    console.log('open sections:')
+    console.log(openSections.length)
+
+    this.showContract = true
+  }
 
   @wire(getRecord, { recordId: '$recordId', fields: ACCOUNTID_FIELD })
   wiredRecord({ error, data }) {
@@ -30,5 +45,8 @@ export default class ProposalFormalizationComponent extends LightningElement {
     }
   }
 
+  handleClick(){
+    this.showContract = true;
+  }
 
 }

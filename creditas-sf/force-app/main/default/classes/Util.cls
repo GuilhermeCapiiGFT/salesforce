@@ -33,8 +33,16 @@ public with sharing class Util {
     public static String getRecordTypeNameById(String objectName, Id strRecordTypeId)
     {
         return Schema.getGlobalDescribe().get(objectName).getDescribe().getRecordTypeInfosById().get(strRecordTypeId).getName();
-    }   
-            
+    }
+    
+    public static String getRecordTypeDeveloperNameById(String objectName, Id recordTypeId) {
+        return Schema.getGlobalDescribe()
+          .get(objectName)
+          ?.getDescribe()
+          .getRecordTypeInfosById()
+          .get(recordTypeId)
+          ?.getDeveloperName();
+    }    
     
     public static Time getElapsedTime(Time startTime, Time endTime) {
         
@@ -267,7 +275,6 @@ public with sharing class Util {
                 //Sets the variable to false and adds to a list of accounts to be updated
                 mapOpportunity.get((Id) newSObject.get(lookUpRelationShip)).IsExternallySynched__c = false;
                 lMapOpportunitiesToUpdate.put((Id) newSObject.get(lookUpRelationShip) , mapOpportunity.get((Id) newSObject.get(lookUpRelationShip)) );
-                //listOpportunityToUpdate.add( mapOpportunity.get((Id) newSObject.get(lookUpRelationShip)) );
             }
         }
         //If list empty, returns

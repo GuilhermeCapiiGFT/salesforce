@@ -11,32 +11,37 @@
 * 1.0       ?                       16/12/2021      Created     Inclui os métodos responsáveis por atualizar a página de Tasks com os campos
 **********************************************************************************************************************************/
 public with sharing class TaskDetailsController {
-
+    
     @AuraEnabled(cacheable=false)
     public static String getRecordType(String taskId) {
-        return [SELECT Id, Recordtype.DeveloperName FROM Task WHERE Id =: taskId LIMIT 1]?.RecordType.DeveloperName;
+        try{
+            Id taskValidId = taskId;
+            return [SELECT Id, Recordtype.DeveloperName FROM Task WHERE Id =: taskId LIMIT 1]?.RecordType.DeveloperName;
+        }catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+
     }
 
     @AuraEnabled(cacheable=false)
     public static Map<String,Object> getTaskDetails(String taskId) {
         try {
-            Map<String, Object> lMapResult = new Map<String, object>();
-            Task lTask = [SELECT Id, TaskType__c, TaskDetails__c  FROM task WHERE id = :taskId LIMIT 1];
-            String lRecordTypeTask = getRecordType(taskId);
+            Map<String, Object> mapResult = new Map<String, object>();
+            Task task = [SELECT Id, TaskType__c, TaskDetails__c, Recordtype.DeveloperName FROM Task WHERE id = :taskId LIMIT 1];
             
-            lMapResult.put('Product',lRecordTypeTask); 
-            lMapResult.put('TaskType',lTask.TaskType__c); 
+            mapResult.put('Product',task.Recordtype.DeveloperName); 
+            mapResult.put('TaskType',task.TaskType__c); 
     
-            if(lTask != null && lRecordTypeTask != null){
-                List<TaskDetailsVO> lLstTaskDetailSettingVO = getTaskDetailSettings(lTask.TaskType__c, lRecordTypeTask.toUppercase());
-                lMapResult.put('TaskDetailSettings', lLstTaskDetailSettingVO);
+            if(task != null && task.Recordtype.DeveloperName != null){
+                List<TaskDetailsVO> lstTaskDetailSettingVO = getTaskDetailSettings(task.TaskType__c, task.Recordtype.DeveloperName.toUppercase());
+                mapResult.put('TaskDetailSettings', lstTaskDetailSettingVO);
                 
-                if(lTask.TaskDetails__c != null){
-                    List<SObject> lRecordTaskDetail = getRecordTaskDetails(lTask.TaskDetails__c);
-                    lMapResult.put('TaskDetails', lRecordTaskDetail);
+                if(task.TaskDetails__c != null){
+                    List<SObject> recordTaskDetail = getRecordTaskDetails(task.TaskDetails__c);
+                    mapResult.put('TaskDetails', recordTaskDetail);
                 }
             }
-            return lMapResult;
+            return mapResult;
             
         }catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -44,15 +49,15 @@ public with sharing class TaskDetailsController {
     }
 
     @AuraEnabled(cacheable=false)
-    public static void updateRecordTask(String aTaskId, String aTaskDetailsId) {
+    public static void updateRecordTask(String taskId, String taskDetailsId) {
         try {
-            Id lTaskId = aTaskId;
-            Id lTaskDetailsId = aTaskDetailsId;
-            if(lTaskId != null && lTaskDetailsId != null){
-                Task lTask = new Task(Id = lTaskId);
-                lTask.TaskDetails__c = lTaskDetailsId;
+            Id validTaskId = taskId;
+            Id validTaskDetailsId = taskDetailsId;
+            if(validTaskId != null && validTaskDetailsId != null){
+                Task updateTask = new Task(Id = validTaskId);
+                updateTask.TaskDetails__c = validTaskDetailsId;
 
-                update lTask;
+                update updateTask;
             }
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -72,8 +77,6 @@ public with sharing class TaskDetailsController {
         {
             recordId = (Id) varTask.whatId;
             varObjectName = Util.getSObjectNameById(recordId);
-            
-            System.debug('TYUMI object name: ' + varObjectName);
     
             if(varObjectName.equals('Opportunity'))
             {
@@ -87,119 +90,112 @@ public with sharing class TaskDetailsController {
     }
 
     @AuraEnabled(cacheable=false)
-    public static List<TaskDetailsVO> getTaskDetailSettings(String aTaskType, String aRecordTypeTask) {
+    public static List<TaskDetailsVO> getTaskDetailSettings(String taskType, String recordTypeTask) {
 
-        List<TaskDetailsVO> lLstTaskDetailsVO = new List<TaskDetailsVO>();
+        List<TaskDetailsVO> resultTaskDetailsVO = new List<TaskDetailsVO>();
         
-        List<TaskDetailSettings__c> lLstTaskSettings = [
+        List<TaskDetailSettings__c> lstTaskSettings = [
             SELECT Id, Name, CurrencyIsoCode, Product__c, WorkflowKey__c, FieldKey__c, 
                 FieldName__c, FieldType__c, RequiredForProfiles__c, ReadOnlyForProfiles__c, 
                 RelatedObject__c, NumberPrecision__c, PicklistValues__c, MappedField__c, TaskType__c,
                 DisplaySequence__c, FieldMask__c, CheckboxGroupValues__c, RadioGroupValues__c
             FROM TaskDetailSettings__c 
-            WHERE TaskType__c = :aTaskType
-            AND Product__c = :aRecordTypeTask
+            WHERE TaskType__c = :taskType
+            AND Product__c = :recordTypeTask
             ORDER BY DisplaySequence__c
         ];
             
-        for(TaskDetailSettings__c iTaskSettings : lLstTaskSettings){
+        for(TaskDetailSettings__c currentFieldSettings : lstTaskSettings){
 
-            TaskDetailsVO lTaskDetailsVO = new TaskDetailsVO();
+            TaskDetailsVO mappedFieldVO = new TaskDetailsVO();
             
-            lTaskDetailsVO.fieldKey       = iTaskSettings.FieldKey__c;
-            lTaskDetailsVO.fieldName      = iTaskSettings.FieldName__c;
-            lTaskDetailsVO.fieldType      = iTaskSettings.FieldType__c;
-            lTaskDetailsVO.Id             = iTaskSettings.id;
-            lTaskDetailsVO.fieldMappedKey = iTaskSettings.MappedField__c;
-            lTaskDetailsVO.fieldMask      = (iTaskSettings.FieldMask__c != null) ? iTaskSettings.FieldMask__c : '';
+            mappedFieldVO.fieldKey       = currentFieldSettings.FieldKey__c;
+            mappedFieldVO.fieldName      = currentFieldSettings.FieldName__c;
+            mappedFieldVO.fieldType      = currentFieldSettings.FieldType__c;
+            mappedFieldVO.Id             = currentFieldSettings.id;
+            mappedFieldVO.fieldMappedKey = currentFieldSettings.MappedField__c;
+            mappedFieldVO.fieldMask      = (currentFieldSettings.FieldMask__c != null) ? currentFieldSettings.FieldMask__c : '';
             
             
-            lTaskDetailsVO.isReadOnly  = actionByProfile(iTaskSettings.ReadOnlyForProfiles__c);
-            lTaskDetailsVO.isRequeried = actionByProfile(iTaskSettings.RequiredForProfiles__c);
+            mappedFieldVO.isReadOnly = actionByProfile(currentFieldSettings.ReadOnlyForProfiles__c);
+            mappedFieldVO.isRequired = actionByProfile(currentFieldSettings.RequiredForProfiles__c);
 
-            if(lTaskDetailsVO.fieldType == 'Currency'){
-                lTaskDetailsVO.isCurrency = true;
-                lTaskDetailsVO.numberPrecision = (iTaskSettings.NumberPrecision__c != null) ? iTaskSettings.NumberPrecision__c : '0.01';
+            if(currentFieldSettings.FieldType__c == 'Currency'){
+                mappedFieldVO.isCurrency = true;
+                mappedFieldVO.numberPrecision = (currentFieldSettings.NumberPrecision__c != null) ? currentFieldSettings.NumberPrecision__c : '0.01';
             } 
-            else if(lTaskDetailsVO.fieldType == 'Multi-picklist'){
-                lTaskDetailsVO.isMultiPicklist = true;
-                lTaskDetailsVO.picklistValues = iTaskSettings.PicklistValues__c != null ? iTaskSettings.PicklistValues__c : '';
+            else if(currentFieldSettings.FieldType__c == 'Multi-picklist'){
+                mappedFieldVO.isMultiPicklist = true;
+                mappedFieldVO.picklistValues = currentFieldSettings.PicklistValues__c != null ? currentFieldSettings.PicklistValues__c : '';
             } 
-            else if(lTaskDetailsVO.fieldType == 'Picklist'){
-                lTaskDetailsVO.isPicklist = true;
-                lTaskDetailsVO.picklistValues = iTaskSettings.PicklistValues__c != null ? iTaskSettings.PicklistValues__c : '';
+            else if(currentFieldSettings.FieldType__c == 'Picklist'){
+                mappedFieldVO.isPicklist = true;
+                mappedFieldVO.picklistValues = currentFieldSettings.PicklistValues__c != null ? currentFieldSettings.PicklistValues__c : '';
             } 
-            else if(lTaskDetailsVO.fieldType == 'Checkbox'){
-                lTaskDetailsVO.isCheckbox = true;
+            else if(currentFieldSettings.FieldType__c == 'Checkbox'){
+                mappedFieldVO.isCheckbox = true;
             }
-            else if(lTaskDetailsVO.fieldType == 'Relationship'){
-                lTaskDetailsVO.isRelationship = true;
-                lTaskDetailsVO.relatedObject = iTaskSettings.RelatedObject__c;
+            else if(currentFieldSettings.FieldType__c == 'Relationship'){
+                mappedFieldVO.isRelationship = true;
+                mappedFieldVO.relatedObject = currentFieldSettings.RelatedObject__c;
             }
-            else if(lTaskDetailsVO.fieldType == 'Header'){
-                lTaskDetailsVO.isHeader = true;
+            else if(currentFieldSettings.FieldType__c == 'Header'){
+                mappedFieldVO.isHeader = true;
             }            
-            else if(lTaskDetailsVO.fieldType == 'Number'){
-                lTaskDetailsVO.isNumber = true;
-                lTaskDetailsVO.numberPrecision = (iTaskSettings.NumberPrecision__c != null) ? iTaskSettings.NumberPrecision__c : '0';
+            else if(currentFieldSettings.FieldType__c == 'Number'){
+                mappedFieldVO.isNumber = true;
+                mappedFieldVO.numberPrecision = (currentFieldSettings.NumberPrecision__c != null) ? currentFieldSettings.NumberPrecision__c : '0';
             }           
-            else if(lTaskDetailsVO.fieldType == 'CheckboxGroup'){
-                lTaskDetailsVO.isCheckboxGroup = true;
-                lTaskDetailsVO.checkboxGroupValues = iTaskSettings.CheckboxGroupValues__c != null ? iTaskSettings.CheckboxGroupValues__c : '';
+            else if(currentFieldSettings.FieldType__c == 'CheckboxGroup'){
+                mappedFieldVO.isCheckboxGroup = true;
+                mappedFieldVO.checkboxGroupValues = currentFieldSettings.CheckboxGroupValues__c != null ? currentFieldSettings.CheckboxGroupValues__c : '';
             }
-            else if(lTaskDetailsVO.fieldType == 'RadioGroup'){
-                lTaskDetailsVO.isRadioGroup = true;
-                lTaskDetailsVO.radioGroupValues = iTaskSettings.RadioGroupValues__c != null ? iTaskSettings.RadioGroupValues__c : '';
+            else if(currentFieldSettings.FieldType__c == 'RadioGroup'){
+                mappedFieldVO.isRadioGroup = true;
+                mappedFieldVO.radioGroupValues = currentFieldSettings.RadioGroupValues__c != null ? currentFieldSettings.RadioGroupValues__c : '';
             }
             else {
-                lTaskDetailsVO.isDefault = true;         
+                mappedFieldVO.isDefault = true;         
             }
 
-            lLstTaskDetailsVO.add(lTaskDetailsVO);
+            resultTaskDetailsVO.add(mappedFieldVO);
         }
-        return lLstTaskDetailsVO;
+        return resultTaskDetailsVO;
     }
 
     @AuraEnabled(cacheable=false)
-    public static List<SObject> getRecordTaskDetails(String aTaskDetails){
+    public static List<SObject> getRecordTaskDetails(String taskDetails){
         try {
-            List<SObject> lRecordTaskDetail = new List<SObject>();
+            List<SObject> recordTaskDetail = new List<SObject>();
             DescribeSObjectResult describeResult = TaskDetails__c.getSObjectType().getDescribe();
             List<String> fieldNames = new List<String>( describeResult.fields.getMap().keySet() );
-            Id lTaskDetailsId = aTaskDetails;
+            Id taskDetailsId = taskDetails;
             String query =
             ' SELECT ' +
             String.join( fieldNames, ',' ) +
             ' FROM ' +
             describeResult.getName() +
-            ' WHERE Id = :lTaskDetailsId';
+            ' WHERE Id = :taskDetailsId';
             query = query + ' limit 1';
 
-            lRecordTaskDetail = Database.query( query );
-
-            return lRecordTaskDetail;
+            recordTaskDetail = Database.query( query );
+            return recordTaskDetail;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
     }
 
-    
     @AuraEnabled(cacheable=false)
-    public static Boolean actionByProfile(String aProfileRequired){
-        if(String.isBlank(aProfileRequired)){
+    public static Boolean actionByProfile(String profiles){
+        if(String.isBlank(profiles)){
             return false;
         }
         
-        List<String> lLstProfiles = aProfileRequired.split(';');
+        List<String> lstProfiles = profiles.split(';');
         
-        Id lCurrentProfileId = userinfo.getProfileId();
-        String lCurrentProfileName = [SELECT Id, Name FROM Profile WHERE Id =: lCurrentProfileId]?.Name;
+        Id currentProfileId = userinfo.getProfileId();
+        String currentProfileName = [SELECT Id, Name FROM Profile WHERE Id =: currentProfileId]?.Name;
         
-        if( lLstProfiles.contains(lCurrentProfileName)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return lstProfiles.contains(currentProfileName);
     }    
 }

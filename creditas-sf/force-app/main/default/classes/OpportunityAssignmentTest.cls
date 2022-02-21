@@ -20,9 +20,11 @@ private class OpportunityAssignmentTest {
   @TestSetup
   static void makeData() {
     // Custom Setup
+    String cSetupRecordType = Util.getRecordTypeIdbyName('CustomSetup__C', 'AtWork');
     CustomSetup__c cSetup = new CustomSetup__c(
       Name = 'Parametrização de Filas e Usuários',
-      DateFilter__c = 'Data de Solicitação'
+      DateFilter__c = 'RequestDate',
+      RecordTypeId = cSetupRecordType
     );
     insert cSetup;
     cSetupId = cSetup.Id;
@@ -276,8 +278,8 @@ private class OpportunityAssignmentTest {
   static Opportunity makeOppty(Integer num, String prodType, Datetime externalCreatedDttm) {
     Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opp.Name = 'Test Oppty ' + num;
-    opp.StageName = 'Assinatura';
-    opp.StatusDeFormalizacao__c = 'Nova Proposta';    
+    opp.StageName = 'HR';
+    opp.FormalizationStatus__c = 'NewProposal';
     opp.ProductType__c = prodType;
     opp.ExternalCreationDate__c = externalCreatedDttm;
     return opp;

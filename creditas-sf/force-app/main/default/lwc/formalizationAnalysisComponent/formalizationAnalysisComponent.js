@@ -1,8 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation';
-//import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
-//import ACCOUNT_RECORD from '@salesforce/schema/PersonalDataSection__c';
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
@@ -13,6 +11,7 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 const VARIANT_BASE = 'base-autocomplete';
 const VARIANT_EXPIRED = 'expired';
 const VARIANT_WARNING = 'warning';
+
 export default class FormalizationAnalysis extends LightningElement {
     @api recordId;
     isLoading = true;
@@ -64,10 +63,7 @@ export default class FormalizationAnalysis extends LightningElement {
     @wire(getObjectInfo, { objectApiName: ACCOUNT_OBJECT })
     accInfo({ data, error }) {
         if (data){
-            //console.log('accountFields');
             this.accountFields = data.fields;
-            //console.dir(this.accountFields);
-            this.loadData();
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
 
@@ -77,11 +73,7 @@ export default class FormalizationAnalysis extends LightningElement {
     @wire(getObjectInfo, { objectApiName: CONTACTS_OBJECT })
     conInfo({ data, error }) {
         if (data){
-            //console.log('conFields');
-            //this.contactsFields = data.fields;
             this.contactsFields = { SMS: data.fields, EMAIL: data.fields };
-            console.dir(this.contactsFields);
-            //this.loadData();
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
 
@@ -91,9 +83,7 @@ export default class FormalizationAnalysis extends LightningElement {
     @wire(getObjectInfo, { objectApiName: ADDRESS_OBJECT })
     adrInfo({ data, error }) {
         if (data){
-            //console.log('addressFields');
             this.addressFields = data.fields;
-            //this.loadData();
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
 
@@ -103,27 +93,24 @@ export default class FormalizationAnalysis extends LightningElement {
     @wire(getObjectInfo, { objectApiName: DOCUMENTS_OBJECT })
     docInfo({ data, error }) {
         if (data){
-            //console.log('documentFields');
             this.documentFields = data.fields;
-            //console.dir(this.documentFields);
-            //this.loadData();
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
         }  
     }
-
     
     //getFields and build the dataForms to generate fields dynamically
     @wire (getInformation, {aOpportunityId : '$recordId'} )
     wiredOpportunity( wiredResult ){
-        console.log('getOpps');
         if(wiredResult.data === undefined){
             this.isLoading = true;
         } else if (wiredResult.data && this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
             this.fullData = wiredResult.data;
+
             let dataAddress = [...wiredResult.data.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'];
-            let dataDocuments = [...wiredResult.data.Documentos__r] ? [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {}) : { SMS: '', EMAIL: ''};
+            let dataDocuments = [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {});
             let dataContacts = [...wiredResult.data.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {});
+
             //General Section Variables
             let generalDataFields = [];
             let resultedArrayGeneral = [];
@@ -177,7 +164,7 @@ export default class FormalizationAnalysis extends LightningElement {
 
             });
 
-            //Documents complementary Array
+            //PersonalData complementary Array
             Object.getOwnPropertyNames(dataDocuments).forEach( typeOfDocument => {
                 Object.getOwnPropertyNames(dataDocuments[typeOfDocument]).forEach( propertyName => {
                    
@@ -197,7 +184,6 @@ export default class FormalizationAnalysis extends LightningElement {
             });
 
             //Contacts Array
-            //console.dir(dataContacts);
             Object.getOwnPropertyNames(this.contactsFields).forEach( typeOfContact => {
                 Object.getOwnPropertyNames(this.contactsFields[typeOfContact]).forEach( propertyName => {
                     if(contactDataFields.includes(`${typeOfContact}.${propertyName}`)){
@@ -269,12 +255,10 @@ export default class FormalizationAnalysis extends LightningElement {
             
         }else if(event.detail.section === 'PersonalData'){
             this.eventResponsesPersonalData.set(event.detail.position, event.detail.variant );
-
             this.readEventResponses('dataPersonal','eventResponsesPersonalData','p1');
 
         }else if(event.detail.section === 'Contact'){
             this.eventResponsesContact.set(event.detail.position, event.detail.variant );
-
             this.readEventResponses('dataContact','eventResponsesContact','p2');
 
         }else if(event.detail.section === 'Address'){
@@ -283,12 +267,10 @@ export default class FormalizationAnalysis extends LightningElement {
 
         }else if(event.detail.section === 'Bank'){
             this.eventResponsesBank.set(event.detail.position, event.detail.variant );
-
-            this.readEventResponses('dataBank','eventResponsesBank','p5');
+            this.readEventResponses('dataBank','eventResponsesBank','p4');
 
         }else if(event.detail.section === 'Company'){
             this.eventResponsesCompany.set(event.detail.position, event.detail.variant );
-
             this.readEventResponses('dataCompany','eventResponsesCompany','p5');
 
         }

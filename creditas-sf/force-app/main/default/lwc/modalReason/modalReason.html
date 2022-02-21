@@ -13,7 +13,7 @@
             </div>
             <div class="slds-modal__content slds-p-around_medium content-modal-reason" id="modal-content-id-1">
                 <lightning-combobox              
-                    name="Motivo"
+                    name="reason"
                     label="Motivo:"
                     placeholder="Selecione um motivo"
                     class="form-reason"
@@ -22,7 +22,7 @@
                 </lightning-combobox>
                 <template if:true={openSubReason}>
                     <lightning-combobox
-                        name="Sub-motivo"
+                        name="subreason"
                         label="Sub-motivo:"
                         placeholder="Selecione um sub motivo"
                         class="form-reason slds-m-top_small"
@@ -31,7 +31,7 @@
                     </lightning-combobox>
                 </template>
                 <template if:true={openNote}>
-                    <lightning-textarea name="Observação" class="form-reason slds-m-top_small" label="Observação:" ></lightning-textarea>
+                    <lightning-textarea name="description" class="form-reason slds-m-top_small" label="Observação:" ></lightning-textarea>
                 </template>
             </div>
             <div class="slds-modal__footer">

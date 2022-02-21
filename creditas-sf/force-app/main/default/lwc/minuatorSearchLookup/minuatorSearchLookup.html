@@ -3,16 +3,15 @@
         <div class="slds-form-element__control">
             <div class="slds-combobox_container">
                 <div data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">                       
                         <lightning-input 
                                         data-id="search" 
-                                        label="Lead" 
+                                        label="Lead"
                                         name="searchText" 
                                         placeholder="Buscar por ID" 
                                         value={selectedOption}
-                                        onchange={getLeads}
-                                        class="placeholder"
-                                        > 
+                                        onchange={getLeads} 
+                                        style="text-align: left;"> 
                         </lightning-input>
                         <div if:true={showIconSearch}>
                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
@@ -56,7 +55,7 @@
                                             >
                                         </lightning-icon>
                                         <h3 class="slds-truncate"  title={name} > {name} </h3>
-                                        <h3 style="margin-right: 75px; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
+                                        <h3 style="margin-left: 35px; text-align: left; color:#696969"  title={friendlyId}> {friendlyId} </h3>                                          
                                     </span>                 
                                 </div>        
                             </li>

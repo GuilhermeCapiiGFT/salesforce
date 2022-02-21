@@ -14,11 +14,12 @@ public class SynchAccountDataControllerTest {
     @TestSetup
     static void makeData()
     {
+
         Account newAccount = new Account();
         newAccount.Name = 'New Account';
         newAccount.DocumentNumber__c = '58131786277';
         newAccount.IsExternallySynched__c = true;
-        newAccount.RecordTypeId = '01203000000CpjkAAC';
+        newAccount.RecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
         newAccount.IsSynchEnabled__c= '	ENABLED';
         insert(newAccount);
     }

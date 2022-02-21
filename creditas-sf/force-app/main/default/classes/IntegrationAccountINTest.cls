@@ -443,7 +443,7 @@ global with sharing class IntegrationAccountINTest {
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
-        System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null","accountId":null}');       
+        System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null.","accountId":null}');
     } 
       
     static String accountMock(String param){

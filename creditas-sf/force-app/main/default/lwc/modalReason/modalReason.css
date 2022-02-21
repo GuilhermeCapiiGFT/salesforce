@@ -23,3 +23,13 @@
     cursor: default;
     background-color: #a9a9a9;
 }
+
+.slds-modal__footer .slds-button_neutral{
+    border: #4bca81 1px solid;
+    color: #4bca81;
+}
+
+.slds-modal__footer .slds-button_neutral:hover
+.slds-modal__footer .slds-button_neutral:visited{
+    background: #63e39914;
+}

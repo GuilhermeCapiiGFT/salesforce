@@ -22,5 +22,5 @@ public class TaskDetailsVO {
     @AuraEnabled public String  radioGroupValues;
     @AuraEnabled public String  numberPrecision;
     @AuraEnabled public Boolean  isReadOnly;
-    @AuraEnabled public Boolean  isRequeried;
+    @AuraEnabled public Boolean  isRequired;
 }

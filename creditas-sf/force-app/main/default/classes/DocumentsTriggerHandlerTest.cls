@@ -49,10 +49,6 @@ public class DocumentsTriggerHandlerTest {
                               WHERE Id =: varDocument.Account__c
                               LIMIT 1];
 
-        System.debug('TYUMI');
-        System.debug(varDocument);
-        System.debug(varAccount);
-
         System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 

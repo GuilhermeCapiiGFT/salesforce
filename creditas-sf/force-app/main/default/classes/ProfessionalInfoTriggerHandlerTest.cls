@@ -47,10 +47,6 @@ public class ProfessionalInfoTriggerHandlerTest {
                               WHERE Id =: varProfessionalInfo.Account__c
                               LIMIT 1];
 
-        System.debug('TYUMI');
-        System.debug(varProfessionalInfo);
-        System.debug(varAccount);
-
         System.assertEquals(false, varAccount.IsExternallySynched__c, 'O campo isExternallySync deveria ter mudado para false');
     }
 

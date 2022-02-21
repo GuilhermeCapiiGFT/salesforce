@@ -259,6 +259,43 @@ private class UtilTest {
         System.assert(!lUpdatedOpportunity.IsExternallySynched__c, 'ExternallySynched not updated');
     }
 
+    @isTest
+    private static void testGetRecordTypeDeveloperNameById(){
 
-    
+        Account account = AccountSetup.createAccount('Account1', 'Pessoa_Fisica');
+
+        insert account;
+        
+        Opportunity opportunity = OpportunitySetup.createOpportunity(account.Id, 'AtWork');
+
+        insert opportunity;
+
+        Test.startTest();
+
+        Account newAccount = [SELECT RecordTypeId FROM Account LIMIT 1];
+        Opportunity newOpportunity = [SELECT RecordTypeId FROM Opportunity LIMIT 1];
+
+        String recordTypeDevName1;
+        String recordTypeDevName2;
+        String recordTypeDevName3;
+        String recordTypeDevName4;
+
+        // Positive test
+        recordTypeDevName1 = Util.getRecordTypeDeveloperNameById('Account', newAccount.RecordTypeId);
+        recordTypeDevName2 = Util.getRecordTypeDeveloperNameById('Opportunity', newOpportunity.RecordTypeId);
+
+        System.assertEquals('Pessoa_Fisica', recordTypeDevName1, 'Incorrect RecordType DeveloperName');
+        System.assertEquals('AtWork', recordTypeDevName2, 'Incorrect RecordType DeveloperName');
+
+        // Negative test
+        recordTypeDevName1 = Util.getRecordTypeDeveloperNameById('Case', newAccount.RecordTypeId);
+        recordTypeDevName2 = Util.getRecordTypeDeveloperNameById('Account', newOpportunity.RecordTypeId);
+        recordTypeDevName3 = Util.getRecordTypeDeveloperNameById('', newOpportunity.RecordTypeId);
+
+        System.assertEquals(null, recordTypeDevName1, 'RecordType DeveloperName should by null');
+        System.assertEquals(null, recordTypeDevName2, 'RecordType DeveloperName should by null');
+        System.assertEquals(null, recordTypeDevName3, 'RecordType DeveloperName should by null');
+
+        Test.stopTest();
+    }
 }

@@ -7,7 +7,7 @@ export default class MinuatorPerson extends LightningElement {
     @track personObject = {};
 	@track persons = [];
 	showPersonSectionVar = false;
-	showPersonData1 = false;
+	showRelationshipSectionVar = false;
 	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
 	participationOptions = [
@@ -24,12 +24,21 @@ export default class MinuatorPerson extends LightningElement {
 		{ label: 'CNH - Carteira Nacional de Habilitação', value: 'cnh' },
 		{ label: 'RNE - Registro Nacional de Estrangeiros', value: 'rne	' },
 		{ label: 'Documento de Classe', value: 'classDocument' }
-	]
+	];
+	regimeOptions = [
+		{ label: 'Comunhão total de bens', value: 'total' }
+	];
+
+
 
 
 	showPersonSection(){
 		this.showPersonSectionVar = !this.showPersonSectionVar;
 		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";
+	}
+
+	showRelationshipSection(){
+		this.showRelationshipSectionVar = !this.showRelationshipSectionVar
 	}
 
 	showPersonDataSection(event){

@@ -19,25 +19,12 @@ export default class SynchAccountData extends LightningElement {
 
     connectedCallback(){
         let myComponent = this;
-
         this.subscribeSynchAccountEvent(myComponent)
-        // var messageCallback = function(response) {
-        //     console.log('evento recxebido');
-        //     updateScreen();
-        // };
-
-        // subscribe(this.channelName, -1, messageCallback)       
-        // .then(response => {
-        //     console.log('Subscription request sent to: ', JSON.stringify(response.channel));
-        //     this.subscription = response;
-        // });
-            
-            
 
         getAccountData({accountId: this.recordId}) 
             .then(result => { 
                 this.account = result;
-                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c){
+                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c || result.IsSynchEnabled__c == 'ENABLED'){
                     this.showComponent = true;
                     this.showSynchButton = true;
                 } else if (result.IsSynchEnabled__c == 'SYNCHING'){
@@ -64,14 +51,12 @@ export default class SynchAccountData extends LightningElement {
     
     subscribeSynchAccountEvent(myComponent){
         const messageCallback = function(response) {
-            console.log('evento recebido');
             myComponent.showSynchingScreen = false;
             myComponent.showEventReceived = true;
         };
 
         subscribe(myComponent.channelName, -1, messageCallback)       
         .then(response => {
-            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
             myComponent.subscription = response;
         });
     }

@@ -127,9 +127,9 @@ public without sharing class DocumentsTriggerHandler extends TriggerHandler
 
         for(Documents__c varDocuments : lstNewDocuments)
         {
-            varDocuments.ExternalAccountId__c = mapAccounts.get(varDocuments.Account__c).ExternalId__c;
-            varDocuments.ExternalAccountVersion__c = mapAccounts.get(varDocuments.Account__c).ExternalVersion__c;
-            varDocuments.ExternalAccountTenant__c = mapAccounts.get(varDocuments.Account__c).ExternalTenant__c;
+            varDocuments.ExternalAccountId__c = mapAccounts.get(varDocuments.Account__c)?.ExternalId__c;
+            varDocuments.ExternalAccountVersion__c = mapAccounts.get(varDocuments.Account__c)?.ExternalVersion__c;
+            varDocuments.ExternalAccountTenant__c = mapAccounts.get(varDocuments.Account__c)?.ExternalTenant__c;
         }        
     }
 }

@@ -10,8 +10,9 @@ export default class ModalReason extends LightningElement {
     listValuesReason = [];
     openNote = false;
 
-    @api modalHeader;
+    // @api modalHeader;
     @api field;
+    @api typeReason;
 
     connectedCallback(){
         this.mapRelatedReasons.set('Motivo 1', ['SubMotivo 1.1','SubMotivo 1.2','SubMotivo 1.3','SubMotivo 1.4']);
@@ -22,6 +23,10 @@ export default class ModalReason extends LightningElement {
 
         let mapReason = [... this.mapRelatedReasons.keys()];
         this.optionsReason = mapReason.map((item) => Object.assign({}, {label: item, value: item}));
+    }
+
+    get modalHeader(){
+        return this.typeReason == 'reject' ? 'Motivo da reprovação' : 'Motivo do pendenciamento';
     }
 
     handlerClose(){
@@ -55,10 +60,22 @@ export default class ModalReason extends LightningElement {
     handlerSave(){
         let objResultReason = {};
         this.template.querySelectorAll(".form-reason").forEach(elem => {
-            objResultReason[elem.name] = (elem.value) ? elem.value : '';
+            objResultReason[elem.name] = (elem.value) ? elem.value : null;
         });
         objResultReason.field = this.field;
-        console.log(objResultReason);
+        objResultReason.type = this.typeReason;
+        this.selectedReason(objResultReason);
         this.handlerClose();
+    }
+
+    selectedReason(objResult){
+        // this.reset();
+        const selectedEvent = new CustomEvent('selectedreason', {
+            bubbles    : true,
+            composed   : true,
+            cancelable : true,
+            detail: objResult ? objResult : ''
+        });
+        this.dispatchEvent(selectedEvent);
     }
 }
