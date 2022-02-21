@@ -15,7 +15,9 @@ const VARIANT_WARNING = 'warning';
 export default class FormalizationAnalysis extends LightningElement {
     @api recordId;
     isLoading = true;
+    analysisNotStarted = true;
     fullData;
+    timeNow;
     error;
     //ProgressRing Variables
     p0Progress = 0;
@@ -275,6 +277,7 @@ export default class FormalizationAnalysis extends LightningElement {
 
         }
     }
+
     readEventResponses(dataType, eventResponse, button){
         let value = 100/this[dataType].length;
         
@@ -296,8 +299,30 @@ export default class FormalizationAnalysis extends LightningElement {
         }
     }
 
+    handleStartAnalysis(event){
+        this.analysisNotStarted = false;
+        this.timeNow = this.formatDate();
+    }
+
+    formatDate() {
+        let dt = new Date()
+    
+        const formatter = new Intl.DateTimeFormat('pt-BR', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+    
+        let formattedDate = formatter.format(dt)
+        
+        return formattedDate
+    }
+
     handleAccordeon(event){
-        //event.target.parentElement.parentElement.parentElement.parentElement.classList.toggle('slds-is-open');
+        if(this.analysisNotStarted) { return; }
         
         let elementValue = event.target.parentElement.value;        
         let elemControls = this.template.querySelectorAll('.slds-accordion__section');

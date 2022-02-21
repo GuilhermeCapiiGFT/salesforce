@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: end;
-    
+    margin-top: 0.7em;
 }
   
 div.field {
@@ -16,7 +16,6 @@ div.field {
     border-radius: 5px;
     border: 1px solid #ccc;
     height: 1.9rem;
-    margin-bottom: 5px;
   } 
   
   input[type="text"] {
@@ -40,6 +39,8 @@ div.field {
   .slds-accordion__summary-content {
     font-weight: bold;
   }
+
+  
   
   /* Styling the form, inputs and fields - END*/
   
@@ -115,7 +116,7 @@ div.field {
     margin: 25px 15px 25px 0;
     --lwc-colorBackgroundSuccessDark: #4bca81;
   }
-  
+
   .progressCircle:first-child {
     margin-top: 0;
   }

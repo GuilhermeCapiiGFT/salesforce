@@ -1,6 +1,14 @@
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-card>         
+    <lightning-card>
+            <div slot="title">
+                <template if:true={analysisNotStarted}>
+                    <lightning-button class="buttonBoxShadow slds-float-right slds-var-p-right_medium" variant="success" label="Iniciar Análise" title="Iniciar Análise" onclick={handleStartAnalysis}></lightning-button>
+                </template>
+               <template if:false={analysisNotStarted}>
+                   <span>Análise iniciada em: {timeNow}</span>
+               </template>
+            </div>      
             <!-- SPINNER LOADING -->
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
@@ -191,15 +199,15 @@
                         </div>
                     </div>
                     <!-- SEVENTH ACCORDEON TAB -->
-                    <!--
+                    
                         <div class="slds-progress__item">
-                           < *******PROGRESS RING REPLACES MARKER
+                           <!-- PROGRESS RING REPLACES MARKER -->
                             <lightning-progress-ring value={p6Progress} variant={p6Variant} class="progressCSS"> </lightning-progress-ring>
                             <div class="slds-progress__item_content">
                                 <li class="slds-accordion__list-item">
                                     <section class="slds-accordion__section">
                                         <div class="slds-accordion__summary">
-                                           <******CLICKABLE HEADER WITH FUNCTIONS 
+                                           <!-- CLICKABLE HEADER WITH FUNCTIONS -->
                                             <h2 class="slds-accordion__summary-heading">
                                                 <button class="slds-button" onclick={handleAccordeon}
                                                     aria-controls="referenceId-81" aria-expanded="false" title="Links Rápidos" value="6">                                                
@@ -208,7 +216,7 @@
                                             </h2>
                                         </div>
                                         <div class="slds-accordion__content" id="referenceId-81">
-                                            <*****ACCORDEON CONTENT HERE 
+                                            <!-- ACCORDEON CONTENT HERE  -->
                                             <div class="slds-box">
                                                 <lightning-formatted-url value="https://www.brscan.com.br/brflow.html" label="BRFlow" target="_blank"></lightning-formatted-url>
                                             </div>
@@ -232,7 +240,6 @@
                                 </li>
                             </div>
                         </div>
-                    -->
                 </ol>
             </div>
         

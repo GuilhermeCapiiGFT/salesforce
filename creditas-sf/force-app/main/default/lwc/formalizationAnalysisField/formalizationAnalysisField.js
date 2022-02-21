@@ -15,6 +15,7 @@ export default class FormalizationAnalysisField extends LightningElement {
     modalType;
 
     connectedCallback(){
+        console.dir(input);
         this.inputName = this.input.inputName;
         this.inputType = this.input.inputType;
         this.inputLabel = this.input.inputLabel;

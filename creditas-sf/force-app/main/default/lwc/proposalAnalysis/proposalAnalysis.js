@@ -5,6 +5,7 @@ import MailingPostalCode from '@salesforce/schema/Contact.MailingPostalCode';
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
+  @api opportunityid
 
   isAnalysisStarted = false
   startDate = ''
@@ -61,6 +62,10 @@ export default class ProposalAnalysis extends LightningElement {
     if (infoSection.returnedId === 'dadosPessoaisContainer') {
       this.personalInfoVariant = infoSection.variant
       this.personalInfoValue = infoSection.value
+
+      console.log('dados pessoais')
+      console.log(typeof this.personalInfoValue)
+      console.log(typeof infoSection.value)
     }
 
     else if (infoSection.returnedId === 'generalContainer') {
@@ -118,7 +123,6 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   isCompleted() {
-    
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
@@ -149,12 +153,14 @@ export default class ProposalAnalysis extends LightningElement {
       }
     })
 
-    
     let totalPercentage = 0
 
-    totalPercentage = (percentageSections) / this.mapInfoSection.size
+    totalPercentage = Number((percentageSections) / this.mapInfoSection.size)
 
-    console.log({totalPercentage})
+    console.log({percentageSections})
+    console.log({ totalPercentage })
+    
+    console.log(typeof totalPercentage)
 
     if (totalPercentage == '100') {
       
