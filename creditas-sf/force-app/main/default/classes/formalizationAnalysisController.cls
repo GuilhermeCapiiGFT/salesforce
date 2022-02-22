@@ -11,4 +11,13 @@ public with sharing class formalizationAnalysisController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static string getAccountRecordTypeId(){
+        try {
+            return Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

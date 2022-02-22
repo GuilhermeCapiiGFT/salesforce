@@ -10,7 +10,7 @@ public with sharing class formalizationAnalysisService {
             Util.getRecordTypeIdbyName('Documents__c', 'PIS'),
             Util.getRecordTypeIdbyName('Documents__c', 'CPF')
         };
-        Account AccountWithDocumentsAddressesAndCommContacts = [SELECT FirstName__c, Mother__c, BirthDate__c, Gender__c, DocumentNumber__c, CivilStatus__c, ExternalCreationDate__c, //AdmissionDate__c,
+        Account AccountWithDocumentsAddressesAndCommContacts = [SELECT FirstName__c, Mother__c, BirthDate__c, Gender__c, DocumentNumber__c, CivilStatus__c, RecordTypeId, ExternalCreationDate__c, //AdmissionDate__c,
                             ExternalUpdatedDate__c, BankName__c, Agency__c, BankAccountNumber__c, CompanyName__c, CompanyCNPJ__c, CompanyStatus__c, //Margin__c,
                             (SELECT DocumentNumber__c, Issuer__c, IssuerState__c, IssueDate__c,DocumentType__c FROM Documentos__r WHERE RecordTypeId IN :documentsRTSet),
                             (SELECT PostalCode__c, Street__c, StreetNumber__c,Complement__c,Neighborhood__c, AreaLevel2__c, AreaLevel1__c FROM Enderecos__r WHERE Type__c = 'HOME'),

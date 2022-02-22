@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation';
+import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation'
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
@@ -19,6 +19,7 @@ export default class FormalizationAnalysis extends LightningElement {
     fullData;
     timeNow;
     error;
+    accountRecordTypeId;
     //ProgressRing Variables
     p0Progress = 0;
     p1Progress = 0;
@@ -109,6 +110,7 @@ export default class FormalizationAnalysis extends LightningElement {
         } else if (wiredResult.data && this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
             this.fullData = wiredResult.data;
 
+            this.accountRecordTypeId = wiredResult.data.RecordTypeId;
             let dataAddress = [...wiredResult.data.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'];
             let dataDocuments = [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {});
             let dataContacts = [...wiredResult.data.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {});

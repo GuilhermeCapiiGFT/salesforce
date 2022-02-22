@@ -1,7 +1,10 @@
 import { LightningElement, api, wire } from 'lwc';
+import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
+import ACCOUNT_RECORD from '@salesforce/schema/Account';
 
 export default class FormalizationAnalysisField extends LightningElement {
     @api input
+    @api accountRecordTypeId = undefined;
     inputType;
     inputLabel;
     inputName;
@@ -13,9 +16,48 @@ export default class FormalizationAnalysisField extends LightningElement {
     openModalReason = false;
     modalReasonField;
     modalType;
+    //TestTree
+    treeModel;
+    error;
+    picklistMap;
+
+    @wire(getPicklistValuesByRecordType, {
+        objectApiName: ACCOUNT_RECORD,
+        recordTypeId: '$accountRecordTypeId'
+    })
+    wiredValues({ error, data }) {
+        
+        if (data) {
+            this.treeModel = this.buildTreeModel(data.picklistFieldValues);
+            console.dir(this.treeModel);
+            this.error = undefined;
+        } else {
+            this.error = error;
+            this.treeModel = undefined;
+        }
+    }
+
+    buildTreeModel(picklistValues) {
+        const treeNodes = [];
+        let picklistMap = new Map();
+        Object.keys(picklistValues).forEach((picklist) => {
+            treeNodes.push({
+                label: picklist,
+                items: picklistValues[picklist].values.map((item) => ({
+                    label: item.label,
+                    name: item.value
+                }))
+            });
+            picklistMap.set(picklist, picklistValues[picklist].values.map((item) => ({
+                label: item.label,
+                name: item.value
+            })))
+        });
+        this.picklistMap = picklistMap
+        return treeNodes;
+    }
 
     connectedCallback(){
-        console.dir(input);
         this.inputName = this.input.inputName;
         this.inputType = this.input.inputType;
         this.inputLabel = this.input.inputLabel;
