@@ -53,7 +53,8 @@ export default class FormalizationAnalysisField extends LightningElement {
                 name: item.value
             })))
         });
-        this.picklistMap = picklistMap
+        this.picklistMap = picklistMap;
+        console.dir(this.picklistMap);
         return treeNodes;
     }
 
