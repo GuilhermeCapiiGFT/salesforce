@@ -23,7 +23,7 @@ global with sharing class AccountCompanyIntegration {
     	AccountCompanyIntegrationVO request = (AccountCompanyIntegrationVO) System.JSON.deserialize(req.requestBody.toString(), AccountCompanyIntegrationVO.class);
         
         if(request.Id != ''){
-            acc = [SELECT ExternalCompanyId__c,
+            acc = [SELECT ExternalId__c,
                  		  ExternalVersion__c,
                   		  CompanyStatus__c,
                   		  ExternalCreationDate__c,
@@ -34,17 +34,17 @@ global with sharing class AccountCompanyIntegration {
                   		  LegalName__c,
                   		  enabledProducts__c
                   FROM Account
-                  WHERE ExternalCompanyId__c =: request.Id];
+                  WHERE ExternalId__c =: request.Id];
         }
         else{
             res.statusCode = 400;  
-            return 'CompanyId inválido!';        
+            return 'CompanyId inválido!';
         }
         
         if(!acc.isEmpty()){
-            
-            String createdAt = request.createdAt; 
-    		String updatedAt = request.updateAt;
+
+            String createdAt = formatDatetime(request.createdAt);
+    		String updatedAt = formatDatetime(request.updatedAt);            
             
             Datetime createdAtDateTime = Datetime.valueOf(createdAt);
             Datetime updatedAtDateTime = Datetime.valueOf(updatedAt);
@@ -55,8 +55,8 @@ global with sharing class AccountCompanyIntegration {
     			products += request.enabledProducts[i] + ';';
    			}
                                            
-            acc[0].ExternalCompanyId__c		= request.id; //companyId
-            acc[0].ExternalVersion__c		= decimal.valueOf(request.version);
+            acc[0].ExternalId__c = request.id; //companyId
+            acc[0].ExternalVersion__c		= Decimal.valueOf(request.version);
             acc[0].CompanyStatus__c			= request.status;
             acc[0].ExternalCreationDate__c	= createdAtDateTime;
             acc[0].ExternalUpdatedDate__c	= updatedAtDateTime;
@@ -69,13 +69,13 @@ global with sharing class AccountCompanyIntegration {
         } 
         else{
 
-            RecordType recordTypeAcc = [SELECT id FROM RecordType WHERE Name = 'Pessoa Jurídica'];
+            String recordTypeAcc = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
 
             Account newAcc = new Account();
             
-            String createdAt = request.createdAt; 
-    		String updatedAt = request.updateAt;
-            
+            String createdAt = formatDatetime(request.createdAt);
+    		String updatedAt = formatDatetime(request.updatedAt);
+
             Datetime createdAtDateTime = Datetime.valueOf(createdAt);
             Datetime updatedAtDateTime = Datetime.valueOf(updatedAt);
             
@@ -85,7 +85,7 @@ global with sharing class AccountCompanyIntegration {
     			products += request.enabledProducts[i] + ';';
    			}
                 
-            newAcc.ExternalCompanyId__c		= request.Id;
+            newAcc.ExternalId__c = request.Id;
             newAcc.ExternalVersion__c		= decimal.valueOf(request.version);
             newAcc.CompanyStatus__c			= request.status;
             newAcc.ExternalCreationDate__c	= createdAtDateTime;
@@ -95,17 +95,26 @@ global with sharing class AccountCompanyIntegration {
             newAcc.Name						= request.businessName;
             newAcc.LegalName__c				= request.legalName;
             newAcc.enabledProducts__c		= products; 
-            newAcc.RecordTypeId             = recordTypeAcc.Id;
+            newAcc.RecordTypeId             = recordTypeAcc;
             
             acc.add(newAcc);
-            System.debug('acc:' + acc);
         }
          try {
-            upsert acc;
+            upsert acc ExternalId__c;
             res.statusCode = 200;
             return 'Registro criado/atualizado com sucesso!';
         } catch (Exception e) {
             return e.getMessage();
         }
 	}
+
+    private static String formatDatetime(String aDatetime){
+
+        List<String> dateParts = aDatetime.split('T');
+        String part1 = dateParts[0];
+        String part2 = dateParts[1].split('\\.')[0];
+        String formatedDatetime = part1 + ' ' + part2;        
+
+        return formatedDatetime;
+    }
 }
