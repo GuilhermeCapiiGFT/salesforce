@@ -36,6 +36,6 @@ public without sharing class OpportunityTriggerController extends TriggerHandler
     }
   
     public override void afterUpdate() {
-      
+      OpportunityAssignmentController.handleAtWorkOpportunityAssignment(lstNewOpportunity);
     }
   }
