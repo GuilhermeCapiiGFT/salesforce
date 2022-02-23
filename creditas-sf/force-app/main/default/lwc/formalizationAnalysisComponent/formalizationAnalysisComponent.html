@@ -36,7 +36,7 @@
                                         <div class="slds-accordion__content" id="referenceId-75">
                                             <!-- FIELDS COMPONENT -->
                                             <template for:each={dataGeneral} for:item="item">
-                                                <c-formalization-analysis-field key={item.id} input={item} account-record-type-id={accountRecordTypeId} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                                <c-formalization-analysis-field key={item.id} input={item} picklist-map={picklistMap} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                             </template>
                                             <!-- SAVE BUTTON -->
                                             <div class="slds-text-align_center slds-float_right slds-scrollable_none">

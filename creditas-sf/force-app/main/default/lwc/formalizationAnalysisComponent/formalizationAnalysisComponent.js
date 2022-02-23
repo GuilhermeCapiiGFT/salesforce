@@ -6,6 +6,7 @@ import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
 import ADDRESS_OBJECT from '@salesforce/schema/Addresses__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
 
 //CONSTANTS
 const VARIANT_BASE = 'base-autocomplete';
@@ -20,6 +21,7 @@ export default class FormalizationAnalysis extends LightningElement {
     timeNow;
     error;
     accountRecordTypeId;
+    picklistMap;
     //ProgressRing Variables
     p0Progress = 0;
     p1Progress = 0;
@@ -244,6 +246,33 @@ export default class FormalizationAnalysis extends LightningElement {
             return [];
         }
         
+    }
+
+    @wire(getPicklistValuesByRecordType, {
+        objectApiName: ACCOUNT_OBJECT,
+        recordTypeId: '$accountRecordTypeId'
+    })
+    wiredValues({ error, data }) {
+        
+        if (data) {
+            console.log('wire');
+            this.picklistMap = this.buildPickListMap(data.picklistFieldValues);
+            this.error = undefined;
+        } else {
+            this.error = error;
+            this.picklistMap = undefined;
+        }
+    }
+
+    buildPickListMap(picklistValues) {
+        let picklistMapPartial = new Map();
+        Object.keys(picklistValues).forEach((picklist) => {
+            picklistMapPartial.set(picklist, picklistValues[picklist].values.map((item) => ({
+                label: item.label,
+                name: item.value
+            })))
+        });
+        return picklistMapPartial;
     }
 
     handleProgress(event){

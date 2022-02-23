@@ -1,62 +1,23 @@
-import { LightningElement, api, wire } from 'lwc';
-import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
-import ACCOUNT_RECORD from '@salesforce/schema/Account';
+import getMapPickList from '@salesforce/apex/formalizationAnalysisController.getMapPickList';
+import { LightningElement, api } from 'lwc';
 
 export default class FormalizationAnalysisField extends LightningElement {
     @api input
-    @api accountRecordTypeId = undefined;
+    @api picklistMap;
     inputType;
     inputLabel;
     inputName;
     inputSection;
     inputDisabled;
     inputValue;
+    isTextInput = false;
+    isPickListInput = false;
     dateStyle = '';
     //Events Variables
     openModalReason = false;
     modalReasonField;
     modalType;
-    //TestTree
-    treeModel;
-    error;
-    picklistMap;
-
-    @wire(getPicklistValuesByRecordType, {
-        objectApiName: ACCOUNT_RECORD,
-        recordTypeId: '$accountRecordTypeId'
-    })
-    wiredValues({ error, data }) {
-        
-        if (data) {
-            this.treeModel = this.buildTreeModel(data.picklistFieldValues);
-            console.dir(this.treeModel);
-            this.error = undefined;
-        } else {
-            this.error = error;
-            this.treeModel = undefined;
-        }
-    }
-
-    buildTreeModel(picklistValues) {
-        const treeNodes = [];
-        let picklistMap = new Map();
-        Object.keys(picklistValues).forEach((picklist) => {
-            treeNodes.push({
-                label: picklist,
-                items: picklistValues[picklist].values.map((item) => ({
-                    label: item.label,
-                    name: item.value
-                }))
-            });
-            picklistMap.set(picklist, picklistValues[picklist].values.map((item) => ({
-                label: item.label,
-                name: item.value
-            })))
-        });
-        this.picklistMap = picklistMap;
-        console.dir(this.picklistMap);
-        return treeNodes;
-    }
+    picklistValues = [];
 
     connectedCallback(){
         this.inputName = this.input.inputName;
@@ -64,9 +25,22 @@ export default class FormalizationAnalysisField extends LightningElement {
         this.inputLabel = this.input.inputLabel;
         this.inputDisabled = this.input.inputDisabled;
         this.inputValue = this.input.inputValue;
-        this.inputSection = this.input.inputSection;       
+        this.inputSection = this.input.inputSection;
+        if(this.input.inputType === 'Picklist'){
+            getMapPickList({objApiName: 'Account', fieldApiName: this.inputName}).then( result => {
+                this.picklistValues = JSON.parse(result);
+            }).catch(error => {
+                console.log(JSON.stringify(error));
+            }).finally( () => {
+                console.log(this.picklistValues);
+            })
+        }
     }
-    
+
+    handleChange(event) {
+        this.value = event.detail.value;
+    }
+
     renderedCallback(){
         this.configureFields();
     }
@@ -74,9 +48,18 @@ export default class FormalizationAnalysisField extends LightningElement {
     configureFields(){
         if(this.inputType === 'Date' || this.inputType === "DateTime"){
             this.dateStyle = 'short';
+            this.isTextInput = true;
+        } else if (this.inputType === 'Picklist'){
+            this.isPickListInput = true;
+        } else {
+            this.isTextInput = true;
         }
     }
 
+    get pickListOptions() {
+        return this.picklistValues;
+    }
+    
     handleCheckboxChange(event){
    
         this.template.querySelectorAll('.isCheckBox').forEach(elem => {
@@ -88,7 +71,6 @@ export default class FormalizationAnalysisField extends LightningElement {
     
     handleApprove(event){
         this.sendProgressEvent('approve');
-        
     }
 
     handleReject(event){
