@@ -49,8 +49,8 @@ public with sharing class AccountEmployeeIntegrationService {
   public void upsertEmployee() {
     this.createAccounts();
 
-    String employeeName = getEmployeeByExternalId(this.employeeExternalId)?.Name;
-    if (String.isEmpty(employeeName)) {
+    String employeeName = getEmployeeNameByExternalId(this.employeeExternalId);
+    if (String.isBlank(employeeName)) {
       employeeName = this.employeeExternalId;
     }
 
@@ -113,13 +113,8 @@ public with sharing class AccountEmployeeIntegrationService {
     return [SELECT ExternalId__c FROM Account WHERE ExternalId__c IN :externalIds];
   }
 
-  private Employee__c getEmployeeByExternalId(String externalId) {
-    List<Employee__c> employees = [SELECT Name FROM Employee__c WHERE ExternalId__c = :externalId];
-    if (employees.isEmpty()) {
-      return null;
-    }
-
-    return employees[0];
+  private String getEmployeeNameByExternalId(String externalId) {
+    return [SELECT Name FROM Employee__c WHERE ExternalId__c = :externalId]?.Name;
   }
 
   private Date getParsedDate(String dateString) {

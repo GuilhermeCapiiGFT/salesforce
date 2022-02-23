@@ -31,6 +31,7 @@ private with sharing class AccountEmployeeIntegrationTest {
     Employee__c employee = employees.get(0);
 
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
+    System.assertEquals(200, res.statusCode, 'Status Code should be 200');
     System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
     System.assertEquals(employee.ExternalId__c, 'TEST-EMPLOYEE-001', 'Wrong employee External Id');
     System.assertEquals(employee.AdmissionDate__c, Date.newInstance(2022, 2, 22), 'Wrong employee Admission Date');
@@ -91,17 +92,21 @@ private with sharing class AccountEmployeeIntegrationTest {
     Employee__c employee = employees.get(0);
 
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
+    System.assertEquals(200, res.statusCode, 'Status Code should be 200');
     System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
+    System.assertEquals(employee.Name, 'João da Silva - Creditas', 'Wrong employee Name');
     System.assertEquals(employee.ExternalId__c, 'TEST-EMPLOYEE-001', 'Wrong employee External Id');
     System.assertEquals(employee.AdmissionDate__c, Date.newInstance(2022, 2, 22), 'Wrong employee Admission Date');
     System.assertEquals(employee.Margin__c, 5555.99, 'Wrong employee Margin');
     System.assertEquals(employee.Salary__c, 3333.33, 'Wrong employee Salary');
+    System.assertEquals(employee.PersonAccount__r.Name, 'João da Silva', 'Wrong person account Name');
     System.assertEquals(
       employee.PersonAccount__r.RecordTypeId,
       accountPersonRecordTypeId,
       'Wrong person account Record Type Id'
     );
     System.assertEquals(employee.PersonAccount__r.ExternalId__c, 'TEST-PERSON-001', 'Wrong person account External Id');
+    System.assertEquals(employee.Company__r.Name, 'Creditas', 'Wrong company account Name');
     System.assertEquals(
       employee.Company__r.RecordTypeId,
       accountCompanyRecordTypeId,
@@ -147,6 +152,8 @@ private with sharing class AccountEmployeeIntegrationTest {
 
     Test.stopTest();
 
+    System.assertEquals(400, res.statusCode, 'Status Code should be 400');
+
     List<Employee__c> employees = getEmployees();
 
     System.assert(employees.isEmpty(), 'No Employee__c record should exist');
@@ -159,12 +166,15 @@ private with sharing class AccountEmployeeIntegrationTest {
   private static List<Employee__c> getEmployees() {
     return [
       SELECT
+        Name,
         AdmissionDate__c,
         Margin__c,
         Salary__c,
         ExternalId__c,
+        PersonAccount__r.Name,
         PersonAccount__r.RecordTypeId,
         PersonAccount__r.ExternalId__c,
+        Company__r.Name,
         Company__r.RecordTypeId,
         Company__r.ExternalId__c
       FROM Employee__c
