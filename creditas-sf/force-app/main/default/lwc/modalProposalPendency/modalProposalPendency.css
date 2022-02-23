@@ -1,0 +1,10 @@
+.slds-modal__footer .slds-button_brand{
+  background: #4bca81;
+  color: #ffff;
+  font-weight: 500;
+  border: #4bca81;
+}
+.slds-modal__footer .slds-button_brand:focus,
+.slds-modal__footer .slds-button_brand:hover{
+  background: #589f76;
+}
