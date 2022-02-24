@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Custom_Field_Tracking_Map.Employee_AdmissionDate</members>
-		<members>Custom_Field_Tracking_Map.Employee_Company</members>
-		<members>Custom_Field_Tracking_Map.Employee_ExternalId</members>
-		<members>Custom_Field_Tracking_Map.Employee_ExternalTenant</members>
-		<members>Custom_Field_Tracking_Map.Employee_ExternalVersion</members>
-		<members>Custom_Field_Tracking_Map.Employee_Margin</members>
-		<members>Custom_Field_Tracking_Map.Employee_PersonAccount</members>
-		<members>Custom_Field_Tracking_Map.Employee_Salary</members>
-		<members>Custom_Field_Tracking_Map.Employee_Status</members>
-		<members>Custom_Field_Tracking_Map.Employee_Type</members>
-		<name>CustomMetadata</name>
+		<members>FormalizationAnalysisTest</members>
+		<members>formalizationAnalysisController</members>
+		<members>formalizationAnalysisService</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>formalizationAnalysisComponent</members>
+		<members>formalizationAnalysisField</members>
+		<name>LightningComponentBundle</name>
 	</types>
 	<version>53.0</version>
 </Package>
