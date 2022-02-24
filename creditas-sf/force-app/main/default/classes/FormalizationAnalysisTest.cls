@@ -77,4 +77,15 @@ public class FormalizationAnalysisTest {
       );
     }
   }
+  @isTest
+  private static void testgetPickListMap() {
+    
+
+    Test.startTest();
+    String pickListMap = formalizationAnalysisController.getMapPickList('Account', 'Gender__c');
+    Test.stopTest();
+
+    System.assert(String.isNotBlank(pickListMap), 'pickListMap is empty');
+    
+  }
 }

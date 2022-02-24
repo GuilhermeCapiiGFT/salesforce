@@ -1,13 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation';
+import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation'
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
 import ADDRESS_OBJECT from '@salesforce/schema/Addresses__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
-//CONSTANTS
 const VARIANT_BASE = 'base-autocomplete';
 const VARIANT_EXPIRED = 'expired';
 const VARIANT_WARNING = 'warning';
@@ -15,8 +14,11 @@ const VARIANT_WARNING = 'warning';
 export default class FormalizationAnalysis extends LightningElement {
     @api recordId;
     isLoading = true;
+    analysisNotStarted = true;
     fullData;
+    timeNow;
     error;
+    accountRecordTypeId;
     //ProgressRing Variables
     p0Progress = 0;
     p1Progress = 0;
@@ -93,7 +95,7 @@ export default class FormalizationAnalysis extends LightningElement {
     @wire(getObjectInfo, { objectApiName: DOCUMENTS_OBJECT })
     docInfo({ data, error }) {
         if (data){
-            this.documentFields = data.fields;
+            this.documentFields = { RG: data.fields, CPF: data.fields, PIS: data.fields };
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
         }  
@@ -107,6 +109,7 @@ export default class FormalizationAnalysis extends LightningElement {
         } else if (wiredResult.data && this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
             this.fullData = wiredResult.data;
 
+            this.accountRecordTypeId = wiredResult.data.RecordTypeId;
             let dataAddress = [...wiredResult.data.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'];
             let dataDocuments = [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {});
             let dataContacts = [...wiredResult.data.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {});
@@ -132,55 +135,30 @@ export default class FormalizationAnalysis extends LightningElement {
             
             //Account fields logic to generate array PersonalData + Bank + CompanyData
             Object.getOwnPropertyNames(this.accountFields).forEach( propertyName => {
+
                 if( personalDataFields.includes(propertyName) ){
-                    resultedArrayPersonalData.push( {   id: personalDataFields.indexOf(propertyName), 
-                                                        inputName: this.accountFields[propertyName].apiName,
-                                                        inputType: this.accountFields[propertyName].dataType,
-                                                        inputDisabled: !this.accountFields[propertyName].updateable, 
-                                                        inputLabel: this.accountFields[propertyName].label, 
-                                                        inputValue: this.fullData[propertyName], 
-                                                        inputSection: 'PersonalData' }
-                                                    );
-                } else if( bankDataFields.includes(propertyName) ){
-                    resultedArrayBankData.push( {   id: bankDataFields.indexOf(propertyName),
-                                                    inputName: this.accountFields[propertyName].apiName,
-                                                    inputType: this.accountFields[propertyName].dataType,
-                                                    inputDisabled: !this.accountFields[propertyName].updateable,
-                                                    inputLabel: this.accountFields[propertyName].label, 
-                                                    inputValue: this.fullData[propertyName], 
-                                                    inputSection: 'Bank'}
-                                                );
                     
+                    resultedArrayPersonalData.push( this.returnNewObject(personalDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'PersonalData'));
+
+                } else if( bankDataFields.includes(propertyName) ){
+                    
+                    resultedArrayBankData.push( this.returnNewObject(bankDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Bank'));
+
                 } else if( companyDataFields.includes(propertyName) ){
-                    resultedArrayCompanyData.push( {    id: companyDataFields.indexOf(propertyName),
-                                                        inputName: this.accountFields[propertyName].apiName, 
-                                                        inputType: this.accountFields[propertyName].dataType,
-                                                        inputDisabled: !this.accountFields[propertyName].updateable, 
-                                                        inputLabel: this.accountFields[propertyName].label, 
-                                                        inputValue: this.fullData[propertyName], 
-                                                        inputSection: 'Company'}
-                                                );
+                   
+                    resultedArrayCompanyData.push( this.returnNewObject(companyDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Company'));
                 }
 
             });
-
+        
             //PersonalData complementary Array
-            Object.getOwnPropertyNames(dataDocuments).forEach( typeOfDocument => {
-                Object.getOwnPropertyNames(dataDocuments[typeOfDocument]).forEach( propertyName => {
-                   
-                    if(personalDataFields.includes(`${dataDocuments[typeOfDocument].DocumentType__c}.${propertyName}`)){
-                        resultedArrayPersonalData.push( {   id: personalDataFields.indexOf(`${dataDocuments[typeOfDocument].DocumentType__c}.${propertyName}`), 
-                                                            inputName: this.documentFields[propertyName].apiName,
-                                                            inputType: this.documentFields[propertyName].dataType,
-                                                            inputDisabled: !this.documentFields[propertyName].updateable, 
-                                                            inputLabel: this.documentFields[propertyName].label === 'Número do documento' ? dataDocuments[typeOfDocument].DocumentType__c : this.documentFields[propertyName].label, 
-                                                            inputValue: dataDocuments[typeOfDocument][propertyName],
-                                                            inputSection: 'PersonalData' }
-                                                            );
+            Object.getOwnPropertyNames(this.documentFields).forEach( typeOfDocument => {
+                Object.getOwnPropertyNames(this.documentFields[typeOfDocument]).forEach( propertyName => {
+                    if(personalDataFields.includes(`${typeOfDocument}.${propertyName}`)){
+                        let indexNumber = personalDataFields.indexOf(`${dataDocuments[typeOfDocument].DocumentType__c}.${propertyName}`);
+                        resultedArrayPersonalData.push( this.returnNewObject( indexNumber, this.documentFields[typeOfDocument], dataDocuments[typeOfDocument], propertyName, 'PersonalData') );
                     }
-
                 })
-
             });
 
             //Contacts Array
@@ -188,35 +166,19 @@ export default class FormalizationAnalysis extends LightningElement {
                 Object.getOwnPropertyNames(this.contactsFields[typeOfContact]).forEach( propertyName => {
                     if(contactDataFields.includes(`${typeOfContact}.${propertyName}`)){
                         let fieldLabel = contactDataFields.indexOf(`${typeOfContact}.${propertyName}`) === 0 ? 'Telefone': 'E-mail';
-                        resultedArrayContactsData.push( {   id: contactDataFields.indexOf(`${typeOfContact}.${propertyName}`), 
-                                                            inputName: this.contactsFields[typeOfContact][propertyName].apiName,
-                                                            inputType: this.contactsFields[typeOfContact][propertyName].dataType,
-                                                            inputDisabled: !this.contactsFields[typeOfContact][propertyName].updateable, 
-                                                            inputLabel: fieldLabel,
-                                                            inputValue: dataContacts[typeOfContact][propertyName],
-                                                            inputSection: 'Contact' }
-                                                            );
+                        resultedArrayContactsData.push( this.returnNewObject(contactDataFields.indexOf(`${typeOfContact}.${propertyName}`),this.contactsFields[typeOfContact],dataContacts[typeOfContact],propertyName,'Contact',fieldLabel) );
                     }
-
                 })
-
             });
 
             //Address Array
-            Object.getOwnPropertyNames(dataAddress).forEach( propertyName => {
+            Object.getOwnPropertyNames(this.addressFields).forEach( propertyName => {
 
                 if(addressDataFields.includes(propertyName)){
-                    resultedArrayAddressData.push( {   id: addressDataFields.indexOf(propertyName), 
-                                                        inputName: this.addressFields[propertyName].apiName,
-                                                        inputType: this.addressFields[propertyName].dataType,
-                                                        inputDisabled: !this.addressFields[propertyName].updateable, 
-                                                        inputLabel: this.addressFields[propertyName].label, 
-                                                        inputValue: dataAddress[propertyName],
-                                                        inputSection: 'Address' }
-                                                        );
+                    resultedArrayAddressData.push( this.returnNewObject(addressDataFields.indexOf(propertyName),this.addressFields,dataAddress,propertyName,'Address'));
                 }
-
             });
+
             //this.dataGeneral = this.sortArray([...resultedArrayGeneral]);
             this.dataPersonal = this.sortArray([...resultedArrayPersonalData]);
             this.dataContact = this.sortArray([...resultedArrayContactsData]);
@@ -235,11 +197,29 @@ export default class FormalizationAnalysis extends LightningElement {
         if(array){
             return array.sort( (a,b) => {
                 return a.id - b.id;
-            })
+            });
         } else {
             return [];
         }
         
+    }
+
+    returnNewObject(id,objInput,dataInput,propertyName,inputSection,inputLabel){
+        let label;
+        if(inputLabel){
+            label = inputLabel;
+        } else {
+            label = objInput[propertyName].label === 'Número do documento' ? dataInput.DocumentType__c : objInput[propertyName].label
+        }
+
+        return {    id: id, 
+                    inputName: objInput[propertyName].apiName,
+                    inputType: objInput[propertyName].dataType,
+                    inputDisabled: !objInput[propertyName].updateable, 
+                    inputLabel: label, 
+                    inputValue: dataInput[propertyName],
+                    inputSection: inputSection 
+                };
     }
 
     handleProgress(event){
@@ -275,6 +255,7 @@ export default class FormalizationAnalysis extends LightningElement {
 
         }
     }
+
     readEventResponses(dataType, eventResponse, button){
         let value = 100/this[dataType].length;
         
@@ -296,8 +277,30 @@ export default class FormalizationAnalysis extends LightningElement {
         }
     }
 
+    handleStartAnalysis(event){
+        this.analysisNotStarted = false;
+        this.timeNow = this.formatDate();
+    }
+
+    formatDate() {
+        let dt = new Date()
+    
+        const formatter = new Intl.DateTimeFormat('pt-BR', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+    
+        let formattedDate = formatter.format(dt)
+        
+        return formattedDate
+    }
+
     handleAccordeon(event){
-        //event.target.parentElement.parentElement.parentElement.parentElement.classList.toggle('slds-is-open');
+        if(this.analysisNotStarted) { return; }
         
         let elementValue = event.target.parentElement.value;        
         let elemControls = this.template.querySelectorAll('.slds-accordion__section');
@@ -312,13 +315,6 @@ export default class FormalizationAnalysis extends LightningElement {
            
         }
         elemControls[elementValue].classList.add('slds-is-open');
-        
-
-    }
-
-    closeModal(event){
-        const closeEvent = new CustomEvent('close');
-        this.dispatchEvent(closeEvent);
     }
 
     showToast(title, message, variant){
