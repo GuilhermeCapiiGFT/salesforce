@@ -3,7 +3,6 @@ import { LightningElement, api } from 'lwc';
 
 export default class FormalizationAnalysisField extends LightningElement {
     @api input
-    @api picklistMap;
     inputType;
     inputLabel;
     inputName;
@@ -32,7 +31,7 @@ export default class FormalizationAnalysisField extends LightningElement {
             }).catch(error => {
                 console.log(JSON.stringify(error));
             }).finally( () => {
-                console.log(this.picklistValues);
+                //console.log(this.picklistValues);
             })
         }
     }

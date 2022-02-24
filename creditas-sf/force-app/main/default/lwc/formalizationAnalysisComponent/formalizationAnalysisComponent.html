@@ -36,7 +36,7 @@
                                         <div class="slds-accordion__content" id="referenceId-75">
                                             <!-- FIELDS COMPONENT -->
                                             <template for:each={dataGeneral} for:item="item">
-                                                <c-formalization-analysis-field key={item.id} input={item} picklist-map={picklistMap} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                                <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                             </template>
                                             <!-- SAVE BUTTON -->
                                             <div class="slds-text-align_center slds-float_right slds-scrollable_none">
@@ -217,24 +217,40 @@
                                         </div>
                                         <div class="slds-accordion__content" id="referenceId-81">
                                             <!-- ACCORDEON CONTENT HERE  -->
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://www.brscan.com.br/brflow.html" label="BRFlow" target="_blank"></lightning-formatted-url>
-                                            </div>
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://api.clearsale.com.br/docs/data-trust#authentication-section" label="Data Trust" target="_blank"></lightning-formatted-url>
-                                            </div>
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://app.emailage.com/login" label="Emailege" target="_blank"></lightning-formatted-url>
-                                            </div>
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://www.allcheck.info/" label="All Check" target="_blank"></lightning-formatted-url>
-                                            </div>
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://vtex.com/" label="VTEX" target="_blank"></lightning-formatted-url>
-                                            </div>
-                                            <div class="slds-box">
-                                                <lightning-formatted-url value="https://www.oititec.com.br/" label="OITI" target="_blank"></lightning-formatted-url>
-                                            </div>
+                                            <lightning-layout>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://www.brflow.com.br/autenticacao/autenticacao/login" label="BRFlow" target="_blank"></lightning-formatted-url>
+                                                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://app.clearsale.com.br/v2/Autenticacao/" label="Data Trust" target="_blank"></lightning-formatted-url>
+                                                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://app.emailage.com/login?ReturnUrl=%2fquery" label="Emailege" target="_blank"></lightning-formatted-url>
+                                                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://site3.allcheck.info/allcheck_produtos/techEngine?sid=allcheck_produtos&command=main" label="All Check" target="_blank"></lightning-formatted-url>
+                                                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://creditas.myvtex.com/_v/segment/admin-login/v1/login?returnUrl=%2Fadmin%2Fcheckout%2F%3F#/orders?f_creationDate=creationDate:%5B2020-12-07T03:00:00.000Z%20TO%202020-12-08T02:59:59.999Z%5D&orderBy=creationDate,desc" label="VTEX" target="_blank"></lightning-formatted-url>
+                                                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item flexibility="auto" padding="around-small">
+                                                    
+                                                    <lightning-formatted-url value="https://www.oititec.com.br/" label="OITI" target="_blank"></lightning-formatted-url>
+
+                                                </lightning-layout-item>
+                                                
+                                                
+                                            </lightning-layout>
                                         </div>
                                     </section>
                                 </li>
