@@ -4,6 +4,8 @@ public with sharing class AccountEmployeeIntegrationService {
 
   RestRequest request;
   AccountEmployeeIntegrationVO requestBodyObject;
+  Integer statusCode;
+  String message;
 
   String companyExternalId {
     get {
@@ -23,8 +25,33 @@ public with sharing class AccountEmployeeIntegrationService {
 
   public AccountEmployeeIntegrationService(RestRequest request) {
     this.request = request;
-    this.parseBody();
-    this.checkRequiredFields();
+  }
+
+  public void processRequest(){
+    try {
+      this.parseBody();
+      this.checkRequiredFields();
+      this.createAccounts();
+      this.upsertEmployee();
+      this.setStatusAndMessage(200, 'Record created/updated successfully.');
+    } catch (AccountEmployeeIntegrationException e) {
+      this.setStatusAndMessage(400, e.getMessage());
+    } catch (Exception e){
+      this.setStatusAndMessage(400, 'Error: couldn\'t process request.');
+    }
+  }
+
+  public Integer getStatusCode(){
+    return this.statusCode;
+  }
+
+  public String getMessage(){
+    return this.message;
+  }
+
+  private void setStatusAndMessage(Integer code, String message){
+    this.statusCode = code;
+    this.message = message;
   }
 
   private void parseBody() {
@@ -46,9 +73,7 @@ public with sharing class AccountEmployeeIntegrationService {
     }
   }
 
-  public void upsertEmployee() {
-    this.createAccounts();
-
+  private void upsertEmployee() {
     String employeeName = getEmployeeNameByExternalId(this.employeeExternalId);
     if (String.isBlank(employeeName)) {
       employeeName = this.employeeExternalId;
