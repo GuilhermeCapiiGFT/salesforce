@@ -32,7 +32,7 @@ private with sharing class AccountEmployeeIntegrationTest {
 
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
     System.assertEquals(200, res.statusCode, 'Status Code should be 200');
-    System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
+    System.assertEquals('Record created/updated successfully.', response, 'Wrong response');
     System.assertEquals('TEST-EMPLOYEE-001', employee.ExternalId__c, 'Wrong employee External Id');
     System.assertEquals(Date.newInstance(2022, 2, 22), employee.AdmissionDate__c, 'Wrong employee Admission Date');
     System.assertEquals(5555.99, employee.Margin__c, 'Wrong employee Margin');
@@ -93,7 +93,7 @@ private with sharing class AccountEmployeeIntegrationTest {
 
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
     System.assertEquals(200, res.statusCode, 'Status Code should be 200');
-    System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
+    System.assertEquals('Record created/updated successfully.', response, 'Wrong response');
     System.assertEquals('João da Silva - Creditas', employee.Name, 'Wrong employee Name');
     System.assertEquals('TEST-EMPLOYEE-001', employee.ExternalId__c, 'Wrong employee External Id');
     System.assertEquals(Date.newInstance(2022, 2, 22), employee.AdmissionDate__c, 'Wrong employee Admission Date');
