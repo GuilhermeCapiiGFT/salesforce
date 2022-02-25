@@ -16,12 +16,12 @@ public class MinuatorSearchService {
 		
         try{
             request.setEndpoint('https://stg-api.creditas.io/home-formalization-service/contracts?friendlyId=' + friendlyId);  
-            request.setMethod('GET');       
-            String accessToken = getAccessToken();	             
+            request.setMethod('GET');               
+            String accessToken = Test.isRunningTest() ? 'test' : getAccessToken();	             
        		request.setHeader('grant_type', 'password');       
             request.setHeader('Content-Type', 'application/json');        
             request.setHeader('X-TENANT-ID', 'creditasbr');               
-            request.setHeader('Authorization', 'Bearer ' + accessToken);             
+            request.setHeader('Authorization', 'Bearer ' + accessToken);          
             response = http.send(request);               
 	
             if(response.getStatusCode() == 200) {	                

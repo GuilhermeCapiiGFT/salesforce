@@ -18,12 +18,7 @@ public with sharing class OpportunityEvaluationController {
     evaluation.setProducts(allCustomQueues);
     evaluation.setOpportunities(opportunities);
     evaluation.evaluateOpportunities();
-
-    List<Opportunity> changedOpportunities = evaluation.getChangedOpportunities();
-
-    if (Trigger.isExecuting && Trigger.isAfter && !changedOpportunities.isEmpty()) {
-      update changedOpportunities;
-    }
+    evaluation.updateChangedOpportunities();
   }
 
   public static void evaluateByCustomQueue(List<CustomQueue__c> customQueues) {
@@ -34,11 +29,6 @@ public with sharing class OpportunityEvaluationController {
     evaluation.setProducts(customQueues);
     evaluation.selectOpportunities();
     evaluation.evaluateOpportunities();
-
-    List<Opportunity> changedOpportunities = evaluation.getChangedOpportunities();
-
-    if (Trigger.isExecuting && Trigger.isAfter && !changedOpportunities.isEmpty()) {
-      update changedOpportunities;
-    }
+    evaluation.updateChangedOpportunities();
   }
 }

@@ -67,28 +67,19 @@ public class CustomSetupTest {
 
         Test.stopTest();
 
-        System.assert(customSetup!=null, 'Custom Setup is null.');
+        System.assertNotEquals(null, customSetup, 'Custom Setup shouldn\'t be null.');
         System.assertEquals('Test', customSetup.Name, 'Incorrect Custom Setup Name');
     }
 
     @IsTest
     private static void testSelectCustomQueues(){
-
-        String pendencyReturnApiName = CustomSetupController.getPendencyReturnApiName();
-
-        List<CustomQueue__c> sampleQueues = [SELECT Id FROM CustomQueue__c WHERE ProductType__c != :pendencyReturnApiName LIMIT 2];
-        Set<Id> sampleQueueIds = new Set<Id>{sampleQueues[0].Id, sampleQueues[1].Id};
-        
+       
         Test.startTest();
         
         List<CustomQueue__c> allQueues = CustomSetupController.selectCustomQueues();
-        List<CustomQueue__c> someQueues = CustomSetupController.selectCustomQueues(sampleQueueIds);
 
         Test.stopTest();
 
         System.assertEquals(6, allQueues.size(), 'Expected 6 itens in CustomQueue__c list');
-
-        // PENDENCY_RETURN custom queue will always return
-        System.assertEquals(3, someQueues.size(), 'Expected 3 itens in CustomQueue__c list');
     }
 }

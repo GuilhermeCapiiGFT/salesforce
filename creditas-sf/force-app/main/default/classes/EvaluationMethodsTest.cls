@@ -55,7 +55,7 @@ private class EvaluationMethodsTest {
   @TestSetup
   static void runSetup() {
     // @work custom setup
-    CustomSetup__c cSetup = makeCustomSetup('Parametrização de Filas e Usuários', 'Data de Solicitação');
+    CustomSetup__c cSetup = makeCustomSetup('Parametrização de Filas e Usuários', 'RequestDate');
 
     insert cSetup;
 
@@ -363,7 +363,7 @@ private class EvaluationMethodsTest {
     insert op4;
 
     CustomSetup__c cSetup = EvaluationMethods.getAtWorkCustomSetup();
-    cSetup.DateFilter__c = 'Data de Solicitação';
+    cSetup.DateFilter__c = 'RequestDate';
     update cSetup;
 
     Test.startTest();
@@ -373,7 +373,7 @@ private class EvaluationMethodsTest {
       cSetup.DateFilter__c
     );
 
-    cSetup.DateFilter__c = 'Data de Criação';
+    cSetup.DateFilter__c = 'CreatedDate';
     update cSetup;
 
     List<Opportunity> lstOpp2 = EvaluationMethods.getAtWorkOpportunitiesSorted(

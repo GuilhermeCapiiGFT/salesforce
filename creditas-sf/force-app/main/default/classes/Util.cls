@@ -12,22 +12,22 @@ public with sharing class Util {
     
     public class UtilException extends Exception {}
 
-    private static Map<String, Map<String, Id>> lMapAllSobjRT = new Map<String, Map<String, Id>>();
+    private static Map<String, Map<String, Id>> mapAllObjectsByRecordType = new Map<String, Map<String, Id>>();
     
     public static Id getRecordTypeIdbyName(String objType, String recordTypeName) {
-        Map<String, Id> lMapSobjRT = lMapAllSobjRT.get(objType.toLowerCase());
-        if (lMapSobjRT != null && !lMapSobjRT.isEmpty()) { return lMapSobjRT.get(recordTypeName); }
+        Map<String, Id> mapObjectByRecordType = mapAllObjectsByRecordType.get(objType.toLowerCase());
+        if (mapObjectByRecordType != null && !mapObjectByRecordType.isEmpty()) { return mapObjectByRecordType.get(recordTypeName); }
         
-        Map<String, Schema.RecordTypeInfo> lMapRTInfo = Schema.getGlobalDescribe().get(objType).getDescribe().getRecordTypeInfosByDeveloperName();
-        if (lMapRTInfo == null) { return null; }
+        Map<String, Schema.RecordTypeInfo> mapRecordTypeByInfo = Schema.getGlobalDescribe().get(objType).getDescribe().getRecordTypeInfosByDeveloperName();
+        if (mapRecordTypeByInfo == null) { return null; }
         
-        lMapSobjRT = new Map<String, Id>();
-        for (String iRtDevName: lMapRTInfo.keyset())
+        mapObjectByRecordType = new Map<String, Id>();
+        for (String iRtDevName: mapRecordTypeByInfo.keyset())
         {
-            lMapSobjRT.put(iRtDevName, lMapRTInfo.get(iRtDevName).getRecordTypeId());
+            mapObjectByRecordType.put(iRtDevName, mapRecordTypeByInfo.get(iRtDevName).getRecordTypeId());
         }
-        lMapAllSobjRT.put(objType.toLowerCase(), lMapSobjRT);
-        return lMapSobjRT.get(recordTypeName);
+        mapAllObjectsByRecordType.put(objType.toLowerCase(), mapObjectByRecordType);
+        return mapObjectByRecordType.get(recordTypeName);
     }             
      
     public static String getRecordTypeNameById(String objectName, Id strRecordTypeId)
@@ -214,9 +214,9 @@ public with sharing class Util {
         {
             mapTrackedFields.put(varCustomTrackedField.CampoRastreado__r.QualifiedApiName, varCustomTrackedField);   
         }
-        List<String> lTrackedFieldsList = new List<String>();
-        lTrackedFieldsList.addAll(mapTrackedFields.keySet());
-        return lTrackedFieldsList;
+        List<String> trackedFieldsList = new List<String>();
+        trackedFieldsList.addAll(mapTrackedFields.keySet());
+        return trackedFieldsList;
 
     }
 

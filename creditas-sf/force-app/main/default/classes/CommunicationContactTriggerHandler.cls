@@ -127,9 +127,9 @@ public without sharing class CommunicationContactTriggerHandler extends TriggerH
 
         for(CommunicationContacts__c varComunicationContacts : lstNewCommunicationContact)
         {
-            varComunicationContacts.ExternalAccountId__c = mapAccounts.get(varComunicationContacts.Account__c)?.ExternalId__c;
-            varComunicationContacts.ExternalAccountVersion__c = mapAccounts.get(varComunicationContacts.Account__c)?.ExternalVersion__c;
-            varComunicationContacts.ExternalAccountTenant__c = mapAccounts.get(varComunicationContacts.Account__c)?.ExternalTenant__c;
+            varComunicationContacts.ExternalAccountId__c = mapAccounts.get(varComunicationContacts.Account__c).ExternalId__c;
+            varComunicationContacts.ExternalAccountVersion__c = mapAccounts.get(varComunicationContacts.Account__c).ExternalVersion__c;
+            varComunicationContacts.ExternalAccountTenant__c = mapAccounts.get(varComunicationContacts.Account__c).ExternalTenant__c;
         }        
     }
 }

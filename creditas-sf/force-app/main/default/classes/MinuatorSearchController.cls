@@ -12,5 +12,9 @@ public with sharing class MinuatorSearchController {
     @AuraEnabled
     public static MinuatorSearchResponse getLead(String friendlyId){
         return MinuatorSearchService.getLead(friendlyId);        
-    }       
+    }    
+    @AuraEnabled
+    public static String getAccessToken(){
+        return MinuatorSearchService.getAccessToken();        
+    }   
 }

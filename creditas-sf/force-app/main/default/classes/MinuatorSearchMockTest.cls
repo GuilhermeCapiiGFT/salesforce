@@ -19,8 +19,9 @@ global with sharing class MinuatorSearchMockTest implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest request) {        
         HttpResponse response = new HttpResponse();
         response.setHeader('Content-Type', 'application/json');
-        response.setBody('{"title":"TestTitle","shortDescription":"Short Description","longDescription":"Long Description","desiredSkills":"Test Desired Skills"}');
+        response.setBody('{"errorCode": "lead_not_found_error","message": "Lead not found"}');
         response.setStatusCode(this.statusCode);
+        
         return response;      
     }
 }

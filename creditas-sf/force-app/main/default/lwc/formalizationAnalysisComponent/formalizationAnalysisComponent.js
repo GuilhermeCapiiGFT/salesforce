@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getInformation from '@salesforce/apex/formalizationAnalysisController.getInformation'
+import getInformation from '@salesforce/apex/FormalizationAnalysisController.getInformation'
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
@@ -271,10 +271,14 @@ export default class FormalizationAnalysis extends LightningElement {
             this[`${button}Variant`] = VARIANT_BASE;
         }
         
+        console.log(this[`${button}Progress`]);
         if(this[`${button}Progress`] >= 99.99){
-      
             this[`${button}Disabled`] = false;
         }
+    }
+
+    checkButtonAvaliability(){
+        //if(this.p0Progress)
     }
 
     handleStartAnalysis(event){

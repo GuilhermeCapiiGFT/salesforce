@@ -45,7 +45,7 @@ global without sharing class IntegrationAccountIN {
                 insertErrorLog(500, errorMessage, requestBodyString);
                 return;
             }
-            Id salesforceId = [SELECT Id, ExternalId__c FROM Account WHERE ExternalId__c = :requestBodyObj.id LIMIT 1]?.Id;
+            Id salesforceId = [SELECT Id, ExternalId__c FROM Account WHERE ExternalId__c = :requestBodyObj.id AND ExternalId__c != null LIMIT 1]?.Id;
             if (salesforceId == null){
                 String docNumber = requestBodyObj.mainDocument.type == 'CPF' ? Util.getMaskedCPF(requestBodyObj.mainDocument.code) : requestBodyObj.mainDocument.code;
             	salesforceId = [SELECT Id, ExternalId__c, DocumentNumber__c FROM Account WHERE DocumentNumber__c = :docNumber LIMIT 1]?.Id;         
@@ -186,13 +186,13 @@ global without sharing class IntegrationAccountIN {
             contactsToUpsert.add(cnt);  
         }
 
+        List<CommunicationContacts__c> commContactsToDelete = new List<CommunicationContacts__c>();
         for (CommunicationContacts__c cnt : [SELECT Id, ExternalId__c FROM CommunicationContacts__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :contactsExternalIds]){         
-            cnt.Account__c = null;
-            contactsToUpsert.add(cnt);  
-        }  
-            
+            commContactsToDelete.add(cnt);  
+        }             
    
         try {
+            delete commContactsToDelete;
             upsert contactsToUpsert;
         } catch (System.DmlException e){
             hasError = true;
@@ -240,12 +240,13 @@ global without sharing class IntegrationAccountIN {
             addressesToUpsert.add(adr);                              
         }    
 
+        List<Addresses__c> addressesToDelete = new List<Addresses__c>();
         for (Addresses__c addr : [SELECT Id, ExternalAddressId__c FROM Addresses__c WHERE Account__c = :accountId AND ExternalAddressId__c NOT IN :addressesExternalIds]){         
-            addr.Account__c = null;
-            addressesToUpsert.add(addr);  
+            addressesToDelete.add(addr);  
         }           
 
         try {
+            delete addressesToDelete;
             upsert addressesToUpsert;
         } catch (System.DmlException e){
             hasError = true;
@@ -295,14 +296,14 @@ global without sharing class IntegrationAccountIN {
             accountRelationshipsToUpsert.add(art);
         }
         
-        List<AccountRelationships__c> arsToDelete = new List<AccountRelationships__c>();
+        List<AccountRelationships__c> accountRelationshipsToDelete = new List<AccountRelationships__c>();
         for (AccountRelationships__c ars : [SELECT PrimaryRelationship__c FROM AccountRelationships__c WHERE PrimaryRelationship__c = :accountId AND ExternalId__c NOT IN :relationshipsExternalIds]){
-            arsToDelete.add(ars);
+            accountRelationshipsToDelete.add(ars);
         }
 
         try {
+            delete accountRelationshipsToDelete;
             upsert accountRelationshipsToUpsert;
-            delete arsToDelete;
         } catch (System.DmlException e){
             hasError = true;
             return e.getDmlMessage(0);
@@ -344,12 +345,13 @@ global without sharing class IntegrationAccountIN {
             }
         }      
 
+        List<Documents__c> documentsToDelete = new List<Documents__c> ();
         for (Documents__c doc : [SELECT Account__c FROM Documents__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :documentsExternalIds]){         
-            doc.Account__c = null;
-            docsToUpsert.add(doc);  
+            documentsToDelete.add(doc);  
         }             
 
-        try {
+        try {            
+            delete documentsToDelete;
             upsert docsToUpsert;
         } catch (System.DmlException e){
             hasError = true;
@@ -365,7 +367,7 @@ global without sharing class IntegrationAccountIN {
         }
         Set<String> incomeExternalIds = new Set<String>();
         for (AccountIntegrationModel.incomeModel incom : incomeToUpsert){
-            incomeExternalIds.add(incom.Id);
+            incomeExternalIds.add(incom.id);
         }   
 
         Map<String, FinancialResources__c> incomeExternalIdToSalesForceIncomeMap = new Map<String, FinancialResources__c>();
@@ -418,24 +420,27 @@ global without sharing class IntegrationAccountIN {
             accountFinancialRelationshipKeys.put(afr.Account__c + '_' + afr.Recurso_Financeiro__c, afr.Id);                                         
         }
 
-        List<AccountFinancialRelationship__c> afrToDelete = new List<AccountFinancialRelationship__c>();
-        for (AccountFinancialRelationship__c afr : [SELECT Id, Account__c, Recurso_Financeiro__c 
+        List<AccountFinancialRelationship__c> accountRelationshipsToDelete = new List<AccountFinancialRelationship__c>();
+        for (AccountFinancialRelationship__c afr : [SELECT Id, Account__c, Recurso_Financeiro__c  
                                                     FROM AccountFinancialRelationship__c
-                                                    WHERE Account__c = :accountId AND Recurso_Financeiro__c NOT IN :incomeIds]){
-            afrToDelete.add(afr);                                            
+                                                    WHERE Account__c = :accountId 
+                                                    AND Recurso_Financeiro__c NOT IN :incomeIds
+                                                    AND Recurso_Financeiro__r.ProfessionalInfo__c = null]){
+            accountRelationshipsToDelete.add(afr);                                            
         }
         
         List<AccountFinancialRelationship__c> accountRelationshipToUpsert = new List<AccountFinancialRelationship__c>();
         for (FinancialResources__c income : incomesToUpsert){
-            AccountFinancialRelationship__c accountIncomeRelationship = new AccountFinancialRelationship__c(Account__c = accountId);
+            AccountFinancialRelationship__c accountIncomeRelationship = new AccountFinancialRelationship__c();
+            accountIncomeRelationship.Account__c = accountId;
             accountIncomeRelationship.Id = accountFinancialRelationshipKeys.get(accountId + '_' + income.Id);
             accountIncomeRelationship.Recurso_Financeiro__c = income.Id;
 
             accountRelationshipToUpsert.add(accountIncomeRelationship);
         }
         try {
+            delete accountRelationshipsToDelete;
             upsert accountRelationshipToUpsert;
-            delete afrToDelete;
         } catch (System.DmlException e){
             hasError = true;
             return e.getDmlMessage(0);
@@ -480,12 +485,32 @@ global without sharing class IntegrationAccountIN {
             professionalsInfoToUpsert.add(professionalObj);               
         }
 
-        for (ProfessionalInfo__c profInfo : [SELECT Account__c FROM ProfessionalInfo__c WHERE Account__c = :accountId AND ExternalId__c NOT IN :professionalInfoExternalIds]){
-            profInfo.Account__c = null;
-            professionalsInfoToUpsert.add(profInfo);
+        List<ProfessionalInfo__c> professionalInfosToDelete = new List<ProfessionalInfo__c>();
+        Set<Id> professionalInfosToDeleteIds = new Set<Id>();
+        for (ProfessionalInfo__c profInfo : [SELECT Id, Account__c
+                                             FROM ProfessionalInfo__c 
+                                             WHERE Account__c = :accountId 
+                                             AND ExternalId__c NOT IN :professionalInfoExternalIds]){
+            professionalInfosToDelete.add(profInfo);
+            professionalInfosToDeleteIds.add(profInfo.Id);
+        }
+
+        List<FinancialResources__c> professionalInfoIncomeToDelete = new List<FinancialResources__c>();
+        Set<Id> professionalInfoIncomeToDeleteIds = new Set<Id>();
+        for (FinancialResources__c income : [SELECT Id FROM FinancialResources__c WHERE ProfessionalInfo__c IN :professionalInfosToDeleteIds]){
+            professionalInfoIncomeToDelete.add(income);
+            professionalInfoIncomeToDeleteIds.add(income.Id);
+        }
+
+        List<AccountFinancialRelationship__c> professionalRelationshipToDelete = new List<AccountFinancialRelationship__c>();
+        for(AccountFinancialRelationship__c afr : [SELECT Id FROM AccountFinancialRelationship__c WHERE Recurso_Financeiro__c IN :professionalInfoIncomeToDeleteIds]){
+            professionalRelationshipToDelete.add(afr);
         }
 
         try {
+            delete professionalInfosToDelete;
+            delete professionalInfoIncomeToDelete;
+            delete professionalRelationshipToDelete;
             upsert professionalsInfoToUpsert;
         } catch (System.DmlException e){
             hasError = true;
@@ -573,15 +598,8 @@ global without sharing class IntegrationAccountIN {
             professionalRelationshipToUpsert.add(professionalIncomeRelationship);
         }   
 
-        List<AccountFinancialRelationship__c> professionalRelationshipToDelete = new List<AccountFinancialRelationship__c>();
-        for (AccountFinancialRelationship__c afr : [SELECT Account__c FROM AccountFinancialRelationship__c WHERE Account__c = :accountId AND Recurso_Financeiro__c NOT IN :financialResourceIds]){
-            professionalRelationshipToDelete.add(afr);
-        }
-
-
         try {
             upsert professionalRelationshipToUpsert;
-            delete professionalRelationshipToDelete;
         } catch (System.DmlException e){
             hasError = true;
             professionalInfoReturnMap.put('dmlErrorMessage', e.getDmlMessage(0));

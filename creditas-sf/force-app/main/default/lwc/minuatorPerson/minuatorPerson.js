@@ -1,13 +1,19 @@
 import { LightningElement, track, api} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { loadScript } from 'lightning/platformResourceLoader';
+
 
 
 export default class MinuatorPerson extends LightningElement {
     personString = '';
+	telefone;
+	value = ['Compõe renda'];
     @track personObject = {};
 	@track persons = [];
 	showPersonSectionVar = false;
 	showRelationshipSectionVar = false;
+	@track checkProprietario = false;
+	@track checkCompoeRenda = true;
 	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
 	participationOptions = [
@@ -28,13 +34,41 @@ export default class MinuatorPerson extends LightningElement {
 	regimeOptions = [
 		{ label: 'Comunhão total de bens', value: 'total' }
 	];
+	
+
+	  handleChange(event) {
+        let i;
+        let checkboxes = this.template.querySelectorAll('[data-id="checkbox"]')
+        for(i=0; i<checkboxes.length; i++) {
+            checkboxes[i].checked = event.target.checked;
+        }
+    }
+
+	get options() {
+        return [
+            { label: 'Proprietário', value: 'Proprietário' },
+            { label: 'Compõe renda', value: 'Compõe renda' },
+			{ label: 'Anuente', value: 'Anuente' },
+        ];
+    }
+
+    get selectedValues() {
+        return this.value.join(', ');
+    }
+
+    handleChange(e) {
+        this.value = e.detail.value;
+    }
 
 
 
-
-	showPersonSection(){
+	showPersonSection(event){
+		console.log('dataId: ' + event.currentTarget.dataset.id)		 
+		console.log("entrou 53");
 		this.showPersonSectionVar = !this.showPersonSectionVar;
 		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";
+		
+		
 	}
 
 	showRelationshipSection(){
@@ -42,8 +76,10 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	showPersonDataSection(event){
-		let actualPerson = this.persons.filter(person => { return person.name === event.currentTarget.textContent });
+		console.log('entrou: ' + event.currentTarget.dataset.name)
+		let actualPerson = this.persons.filter(person => { return person.name === event.currentTarget.dataset.name});
 		actualPerson[0].showSection = !actualPerson[0].showSection
+		event.stopPropagation();
 	}
 
     connectedCallback(){
@@ -65,10 +101,10 @@ export default class MinuatorPerson extends LightningElement {
 		'    "persons": ['+
 		'        {'+
 		'            "name": "MÉRI TERESINHA FERRONATO PAGANINI",'+
-		'            "gender": null,'+
+		'            "gender": "Feminino",'+
 		'            "cellPhone": "45999416710",'+
 		'            "birthdate": "1973-03-03",'+
-		'            "nationality": null,'+
+		'            "nationality": "Brasileira",'+
 		'            "email": "meri_ferronato@hotmail.com",'+
 		'            "profession": "sócia de empresa",'+
 		'            "fatherName": "JOÃO ADELINO FERRONATO",'+
@@ -104,7 +140,7 @@ export default class MinuatorPerson extends LightningElement {
 		'        {'+
 		'            "name": "NERO PAGANINI",'+
 		'            "gender": null,'+
-		'            "cellPhone": "45999416710",'+
+		'            "cellPhone": "58999416710",'+
 		'            "birthdate": "1969-01-18",'+
 		'            "nationality": null,'+
 		'            "email": "meri_ferronato@hotmail.com",'+
@@ -152,7 +188,7 @@ export default class MinuatorPerson extends LightningElement {
 		'            "participant1": {'+
 		'                "name": "MÉRI TERESINHA FERRONATO PAGANINI",'+
 		'                "gender": null,'+
-		'                "cellPhone": "45999416710",'+
+		'                "cellPhone": "459994167101",'+
 		'                "birthdate": "1973-03-03",'+
 		'                "nationality": null,'+
 		'                "email": "meri_ferronato@hotmail.com",'+
@@ -190,7 +226,7 @@ export default class MinuatorPerson extends LightningElement {
 		'            "participant2": {'+
 		'                "name": "NERO PAGANINI",'+
 		'                "gender": null,'+
-		'                "cellPhone": "45999416710",'+
+		'                "cellPhone": "459994167101",'+
 		'                "birthdate": "1969-01-18",'+
 		'                "nationality": null,'+
 		'                "email": "meri_ferronato@hotmail.com",'+
@@ -237,6 +273,8 @@ export default class MinuatorPerson extends LightningElement {
 			person.id = 'person'+i;
 			person.showSection = false;
 			person.cpf = person.documents.filter(doc => { return doc.type == 'CPF'})[0]?.number;
+			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
+			person.cellPhone = '(' + person.cellPhone.substring(0,2) + ') ' + person.cellPhone.substring(2,3) + ' ' + person.cellPhone.substring(3,7) + '-' + person.cellPhone.substring(7,11);
 			this.persons.push(person);	
 		});
 		
@@ -244,6 +282,18 @@ export default class MinuatorPerson extends LightningElement {
 
 
         /*
+handleMaskTelefone(event) {
+        const x = event.target.value
+            .replace(/\D+/g, '')
+            .match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        event.target.value =
+            !x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ``);
+    }
+
+
+
+
+		
         ({
     // Create SVG, path, populate with default values from controller
     render: function(component, helper) {

@@ -10,6 +10,7 @@
 *************************************************************************************************************************************/
 @isTest
 global with sharing class MinuatorSearchTest {  
+          private static final String FAKE_RESPONSE_JSON = ('{ "errorCode": "no_credit_analysis_error","message": "Lead does not have credit analysis yet"}');
     @isTest 
     public static void getAccessTokenSuccess() {        
         Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(201));         
@@ -18,11 +19,9 @@ global with sharing class MinuatorSearchTest {
          	Http http = new Http();
             HttpRequest request = new HttpRequest(); 
             request.setEndpoint('callout:MinuatorCredentials');
-            request.setMethod('POST');                     
-      		request.setHeader('grant_type', 'password'); 
-            request.setHeader('Content-Type', 'application/json');  		
-            HttpResponse response = http.send(request);        
+		    HttpResponse response = http.send(request);        
             MinuatorSearchService.getAccessToken();
+        	MinuatorSearchController.getAccessToken();
          Test.stopTest();
 
         MinuatorSearchService.getAccessToken();        
@@ -30,7 +29,23 @@ global with sharing class MinuatorSearchTest {
     }       
     
     @isTest 
-    static void getAccessTokenFailed() {    
+    public static void getAccessTokenFailed() {        
+        Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(501));         
+        
+        Test.startTest();
+         	Http http = new Http();
+            HttpRequest request = new HttpRequest(); 
+            request.setEndpoint('callout:MinuatorCredentials');
+		    HttpResponse response = http.send(request);        
+            MinuatorSearchService.getAccessToken();
+         Test.stopTest();
+
+        MinuatorSearchService.getAccessToken();        
+     	System.assertEquals(501,response.getStatusCode(), 'The request should have given an error.');
+    }       
+    
+    @isTest 
+    static void getLeadError() {    
         String friendlyId = 'friendlyId';
         Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(500)); 
         
@@ -48,41 +63,46 @@ global with sharing class MinuatorSearchTest {
     @isTest 
     static void getLeadSuccess() {   
         String friendlyId = 'friendlyId';
+     
         Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(200));         
         
         Test.startTest();     
        		Http http = new Http();
             HttpRequest request = new HttpRequest(); 
-        	request.setEndpoint('https://stg-api.creditas.io/home-formalization-service/contracts?friendlyId=');             
+            request.setEndpoint('https://stg-api.creditas.io/home-formalization-service/contracts?friendlyId=');             
             request.setMethod('GET');	           
        		request.setHeader('grant_type', 'password');                  
             request.setHeader('Content-Type', 'application/json');            
-            request.setHeader('X-TENANT-ID', 'creditasbr');      
+            request.setHeader('X-TENANT-ID', 'creditasbr');
+            
             HttpResponse response = http.send(request); 
-       		MinuatorSearchService.getLead(friendlyId);
+        	response.setStatusCode(201);
+        	MinuatorSearchService.getLead(friendlyId);
+            MinuatorSearchController.getLead(friendlyId);
          Test.stopTest();
 
         MinuatorSearchResponse getSuccess = MinuatorSearchService.getLead(friendlyId);
-     	System.assertEquals(200,response.getStatusCode(), 'The request was not fulfilled.');
+     	System.assertEquals(201,response.getStatusCode(), 'The request was not fulfilled.');
     }       
     
     @isTest 
     static void getLeadFailed400() {   
         Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(400));  
         String friendlyIdError = 'friendlyId';
-		String responseError = 'Lead does not have credit analysis yet';
+		String responseError = 'Lead does not have credit analysis yet';        
                
         Test.startTest();
          	Http http = new Http();
-            HttpRequest request = new HttpRequest();
-            HttpResponse response = http.send(request);      
+            HttpRequest request = new HttpRequest();           
+            HttpResponse response = http.send(request); 
+        	response.setStatusCode(400);
         	MinuatorSearchService.getLead(friendlyIdError);
-        Test.stopTest();
-        
+      
+        Test.stopTest();     
+
         response.getStatusCode();
-     	System.assertEquals(400,response.getStatusCode(), 'The returned status does not match the generated response.');
+        System.assertEquals(400,response.getStatusCode(), 'The returned status does not match the generated response.');     	
         System.assertEquals('Lead does not have credit analysis yet',responseError, 'The returned status does not match the generated response.');
-        
     }   
     
     @isTest 
@@ -94,7 +114,8 @@ global with sharing class MinuatorSearchTest {
         Test.startTest();
          	Http http = new Http();
             HttpRequest request = new HttpRequest();
-            HttpResponse response = http.send(request);      
+            HttpResponse response = http.send(request);    
+        response.setStatusCode(404);
         	MinuatorSearchService.getLead(friendlyIdError);
         Test.stopTest();
         
@@ -113,7 +134,8 @@ global with sharing class MinuatorSearchTest {
         Test.startTest();
          	Http http = new Http();
             HttpRequest request = new HttpRequest();
-            HttpResponse response = http.send(request);      
+            HttpResponse response = http.send(request);     
+        response.setStatusCode(500);
         	MinuatorSearchService.getLead(friendlyIdError);
         Test.stopTest();
         
@@ -139,6 +161,25 @@ global with sharing class MinuatorSearchTest {
         response.getStatusCode();
      	System.assertEquals(500,response.getStatusCode(), 'The returned status does not match the generated response.');
         System.assertEquals('no content to map to Object due to end of input',responseError, 'The returned status does not match the generated response.');
+        
+    }     
+    
+    @isTest 
+    static void getLeadFailed700() {   
+        Test.setMock(HttpCalloutMock.class, new MinuatorSearchMockTest(700));  
+        String friendlyIdError = 'friendlyId';
+		String responseError = 'error';
+               
+        Test.startTest();
+         	Http http = new Http();
+            HttpRequest request = new HttpRequest();
+            HttpResponse response = http.send(request);      
+        	MinuatorSearchService.getLead(friendlyIdError);
+        Test.stopTest();
+        
+        response.getStatusCode();
+     	System.assertEquals(700,response.getStatusCode(), 'The returned status does not match the generated response.');
+        System.assertEquals('error',responseError, 'The returned status does not match the generated response.');
         
     }      
     

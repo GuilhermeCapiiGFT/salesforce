@@ -127,9 +127,9 @@ public without sharing class ProfessionalInfoTriggerHandler extends TriggerHandl
 
         for(ProfessionalInfo__c varProfessionalInfo : lstNewProfessionalInfo)
         {
-            varProfessionalInfo.ExternalAccountId__c = mapAccounts.get(varProfessionalInfo.Account__c)?.ExternalId__c;
-            varProfessionalInfo.ExternalAccountVersion__c = mapAccounts.get(varProfessionalInfo.Account__c)?.ExternalVersion__c;
-            varProfessionalInfo.ExternalAccountTenant__c = mapAccounts.get(varProfessionalInfo.Account__c)?.ExternalTenant__c;
+            varProfessionalInfo.ExternalAccountId__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalId__c;
+            varProfessionalInfo.ExternalAccountVersion__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalVersion__c;
+            varProfessionalInfo.ExternalAccountTenant__c = mapAccounts.get(varProfessionalInfo.Account__c).ExternalTenant__c;
         }        
     }
 }

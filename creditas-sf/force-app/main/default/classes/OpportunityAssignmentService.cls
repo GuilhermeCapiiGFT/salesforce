@@ -25,28 +25,19 @@ public with sharing class OpportunityAssignmentService {
       return runAssignment;
     }
 
-    public static Map<Id,Opportunity> runOpportunityAssignment(List<Opportunity> inputOppList, CustomSetup__c cSetup) {
+    public static List<Opportunity> runOpportunityAssignment(List<Opportunity> inputOppList, CustomSetup__c cSetup) {
 
-      Map<Id,Opportunity> opportunityMap = new Map<Id,Opportunity>();
+      List<Opportunity> lstOpptyToAssign = new List<Opportunity>();
 
       List<Opportunity> opportunities = inputOppList;
 	  
-      if (cSetup.ProductAssignedUsers__r.isEmpty() || opportunities.isEmpty()) { return opportunityMap; }
+      if (cSetup.ProductAssignedUsers__r.isEmpty() || opportunities.isEmpty()) { return lstOpptyToAssign; }
 
       Set<Id> setUnavailableUsers = getUnavailableUsers(opportunities, cSetup.ProductAssignedUsers__r);
 
       Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
 
-      Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId');
-
       for (Opportunity op : opportunities) {
-
-        if(accountUserIdMap.containsKey(op.AccountId) ){
-            op.OwnerId = accountUserIdMap.get(op.AccountId);
-            setUnavailableUsers.add(accountUserIdMap.get(op.AccountId));
-            continue;
-        }
-
         if (mapUsersByProductType.isEmpty()) { break; }
 
         List<Id> lstProductTypeUsers = mapUsersByProductType.get(op.ProductType__c);
@@ -70,16 +61,14 @@ public with sharing class OpportunityAssignmentService {
 
         if (selectedUserId != null) {
             op.OwnerId = selectedUserId;
-            opportunityMap.put(op.Id, op);
+            lstOpptyToAssign.add(op);
             setUnavailableUsers.add(selectedUserId);
-            accountUserIdMap.put(op.AccountId,selectedUserId);
-            Cache.Org.put('local.atWorkAssignment.mapUserAccountId', accountUserIdMap, 43200, Cache.Visibility.ALL, true);
         }
       }
 
-      if (opportunityMap.isEmpty()) { return opportunityMap; }
+      if (lstOpptyToAssign.isEmpty()) { return lstOpptyToAssign; }
 
-      return opportunityMap;
+      return lstOpptyToAssign;
     }
 
     private static Set<Id> getUnavailableUsers(List<Opportunity> lstOpp, List<ProductAssignedUser__c> lstProductUser) {
@@ -156,18 +145,5 @@ public with sharing class OpportunityAssignmentService {
             }
       
             return lstOpportunitySorted;
-    }
-
-    public static Set<Id> updateOpportunities(Map<Id,Opportunity> opportunitiesToUpdate){
-
-      List<Database.SaveResult> saveResultList = Database.update(opportunitiesToUpdate.values(), false);
-
-      Set<Id> successOpportunityId = new Set<Id>();
-      for(Database.SaveResult updatedResult : saveResultList){
-        if(updatedResult.isSuccess()){
-          successOpportunityId.add(updateResult.getId());
-        }
-      }
-      return successOpportunityId;
     }
 }

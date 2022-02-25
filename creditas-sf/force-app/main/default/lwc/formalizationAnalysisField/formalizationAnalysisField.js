@@ -1,4 +1,4 @@
-import getMapPickList from '@salesforce/apex/formalizationAnalysisController.getMapPickList';
+import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
 import { LightningElement, api } from 'lwc';
 
 export default class FormalizationAnalysisField extends LightningElement {

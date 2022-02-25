@@ -123,9 +123,9 @@ public without sharing class AddressesTriggerHandler extends TriggerHandler
 
         for(Addresses__c varAddress : lstNewAddresses)
         {
-            varAddress.ExternalAccountId__c = mapAccounts.get(varAddress.Account__c)?.ExternalId__c;
-            varAddress.ExternalAccountVersion__c = mapAccounts.get(varAddress.Account__c)?.ExternalVersion__c;
-            varAddress.ExternalAccountTenant__c = mapAccounts.get(varAddress.Account__c)?.ExternalTenant__c;
+            varAddress.ExternalAccountId__c = mapAccounts.get(varAddress.Account__c).ExternalId__c;
+            varAddress.ExternalAccountVersion__c = mapAccounts.get(varAddress.Account__c).ExternalVersion__c;
+            varAddress.ExternalAccountTenant__c = mapAccounts.get(varAddress.Account__c).ExternalTenant__c;
         }        
     }
 }

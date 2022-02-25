@@ -1,6 +1,6 @@
 public with sharing class SendCustomNotificationController {
 
-    public static void SendCustomOpportunityNotification(Set<Id> objectIdSet){
+    public static void SendCustomNotification(Set<Id> objectIdSet){
         SendCustomNotificationService.sendNotificationOpportunityAtWork(objectIdSet);
     }
 }

@@ -29,6 +29,7 @@ export default class ProposalAnalysis extends LightningElement {
   openModalReason = false;
   modalReason = '';
   modalReasonField = '';
+  modalReasonObject = ''
   validationResult = new Map();
 
   openModalDocument = false;
@@ -48,7 +49,7 @@ export default class ProposalAnalysis extends LightningElement {
 
   connectedCallback() {
     // this.mapInfoSection.set('dadosGeral', {'variant': 'base-autocomplete', 'value': 33, 'returnedId': 'dadosGeral'})
-    this.mapInfoSection.set('dadosPessoaisContainer', {'variant': '', 'value': 0, 'returnedId': 'dadosPessoaisContainer'})
+    this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
   }
 
   setInfoValueAndVariant(event) {
@@ -59,13 +60,17 @@ export default class ProposalAnalysis extends LightningElement {
 
     console.log(this.mapInfoSection)
     
-    if (infoSection.returnedId === 'dadosPessoaisContainer') {
+    if (infoSection.returnedId === 'ContainerDadosPessoais') {
       this.personalInfoVariant = infoSection.variant
       this.personalInfoValue = infoSection.value
 
-      console.log('dados pessoais')
-      console.log(typeof this.personalInfoValue)
-      console.log(typeof infoSection.value)
+      if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
+        this.modalReason = infoSection.modal.modalReason
+        this.openModalReason = infoSection.modal.openModalReason
+        this.modalReasonField = infoSection.modal.fieldReason
+        this.modalReasonObject = infoSection.modal.objectReason
+      
+      }
     }
 
     else if (infoSection.returnedId === 'generalContainer') {
@@ -104,7 +109,6 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handleDocumentModal(event) {
-    console.log('opened modal')
     this.sourceImg = event.target.getAttribute('data-id');
     this.openModalDocument = true;
   }
@@ -155,12 +159,12 @@ export default class ProposalAnalysis extends LightningElement {
 
     let totalPercentage = 0
 
-    totalPercentage = Number((percentageSections) / this.mapInfoSection.size)
+    totalPercentage = (percentageSections) / this.mapInfoSection.size
 
-    console.log({percentageSections})
-    console.log({ totalPercentage })
+    // console.log({percentageSections})
+    // console.log({ totalPercentage })
     
-    console.log(typeof totalPercentage)
+    // console.log(typeof totalPercentage)
 
     if (totalPercentage == '100') {
       
@@ -182,7 +186,6 @@ export default class ProposalAnalysis extends LightningElement {
     }
 
     else {
-      console.log('desabilitou')
       approveBtn.disabled = true
       pendingBtn.disabled = true
       rejectBtn.disabled = true

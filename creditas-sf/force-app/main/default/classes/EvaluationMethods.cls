@@ -13,9 +13,9 @@ public with sharing class EvaluationMethods {
   private static Id opportunityAtWorkRecordTypeId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
   private static final String PENDENCY_RETURN = 'PENDENCY_RETURN';
   private static final Set<String> OPEN_FORMALIZATION = new Set<String>{
-    'Nova Proposta',
-    'Aguardando Análise',
-    'Em Análise'
+    'NewProposal',
+    'AwaitingAnalysis',
+    'UnderAnalysis'
   };
 
   public static void evaluateAtWorkOpportunities(List<Opportunity> lstOpportunity) {
@@ -104,14 +104,14 @@ public with sharing class EvaluationMethods {
           CreatedDate,
           ExternalCreationDate__c,
           StageName,
-          // StatusDeFormalizacao__c,
+          FormalizationStatus__c,
           OwnerId
         FROM Opportunity
         WHERE
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND (PendencyReturn__c = TRUE
           OR ProductType__c IN :setProductType)
-          // AND StatusDeFormalizacao__c IN :OPEN_FORMALIZATION
+          AND FormalizationStatus__c IN :OPEN_FORMALIZATION
       ];
     } else {
       return [
@@ -125,13 +125,13 @@ public with sharing class EvaluationMethods {
           CreatedDate,
           ExternalCreationDate__c,
           StageName,
-          // StatusDeFormalizacao__c,
+          FormalizationStatus__c,
           OwnerId
         FROM Opportunity
         WHERE
           RecordTypeId = :opportunityAtWorkRecordTypeId
           AND ProductType__c IN :setProductType
-          // AND StatusDeFormalizacao__c IN :OPEN_FORMALIZATION
+          AND FormalizationStatus__c IN :OPEN_FORMALIZATION
       ];
     }
   }

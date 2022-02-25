@@ -24,29 +24,22 @@ public with sharing class OpportunityAssignmentController {
   }
 
   private static void runOpportunityAssignment(List<Opportunity> lstOpportunity){
-    //checks if trigger should run assignments
+
     Boolean runOpportunities = OpportunityAssignmentService.checkOpportunities(lstOpportunity);
     
     if(!runOpportunities) { return; }
 
     CustomSetup__c customSetup = CustomSetupController.getCustomSetupByRecordType(ATWORK);
-    //queries and sorts opportunity list based on parameters defined in the custom Setup
+      
     List<Opportunity> opportunitiesToAssign = OpportunityAssignmentService.getOpportunitiesSorted(customSetup.DateFilter__c);
 
     if(opportunitiesToAssign.isEmpty()) { return; }
 
-    //filters which opportunities should be updated from the list of all opportunities avaiable
-    Map<Id,Opportunity> opportunitiesToUpdate = OpportunityAssignmentService.runOpportunityAssignment(opportunitiesToAssign, customSetup);
+    List<Opportunity> opportunitiesToUpdate = OpportunityAssignmentService.runOpportunityAssignment(opportunitiesToAssign, customSetup);
     
     if(opportunitiesToUpdate.isEmpty()){ return; }
     
-    //returns a set of ids of opporturnities that were succesfully updated
-    Set<Id> successOpportunityIdSet = OpportunityAssignmentService.updateOpportunities(opportunitiesToUpdate);
-
-    if(successOpportunityIdSet.isEmpty()){ return; }
-    
-    //creates custom notifications for the set of id's passed to the method
-    SendCustomNotificationController.SendCustomOpportunityNotification(successOpportunityIdSet);
+    Database.update(opportunitiesToUpdate, false);
 
   }
 
