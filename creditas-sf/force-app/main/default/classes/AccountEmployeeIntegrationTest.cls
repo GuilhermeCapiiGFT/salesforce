@@ -33,22 +33,22 @@ private with sharing class AccountEmployeeIntegrationTest {
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
     System.assertEquals(200, res.statusCode, 'Status Code should be 200');
     System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
-    System.assertEquals(employee.ExternalId__c, 'TEST-EMPLOYEE-001', 'Wrong employee External Id');
-    System.assertEquals(employee.AdmissionDate__c, Date.newInstance(2022, 2, 22), 'Wrong employee Admission Date');
-    System.assertEquals(employee.Margin__c, 5555.99, 'Wrong employee Margin');
-    System.assertEquals(employee.Salary__c, 3333.33, 'Wrong employee Salary');
+    System.assertEquals('TEST-EMPLOYEE-001', employee.ExternalId__c, 'Wrong employee External Id');
+    System.assertEquals(Date.newInstance(2022, 2, 22), employee.AdmissionDate__c, 'Wrong employee Admission Date');
+    System.assertEquals(5555.99, employee.Margin__c, 'Wrong employee Margin');
+    System.assertEquals(3333.33, employee.Salary__c, 'Wrong employee Salary');
     System.assertEquals(
-      employee.PersonAccount__r.RecordTypeId,
       accountPersonRecordTypeId,
+      employee.PersonAccount__r.RecordTypeId,
       'Wrong person account Record Type Id'
     );
-    System.assertEquals(employee.PersonAccount__r.ExternalId__c, 'TEST-PERSON-001', 'Wrong person account External Id');
+    System.assertEquals('TEST-PERSON-001', employee.PersonAccount__r.ExternalId__c, 'Wrong person account External Id');
     System.assertEquals(
-      employee.Company__r.RecordTypeId,
       accountCompanyRecordTypeId,
+      employee.Company__r.RecordTypeId,
       'Wrong company account Record Type Id'
     );
-    System.assertEquals(employee.Company__r.ExternalId__c, 'TEST-COMPANY-001', 'Wrong company account External Id');
+    System.assertEquals('TEST-COMPANY-001', employee.Company__r.ExternalId__c, 'Wrong company account External Id');
   }
 
   @isTest
@@ -94,25 +94,25 @@ private with sharing class AccountEmployeeIntegrationTest {
     System.assertNotEquals(null, employee, 'Employee__c record shouldn\'t be null');
     System.assertEquals(200, res.statusCode, 'Status Code should be 200');
     System.assertEquals('Registro criado/atualizado com sucesso', response, 'Wrong response');
-    System.assertEquals(employee.Name, 'João da Silva - Creditas', 'Wrong employee Name');
-    System.assertEquals(employee.ExternalId__c, 'TEST-EMPLOYEE-001', 'Wrong employee External Id');
-    System.assertEquals(employee.AdmissionDate__c, Date.newInstance(2022, 2, 22), 'Wrong employee Admission Date');
-    System.assertEquals(employee.Margin__c, 5555.99, 'Wrong employee Margin');
-    System.assertEquals(employee.Salary__c, 3333.33, 'Wrong employee Salary');
-    System.assertEquals(employee.PersonAccount__r.Name, 'João da Silva', 'Wrong person account Name');
+    System.assertEquals('João da Silva - Creditas', employee.Name, 'Wrong employee Name');
+    System.assertEquals('TEST-EMPLOYEE-001', employee.ExternalId__c, 'Wrong employee External Id');
+    System.assertEquals(Date.newInstance(2022, 2, 22), employee.AdmissionDate__c, 'Wrong employee Admission Date');
+    System.assertEquals(5555.99, employee.Margin__c, 'Wrong employee Margin');
+    System.assertEquals(3333.33, employee.Salary__c, 'Wrong employee Salary');
+    System.assertEquals('João da Silva', employee.PersonAccount__r.Name, 'Wrong person account Name');
     System.assertEquals(
-      employee.PersonAccount__r.RecordTypeId,
       accountPersonRecordTypeId,
+      employee.PersonAccount__r.RecordTypeId,
       'Wrong person account Record Type Id'
     );
-    System.assertEquals(employee.PersonAccount__r.ExternalId__c, 'TEST-PERSON-001', 'Wrong person account External Id');
-    System.assertEquals(employee.Company__r.Name, 'Creditas', 'Wrong company account Name');
+    System.assertEquals('TEST-PERSON-001', employee.PersonAccount__r.ExternalId__c, 'Wrong person account External Id');
+    System.assertEquals('Creditas', employee.Company__r.Name, 'Wrong company account Name');
     System.assertEquals(
-      employee.Company__r.RecordTypeId,
       accountCompanyRecordTypeId,
+      employee.Company__r.RecordTypeId,
       'Wrong company account Record Type Id'
     );
-    System.assertEquals(employee.Company__r.ExternalId__c, 'TEST-COMPANY-001', 'Wrong company account External Id');
+    System.assertEquals('TEST-COMPANY-001', employee.Company__r.ExternalId__c, 'Wrong company account External Id');
   }
 
   @isTest
