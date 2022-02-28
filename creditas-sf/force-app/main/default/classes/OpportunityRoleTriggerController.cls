@@ -22,7 +22,7 @@ public without sharing class OpportunityRoleTriggerController extends TriggerHan
     
     public override void afterInsert() 
     {
-        OpportunityRoleTriggerService.updateOpportunityIsExternallySynced(newOpportunityRoles, oldOpportunityRolesById);
+        
     }
     
     public override void beforeUpdate()
