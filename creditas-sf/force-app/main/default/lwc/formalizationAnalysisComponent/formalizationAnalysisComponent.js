@@ -7,7 +7,8 @@ import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
 import ADDRESS_OBJECT from '@salesforce/schema/Addresses__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
-const VARIANT_BASE = 'base-autocomplete';
+const VARIANT_BASE = 'base';
+const VARIANT_BASE_COMPLETE = 'base-autocomplete';
 const VARIANT_EXPIRED = 'expired';
 const VARIANT_WARNING = 'warning';
 
@@ -34,6 +35,12 @@ export default class FormalizationAnalysis extends LightningElement {
     p4Variant = VARIANT_BASE;
     p5Variant = VARIANT_BASE;
     p6Variant = VARIANT_BASE;
+    p0Saved = false;
+    p1Saved = false;
+    p2Saved = false;
+    p3Saved = false;
+    p4Saved = false;
+    p5Saved = false;
     //Save button Variables
     p0Disabled = true;
     p1Disabled = true;
@@ -41,6 +48,10 @@ export default class FormalizationAnalysis extends LightningElement {
     p3Disabled = true;
     p4Disabled = true;
     p5Disabled = true;
+    //final buttons Variables
+    approveDisabled = true;
+    rejectDisabled = true;
+    pendencyDisabled = true;
     //eventResponses
     eventResponsesGeneral = new Map();
     eventResponsesPersonalData = new Map();
@@ -270,20 +281,56 @@ export default class FormalizationAnalysis extends LightningElement {
         } else {
             this[`${button}Variant`] = VARIANT_BASE;
         }
-        
-        console.log(this[`${button}Progress`]);
+        this[`${button}Saved`] = false;
+        this.rejectDisabled = true;
+        this.pendencyDisabled = true;
+        this.approveDisabled = true;
         if(this[`${button}Progress`] >= 99.99){
             this[`${button}Disabled`] = false;
         }
     }
 
-    checkButtonAvaliability(){
-        //if(this.p0Progress)
+    checkButtonAvaliability(buttonVariant){
+        let allProgress = ['p0','p1','p2','p3','p4','p5'];
+        const isAllSectionsFinished = allProgress.reduce( (validSoFar, actualvalue) => {
+            return validSoFar && this[`${actualvalue}Progress`] === 100 && this[`${actualvalue}Saved`]
+        },this.p0Progress === 100 && this.p0Saved);
+
+        
+        if(isAllSectionsFinished){
+            let variantArray = [];
+            allProgress.forEach(item => {
+                variantArray.push(this[`${item}Variant`]);
+            });
+
+            if(variantArray.includes('expired')){
+                this.rejectDisabled = false;
+                this.pendencyDisabled = true;
+                this.approveDisabled = true;
+            } else if (variantArray.includes('warning')){
+                this.rejectDisabled = true;
+                this.pendencyDisabled = false;
+                this.approveDisabled = true;
+            } else {
+                this.rejectDisabled = true;
+                this.pendencyDisabled = true;
+                this.approveDisabled = false;
+            }
+        }
     }
 
     handleStartAnalysis(event){
         this.analysisNotStarted = false;
         this.timeNow = this.formatDate();
+    }
+
+    handleSave(event){
+        this[`p${event.target.value}Saved`] = true;
+        if(this[`p${event.target.value}Variant`] === VARIANT_BASE){
+            this[`p${event.target.value}Variant`] = VARIANT_BASE_COMPLETE;
+        }
+
+        this.checkButtonAvaliability(this[`p${event.target.value}Variant`]);
     }
 
     formatDate() {
@@ -316,7 +363,6 @@ export default class FormalizationAnalysis extends LightningElement {
         let i;     
         for(i = 0;  i < elemControls.length; i++){
             elemControls[i].classList.remove('slds-is-open');
-           
         }
         elemControls[elementValue].classList.add('slds-is-open');
     }
