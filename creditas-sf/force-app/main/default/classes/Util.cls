@@ -205,7 +205,7 @@ public with sharing class Util {
         return dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss') + stringOffset;
     }
 
-    private static List<String> returnCustomMetadaDataFieldApiName(String sObjectApiName){
+    public static List<String> returnCustomMetadaDataFieldApiName(String sObjectApiName){
 
         Map<String, Custom_Field_Tracking_Map__mdt> mapTrackedFields = new Map<String, Custom_Field_Tracking_Map__mdt>();  
         for(Custom_Field_Tracking_Map__mdt varCustomTrackedField : [SELECT CampoRastreado__r.QualifiedApiName 
