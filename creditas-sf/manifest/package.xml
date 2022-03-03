@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>FormalizationAnalysisTest</members>
-		<members>PicklistUtils</members>
-		<members>PicklistUtilsTest</members>
-		<members>formalizationAnalysisController</members>
-		<members>formalizationAnalysisService</members>
+		<members>QuoteTriggerController</members>
+		<members>QuoteTriggerControllerTest</members>
+		<members>SynchAccountDataController</members>
+		<members>SynchAccountDataControllerTest</members>
+		<members>searchCepController</members>
 		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>QuoteTrigger</members>
+		<name>ApexTrigger</name>
 	</types>
 	<version>53.0</version>
 </Package>
