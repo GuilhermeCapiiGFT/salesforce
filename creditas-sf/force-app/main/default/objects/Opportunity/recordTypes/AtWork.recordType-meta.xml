@@ -28,6 +28,45 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>FormalizationStatus__c</picklist>
+        <values>
+            <fullName>Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AwaitingAnalysis</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NewProposal</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Pendencies</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pending</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Refused</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SuccessfullyCompleted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UnderAnalysis</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>LeadSource</picklist>
         <values>
             <fullName>Advertisement</fullName>

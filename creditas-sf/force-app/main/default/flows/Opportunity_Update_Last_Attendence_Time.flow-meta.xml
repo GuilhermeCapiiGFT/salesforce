@@ -89,21 +89,21 @@
         </connector>
         <filterLogic>or</filterLogic>
         <filters>
-            <field>StatusDeFormalizacao__c</field>
+            <field>FormalizationStatus__c</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Aprovado</stringValue>
             </value>
         </filters>
         <filters>
-            <field>StatusDeFormalizacao__c</field>
+            <field>FormalizationStatus__c</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Rejeitado</stringValue>
             </value>
         </filters>
         <filters>
-            <field>StatusDeFormalizacao__c</field>
+            <field>FormalizationStatus__c</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Pendenciado</stringValue>
