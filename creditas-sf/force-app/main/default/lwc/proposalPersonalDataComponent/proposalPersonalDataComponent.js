@@ -23,7 +23,7 @@ import NAME_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.NameSta
 import MOTHER_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.MothersNameStatus__c';
 import DOCUMENT_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.CPFStatus__c';
 
-import getRecordId from '@salesforce/apex/ProposalController.getRecordId';
+import getRecordId from '@salesforce/apex/ProposalController.getInfoRecords';
 
 const ACCOUNT_FIELDS = [NAME_FIELD, MOTHER_FIELD, DOCUMENT_NUMBER_FIELD, CIVIL_STATUS_FIELD, PEP_FIELD, BIRTHDATE_FIELD, FATHER_FIELD, BIRTHCITY_FIELD, BIRTHCOUNTRY_FIELD, NATIONALITY_FIELD]
 const SECTION_FIELDS = [NAME_STATUS_FIELD, MOTHER_STATUS_FIELD, DOCUMENT_STATUS_FIELD]
