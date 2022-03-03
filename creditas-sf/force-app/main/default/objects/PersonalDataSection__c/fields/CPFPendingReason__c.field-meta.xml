@@ -21,12 +21,7 @@
                 <default>false</default>
                 <label>Outros</label>
             </value>
-            <value>
-                <fullName>A</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>A</label>
-            </value>
+           
         </valueSetDefinition>
     </valueSet>
 </CustomField>
