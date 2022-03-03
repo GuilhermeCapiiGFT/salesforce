@@ -21,6 +21,7 @@
                 <default>false</default>
                 <label>Outros</label>
             </value>
+           
         </valueSetDefinition>
     </valueSet>
 </CustomField>
