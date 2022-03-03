@@ -62,10 +62,6 @@ public with sharing class OpportunityEvaluationService {
     this.opportunities = opportunities;
   }
 
-  public List<Opportunity> getChangedOpportunities() {
-    return this.changedOpportunities;
-  }
-
   public void selectOpportunities() {
     this.query = getQueryString();
     if (String.isNotBlank(this.query)) {
@@ -84,7 +80,7 @@ public with sharing class OpportunityEvaluationService {
     for (String recordTypeName : priorityPointsMap.keySet()) {
 
       if (recordTypeName == RECORD_TYPE_NAME_ATWORK) {
-        soqlWhere += getAtWorkQueryCriteria();
+        soqlWhere += getAtWorkQueryString();
       }
     }
 
@@ -96,7 +92,7 @@ public with sharing class OpportunityEvaluationService {
     return '';
   }
 
-  private String getAtWorkQueryCriteria() {
+  private String getAtWorkQueryString() {
     String recordTypeId = String.valueOf(Util.getRecordTypeIdbyName('Opportunity', RECORD_TYPE_NAME_ATWORK));
     String newProposal = OpportunityFormalizationStatus.NEW_PROPOSAL;
     String awaitingAnalysis = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
@@ -151,5 +147,11 @@ public with sharing class OpportunityEvaluationService {
     }
 
     return priorityPoints;
+  }
+
+  public void updateChangedOpportunities(){
+    if (Trigger.isExecuting && Trigger.isAfter && !this.changedOpportunities.isEmpty()) {
+      update this.changedOpportunities;
+    }    
   }
 }

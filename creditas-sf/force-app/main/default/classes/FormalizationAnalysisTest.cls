@@ -39,42 +39,60 @@ public class FormalizationAnalysisTest {
 
   @isTest
   public static void testGetInformationSuccess() {
+    Id opptyId = [SELECT Id FROM Opportunity WHERE Name = 'Test Oppty' LIMIT 1].Id;
+
     Test.startTest();
 
-    Id opptyId = [SELECT Id FROM Opportunity WHERE Name = 'Test Oppty' LIMIT 1].Id;
     Account createdAccount = formalizationAnalysisController.getInformation(opptyId);
 
     Test.stopTest();
 
-    System.assert(
-      createdAccount != null,
+    System.assertNotEquals(
+      null,
+      createdAccount,
       'No account was returned as a result of calling FormalizationAnalysisController.getInformation method'
     );
 
     System.assertEquals(createdAccount.FirstName__c, 'Firstname', 'Account FirstName__c is incorrect');
     System.assertEquals(createdAccount.Mother__c, 'Mother', 'Account Mother__c is incorrect');
-    System.assertEquals(
-      createdAccount.BirthDate__c,
-      Date.newInstance(2000, 5, 20),
-      'Account BirthDate__c is incorrect'
-    );
+    System.assertEquals(createdAccount.BirthDate__c, Date.newInstance(2000, 5, 20), 'Account BirthDate__c is incorrect');
   }
 
-  @isTest
-  public static void testGetInformationFailure() {
+   @isTest
+   public static void testGetInformationFailure() {
     Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
+    Exception thrownException;
+    Account createdAccount;
 
     try {
       Test.startTest();
-      Account createdAccount = formalizationAnalysisController.getInformation(accountId);
+      createdAccount = formalizationAnalysisController.getInformation(accountId);
       Test.stopTest();
 
-      System.assert(createdAccount == null, 'No account should\'ve been returned.');
-    } catch (Exception e) {
-      System.assert(
-        e.getTypeName() == 'System.AuraHandledException',
-        'Wrong exception type, expected System.AuraHandledException'
-      );
+    } catch (AuraHandledException ex) {
+      thrownException = ex;
     }
+
+    System.assertEquals(null, createdAccount, 'No account should\'ve been returned.');
+    System.assertNotEquals(null, thrownException, 'An Aura Exception should\'ve been thrown');
+  }
+
+  @isTest
+  private static void testgetMapPickListValidObjAndField(){
+
+    Test.startTest();
+    String picklistMap = formalizationAnalysisController.getMapPickList('Account', 'Gender__c');
+    Test.stopTest();
+
+    System.assertNotEquals(null, picklistMap, 'Should have returned picklistMap String');
+  }
+
+  @isTest
+  private static void testgetMapPickListInvalidObjAndField(){
+
+    Test.startTest();
+    String picklistMap = formalizationAnalysisController.getMapPickList('Account', 'invalidField');
+    Test.stopTest();
+    System.assertEquals('[]', picklistMap, 'Should have returned empty list');
   }
 }

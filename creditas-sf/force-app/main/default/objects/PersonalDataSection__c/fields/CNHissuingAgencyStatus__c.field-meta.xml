@@ -12,19 +12,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Aprovado</fullName>
+                <fullName>Aprovar</fullName>
                 <default>false</default>
-                <label>Aprovado</label>
+                <label>Aprovar</label>
             </value>
             <value>
-                <fullName>Pendenciado</fullName>
+                <fullName>Pendenciar</fullName>
                 <default>false</default>
-                <label>Pendenciado</label>
+                <label>Pendenciar</label>
             </value>
             <value>
-                <fullName>Rejeitado</fullName>
+                <fullName>Rejeitar</fullName>
                 <default>false</default>
-                <label>Rejeitado</label>
+                <label>Rejeitar</label>
             </value>
         </valueSetDefinition>
     </valueSet>

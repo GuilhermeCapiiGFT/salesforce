@@ -20,18 +20,8 @@
                     options={optionsReason}
                     onchange={handlerSelectReason}>
                 </lightning-combobox>
-                <template if:true={openSubReason}>
-                    <lightning-combobox
-                        name="subreason"
-                        label="Sub-motivo:"
-                        placeholder="Selecione um sub motivo"
-                        class="form-reason slds-m-top_small"
-                        options={optionsSubReason}
-                        onchange={handlerSelectSubReason}>
-                    </lightning-combobox>
-                </template>
                 <template if:true={openNote}>
-                    <lightning-textarea name="description" class="form-reason slds-m-top_small" label="Observação:" ></lightning-textarea>
+                    <lightning-textarea name="description" required onchange={handlerChangeNote} class="form-reason slds-m-top_small" label="Observação:" ></lightning-textarea>
                 </template>
             </div>
             <div class="slds-modal__footer">

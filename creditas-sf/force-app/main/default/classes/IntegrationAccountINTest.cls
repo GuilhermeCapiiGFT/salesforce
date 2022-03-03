@@ -35,9 +35,40 @@ global with sharing class IntegrationAccountINTest {
         
         FinancialResources__c testProfessionalIncome = new FinancialResources__c(ExternalId__c = '43a6c3d0-47db-45f3-b410-b63859efd9a2', ProfessionalInfo__c = testProfessionalInfo.Id);
     	insert testProfessionalIncome;
-            
+        
         AccountFinancialRelationship__c testProfessionalIncomeRelationship = new AccountFinancialRelationship__c(Recurso_Financeiro__c = testProfessionalIncome.Id, Account__c = testAcc.Id);
     	insert testProfessionalIncomeRelationship;
+            
+        //objects that will be deleted       
+		CommunicationContacts__c testCommContact = new CommunicationContacts__c(Account__c = testAcc.Id, ExternalId__c = 'externalid_not_in_contact');
+        insert testCommContact;
+        
+       	Addresses__c testAddress2 = new Addresses__c(Account__c = testAcc.Id, ExternalAddressId__c = 'externalid_not_in_address');
+        insert testAddress2;
+        
+        Account accNotInJSON = new Account(Name = 'Account delete relation');
+        insert accNotInJSON;
+        
+       	AccountRelationships__c testAccountRelationship = new AccountRelationships__c(PrimaryRelationship__c = testAcc.Id, SecondaryRelationship__c = accNotInJSON.Id, ExternalId__c = 'external_id_not_in_relation');
+        insert testAccountRelationship;
+        
+        Documents__c testDocument2 = new Documents__c(ExternalId__c = 'externalid_not_in_document', Account__c = testAcc.Id);
+        insert testDocument2;
+        
+        FinancialResources__c testProfessionalIncome3 = new FinancialResources__c(ExternalId__c = 'externalid_not_in_income');
+    	insert testProfessionalIncome3;
+        
+        AccountFinancialRelationship__c testProfessionalIncomeRelationship3 = new AccountFinancialRelationship__c(Recurso_Financeiro__c = testProfessionalIncome3.Id, Account__c = testAcc.Id);
+    	insert testProfessionalIncomeRelationship3;
+        
+        ProfessionalInfo__c testProfessionalInfo2 = new ProfessionalInfo__c(ExternalId__c = 'externalid_not_in_profInfo', Account__c = testAcc.Id);
+        insert testProfessionalInfo2;
+        
+        FinancialResources__c testProfessionalIncome2 = new FinancialResources__c(ExternalId__c = 'externalid_not_in_profIncome', ProfessionalInfo__c = testProfessionalInfo2.Id);
+    	insert testProfessionalIncome2;
+        
+        AccountFinancialRelationship__c testProfessionalIncomeRelationship2 = new AccountFinancialRelationship__c(Recurso_Financeiro__c = testProfessionalIncome2.Id, Account__c = testAcc.Id);
+    	insert testProfessionalIncomeRelationship2;
     }
     
     @isTest
@@ -52,35 +83,62 @@ global with sharing class IntegrationAccountINTest {
         	RestContext.request = req;
         	RestContext.response= res;             
        
-        	IntegrationAccountIN.putMethod();          
-        Test.stopTest();        
+        	IntegrationAccountIN.putMethod();       
+            
+            //Check if the objects are created---------------------------------------------------------------------------------------------->
+            List<Account> createdAcc = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664'];
+            System.assertEquals(1, createdAcc.size(),'Account successfully upserted.');
+            
+            List<CommunicationContacts__c> createdContacts = [SELECT Id FROM CommunicationContacts__c];
+            System.assertEquals(3, createdContacts.size(),'CommunicationContacts successfully upserted.');
+            
+            List<Addresses__c> createdAddresses = [SELECT Id FROM Addresses__c];
+            System.assertEquals(2, createdAddresses.size(),'Addresses successfully upserted.');
+            
+            List<Documents__c> createdDocuments = [SELECT Id FROM Documents__c];
+            System.assertEquals(1, createdDocuments.size(),'Documents successfully upserted.');
+            
+            List<FinancialResources__c> createdIncomes = [SELECT Id FROM FinancialResources__c];
+            System.assertEquals(5, createdIncomes.size(),'FinancialResources successfully upserted.');
+            
+            List<ProfessionalInfo__c> createdProfessionalInfos = [SELECT Id FROM ProfessionalInfo__c];
+            System.assertEquals(2, createdProfessionalInfos.size(),'ProfessionalInfo successfully upserted.');
+                   
+            List<AccountFinancialRelationship__c> createdAccountFinancialRelationships = [SELECT Id FROM AccountFinancialRelationship__c];
+            System.assertEquals(3, createdAccountFinancialRelationships.size(),'AccountFinancialRelationship successfully upserted.');
+            
+            List<AccountRelationships__c> createdRelationships = [SELECT Id FROM AccountRelationships__c];
+            System.assertEquals(1, createdRelationships.size(),'AccountRelationships successfully upserted.');
+              
+            system.assertEquals(res.statusCode, 200,'Account and related objects successfully upserted');   
+            //------------------------------------------------------------------------------------------------------------------------------>
         
-        List<Account> createdAcc = [SELECT Id FROM Account WHERE ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664'];
-        System.assertEquals(1, createdAcc.Size(),'Account successfully upserted.');
         
-        List<CommunicationContacts__c> createdContacts = [SELECT Id FROM CommunicationContacts__c];
-        System.assertEquals(3, createdContacts.Size(),'CommunicationContacts successfully upserted.');
-        
-        List<Addresses__c> createdAddresses = [SELECT Id FROM Addresses__c];
-        System.assertEquals(2, createdAddresses.Size(),'Addresses successfully upserted.');
-        
-        List<Documents__c> createdDocuments = [SELECT Id FROM Documents__c];
-        System.assertEquals(1, createdDocuments.Size(),'Documents successfully upserted.');
-        
-        List<FinancialResources__c> createdIncomes = [SELECT Id FROM FinancialResources__c];
-        System.assertEquals(4, createdIncomes.Size(),'FinancialResources successfully upserted.');
-        
-        List<ProfessionalInfo__c> createdProfessionalInfos = [SELECT Id FROM ProfessionalInfo__c];
-        System.assertEquals(2, createdProfessionalInfos.Size(),'ProfessionalInfo successfully upserted.');
-               
-        List<AccountFinancialRelationship__c> createdAccountFinancialRelationships = [SELECT Id FROM AccountFinancialRelationship__c];
-        System.assertEquals(4, createdAccountFinancialRelationships.Size(),'AccountFinancialRelationship successfully upserted.');
-        
-        List<AccountRelationships__c> createdRelationships = [SELECT Id FROM AccountRelationships__c];
-        System.assertEquals(1, createdRelationships.Size(),'AccountRelationships successfully upserted.');
-          
-		system.assertEquals(res.statusCode, 200,'Account and related objects successfully upserted');   
-        
+            //check if the objects are deleted
+            List<CommunicationContacts__c> deletedContact = [SELECT Id FROM CommunicationContacts__c WHERE ExternalId__c = 'externalid_not_in_contact'];
+            System.assertEquals(0, deletedContact.size(),'Check if the API upsert method deleted the Contact that is not in JSON');
+            
+            List<Addresses__c> deletedAddress = [SELECT Id FROM Addresses__c WHERE ExternalAddressId__c = 'externalid_not_in_address'];
+            System.assertEquals(0, deletedAddress.size(),'Check if the API upsert method deleted the Address that is not in JSON');
+            
+            List<AccountRelationships__c> deletedRelationship = [SELECT Id FROM AccountRelationships__c WHERE ExternalId__c = 'external_id_not_in_relation'];
+            System.assertEquals(0, deletedRelationship.size(),'Check if the API upsert method deleted the Relationship that is not in JSON');
+            
+            List<Documents__c> deletedDocument = [SELECT Id FROM Documents__c WHERE ExternalId__c = 'externalid_not_in_document'];
+            System.assertEquals(0, deletedDocument.size(),'Check if the API upsert method deleted the Document that is not in JSON');
+            
+            List<AccountFinancialRelationship__c> deletedFinancialRelationship = [SELECT Id FROM AccountFinancialRelationship__c WHERE Recurso_Financeiro__r.ExternalId__c = 'externalid_not_in_income'];
+            System.assertEquals(0, deletedFinancialRelationship.size(),'Check if the API upsert method deleted the Financial Resource Relationship that is not in JSON');
+            
+            List<ProfessionalInfo__c> deletedProfessionalInfo = [SELECT Id FROM ProfessionalInfo__c WHERE ExternalId__c = 'externalid_not_in_profInfo'];
+            System.assertEquals(0, deletedProfessionalInfo.size(),'Check if the API upsert method deleted the Professional Info that is not in JSON');
+            
+            List<FinancialResources__c> deletedProfessionalIncome = [SELECT Id FROM FinancialResources__c WHERE ExternalId__c = 'externalid_not_in_profIncome'];
+            System.assertEquals(0, deletedProfessionalIncome.size(),'Check if the API upsert method deleted the Professional Income that is not in JSON');
+            
+            List<AccountFinancialRelationship__c> deletedProfessionalFinancialRelationship = [SELECT Id FROM AccountFinancialRelationship__c WHERE Recurso_Financeiro__r.ExternalId__c = 'externalid_not_in_profIncome'];
+            System.assertEquals(0, deletedProfessionalFinancialRelationship.size(),'Check if the API upsert method deleted the Professional Financial Resource Relationship that is not in JSON');
+    	Test.stopTest();         
     }    
     
     @isTest
@@ -443,7 +501,7 @@ global with sharing class IntegrationAccountINTest {
         	IntegrationAccountIN.putMethod();          
         Test.stopTest();
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
-        System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null","accountId":null}');       
+        System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null.","accountId":null}');
     } 
       
     static String accountMock(String param){

@@ -40,7 +40,7 @@ public class OpportunityTriggerControllerTest {
         
         varOpportunity.ExternalId__c = '3213213231';
         varOpportunity.IsSynchEnabled__c = 'ENABLED';
-        varOpportunity.RecordTypeId = OpportunityTriggerController.getOpportunityRecordTypeId('Home'); 
+        varOpportunity.RecordTypeId = RECORDTYPE_HOME; 
         varOpportunity.ExternalTenant__c = 'creditasbr';
      
      	Custom_Field_Tracking_Map__mdt newCustomMdt = new Custom_Field_Tracking_Map__mdt();

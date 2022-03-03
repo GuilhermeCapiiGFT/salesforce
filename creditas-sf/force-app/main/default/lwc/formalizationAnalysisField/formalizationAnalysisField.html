@@ -5,8 +5,14 @@
             <lightning-layout>
                 <!-- INPUT FIELD -->
                 <lightning-layout-item size="6" padding="horizontal-small">
+                    
                     <div class="slds-text-align_center">
-                        <lightning-input type={inputType} required name={inputName} label={inputLabel} disabled={inputDisabled} value={inputValue} date-style={dateStyle}></lightning-input>
+                        <template if:true={isTextInput}>
+                            <lightning-input type={inputType} required name={inputName} label={inputLabel} disabled={inputDisabled} value={inputValue} date-style={dateStyle}></lightning-input>
+                        </template>
+                        <template if:true={isPickListInput}>
+                            <lightning-combobox name={inputName} label={inputLabel} value={inputValue} placeholder="Selecione uma opção..." options={pickListOptions} onchange={handleChange} ></lightning-combobox>
+                        </template>
                     </div>
                 </lightning-layout-item>
                 <!-- BUTTON & FIELDS -->
