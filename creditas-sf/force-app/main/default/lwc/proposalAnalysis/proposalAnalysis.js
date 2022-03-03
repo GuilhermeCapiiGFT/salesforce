@@ -1,7 +1,4 @@
 import { LightningElement, api } from 'lwc';
-import identity_document_img from '@salesforce/resourceUrl/identity_document_test';
-import MailingPostalCode from '@salesforce/schema/Contact.MailingPostalCode';
-
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
@@ -58,7 +55,6 @@ export default class ProposalAnalysis extends LightningElement {
 
     this.mapInfoSection.set(infoSection.returnedId, JSON.parse(JSON.stringify(infoSection)))
 
-    console.log(this.mapInfoSection)
     
     if (infoSection.returnedId === 'ContainerDadosPessoais') {
       this.personalInfoVariant = infoSection.variant
@@ -161,11 +157,6 @@ export default class ProposalAnalysis extends LightningElement {
 
     totalPercentage = (percentageSections) / this.mapInfoSection.size
 
-    // console.log({percentageSections})
-    // console.log({ totalPercentage })
-    
-    // console.log(typeof totalPercentage)
-
     if (totalPercentage == '100') {
       
       if (isApproved) {
@@ -200,14 +191,12 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handleSaveSection() {
-    console.log('saves')
   }
   handlerSelectedReason(event){
     let result = event.detail;
     if(result){
       this.validationResult.set(result.field, JSON.parse(JSON.stringify(result)));
     }
-    console.log(this.validationResult);
   }
 
   handleComiteProposal() {
@@ -253,8 +242,6 @@ export default class ProposalAnalysis extends LightningElement {
     })
 
     approveBtn.disabled = true
-
-    console.log('open sections:', openSections.length)
   }
 
   handlerAnalysisPending() {
