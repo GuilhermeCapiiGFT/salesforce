@@ -28,16 +28,25 @@ public with sharing class OpportunityAssignmentService {
     public static List<Opportunity> runOpportunityAssignment(List<Opportunity> inputOppList, CustomSetup__c cSetup) {
 
       List<Opportunity> lstOpptyToAssign = new List<Opportunity>();
-
-      List<Opportunity> opportunities = inputOppList;
 	  
-      if (cSetup.ProductAssignedUsers__r.isEmpty() || opportunities.isEmpty()) { return lstOpptyToAssign; }
+      if (cSetup.ProductAssignedUsers__r.isEmpty() || inputOppList.isEmpty()) { return lstOpptyToAssign; }
 
-      Set<Id> setUnavailableUsers = getUnavailableUsers(opportunities, cSetup.ProductAssignedUsers__r);
-
+      Set<Id> setUnavailableUsers = getUnavailableUsers(getAssignedOpps(), cSetup.ProductAssignedUsers__r);
+    
       Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
+    
+      Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId');
+ 
+      for (Opportunity op : inputOppList) {
 
-      for (Opportunity op : opportunities) {
+        if(accountUserIdMap.containsKey(op.AccountId)){
+          op.OwnerId = accountUserIdMap.get(op.AccountId);
+          op.FormalizationStatus__c = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
+          lstOpptyToAssign.add(op);
+          setUnavailableUsers.add(accountUserIdMap.get(op.AccountId));
+          continue;
+        }
+
         if (mapUsersByProductType.isEmpty()) { break; }
 
         List<Id> lstProductTypeUsers = mapUsersByProductType.get(op.ProductType__c);
@@ -61,11 +70,15 @@ public with sharing class OpportunityAssignmentService {
 
         if (selectedUserId != null) {
             op.OwnerId = selectedUserId;
+            op.FormalizationStatus__c = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
             lstOpptyToAssign.add(op);
             setUnavailableUsers.add(selectedUserId);
+            accountUserIdMap.put(op.AccountId, selectedUserId);
         }
       }
 
+      Cache.Org.put('local.atWorkAssignment.mapUserAccountId', accountUserIdMap, 43200, Cache.Visibility.ALL, false);
+      
       if (lstOpptyToAssign.isEmpty()) { return lstOpptyToAssign; }
 
       return lstOpptyToAssign;
@@ -111,10 +124,23 @@ public with sharing class OpportunityAssignmentService {
         return mapListUsersByProductType;
         }
 
+        private static List<Opportunity> getAssignedOpps() {
+          Set<String> excludedStageNames = new Set<String>{'Assinatura','HR'};
+          return [ 
+            SELECT OwnerId
+            FROM Opportunity
+            WHERE RecordTypeId = :opportunityRecordTypeId AND
+            CreatedDate = TODAY AND StageName NOT IN: excludedStageNames AND
+            FormalizationStatus__c NOT IN :statusFormalizationSet
+            WITH SECURITY_ENFORCED
+          ];
+            
+          }
+
         private static List<Opportunity> getOpportunities() {
             
           return [ 
-            SELECT Id, Name, ProductType__c, PriorityPoints__c, RecordTypeId, PendencyReturn__c, 
+            SELECT Id, Name, AccountId, ProductType__c, PriorityPoints__c, RecordTypeId, PendencyReturn__c, 
             CreatedDate, ExternalCreationDate__c, StageName, FormalizationStatus__c, OwnerId
             FROM Opportunity
             WHERE RecordTypeId = :opportunityRecordTypeId AND
