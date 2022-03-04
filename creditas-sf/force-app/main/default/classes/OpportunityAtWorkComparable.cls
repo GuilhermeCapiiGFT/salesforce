@@ -16,7 +16,7 @@ public class OpportunityAtWorkComparable implements Comparable {
 
   public OpportunityAtWorkComparable(Opportunity opp, String dtFilter) {
     this.oppty = opp;
-    this.sortDateField = dtFilter == 'Data de Solicitação' ? 'ExternalCreationDate__c' : 'CreatedDate';
+    this.sortDateField = dtFilter == 'RequestDate' ? 'ExternalCreationDate__c' : 'CreatedDate';
   }
 
   public Integer compareTo(Object compareToObj) {

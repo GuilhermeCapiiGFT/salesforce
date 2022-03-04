@@ -26,7 +26,7 @@ public with sharing class OpportunityAssignmentController {
   private static void runOpportunityAssignment(List<Opportunity> lstOpportunity){
 
     Boolean runOpportunities = OpportunityAssignmentService.checkOpportunities(lstOpportunity);
-
+    
     if(!runOpportunities) { return; }
 
     CustomSetup__c customSetup = CustomSetupController.getCustomSetupByRecordType(ATWORK);
