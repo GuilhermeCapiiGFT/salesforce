@@ -61,6 +61,7 @@ public with sharing class OpportunityAssignmentService {
 
         if (selectedUserId != null) {
             op.OwnerId = selectedUserId;
+            op.FormalizationStatus__c = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
             lstOpptyToAssign.add(op);
             setUnavailableUsers.add(selectedUserId);
         }
