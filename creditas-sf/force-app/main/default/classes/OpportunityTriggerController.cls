@@ -10,32 +10,34 @@
  * 1.1       Matheus Fernandes       17/02/2021      Changed     Calling OpportunityEvaluationController on beforeInsert
  **********************************************************************************************************************************/
 public without sharing class OpportunityTriggerController extends TriggerHandler {
-    private List<Opportunity> lstNewOpportunity;
-    private List<Opportunity> lstOldOpportunity;
-    private Map<Id, Opportunity> mapNewOpportunity;
-    private Map<Id, Opportunity> mapOldOpportunity;
-  
+    private List<Opportunity> newOpportunities;
+    private List<Opportunity> oldOpportunities;
+    private Map<Id, Opportunity> newOpportunitiesById;
+    private Map<Id, Opportunity> oldOpportunitiesById;
+
     public OpportunityTriggerController() {
-      this.lstNewOpportunity = (List<Opportunity>) Trigger.new;
-      this.lstOldOpportunity = (List<Opportunity>) Trigger.old;
-      this.mapNewOpportunity = (Map<Id, Opportunity>) Trigger.newMap;
-      this.mapOldOpportunity = (Map<Id, Opportunity>) Trigger.oldMap;
+      this.newOpportunities = (List<Opportunity>) Trigger.new;
+      this.oldOpportunities = (List<Opportunity>) Trigger.old;
+      this.newOpportunitiesById = (Map<Id, Opportunity>) Trigger.newMap;
+      this.oldOpportunitiesById = (Map<Id, Opportunity>) Trigger.oldMap;
     }
-  
+
     public override void beforeInsert() {
-      OpportunityEvaluationController.evaluateByOpportunity(lstNewOpportunity);
+      OpportunityEvaluationController.evaluateByOpportunity(newOpportunities);
     }
-  
+
     public override void afterInsert() {
 
     }
-  
+
     public override void beforeUpdate() {
-      OpportunityTriggerService.updateIsExternallySynced(mapNewOpportunity,mapOldOpportunity);
-      OpportunityTriggerService.firePlatformEventSynchAccount(mapNewOpportunity);
+      OpportunityTriggerService.updateIsExternallySynced(newOpportunitiesById, oldOpportunitiesById);
+      OpportunityTriggerService.firePlatformEventSynchAccount(newOpportunitiesById);
     }
-  
+
     public override void afterUpdate() {
-      OpportunityAssignmentController.handleAtWorkOpportunityAssignment(lstNewOpportunity);
+      OpportunityAssignmentController.handleAtWorkOpportunityAssignment(newOpportunities);
     }
+    
+      
   }

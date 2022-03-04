@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>QuoteTriggerController</members>
-		<members>QuoteTriggerControllerTest</members>
-		<members>SynchAccountDataController</members>
-		<members>SynchAccountDataControllerTest</members>
-		<members>searchCepController</members>
+		<members>OpportunityAssignmentController</members>
+		<members>OpportunityAssignmentException</members>
+		<members>OpportunityAssignmentService</members>
+		<members>OpportunityAssignmentTest</members>
+		<members>OpportunityAtWorkComparable</members>
+		<members>OpportunityAtWorkComparableTest</members>
+		<members>OpportunityEvaluationController</members>
+		<members>OpportunityEvaluationService</members>
+		<members>OpportunityEvaluationTest</members>
+		<members>OpportunityFormalizationStatus</members>
+		<members>OpportunityTriggerController</members>
+		<members>OpportunityTriggerControllerTest</members>
+		<members>OpportunityTriggerService</members>
 		<name>ApexClass</name>
-	</types>
-	<types>
-		<members>QuoteTrigger</members>
-		<name>ApexTrigger</name>
 	</types>
 	<version>53.0</version>
 </Package>
