@@ -14,6 +14,10 @@
 		<members>OpportunityTriggerController</members>
 		<members>OpportunityTriggerControllerTest</members>
 		<members>OpportunityTriggerService</members>
+		<members>PicklistUtils</members>
+		<members>PicklistUtilsTest</members>
+		<members>Util</members>
+		<members>UtilTest</members>
 		<name>ApexClass</name>
 	</types>
 	<version>53.0</version>
