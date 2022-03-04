@@ -2,7 +2,7 @@ public with sharing class ProposalService {
     
     public static Map<String, SObject> getPersonalDataSectionRecord(String recordId) 
     {
-        PersonalDataSection__c personalDataSection = new PersonalDataSection__c();
+        List<PersonalDataSection__c> personalDataSection = new List<PersonalDataSection__c>();
         Map<String, SObject> result = new Map<String, SObject>();
 
         try {
@@ -24,7 +24,9 @@ public with sharing class ProposalService {
                                             WHERE Opportunity__c =: recordId
                                             LIMIT 1];
             
-            result.put('dadosPessoais', personalDataSection);
+            if(!personalDataSection.isEmpty()) {
+                result.put('dadosPessoais', personalDataSection[0]);
+            }
 
             return result;
             
