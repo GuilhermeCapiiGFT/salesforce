@@ -138,54 +138,54 @@ private class UtilTest {
 
     @isTest
     private static void testValidateDocuments(){
-        List<Account> lAccList = new List<Account>();
-        Account lAccCNPJ = AccountSetup.createAccount('TestCNPJValid', 'Pessoa_Juridica');
-        Account lAccCPF = AccountSetup.createAccount('TestCPFValid', 'Pessoa_Fisica');
-        lAccList.add(lAccCNPJ);
-        lAccList.add(lAccCPF);
-        insert lAccList;
+        List<Account> accountList = new List<Account>();
+        Account accountCNPJ = AccountSetup.createAccount('TestCNPJValid', 'Pessoa_Juridica');
+        Account accountCPF = AccountSetup.createAccount('TestCPFValid', 'Pessoa_Fisica');
+        accountList.add(accountCNPJ);
+        accountList.add(accountCPF);
+        insert accountList;
         String lNewCNPJ = DocumentGenerator.generateCNPJ();
         String lNewCPF = DocumentGenerator.generateCPF();
 
         Test.startTest();
-            lAccCNPJ.DocumentNumber__c = lNewCNPJ;
-            lAccCPF.DocumentNumber__c = lNewCPF;
-            update lAccList;
+            accountCNPJ.DocumentNumber__c = lNewCNPJ;
+            accountCPF.DocumentNumber__c = lNewCPF;
+            update accountList;
         Test.stopTest();
 
-        Account lUpdatedAccountCNPJ = [SELECT DocumentNumber__c, IsExternallySynched__c FROM Account WHERE Id = :lAccCNPJ.Id LIMIT 1];
-        System.assertEquals(lNewCNPJ, Util.getNumbersOnly(lUpdatedAccountCNPJ.DocumentNumber__c), 'CNPJ Number not updated');
-        System.assert(!lUpdatedAccountCNPJ.IsExternallySynched__c, 'ExternallySynched not updated');
+        Account updatedAccountCNPJ = [SELECT DocumentNumber__c, IsExternallySynched__c FROM Account WHERE Id = :accountCNPJ.Id LIMIT 1];
+        System.assertEquals(lNewCNPJ, Util.getNumbersOnly(updatedAccountCNPJ.DocumentNumber__c), 'CNPJ Number not updated');
+        System.assert(!updatedAccountCNPJ.IsExternallySynched__c, 'ExternallySynched not updated');
 
-        Account lUpdatedAccountCPF = [SELECT DocumentNumber__c, IsExternallySynched__c FROM Account WHERE Id = :lAccCPF.Id LIMIT 1];
-        System.assertEquals(lNewCPF, Util.getNumbersOnly(lUpdatedAccountCPF.DocumentNumber__c), 'CPF Number not updated');
-        System.assert(!lUpdatedAccountCPF.IsExternallySynched__c, 'ExternallySynched not updated');
+        Account updatedAccountCPF = [SELECT DocumentNumber__c, IsExternallySynched__c FROM Account WHERE Id = :accountCPF.Id LIMIT 1];
+        System.assertEquals(lNewCPF, Util.getNumbersOnly(updatedAccountCPF.DocumentNumber__c), 'CPF Number not updated');
+        System.assert(!updatedAccountCPF.IsExternallySynched__c, 'ExternallySynched not updated');
     }
 
     @isTest
     private static void testgetSObjectNameById(){
-        Account lAcc = AccountSetup.createAccount('testObjName', 'Pessoa_Juridica');
-        insert lAcc;
+        Account account = AccountSetup.createAccount('testObjName', 'Pessoa_Juridica');
+        insert account;
         Test.startTest();
-        String lObjName = Util.getSObjectNameById(lAcc.Id);
+        String lObjName = Util.getSObjectNameById(account.Id);
         Test.stopTest();
         System.assertEquals('Account', lObjName, 'Wrong object name');
     }
 
     @isTest
     private static void testInvalidDocumentNumbers(){
-        String lCPF = '12345678901';
-        string lCNPJ = '12346578901234';
-        String lNotADocument = 'NotADocument';
-        String lSameChars11 = '11111111111';
-        String lSameChars14 = '77777777777777';
+        String CPF = '12345678901';
+        string CNPJ = '12346578901234';
+        String notADocument = 'NotADocument';
+        String sameChars11 = '11111111111';
+        String sameChars14 = '77777777777777';
 
         Test.startTest();
-        Boolean isValidCNPJ = Util.isValidCNPJ(lCNPJ);
-        Boolean isValidCPF = Util.isValidCPF(lCPF);
-        Boolean isADocument = Util.isValidDocumentNumber(lNotADocument);
-        Boolean isAllTheSameCaracter11 = Util.isAllTheSameCaracter(lSameChars11);
-        Boolean isAllTheSameCaracter14 = Util.isAllTheSameCaracter(lSameChars14);
+        Boolean isValidCNPJ = Util.isValidCNPJ(CNPJ);
+        Boolean isValidCPF = Util.isValidCPF(CPF);
+        Boolean isADocument = Util.isValidDocumentNumber(notADocument);
+        Boolean isAllTheSameCaracter11 = Util.isAllTheSameCaracter(sameChars11);
+        Boolean isAllTheSameCaracter14 = Util.isAllTheSameCaracter(sameChars14);
         Test.stopTest();
 
         System.assert(!isValidCNPJ, 'false was expected');
@@ -210,53 +210,52 @@ private class UtilTest {
 
     @isTest
     private static void testUpdateExternallySyncedAcc(){
-        Account lAcc = AccountSetup.createAccount('testupdateExternallySynced', 'Pessoa_Fisica');
-        lAcc.IsExternallySynched__c = true;
-        insert lAcc;
+        Account account = AccountSetup.createAccount('testupdateExternallySynced', 'Pessoa_Fisica');
+        account.IsExternallySynched__c = true;
+        insert account;
         
-        Documents__c lDocument = new Documents__c();
-        lDocument.Account__c = lAcc.Id;
-        lDocument.IssueDate__c = Date.today();
-        lDocument.IssuerState__c = 'SP';
-        lDocument.DocumentNumber__c = '4324235234';
-        lDocument.Issuer__c = 'SSP';
-        insert lDocument;
+        Documents__c document = new Documents__c();
+        document.Account__c = account.Id;
+        document.IssueDate__c = Date.today();
+        document.IssuerState__c = 'SP';
+        document.DocumentNumber__c = '4324235234';
+        document.Issuer__c = 'SSP';
+        insert document;
         
-        lDocument.IssueDate__c = Date.today().addDays(6);
-        lDocument.IssuerState__c = 'MG';
-        lDocument.DocumentNumber__c = '42423423432';
-        lDocument.Issuer__c = 'SSP';
+        document.IssueDate__c = Date.today().addDays(6);
+        document.IssuerState__c = 'MG';
+        document.DocumentNumber__c = '42423423432';
+        document.Issuer__c = 'SSP';
         Test.startTest();
-            update lDocument;
+            update document;
         Test.stopTest();
 
-        Account lUpdatedAccount = [SELECT IsExternallySynched__c FROM Account LIMIT 1];
-        System.debug('lUpdatedAccount --> ' + lUpdatedAccount);
-        System.assert(!lUpdatedAccount.IsExternallySynched__c, 'ExternallySynched not updated');
+        Account updatedAccount = [SELECT IsExternallySynched__c FROM Account LIMIT 1];
+        System.assert(!updatedAccount.IsExternallySynched__c, 'ExternallySynched not updated');
     }
 
     @isTest
     private static void testUpdateExternallySyncedOpp(){
-        Account lAcc = AccountSetup.createAccount('testupdateExternallySynced', 'Pessoa_Fisica');
-        lAcc.IsExternallySynched__c = true;
-        insert lAcc;
+        Account account = AccountSetup.createAccount('testupdateExternallySynced', 'Pessoa_Fisica');
+        account.IsExternallySynched__c = true;
+        insert account;
 
-        Opportunity lOpp = OpportunitySetup.createOpportunity(lAcc.Id, 'Home');
-        lOpp.IsExternallySynched__c = true;
-        insert lOpp;
+        Opportunity opportunity = OpportunitySetup.createOpportunity(account.Id, 'Home');
+        opportunity.IsExternallySynched__c = true;
+        insert opportunity;
         
-        Quote lQuote = new Quote();
-        lQuote.Name = 'Quote Em Andamento';
-        lQuote.Status = 'Em andamento';
-        lQuote.OpportunityId = lOpp.Id;
-        insert lQuote;
-        lQuote.MonthlyIntRateCompValue__c = 400;
+        Quote quote = new Quote();
+        quote.Name = 'Quote Em Andamento';
+        quote.Status = 'Em andamento';
+        quote.OpportunityId = opportunity.Id;
+        insert quote;
+        quote.MonthlyIntRateCompValue__c = 400;
         Test.startTest();
-            update lQuote;
+            update quote;
         Test.stopTest();
 
-        Opportunity lUpdatedOpportunity = [SELECT isExternallySynched__c FROM Opportunity LIMIT 1];
-        System.assert(!lUpdatedOpportunity.IsExternallySynched__c, 'ExternallySynched not updated');
+        Opportunity updatedOpp = [SELECT isExternallySynched__c FROM Opportunity LIMIT 1];
+        System.assert(!updatedOpp.IsExternallySynched__c, 'ExternallySynched not updated');
     }
 
     @isTest
