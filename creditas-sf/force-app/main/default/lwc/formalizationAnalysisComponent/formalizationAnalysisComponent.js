@@ -6,6 +6,7 @@ import CONTACTS_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import DOCUMENTS_OBJECT from '@salesforce/schema/Documents__c';
 import ADDRESS_OBJECT from '@salesforce/schema/Addresses__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { helper } from './formalizationAnalysisComponentHelper.js';
 
 const VARIANT_BASE = 'base';
 const VARIANT_BASE_COMPLETE = 'base-autocomplete';
@@ -19,7 +20,6 @@ export default class FormalizationAnalysis extends LightningElement {
     fullData;
     timeNow;
     error;
-    accountRecordTypeId;
     //ProgressRing Variables
     p0Progress = 0;
     p1Progress = 0;
@@ -120,7 +120,6 @@ export default class FormalizationAnalysis extends LightningElement {
         } else if (wiredResult.data && this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
             this.fullData = wiredResult.data;
 
-            this.accountRecordTypeId = wiredResult.data.RecordTypeId;
             let dataAddress = [...wiredResult.data.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'];
             let dataDocuments = [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {});
             let dataContacts = [...wiredResult.data.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {});
@@ -321,7 +320,7 @@ export default class FormalizationAnalysis extends LightningElement {
 
     handleStartAnalysis(event){
         this.analysisNotStarted = false;
-        this.timeNow = this.formatDate();
+        this.timeNow = helper.formatDate();
     }
 
     handleSave(event){
@@ -331,23 +330,6 @@ export default class FormalizationAnalysis extends LightningElement {
         }
 
         this.checkButtonAvaliability(this[`p${event.target.value}Variant`]);
-    }
-
-    formatDate() {
-        let dt = new Date()
-    
-        const formatter = new Intl.DateTimeFormat('pt-BR', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        })
-    
-        let formattedDate = formatter.format(dt)
-        
-        return formattedDate
     }
 
     handleAccordeon(event){
