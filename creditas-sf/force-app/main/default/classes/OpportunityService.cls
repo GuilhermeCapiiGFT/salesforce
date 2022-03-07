@@ -38,8 +38,6 @@ global without sharing class OpportunityService
                     return;
                 }
 
-                //upsertOpportunity();
-
                 commitTransactions();
 
                 if (!hasError){
@@ -82,7 +80,6 @@ global without sharing class OpportunityService
         }
         String accountNameKey = '';
         for(Account acc : [SELECT Id, ExternalId__c, Name, DocumentNumber__c FROM Account WHERE ExternalId__c IN :externalPersonIds]){
-            //accountNameKey = acc.DocumentNumber__c + ' ' + acc.Name + '_' + acc.Id;
             accountNameKey = acc.Name + '_' + acc.Id;
             if (personIdToPersonRoleMap.get(acc.ExternalId__c) == 'PRINCIPAL'){
                 break;
@@ -104,10 +101,10 @@ global without sharing class OpportunityService
             StageName = 'Formalização',            
             CloseDate = System.today().addDays(30),                          
         	ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt),
-        	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt)
+        	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt),
+            IsExternallySynched__c = true,
+            IsSynchEnabled__c = 'ENABLED'
         ); 
-        
-        //oppToUpsert = opportunityToUpsert;
         
         try {
             upsert opportunityToUpsert;  
@@ -120,12 +117,6 @@ global without sharing class OpportunityService
    }
 
     private static void upsertQuote(){
-        /*if (requestBodyObj.conditions == null || hasError){
-            hasError = true;
-            return;
-        }*/
-        //Id opportunityId = oppToUpsert?.Id;
-
         Quote quoteObject = new Quote();
         quoteObject.Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId LIMIT 1]?.Id;
         if (requestBodyObj.conditions.parameters.tac != null){
@@ -170,8 +161,7 @@ global without sharing class OpportunityService
             quoteObject.NetValue__c = requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(requestBodyObj.conditions.netValues.amount) : null;
         }
         quoteObject.OpportunityId = opportunityId; 
-        quoteObject.Name = accountName.split('_',2)[0] + ' Quote';
-        
+        quoteObject.Name = accountName.split('_',2)[0] + ' Quote';     
     
         try {
             upsert quoteObject;
@@ -183,8 +173,6 @@ global without sharing class OpportunityService
     }
     
     private static void upsertOpportunityRoles(){
-        //Id opportunityId = oppToUpsert?.Id;
-
         Set<String> externalPersonIds = new Set<String>();
         for(OpportunityIntegrationModel.cls_participants participant : requestBodyObj.participants)
         {
@@ -271,7 +259,6 @@ global without sharing class OpportunityService
         Savepoint sp = Database.setSavepoint();
         if (!hasError){
             try{
-                //upsert oppToUpsert;
                 upsertOpportunity();
                 if (!hasError){
                 	varSuccess1 = true;
