@@ -88,24 +88,31 @@ global without sharing class OpportunityService
         accountName = accountNameKey != '' ? accountNameKey : 'false';      
     }
      
-    private static void upsertOpportunity()
-    {            
-        Opportunity opportunityToUpsert = new Opportunity
-        (     
-        	Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :requestBodyObj.id]?.Id,
-            ExternalId__c = requestBodyObj.id,
-        	ExternalVersion__c = Decimal.valueOf(requestBodyObj.version),
-        	ExternalTenant__c = requestBodyObj.tenant,       
-			Name = accountName.split('_',2)[0],
-            AccountId = accountName.split('_',2)[1],           
-            StageName = 'Formalização',            
-            CloseDate = System.today().addDays(30),                          
-        	ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt),
-        	ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt),
-            IsExternallySynched__c = true,
-            IsSynchEnabled__c = 'ENABLED'
-        ); 
-        
+    private static void upsertOpportunity(){            
+        Opportunity opportunityToUpsert = new Opportunity();    
+        opportunityToUpsert.Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :requestBodyObj.id]?.Id;
+        opportunityToUpsert.ExternalId__c = requestBodyObj.id;
+        opportunityToUpsert.ExternalVersion__c = Decimal.valueOf(requestBodyObj.version);
+        opportunityToUpsert.ExternalTenant__c = requestBodyObj.tenant;
+        opportunityToUpsert.Name = accountName.split('_',2)[0];
+        opportunityToUpsert.AccountId = accountName.split('_',2)[1];        
+        opportunityToUpsert.StageName = 'Formalização';       
+        opportunityToUpsert.CloseDate = System.today().addDays(30);                         
+        opportunityToUpsert.ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt);
+        opportunityToUpsert.ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt);
+        opportunityToUpsert.ProductType__c = requestBodyObj.productType;
+        opportunityToUpsert.Description = requestBodyObj.purpose;
+
+        opportunityToUpsert.IsExternallySynched__c = true;
+        opportunityToUpsert.IsSynchEnabled__c = 'ENABLED';
+
+        if(requestBodyObj.conditions.depositAccount != null){
+            opportunityToUpsert.BankCode__c = requestBodyObj.conditions.depositAccount.bankCode;
+            opportunityToUpsert.Branch__c = requestBodyObj.conditions.depositAccount.branch;
+            opportunityToUpsert.AccountNumber__c = requestBodyObj.conditions.depositAccount.accountNumber;
+            opportunityToUpsert.BankAccountType__c = requestBodyObj.conditions.depositAccount.bankAccountType;
+        }
+              
         try {
             upsert opportunityToUpsert;  
             opportunityId = opportunityToUpsert.Id;  
@@ -114,26 +121,60 @@ global without sharing class OpportunityService
             errorMessage = e.getDmlMessage(0);            
             return;
         }      
-   }
+    }
 
     private static void upsertQuote(){
         Quote quoteObject = new Quote();
         quoteObject.Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId LIMIT 1]?.Id;
-        if (requestBodyObj.conditions.parameters.tac != null){
-            quoteObject.ParameterTac__c = Decimal.valueOf(requestBodyObj.conditions.parameters.tac.amount);
+
+        if(requestBodyObj.conditions.installments != null){
+            if(requestBodyObj.conditions.installments.value != null){
+                quoteObject.UnitPrice__c = Decimal.valueOf(requestBodyObj.conditions.installments.value.amount);
+            }
+            quoteObject.InstallmentType__c = requestBodyObj.conditions.installments.type;
+            quoteObject.Quantity__c = requestBodyObj.conditions.installments.term;
+            quoteObject.ServiceDate__c = Date.valueOf(requestBodyObj.conditions.installments.firstDueDate);
+            quoteObject.ServiceLastDate__c = Date.valueOf(requestBodyObj.conditions.installments.lastDueDate);
         }
-        if (requestBodyObj.conditions.parameters.iof != null){
-            quoteObject.ParameterIOF__c = Decimal.valueOf(requestBodyObj.conditions.parameters.iof.amount);
+
+        if(requestBodyObj.conditions.interest != null){
+            quoteObject.MonthlyInterest__c =  Decimal.valueOf(requestBodyObj.conditions.interest.monthly);
+            quoteObject.YearlyInterest__c =  Decimal.valueOf(requestBodyObj.conditions.interest.yearly);  
         }
-        if (requestBodyObj.conditions.parameters.additionalCosts != null){
-            quoteObject.ParameterAdditionalCosts__c = Decimal.valueOf(requestBodyObj.conditions.parameters.additionalCosts.amount);
+
+        if(requestBodyObj.conditions.cet != null){
+            quoteObject.DailyCet__c = requestBodyObj.conditions.cet.daily;
+            quoteObject.MonthlyCet__c = requestBodyObj.conditions.cet.monthly;
+            quoteObject.YearlyCet__c = requestBodyObj.conditions.cet.yearly;
         }
-        quoteObject.CreditScore__c = requestBodyObj.conditions.parameters.creditScore;
-        quoteObject.GracePeriod__c = requestBodyObj.conditions.parameters.gracePeriod;
+
+        if(requestBodyObj.conditions.parameters != null){
+            quoteObject.Term__c = requestBodyObj.conditions.parameters.term;
+            quoteObject.UF__c = requestBodyObj.conditions.parameters.uf;
+            quoteObject.CreditScore__c = requestBodyObj.conditions.parameters.creditScore;
+            quoteObject.GracePeriod__c = requestBodyObj.conditions.parameters.gracePeriod;
+            quoteObject.ParameterCalcVersion__c = requestBodyObj.conditions.parameters.calculatorVersion;
+            if (requestBodyObj.conditions.parameters.tac != null){
+                quoteObject.ParameterTac__c = Decimal.valueOf(requestBodyObj.conditions.parameters.tac.amount);
+            } 
+            if (requestBodyObj.conditions.parameters.iof != null){
+                quoteObject.ParameterIOF__c = Decimal.valueOf(requestBodyObj.conditions.parameters.iof.amount);
+            }
+            if (requestBodyObj.conditions.parameters.additionalCosts != null){
+                quoteObject.ParameterAdditionalCosts__c = Decimal.valueOf(requestBodyObj.conditions.parameters.additionalCosts.amount);
+            }
+            if(requestBodyObj.conditions.parameters.collateralValue != null){
+                quoteObject.CollateralAmount__c = Decimal.valueOf(requestBodyObj.conditions.parameters.collateralValue.amount);
+            }
+            if(requestBodyObj.conditions.parameters.requestedAmount != null){
+                quoteObject.RequestedAmount__c = Decimal.valueOf((requestBodyObj.conditions.parameters.requestedAmount.amount));
+            }
+        }
+
         if (requestBodyObj.conditions.parameters.contractDate != null){
             quoteObject.ContractDate__c = Date.valueOf(requestBodyObj.conditions.parameters.contractDate);
         }
-        quoteObject.ParameterCalcVersion__c = requestBodyObj.conditions.parameters.calculatorVersion;
+
         if (requestBodyObj.conditions.limitData != null){
             if (requestBodyObj.conditions.limitData.cetLimit != null){
                 quoteObject.LimitCetMinimunc__c = requestBodyObj.conditions.limitData.cetLimit.minimum;
@@ -148,20 +189,25 @@ global without sharing class OpportunityService
                     quoteObject.monthlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.minimum;  
                     quoteObject.monthlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.maximum;
                 }
-            }           
-            quoteObject.LimitTotal__c = requestBodyObj.conditions.limitData.total.amount != null ? Decimal.valueOf(requestBodyObj.conditions.limitData.total.amount) : null;
+            }      
+            if(requestBodyObj.conditions.limitData.total != null){
+                quoteObject.LimitTotal__c = requestBodyObj.conditions.limitData.total.amount != null ? Decimal.valueOf(requestBodyObj.conditions.limitData.total.amount) : null;
+            }     
             quoteObject.LimitInstallmentType__c = requestBodyObj.conditions.limitData.installmentType;
             quoteObject.LimitDueDate__c = requestBodyObj.conditions.limitData.dueDate != null ? Date.valueOf(requestBodyObj.conditions.limitData.dueDate) : null; 
         } 
+
         if (requestBodyObj.conditions.monthlyInterestRateComposition != null && !requestBodyObj.conditions.monthlyInterestRateComposition.isEmpty()){
             quoteObject.MonthlyIntRateCompType__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].type;
             quoteObject.MonthlyIntRateCompValue__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].value;
         }
+
         if (requestBodyObj.conditions.netValues != null){
             quoteObject.NetValue__c = requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(requestBodyObj.conditions.netValues.amount) : null;
         }
         quoteObject.OpportunityId = opportunityId; 
-        quoteObject.Name = accountName.split('_',2)[0] + ' Quote';     
+        quoteObject.Name = accountName.split('_',2)[0] + ' Quote';
+        
     
         try {
             upsert quoteObject;
