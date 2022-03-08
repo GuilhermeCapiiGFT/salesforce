@@ -77,7 +77,6 @@ export default class FormalizationAnalysis extends LightningElement {
     accInfo({ data, error }) {
         if (data){
             this.accountFields = data.fields;
-            console.dir(data.fields);
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
 
@@ -149,15 +148,15 @@ export default class FormalizationAnalysis extends LightningElement {
 
                 if( personalDataFields.includes(propertyName) ){
                     
-                    resultedArrayPersonalData.push( this.returnNewObject(personalDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'PersonalData'));
+                    resultedArrayPersonalData.push( helper.returnNewObject(personalDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'PersonalData'));
 
                 } else if( bankDataFields.includes(propertyName) ){
                     
-                    resultedArrayBankData.push( this.returnNewObject(bankDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Bank'));
+                    resultedArrayBankData.push( helper.returnNewObject(bankDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Bank'));
 
                 } else if( companyDataFields.includes(propertyName) ){
                    
-                    resultedArrayCompanyData.push( this.returnNewObject(companyDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Company'));
+                    resultedArrayCompanyData.push( helper.returnNewObject(companyDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Company'));
                 }
 
             });
@@ -167,7 +166,7 @@ export default class FormalizationAnalysis extends LightningElement {
                 Object.getOwnPropertyNames(this.documentFields[typeOfDocument]).forEach( propertyName => {
                     if(personalDataFields.includes(`${typeOfDocument}.${propertyName}`)){
                         let indexNumber = personalDataFields.indexOf(`${dataDocuments[typeOfDocument].DocumentType__c}.${propertyName}`);
-                        resultedArrayPersonalData.push( this.returnNewObject( indexNumber, this.documentFields[typeOfDocument], dataDocuments[typeOfDocument], propertyName, 'PersonalData') );
+                        resultedArrayPersonalData.push( helper.returnNewObject( indexNumber, this.documentFields[typeOfDocument], dataDocuments[typeOfDocument], propertyName, 'PersonalData') );
                     }
                 })
             });
@@ -177,7 +176,7 @@ export default class FormalizationAnalysis extends LightningElement {
                 Object.getOwnPropertyNames(this.contactsFields[typeOfContact]).forEach( propertyName => {
                     if(contactDataFields.includes(`${typeOfContact}.${propertyName}`)){
                         let fieldLabel = contactDataFields.indexOf(`${typeOfContact}.${propertyName}`) === 0 ? 'Telefone': 'E-mail';
-                        resultedArrayContactsData.push( this.returnNewObject(contactDataFields.indexOf(`${typeOfContact}.${propertyName}`),this.contactsFields[typeOfContact],dataContacts[typeOfContact],propertyName,'Contact',fieldLabel) );
+                        resultedArrayContactsData.push( helper.returnNewObject(contactDataFields.indexOf(`${typeOfContact}.${propertyName}`),this.contactsFields[typeOfContact],dataContacts[typeOfContact],propertyName,'Contact',fieldLabel) );
                     }
                 })
             });
@@ -186,51 +185,22 @@ export default class FormalizationAnalysis extends LightningElement {
             Object.getOwnPropertyNames(this.addressFields).forEach( propertyName => {
 
                 if(addressDataFields.includes(propertyName)){
-                    resultedArrayAddressData.push( this.returnNewObject(addressDataFields.indexOf(propertyName),this.addressFields,dataAddress,propertyName,'Address'));
+                    resultedArrayAddressData.push( helper.returnNewObject(addressDataFields.indexOf(propertyName),this.addressFields,dataAddress,propertyName,'Address'));
                 }
             });
 
             //this.dataGeneral = this.sortArray([...resultedArrayGeneral]);
-            this.dataPersonal = this.sortArray([...resultedArrayPersonalData]);
-            this.dataContact = this.sortArray([...resultedArrayContactsData]);
-            this.dataAddress = this.sortArray([...resultedArrayAddressData]);
-            this.dataBank = this.sortArray([...resultedArrayBankData]);
-            this.dataCompany = this.sortArray([...resultedArrayCompanyData]);
+            this.dataPersonal = helper.sortArray([...resultedArrayPersonalData]);
+            this.dataContact = helper.sortArray([...resultedArrayContactsData]);
+            this.dataAddress = helper.sortArray([...resultedArrayAddressData]);
+            this.dataBank = helper.sortArray([...resultedArrayBankData]);
+            this.dataCompany = helper.sortArray([...resultedArrayCompanyData]);
             this.isLoading = false;          
         } else if (wiredResult.error) {
             
             this.showToast('Error', JSON.stringify(wiredResult.error), 'error');
 
         }
-    }
-    
-    sortArray(array){
-        if(array){
-            return array.sort( (a,b) => {
-                return a.id - b.id;
-            });
-        } else {
-            return [];
-        }
-        
-    }
-
-    returnNewObject(id,objInput,dataInput,propertyName,inputSection,inputLabel){
-        let label;
-        if(inputLabel){
-            label = inputLabel;
-        } else {
-            label = objInput[propertyName].label === 'Número do documento' ? dataInput.DocumentType__c : objInput[propertyName].label
-        }
-
-        return {    id: id, 
-                    inputName: objInput[propertyName].apiName,
-                    inputType: objInput[propertyName].dataType,
-                    inputDisabled: !objInput[propertyName].updateable, 
-                    inputLabel: label, 
-                    inputValue: dataInput[propertyName],
-                    inputSection: inputSection 
-                };
     }
 
     handleProgress(event){
@@ -359,5 +329,4 @@ export default class FormalizationAnalysis extends LightningElement {
             });
             this.dispatchEvent(event);
     }
-    
 }

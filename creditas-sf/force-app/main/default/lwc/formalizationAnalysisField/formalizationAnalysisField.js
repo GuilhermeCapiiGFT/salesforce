@@ -12,10 +12,6 @@ export default class FormalizationAnalysisField extends LightningElement {
     isTextInput = false;
     isPickListInput = false;
     dateStyle = '';
-    //Events Variables
-    openModalReason = false;
-    modalReasonField;
-    modalType;
     picklistValues = [];
 
     connectedCallback(){
@@ -31,7 +27,7 @@ export default class FormalizationAnalysisField extends LightningElement {
             }).catch(error => {
                 console.log(JSON.stringify(error));
             }).finally( () => {
-                //console.log(this.picklistValues);
+                
             })
         }
     }
@@ -74,26 +70,15 @@ export default class FormalizationAnalysisField extends LightningElement {
 
     handleReject(event){
         this.sendProgressEvent('reject');
-        //this.openModalReason = true;
-        //this.modalReasonField = this.inputLabel;
-        //this.modalType = 'reject';
                     
     }
 
     handlePendency(event){   
         this.sendProgressEvent('pendency');
-        //this.openModalReason = true;
-        //this.modalReasonField = this.inputLabel;
-        //this.modalType = 'pendency';
     }
 
     sendProgressEvent(typeOfVariant){
         const clickEvent = new CustomEvent('changeprogress', { detail: { section: this.inputSection, variant: typeOfVariant, position: this.input.id } } );
         this.dispatchEvent(clickEvent);
     }
-
-    handleCloseModalReason(event){
-        this.openModalReason = false;
-    }
-
 }
