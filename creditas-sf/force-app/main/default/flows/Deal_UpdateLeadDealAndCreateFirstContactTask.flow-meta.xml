@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <decisions>
+        <name>CheckIfDealOwnerIsAnUser</name>
+        <label>Verificar se Proprietário do Deal é um Usuário</label>
+        <locationX>182</locationX>
+        <locationY>335</locationY>
+        <defaultConnectorLabel>Resultado padrão</defaultConnectorLabel>
+        <rules>
+            <name>DealOwnerIsAnUser</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.OwnerId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>005</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>FaseDoDealCarteirizar_0</targetReference>
+            </connector>
+            <label>Proprietário do Deal é um Usuário?</label>
+        </rules>
+    </decisions>
+    <description>Flow para realizar as seguintes ações:
+- Atualizar o Lead associado ao Deal, atribuindo sua propriedade ao Inside Sales que carteirizou o Deal;
+- Atualizar a Fase do Deal para &quot;Carteirizar&quot;
+- Criar Tarefa de 1º Contato com o Deal após Carteirização pelo Inside Sales</description>
+    <interviewLabel>[Deal] Atualizar Lead Deal e Criar Tarefa de 1º Contato {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Deal] Atualizar Lead, Deal e Criar Tarefa de 1º Contato com o Deal</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Criar Tarefa: Ligar para Cliente e preencher campo &quot;Contato com Sucesso?</description>
+        <name>Tarefa_Ligar_para_Cliente_e_preencher_campo_Contato_com_Sucesso_0</name>
+        <label>Tarefa: Ligar para Cliente e preencher campo &quot;Contato com Sucesso?</label>
+        <locationX>50</locationX>
+        <locationY>815</locationY>
+        <inputAssignments>
+            <field>ActivityDate</field>
+            <value>
+                <elementReference>$Flow.CurrentDate</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>CurrencyIsoCode</field>
+            <value>
+                <stringValue>BRL</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Normal</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>RecordTypeId</field>
+            <value>
+                <elementReference>TaskRecordType_AutoSales_0.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Open</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Ligar para Cliente e preencher campo &quot;Contato com Sucesso?</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <description>Obter o Tipo de Registro de Tarefa: Auto - Vendas para associar a Tarefa de Contato criada no Flow.</description>
+        <name>TaskRecordType_AutoSales_0</name>
+        <label>Tipo de Registro de Tarefa: Auto - Vendas</label>
+        <locationX>50</locationX>
+        <locationY>695</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tarefa_Ligar_para_Cliente_e_preencher_campo_Contato_com_Sucesso_0</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Task</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>AutoSales</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Atualizar o Proprietário do Lead que está associado ao Deal, atribuindo este ao Proprietário do Deal</description>
+        <name>AssignLeadToDealOwner_0</name>
+        <label>Atribuir Lead ao Proprietário do Deal</label>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
+        <connector>
+            <targetReference>TaskRecordType_AutoSales_0</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>FirstName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Lead__r.FirstName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>LastName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Lead__r.LastName</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Atualizar Fase do Deal para Carteirizar</description>
+        <name>FaseDoDealCarteirizar_0</name>
+        <label>Fase do Deal = Carteirizar</label>
+        <locationX>50</locationX>
+        <locationY>455</locationY>
+        <connector>
+            <targetReference>AssignLeadToDealOwner_0</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Phase__c</field>
+            <value>
+                <stringValue>Carteirizar</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>CheckIfDealOwnerIsAnUser</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OwnerId</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phase__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Novos clientes</stringValue>
+            </value>
+        </filters>
+        <object>Deal__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

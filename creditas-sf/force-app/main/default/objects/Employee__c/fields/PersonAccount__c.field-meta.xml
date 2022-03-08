@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PersonAccount__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Conta pessoa física</description>
+    <externalId>false</externalId>
+    <label>Conta pessoa física</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Preencha a conta pessoa física.</errorMessage>
+        <filterItems>
+            <field>Account.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Pessoa Física</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Colaboradores</relationshipLabel>
+    <relationshipName>PersonAccount</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

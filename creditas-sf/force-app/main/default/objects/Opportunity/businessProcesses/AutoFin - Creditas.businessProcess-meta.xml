@@ -11,10 +11,6 @@
         <default>false</default>
     </values>
     <values>
-        <fullName>Formalização</fullName>
-        <default>false</default>
-    </values>
-    <values>
         <fullName>Pendência OPS</fullName>
         <default>false</default>
     </values>

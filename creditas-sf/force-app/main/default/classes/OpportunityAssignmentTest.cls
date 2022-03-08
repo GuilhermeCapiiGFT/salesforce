@@ -14,7 +14,6 @@ private class OpportunityAssignmentTest {
   //Global Variables that will be used throughout the test class
   static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
   static DateTime secondDttm = firstDttm.addSeconds(1);
-  static Id accountId;
   static Id cSetupId;
 
   @TestSetup
@@ -64,23 +63,18 @@ private class OpportunityAssignmentTest {
     lstProductUser.add(makeProductAssignedUser('SALARY_ADVANCE', lstUsers[4].Id));
     insert lstProductUser;
 
-    // Create default Account
-    Account acc = AccountSetup.createAccount('Test Account', 'Pessoa_Fisica');
-    insert acc;
-    accountId = acc.Id;
-
     // Create several Opportunities with different product types and External Created Dates
     List<Opportunity> lstOppty = new List<Opportunity>();
-    lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm));
-    lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm));
-    lstOppty.add(makeOppty(3, 'STORE', firstDttm));
-    lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm));
-    lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm));
-    lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm));
-    lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm));
-    lstOppty.add(makeOppty(8, 'STORE', secondDttm));
-    lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm));
-    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm));    
+    lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm, ''));
+    lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm, ''));
+    lstOppty.add(makeOppty(3, 'STORE', firstDttm, ''));
+    lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm, ''));
+    lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm, ''));
+    lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm, ''));
+    lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm, ''));
+    lstOppty.add(makeOppty(8, 'STORE', secondDttm, ''));
+    lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm, ''));
+    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm, ''));    
     insert lstOppty;
   }
 
@@ -111,7 +105,7 @@ private class OpportunityAssignmentTest {
     Test.stopTest();
 
     lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
-
+    
     // Auxiliary table to verify the asserts, sorted by Priority
     // Oppty Name Prod Type       Ext Date    Expected Owner
     // Oppty 5   'SALARY_ADVANCE' firstDttm   Test4
@@ -274,8 +268,38 @@ private class OpportunityAssignmentTest {
     }      
   }
 
+  @isTest
+  private static void testMultipleOppsSameAccount(){
+    List<Opportunity> oppList = [SELECT Id,AccountId FROM Opportunity WHERE ProductType__c = 'SALARY_ADVANCE'];
+    String accountId = oppList[0]?.AccountId;
+    
+    List<Opportunity> oppsToCreate = new List<Opportunity>{};
+    for(Integer i = 11; i <= 211; i++){
+      oppsToCreate.add(makeOppty(i, 'SALARY_ADVANCE', secondDttm, accountId));
+    }
+    insert oppsToCreate;
+    oppList.addAll(oppsToCreate);
+    for(Opportunity iOpp : oppList){
+      iOpp.AccountId =  accountId;
+      iOpp.StageName = 'Formalização';
+    }
+    Test.startTest();
+      update oppList;
+    Test.stopTest();
+
+    List<Opportunity> oppsAfterUpdate = [SELECT Owner.Name FROM Opportunity WHERE ProductType__c = 'SALARY_ADVANCE'];
+    for(Opportunity iOpp : oppsAfterUpdate){
+      System.assertEquals('Test4', iOpp.Owner.Name, 'Incorrect Owner assigned');
+    }
+  }
+
   //Auxiliary method to return opportunties
-  static Opportunity makeOppty(Integer num, String prodType, Datetime externalCreatedDttm) {
+  static Opportunity makeOppty(Integer num, String prodType, Datetime externalCreatedDttm, String accountId) {
+    if(String.isBlank(accountId)){
+      Account account = AccountSetup.createAccount('Conta' + num, 'Pessoa_Fisica');
+      insert account;
+      accountId = account.Id;
+    }
     Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opp.Name = 'Test Oppty ' + num;
     opp.StageName = 'HR';

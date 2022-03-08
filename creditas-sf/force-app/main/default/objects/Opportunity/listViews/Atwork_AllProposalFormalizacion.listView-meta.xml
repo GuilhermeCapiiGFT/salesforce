@@ -4,6 +4,7 @@
     <columns>OPPORTUNITY.NAME</columns>
     <columns>ACCOUNT.NAME</columns>
     <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>StatusDeFormalizacao__c</columns>
     <columns>ProductType__c</columns>
     <columns>CORE.USERS.FULL_NAME</columns>
     <filterScope>Everything</filterScope>
@@ -13,4 +14,7 @@
         <value>Opportunity.AtWork</value>
     </filters>
     <label>[Formalização] Todas as propostas</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

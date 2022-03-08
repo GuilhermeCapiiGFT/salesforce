@@ -87,6 +87,9 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>ProductType__c</fields>
+        <fields>User__c</fields>
+        <fields>AvailableUser__c</fields>
         <relatedList>ProductAssignedUser__c.CustomSetupUser__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>

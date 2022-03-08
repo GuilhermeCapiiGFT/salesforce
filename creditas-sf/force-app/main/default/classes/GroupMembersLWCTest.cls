@@ -19,28 +19,29 @@ public class GroupMembersLWCTest {
         
         //Create Users
         User newUser = TestSetup.getUser(true);
-		newUser.ProfileId = profile.Id;
+		    newUser.ProfileId = profile.Id;
         newUser.LastName = 'user';
-		update newUser;    
+		    update newUser;    
         
         User newUser2 = TestSetup.getUser(true);
-		newUser2.ProfileId = profile.Id;
+		    newUser2.ProfileId = profile.Id;
         newUser2.LastName = 'Manager';
         newUser2.Title = 'Analista';
         newUser2.Status__c = 'Ativo';
-		update newUser2; 
+		    update newUser2; 
         
         User newUser3 = TestSetup.getUser(true);
-		newUser3.ProfileId = profile.Id;
+		    newUser3.ProfileId = profile.Id;
         newUser3.LastName = 'User 2';
-		update newUser3;
+    
+		    update newUser3;
         
         User newUser4 = TestSetup.getUser(true);
-		newUser4.ProfileId = profile.Id;
+		    newUser4.ProfileId = profile.Id;
         newUser4.LastName = 'Test4';
         newUser4.Title = 'Analista';
         newUser4.Status__c = 'Ativo';
-		update newUser4;
+		    update newUser4;
 
 		//Create Parent Group        
         system.runAs(newUser){
@@ -352,6 +353,7 @@ public class GroupMembersLWCTest {
         List<CollaborationGroupMember> listCollGroupMember = [SELECT Id FROM CollaborationGroupMember WHERE CollaborationRole = 'Admin' LIMIT 1];
         
         System.assertNotEquals(listCollGroupMember[0].id,searchGroupMember.Id,'Search not found results');
+
     }
     
     @isTest

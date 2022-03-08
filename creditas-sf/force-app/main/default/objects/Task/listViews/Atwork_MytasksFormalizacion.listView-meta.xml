@@ -9,4 +9,8 @@
     <columns>STATUS</columns>
     <filterScope>Mine</filterScope>
     <label>[Formalização] Minhas tarefas</label>
+    <sharedTo>
+        <role>BR_ATWORK_Analyst_Formalization</role>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

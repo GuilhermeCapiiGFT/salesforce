@@ -13,7 +13,8 @@ public class OpportunityProcessTriggerControllerTest {
     
     @TestSetup
     static void makeData()
-    {   //Accounts to create a setting to Update a OpportunityProcess      
+    {   
+        //Accounts to create a setting to Update a OpportunityProcess      
         Account accountJose = TestSetup.getAccount('Jose', true); 
         accountJose.DocumentNumber__c = '276.050.350-04';
         accountJose.IsExternallySynched__c = true;
@@ -54,38 +55,34 @@ public class OpportunityProcessTriggerControllerTest {
 
     @isTest
     static void updateIsExternallySync() 
-    {	//Create a setting of Opportunity Process to Update
+    {
         OpportunityProcess__c varGuarantees = [SELECT Id, Name, Opportunity__c FROM OpportunityProcess__c LIMIT 1]; 
 
         Test.startTest();
-        //Testing Update Opportunity Process
         update varGuarantees;
         Test.stopTest();
         
-        //Assert for the field IsExternallySynched__c need to be false
         Opportunity varOpportunity = [SELECT Id, ExternalId__c, isExternallySynched__C, ExternalVersion__c,
-                              ExternalTenant__c, IsSynchEnabled__c
-                              FROM Opportunity
-                              WHERE Id =: varGuarantees.Opportunity__c 
-                              LIMIT 1];
+                                      ExternalTenant__c, IsSynchEnabled__c
+                                      FROM Opportunity
+                                      WHERE Id =: varGuarantees.Opportunity__c 
+                                      LIMIT 1];
         System.assertEquals(false, varOpportunity.IsExternallySynched__c, 'The isExternallySync field should have changed to false');
     }
 
     @isTest
     static void updateMultipleOpportunityProcess()
-    {	//Create a setting of Account/Opportunity for Jose Account
+    {	
         Account accountJose = [SELECT Id, Name FROM Account WHERE Name = 'Jose'];        
         Opportunity opportunityJose = [SELECT Id, Name, isExternallySynched__c, ExternalId__c, ExternalTenant__c, ExternalVersion__c   
                                       FROM Opportunity 
                                       WHERE AccountId =: accountJose.Id]; 
         
-        //Create a setting of Account/Opportunity for Joao Account
         Account accountJoao = [SELECT Id, Name FROM Account WHERE Name = 'Joao'];        
         Opportunity opportunityJoao = [SELECT Id, Name, isExternallySynched__c, ExternalId__c, ExternalTenant__c, ExternalVersion__c   
                                       FROM Opportunity 
                                       WHERE AccountId =: accountJoao.Id]; 
         
-        //Create a setting of Account/Opportunity for Joao Account
         Account accountJosimar = [SELECT Id, Name FROM Account WHERE Name = 'Josimar'];        
         Opportunity opportunityJosimar = [SELECT Id, Name, isExternallySynched__c, ExternalId__c, ExternalTenant__c, ExternalVersion__c   
                                       FROM Opportunity 
@@ -127,11 +124,9 @@ public class OpportunityProcessTriggerControllerTest {
         }
         
         Test.startTest();
-        //Testing Update Multiple Opportunity Process
         update listOppProcessUpdate;
         Test.stopTest();
 		
-        //Assert for the field IsExternallySynched__c need to be false
         Opportunity joaoUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Opportunity WHERE AccountId =: accountJoao.Id];
         Opportunity joseUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Opportunity WHERE AccountId =: accountJose.Id];
         Opportunity josimarUpdate = [SELECT Id, Name, IsExternallySynched__c FROM Opportunity WHERE AccountId =: accountJosimar.Id];

@@ -19,14 +19,10 @@ import NATIONALITY_FIELD from '@salesforce/schema/Account.Nationality__c';
 import PERSONAL_DATA_OBJECT from '@salesforce/schema/PersonalDataSection__c';
 import PERSONAL_DATA_ID_FIELD from '@salesforce/schema/PersonalDataSection__c.Id';
 import OPPORTUNITY_ID_FIELD from '@salesforce/schema/PersonalDataSection__c.Opportunity__c';
-import NAME_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.NameStatus__c';
-import MOTHER_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.MothersNameStatus__c';
-import DOCUMENT_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.CPFStatus__c';
 
 import getRecordId from '@salesforce/apex/ProposalController.getInfoRecords';
 
 const ACCOUNT_FIELDS = [NAME_FIELD, MOTHER_FIELD, DOCUMENT_NUMBER_FIELD, CIVIL_STATUS_FIELD, PEP_FIELD, BIRTHDATE_FIELD, FATHER_FIELD, BIRTHCITY_FIELD, BIRTHCOUNTRY_FIELD, NATIONALITY_FIELD]
-const SECTION_FIELDS = [NAME_STATUS_FIELD, MOTHER_STATUS_FIELD, DOCUMENT_STATUS_FIELD]
 
 export default class ProposalPersonalDataComponent extends LightningElement {
 
@@ -165,6 +161,8 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
     const fields = {}
 
+    console.time()
+
     fields[ACCOUNTID_FIELD.fieldApiName]       = this.accountid
     fields[NAME_FIELD.fieldApiName]            = this.template.querySelector("[data-id='Name']").value
     fields[FATHER_FIELD.fieldApiName]          = this.template.querySelector("[data-id='Father__c']").value
@@ -181,9 +179,13 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     console.log(recordInput)
     
     updateRecord(recordInput)
-      .then(() => {
-        saveBtn.disabled = false
-        this.saveCheckboxes()
+    .then((result) => {
+      saveBtn.disabled = false
+
+      console.log({result})
+      console.timeEnd()
+      
+      this.saveCheckboxes()
       })
       .catch(error => {
         saveBtn.disabled = false

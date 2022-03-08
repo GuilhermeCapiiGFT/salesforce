@@ -17,9 +17,9 @@
                 <label>Nova Proposta</label>
             </value>
             <value>
-                <fullName>Pendências</fullName>
+                <fullName>Aguardando Análise</fullName>
                 <default>false</default>
-                <label>Pendências</label>
+                <label>Aguardando Análise</label>
             </value>
             <value>
                 <fullName>Em Análise</fullName>
@@ -42,6 +42,11 @@
                 <label>Recusados</label>
             </value>
             <value>
+                <fullName>Pendências</fullName>
+                <default>false</default>
+                <label>Pendências</label>
+            </value>
+            <value>
                 <fullName>Desistentes</fullName>
                 <default>false</default>
                 <label>Desistentes</label>
@@ -55,6 +60,21 @@
                 <fullName>Casos Suspeitos</fullName>
                 <default>false</default>
                 <label>Casos Suspeitos</label>
+            </value>
+            <value>
+                <fullName>Aprovado</fullName>
+                <default>false</default>
+                <label>Aprovado</label>
+            </value>
+            <value>
+                <fullName>Rejeitado</fullName>
+                <default>false</default>
+                <label>Rejeitado</label>
+            </value>
+            <value>
+                <fullName>Pendenciado</fullName>
+                <default>false</default>
+                <label>Pendenciado</label>
             </value>
         </valueSetDefinition>
     </valueSet>

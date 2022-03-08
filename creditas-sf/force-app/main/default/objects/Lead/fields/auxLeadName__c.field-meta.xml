@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>auxLeadName__c</fullName>
+    <description>Campo auxiliar que é preenchido com os dados do Nome Completo do Lead.
+
+Necessário para utilização nas Integrações que utilizam o Nome Completo do Lead.</description>
+    <externalId>false</externalId>
+    <formula>FirstName &amp; &quot; &quot; &amp; LastName</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>auxLeadName</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

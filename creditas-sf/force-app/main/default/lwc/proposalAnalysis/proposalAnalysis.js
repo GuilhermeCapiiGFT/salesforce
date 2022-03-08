@@ -31,8 +31,7 @@ export default class ProposalAnalysis extends LightningElement {
 
   openModalDocument = false;
   sourceImg = '';
-  // cpf_document = identity_document_img;
-
+ 
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
@@ -45,7 +44,6 @@ export default class ProposalAnalysis extends LightningElement {
   isAnyRejected = false
 
   connectedCallback() {
-    // this.mapInfoSection.set('dadosGeral', {'variant': 'base-autocomplete', 'value': 33, 'returnedId': 'dadosGeral'})
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
   }
 

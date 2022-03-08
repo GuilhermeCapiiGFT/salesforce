@@ -1,4 +1,4 @@
-public with sharing class formalizationAnalysisService {
+public with sharing class FormalizationAnalysisService {
 
     public static String  getAccountIdFromOpp(String aOppId){
         return [SELECT AccountId FROM Opportunity WHERE Id = :aOppId]?.AccountId;
@@ -19,26 +19,4 @@ public with sharing class formalizationAnalysisService {
                             WHERE Id = :accountId LIMIT 1];
         return AccountWithDocumentsAddressesAndCommContacts;
     }
-
-    public static List<PicklistWrapper> getPickListValues(String objApiName, String fieldApiName){
-        Schema.DescribeFieldResult fieldResult = Schema.getGlobalDescribe().get(objApiName).getDescribe().fields.getMap().get(fieldApiName).getDescribe();
-        
-        //List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-        List<pickListWrapper> picklist = new List<pickListWrapper>();
-        for(Schema.PicklistEntry picklistEntry : fieldResult.getPicklistValues()){
-
-            picklist.add(new pickListWrapper((String) picklistEntry.getLabel(), (String) picklistEntry.getValue()));
-        }
-        return picklist;
-    }
-
-    public class PicklistWrapper{
-        public String label;
-        public String value;
-        public PicklistWrapper(String aLabel, String aValue){
-            this.label = aLabel;
-            this.value = aValue;
-        }
-    }
-
 }

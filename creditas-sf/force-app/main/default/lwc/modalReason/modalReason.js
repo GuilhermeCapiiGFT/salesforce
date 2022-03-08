@@ -7,6 +7,7 @@ export default class ModalReason extends LightningElement {
     saveDisabled = true;
     optionsReason = [];
     openNote = false;
+    recordTypeIdObject;
 
     @api fieldReason;
     @api objectReason;

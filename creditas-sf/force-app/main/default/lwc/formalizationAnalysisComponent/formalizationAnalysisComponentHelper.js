@@ -1,15 +1,5 @@
 export const helper = {
-
-    showToast(title, message, variant){
-        const event = new ShowToastEvent({
-              title: title,
-              message: message,
-              variant: variant,
-              mode: 'dismissable'
-            });
-            this.dispatchEvent(event);
-    },
-    
+   
     formatDate() {
         let dt = new Date()
     
@@ -25,6 +15,35 @@ export const helper = {
         let formattedDate = formatter.format(dt)
         
         return formattedDate
+    },
+
+    sortArray(array){
+      if(array){
+          return array.sort( (a,b) => {
+              return a.id - b.id;
+          });
+      } else {
+          return [];
+      }
+      
+  },
+
+  returnNewObject(id,objInput,dataInput,propertyName,inputSection,inputLabel){
+    let label;
+    if(inputLabel){
+        label = inputLabel;
+    } else {
+        label = objInput[propertyName].label === 'Número do documento' ? dataInput.DocumentType__c : objInput[propertyName].label
     }
+    
+    return {    id: id, 
+                inputName: objInput[propertyName].apiName,
+                inputType: objInput[propertyName].dataType,
+                inputDisabled: !objInput[propertyName].updateable, 
+                inputLabel: label, 
+                inputValue: dataInput[propertyName],
+                inputSection: inputSection 
+            };
+  }
 
 }

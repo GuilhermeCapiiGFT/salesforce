@@ -13,15 +13,6 @@ public with sharing class formalizationAnalysisController {
     }
 
     @AuraEnabled
-    public static string getAccountRecordTypeId(){
-        try {
-            return Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled
     public static String getMapPickList(String objApiName, String fieldApiName){
         try {
             return JSON.serialize(formalizationAnalysisService.getPickListValues(objApiName, fieldApiName));

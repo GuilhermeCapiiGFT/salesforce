@@ -14,7 +14,6 @@ public class SynchAccountDataControllerTest {
     @TestSetup
     static void makeData()
     {
-
         Account newAccount = new Account();
         newAccount.Name = 'New Account';
         newAccount.DocumentNumber__c = '58131786277';
@@ -25,29 +24,43 @@ public class SynchAccountDataControllerTest {
     }
     
     @isTest
-   	static void getAccount() 
-    {
-      //List<Id> listId = new  List<Id>();
-              
+   	static void getAccountSucess() 
+    {             
         Account accId = [SELECT Id FROM Account];
         
         Test.startTest();
-        Account res = SynchAccountDataController.getAccountData(accId.Id);
+        Account responseAccount = SynchAccountDataController.getAccountData(accId.Id);
         Test.stopTest();
                 
-       	System.assertNotEquals(Null, res);
+       	System.assertEquals(accId.Id, responseAccount.Id,'Same account should have returned');
+    }
+
+    @isTest
+   	static void getAccountInvalidId() 
+    {             
+               
+        Test.startTest();
+        try{
+            Account responseAccount = SynchAccountDataController.getAccountData('invalidId');
+        }
+        catch(Exception e){
+            System.assertEquals(null, SynchAccountDataController.getAccountData('invalidId'),'null should have been returned');
+        }
+        Test.stopTest();
+                
     }
     
     @isTest
     static void updateAccount() 
     {
         Account acc = [SELECT Id, IsSynchEnabled__c FROM Account];
+        String beforeUpdate = acc.IsSynchEnabled__c;
        
         Test.startTest();
         SynchAccountDataController.checkSynchingField(acc);
         Test.stopTest();
     
         Account accUpdated = [SELECT Id, IsSynchEnabled__c FROM Account];
-        System.assertNotEquals(acc, accUpdated);
+        System.assertNotEquals(beforeUpdate, accUpdated.IsSynchEnabled__c, 'Field IsSynchEnabled__c should have changed');
     }
 }

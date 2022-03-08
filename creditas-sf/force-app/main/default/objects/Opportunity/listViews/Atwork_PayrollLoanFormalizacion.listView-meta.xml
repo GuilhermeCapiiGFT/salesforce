@@ -13,4 +13,7 @@
         <value>PAYROLL_LOAN</value>
     </filters>
     <label>[Formalização] Payroll</label>
+    <sharedTo>
+        <role>BR_ATWORK_Manager_Formalization</role>
+    </sharedTo>
 </ListView>

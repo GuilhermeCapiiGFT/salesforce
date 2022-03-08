@@ -23,48 +23,20 @@ public without sharing class QuoteTriggerController extends TriggerHandler
         this.mapOldQuotes = (Map<Id, Quote>) Trigger.oldMap;
     }
    
-    public override void beforeInsert()
-    {
-        this.updateOpportunityExternalFields();
+    public override void beforeInsert(){
+        QuoteTriggerService.updateOpportunityExternalFields(lstNewQuotes);
     }
     
-    public override void afterInsert() 
-    {
+    public override void afterInsert(){
         
     }
     
-    public override void beforeUpdate()
-    {
-        this.updateMethod();
-        this.updateOpportunityExternalFields();
-    }
-    
-    public override void afterUpdate() 
-
-    {
-    }
-
-    private void updateMethod()
-    {
+    public override void beforeUpdate(){
         Util.updateIsExternallySyncedOpportunity('Quote', lstNewQuotes, mapOldQuotes);
+        QuoteTriggerService.updateOpportunityExternalFields(lstNewQuotes);
     }
-
-    private void updateOpportunityExternalFields()
-    {
-        Set<Id> setOpportunityIds = new Set<Id>();
+    
+    public override void afterUpdate(){
         
-        for(Quote varQuotes : lstNewQuotes)
-        {
-            setOpportunityIds.add(varQuotes.OpportunityId);
-        }
-
-        Map<Id, Opportunity> mapOpportunity = new Map<Id, Opportunity>([SELECT Id, Name, ExternalVersion__c, ExternalId__c, ExternalTenant__c FROM Opportunity WHERE Id IN :setOpportunityIds]);
-
-        for(Quote varQuotes : lstNewQuotes)
-        {
-            varQuotes.ExternalOpportunityId__c = mapOpportunity.get(varQuotes.OpportunityId).ExternalId__c;
-            varQuotes.ExternalOpportunityVersion__c = mapOpportunity.get(varQuotes.OpportunityId).ExternalVersion__c;
-            varQuotes.ExternalOpportunityTenant__c = mapOpportunity.get(varQuotes.OpportunityId).ExternalTenant__c;
-        }        
     }
 }
