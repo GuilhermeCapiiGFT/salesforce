@@ -10,6 +10,7 @@ public with sharing class ProposalService {
                                             Opportunity__c, 
                                             Name, 
                                             NameStatus__c, 
+                                            FathersNameStatus__c,
                                             MothersNameStatus__c,
                                             CPFStatus__c,
                                             CPFPendingReason__c,

@@ -31,31 +31,29 @@ export default class ProposalAnalysis extends LightningElement {
 
   openModalDocument = false;
   sourceImg = '';
-  cpf_document = identity_document_img;
-
+ 
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
   openModalComite = false
   isAnalysisComplete = false
-  
+
   // Info about the buttons
   isAllApproved = false
   isAnyPending = false
   isAnyRejected = false
 
   connectedCallback() {
-    // this.mapInfoSection.set('dadosGeral', {'variant': 'base-autocomplete', 'value': 33, 'returnedId': 'dadosGeral'})
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
   }
 
   setInfoValueAndVariant(event) {
-    
+
     let infoSection = event.detail
 
     this.mapInfoSection.set(infoSection.returnedId, JSON.parse(JSON.stringify(infoSection)))
 
-    
+
     if (infoSection.returnedId === 'ContainerDadosPessoais') {
       this.personalInfoVariant = infoSection.variant
       this.personalInfoValue = infoSection.value
@@ -65,7 +63,7 @@ export default class ProposalAnalysis extends LightningElement {
         this.openModalReason = infoSection.modal.openModalReason
         this.modalReasonField = infoSection.modal.fieldReason
         this.modalReasonObject = infoSection.modal.objectReason
-      
+
       }
     }
 
@@ -100,7 +98,7 @@ export default class ProposalAnalysis extends LightningElement {
     })
 
     let formattedDate = formatter.format(dt)
-    
+
     return formattedDate
   }
 
@@ -134,7 +132,7 @@ export default class ProposalAnalysis extends LightningElement {
     let percentageSections = 0
 
     this.mapInfoSection.forEach((item) => {
-      
+
       percentageSections +=  item.value
 
       if (item.variant === 'base-autocomplete') {
@@ -158,7 +156,7 @@ export default class ProposalAnalysis extends LightningElement {
     totalPercentage = (percentageSections) / this.mapInfoSection.size
 
     if (totalPercentage == '100') {
-      
+
       if (isApproved) {
         approveBtn.disabled = false
         pendingBtn.disabled = true
