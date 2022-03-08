@@ -1,4 +1,4 @@
-import getMapPickList from '@salesforce/apex/formalizationAnalysisController.getMapPickList';
+import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
 import { LightningElement, api } from 'lwc';
 
 export default class FormalizationAnalysisField extends LightningElement {
@@ -74,17 +74,17 @@ export default class FormalizationAnalysisField extends LightningElement {
 
     handleReject(event){
         this.sendProgressEvent('reject');
-        this.openModalReason = true;
-        this.modalReasonField = this.inputLabel;
-        this.modalType = 'reject';
+        //this.openModalReason = true;
+        //this.modalReasonField = this.inputLabel;
+        //this.modalType = 'reject';
                     
     }
 
     handlePendency(event){   
         this.sendProgressEvent('pendency');
-        this.openModalReason = true;
-        this.modalReasonField = this.inputLabel;
-        this.modalType = 'pendency';
+        //this.openModalReason = true;
+        //this.modalReasonField = this.inputLabel;
+        //this.modalType = 'pendency';
     }
 
     sendProgressEvent(typeOfVariant){

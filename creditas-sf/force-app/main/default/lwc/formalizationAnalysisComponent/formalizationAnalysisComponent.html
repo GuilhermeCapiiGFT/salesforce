@@ -20,32 +20,35 @@
                     <div class="slds-progress__item">
                         <!-- PROGRESS RING REPLACES MARKER-->
                         <lightning-progress-ring value={p0Progress} variant={p0Variant} class="progressCSS"> </lightning-progress-ring>
-                            <div class="slds-progress__item_content">
-                                <li class="slds-accordion__list-item">
-                                    <section class="slds-accordion__section">
-                                        <div class="slds-accordion__summary">
-                                            <!-- CLICKABLE HEADER WITH FUNCTIONS -->
-                                            <h2 class="slds-accordion__summary-heading">
-                                                <button class="slds-button" onclick={handleAccordeon}
-                                                    aria-controls="referenceId-75" aria-expanded="true" title="Geral" value="0">                                                    
-                                                    <span class="slds-accordion__summary-content">Geral</span>
-                                                </button>
-                                            </h2>
-                                        </div>
-                                        <!-- ACCORDEON CONTENT -->
-                                        <div class="slds-accordion__content" id="referenceId-75">
-                                            <!-- FIELDS COMPONENT -->
-                                            <template for:each={dataGeneral} for:item="item">
-                                                <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
-                                            </template>
-                                            <!-- SAVE BUTTON -->
-                                            <div class="slds-text-align_center slds-float_right slds-scrollable_none">
-                                                <lightning-button class="buttonBoxShadow" variant="success" label="Salvar" title="Salvar" disabled={p0Disabled} onclick={handleSave}></lightning-button>
+                        <div class="slds-progress__item_content">
+                            <li class="slds-accordion__list-item">
+                                <section class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <!-- CLICKABLE HEADER WITH FUNCTIONS -->
+                                        <h2 class="slds-accordion__summary-heading">
+                                            <button class="slds-button" onclick={handleAccordeon}
+                                                aria-controls="referenceId-75" aria-expanded="true" title="Geral" value="0">                                                    
+                                                <span class="slds-accordion__summary-content">Geral</span>
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <!-- ACCORDEON CONTENT -->
+                                    <div class="slds-accordion__content" id="referenceId-75">
+                                        <!-- FIELDS COMPONENT -->
+                                        <template for:each={dataGeneral} for:item="item">
+                                            <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
+                                        </template>
+                                        <!-- SAVE BUTTON -->
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow" variant="success" value="0" label="Salvar" title="Salvar" disabled={p0Disabled} onclick={handleSave}></lightning-button>
                                             </div>
                                         </div>
-                                    </section>
-                                </li>
-                            </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </div>
                     </div>
                     <!-- SECOND ACCORDEON TAB -->
                     <div class="slds-progress__item">
@@ -70,8 +73,11 @@
                                             <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                         </template>
                                         <!-- SAVE BUTTON -->
-                                        <div class="slds-text-align_center slds-float_right">
-                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p1Disabled} onclick={handleSave}></lightning-button>
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow"  variant="success" value="1" label="Salvar" title="Salvar" disabled={p1Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -100,8 +106,11 @@
                                             <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                         </template>
                                         <!-- SAVE BUTTON -->
-                                        <div class="slds-text-align_center slds-float_right">
-                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p2Disabled} onclick={handleSave}></lightning-button>
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow"  variant="success" value="2" label="Salvar" title="Salvar" disabled={p2Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -130,8 +139,11 @@
                                             <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                         </template>
                                         <!-- SAVE BUTTON -->
-                                        <div class="slds-text-align_center slds-float_right">
-                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p3Disabled} onclick={handleSave}></lightning-button>
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow"  variant="success" value="3" label="Salvar" title="Salvar" disabled={p3Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -160,9 +172,12 @@
                                             <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                         </template>
                                         <!-- SAVE BUTTON -->
-                                        <div class="slds-text-align_center slds-float_right">
-                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p4Disabled} onclick={handleSave}></lightning-button>
-                                        </div>
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow"  variant="success" value="4" label="Salvar" title="Salvar" disabled={p4Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
+                                        </div>                                        
                                     </div>
                                 </section>
                             </li>
@@ -190,8 +205,11 @@
                                             <c-formalization-analysis-field key={item.id} input={item} onchangeprogress={handleProgress}></c-formalization-analysis-field>
                                         </template>
                                         <!-- SAVE BUTTON -->
-                                        <div class="slds-text-align_center slds-float_right">
-                                            <lightning-button class="buttonBoxShadow"  variant="success" label="Salvar" title="Salvar" disabled={p5Disabled} onclick={handleSave}></lightning-button>
+                                        <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                            <div class="slds-col slds-size_10-of-12"> </div>
+                                            <div class="slds-col slds-size_2-of-12 slds-align_absolute-center">
+                                                <lightning-button class="buttonBoxShadow" variant="success" value="5" label="Salvar" title="Salvar" disabled={p5Disabled} onclick={handleSave}></lightning-button>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -261,10 +279,10 @@
         
         <footer class="slds-modal__footer slds-m-top_small">
             <div class="slds-align_absolute-center">
-                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="success" label="Aprovar" title="Aprovar" disabled={approveDisabled}></lightning-button>
-                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="destructive" label ="Reprovar" title="Reprovar" disabled={rejectDisabled}></lightning-button>
-                <lightning-button class="slds-m-right_small buttonBoxShadow" variant="neutral" label="Pendenciar" title="Pendenciar" disabled={pendencyDisabled}></lightning-button>
-                <lightning-button class="slds-float_right buttonBoxShadow" variant="neutral" label="Comitê" title="Comitê" disabled={approveDisabled}></lightning-button>
+                <lightning-button class="slds-m-right_small buttonBoxShadow buttonApprove" variant="success" label="Aprovar" title="Aprovar" disabled={approveDisabled}></lightning-button>
+                <lightning-button class="slds-m-right_small buttonBoxShadow buttonReject" variant="success" label ="Reprovar" title="Reprovar" disabled={rejectDisabled}></lightning-button>
+                <lightning-button class="slds-m-right_small buttonBoxShadow buttonPendency" variant="success" label="Pendenciar" title="Pendenciar" disabled={pendencyDisabled}></lightning-button>
+                <lightning-button class="slds-float_right buttonBoxShadow" variant="brand-outline" label="Comitê" title="Comitê"></lightning-button>
             </div>  
         </footer>
     </lightning-card>
