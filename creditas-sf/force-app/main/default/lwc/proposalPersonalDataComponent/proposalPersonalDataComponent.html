@@ -29,14 +29,14 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxNamePendenciado" class="slds-p-bottom_xx-small"
             style="overflow-wrap: break-word; ">Pendenciado</label>
-          <input data-id="checkboxNamePendenciado" data-field="Name" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled data-id="checkboxNamePendenciado" data-field="Name" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} /> 
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxNameReprovado" class="slds-p-bottom_xx-small"
             style="overflow-wrap: break-word; ">Reprovado</label>
-          <input data-id="checkboxNameReprovado" data-field="Name" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled data-id="checkboxNameReprovado" data-field="Name" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} /> 
         </div>
       </div>
@@ -59,13 +59,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxFatherPendenciado" class="">&nbsp;</label>
-          <input id="checkboxFatherPendenciado" data-field="Father__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox"
+          <input class="disabled-input" disabled id="checkboxFatherPendenciado" data-field="Father__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox"
             value="Pendenciar" onchange={handleChangeCheckbox} /> 
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxFatherReprovado" class="">&nbsp;</label>
-          <input id="checkboxFatherReprovado" data-field="Father__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxFatherReprovado" data-field="Father__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} /> 
         </div>
       </div>
@@ -88,13 +88,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxMotherPendenciado" class="">&nbsp;</label>
-          <input id="checkboxMotherPendenciado" data-field="Mother__c" data-value={preValue} data-status="MothersNameStatus__c" name="AccountMother" type="checkbox"
+          <input class="disabled-input" disabled id="checkboxMotherPendenciado" data-field="Mother__c" data-value={preValue} data-status="MothersNameStatus__c" name="AccountMother" type="checkbox"
             value="Pendenciar" onchange={handleChangeCheckbox} /> 
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxMotherReprovado" class="">&nbsp;</label>
-          <input id="checkboxMotherReprovado" data-field="Mother__c" data-value={preValue} data-status="MothersNameStatus__c" name="AccountMother" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxMotherReprovado" data-field="Mother__c" data-value={preValue} data-status="MothersNameStatus__c" name="AccountMother" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} /> 
         </div>
       </div>
@@ -118,18 +118,29 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxBirthdatePendenciado">&nbsp;</label>
-          <input id="checkboxBirthdatePendenciado" data-reason="BirthDatePendingReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled id="checkboxBirthdatePendenciado" data-reason="BirthDatePendingReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxBirthdateReprovado">&nbsp;</label>
-          <input id="checkboxBirthdateReprovado" data-reason="BirthDateRejectReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxBirthdateReprovado" data-reason="BirthDateRejectReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
     </div>
-  
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <template if:false={isRed}>
+          <label class="slds-p-bottom_xx-small">Idade: <span>{idade} anos</span></label>
+        </template>
+        <template if:true={isRed}>
+          <label class="slds-p-bottom_xx-small">Idade: <span class="idade">{idade} anos</span></label>
+        </template>
+      </div>
+    </div>
+
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">CPF</label>
@@ -180,13 +191,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxBirthCityPendenciado">&nbsp;</label>
-          <input id="checkboxBirthCityPendenciado" data-field="BirthCity__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountBirthCity" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled id="checkboxBirthCityPendenciado" data-field="BirthCity__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountBirthCity" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxBirthCityReprovado">&nbsp;</label>
-          <input id="checkboxBirthCityReprovado" data-field="BirthCity__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountCPF" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxBirthCityReprovado" data-field="BirthCity__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountBirthCity" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -211,13 +222,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxBirthCountryPendenciado">&nbsp;</label>
-          <input id="checkboxBirthCountryPendenciado" data-field="BirthCountry__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountBirthCountry" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled id="checkboxBirthCountryPendenciado" data-field="BirthCountry__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountBirthCountry" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxBirthCountryReprovado">&nbsp;</label>
-          <input id="checkboxBirthCountryReprovado" data-field="BirthCountry__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountCPF" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxBirthCountryReprovado" data-field="BirthCountry__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountBirthCountry" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -226,7 +237,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nacionalidade</label>
-        <input style="width: 100%;" type="text" value={nationality} data-id="Birth_Country__c" />
+        <input style="width: 100%;" type="text" value={nationality} data-id="Nationality__c" />
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -235,20 +246,20 @@
   
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="nationalityCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
-          <label for="checkboxNacionalityAprovado">&nbsp;</label>
-          <input id="checkboxNacionalityAprovado" data-field="Nacionality__c" data-value={preValue} data-status="NacionalityStatus__c" name="AccountNacionality" type="checkbox" value="Aprovar"
+          <label for="checkboxNationalityAprovado">&nbsp;</label>
+          <input id="checkboxNationalityAprovado" data-field="Nationality__c" data-value={preValue} data-status="NationalityStatus__c" name="AccountNationality" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control pendenciado">
-          <label for="checkboxNacionalityPendenciado">&nbsp;</label>
-          <input id="checkboxNacionalityPendenciado" data-field="Nacionality__c" data-value={preValue} data-status="NationalityStatus__c" name="AccountNacionality" type="checkbox" value="Pendenciar"
+          <label for="checkboxNationalityPendenciado">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkboxNationalityPendenciado" data-field="Nationality__c" data-value={preValue} data-status="NationalityStatus__c" name="AccountNationality" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
-          <label for="checkboxNacionalityReprovado">&nbsp;</label>
-          <input id="checkboxNacionalityReprovado" data-field="Nacionality__c" data-value={preValue} data-status="NacionalityStatus__c" name="AccountCPF" type="checkbox" value="Rejeitar"
+          <label for="checkboxNationalityReprovado">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkboxNationalityReprovado" data-field="Nationality__c" data-value={preValue} data-status="NationalityStatus__c" name="AccountNationality" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -267,19 +278,19 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxPEPAprovado">&nbsp;</label>
-          <input id="checkboxPEPAprovado" data-value={preValue} name="AccountPEP"  data-status="PoliticallyExposedPersonStatus__c" type="checkbox" value="Aprovar"
+          <input id="checkboxPEPAprovado" data-field="PoliticallyExposed__c" data-value={preValue} name="AccountPEP"  data-status="PoliticallyExposedPersonStatus__c" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxPEPPendenciado">&nbsp;</label>
-          <input id="checkboxPEPPendenciado"  data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled id="checkboxPEPPendenciado"  data-field="PoliticallyExposed__c" data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxPEPReprovado">&nbsp;</label>
-          <input id="checkboxPEPReprovado" data-reason="PersonExposedRejectReason__c"  data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Rejeitar"
+          <input id="checkboxPEPReprovado" data-field="PoliticallyExposed__c" data-reason="PersonExposedRejectReason__c"  data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>

@@ -1,1 +1,6 @@
 @import 'c/proposalStyleLibrary';
+
+.idade {
+  color: red;
+  font-weight: bold;
+}

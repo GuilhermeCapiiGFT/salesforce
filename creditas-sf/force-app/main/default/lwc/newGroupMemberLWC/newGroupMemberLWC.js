@@ -1,6 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
-import searchUser from '@salesforce/apex/GroupMembersLWC.searchUser';
-import createMemberGroup from '@salesforce/apex/GroupMembersLWC.createMemberGroup';
+import searchUser from '@salesforce/apex/GroupMembersController.searchUser';
+import createMemberGroup from '@salesforce/apex/GroupMembersController.createMemberGroup';
 
 export default class NewGroupMemberLWC extends LightningElement {
     @track roleValue = 'Member';

@@ -23,8 +23,7 @@ import NAME_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.NameSta
 import MOTHER_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.MothersNameStatus__c';
 import DOCUMENT_STATUS_FIELD from '@salesforce/schema/PersonalDataSection__c.CPFStatus__c';
 
-
-import getRecordId from '@salesforce/apex/ProposalController.getRecordId';
+import getRecordId from '@salesforce/apex/ProposalController.getInfoRecords';
 
 const ACCOUNT_FIELDS = [NAME_FIELD, MOTHER_FIELD, DOCUMENT_NUMBER_FIELD, CIVIL_STATUS_FIELD, PEP_FIELD, BIRTHDATE_FIELD, FATHER_FIELD, BIRTHCITY_FIELD, BIRTHCOUNTRY_FIELD, NATIONALITY_FIELD]
 const SECTION_FIELDS = [NAME_STATUS_FIELD, MOTHER_STATUS_FIELD, DOCUMENT_STATUS_FIELD]
@@ -47,8 +46,9 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   birthCountry = ''
   civilStatus = ''
   politicallyExposed = ''
-  birthdate 
+  birthdate = ''
   nationality = ''
+  idade = ''
 
   // Personal Data Info
   recordPersonalSectionId = ''
@@ -69,12 +69,13 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       'MothersNameStatus__c': '',
       'FathersNameStatus__c': '',
       'CPFStatus__c' : '',
-      // 'CPFPendingReason__c' : '',
-      // 'CPFRejectReason__c' : '',
-      // 'CPFDescription__c': '',
+      'CPFPendingReason__c' : '',
+      'CPFRejectReason__c' : '',
+      'CPFDescription__c': '',
       'BirthCityStatus__c': '',
       'BirthCountryStatus__c': '',
-      'NacionalityStatus__c': '',
+      'BirthDateStatus__c': '',
+      'NationalityStatus__c': '',
       'PoliticallyExposedPersonStatus__c': ''
       // 'PersonExposedRejectReason__c': ''
     }
@@ -100,10 +101,12 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       this.civilStatus = fields.CivilStatus__c.value
       this.politicallyExposed = fields.PoliticallyExposed__c.value ? 'SIM' : 'NÃO'
       this.birthdate = fields.BirthDate__c.value
-
+      this.idade = this.getAge(fields.BirthDate__c.value)
+      
     } else if (error) {
       this.error = error
-      console.log('an error happened')
+      this.showToast('Erro', error.body.message, 'error')
+      console.log(JSON.parse(JSON.stringify(error)))
     }
   }
 
@@ -111,57 +114,29 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   getDataSectionId({ error, data }) {
     if (data) {
       this.error = undefined
-  
       console.log(JSON.parse(JSON.stringify(data)))
 
       this.recordPersonalSectionId = Object.keys(data).length === 0 ? '' : data.dadosPessoais.Id
       
-      console.log('id do record personal')
-      console.log(this.recordPersonalSectionId)
-    
       if (this.recordPersonalSectionId !== '') {
         
         this.personalData = data.dadosPessoais
-
-        console.log(this.mapSection)
-
-        this.mapSection.NameStatus__c = this.personalData.NameStatus__c
-        this.mapSection.MothersNameStatus__c = this.personalData.MothersNameStatus__c
-        this.mapSection.CPFStatus__c = this.personalData.CPFStatus__c
-        // this.mapSection.CPFPendingReason__c = this.personalData.CPFPendingReason__c
-        // this.mapSection.CPFRejectReason__c = this.personalData.CPFRejectReason__c
-        // this.mapSection.CPFDescription__c = this.personalData.CPFDescription__c
-        this.mapSection.BirthCityStatus__c = this.personalData.BirthCityStatus__c
-        this.mapSection.BirthCountryStatus__c = this.personalData.BirthCountryStatus__c
-        this.mapSection.NacionalityStatus__c = this.personalData.NacionalityStatus__c
-        this.mapSection.PoliticallyExposedPersonStatus__c = this.personalData.PoliticallyExposedPersonStatus__c
-        // this.mapSection.PersonExposedRejectReason__c = this.personalData.PersonExposedRejectReason__c
-
-        console.log(this.mapSection)
-
         let { Id, Name, Opportunity__c, ...filteredData } = this.personalData
-        
-        console.log(this.personalData)
-        console.log({filteredData})
+
+        for (let item in filteredData)
+        {
+          this.mapSection[item] = filteredData[item]         
+        }
+
+        console.log('mapSection: ', this.mapSection)
         
         for (let indexField in filteredData) {
-          
           this.template.querySelectorAll("[data-status='"+indexField+"']").forEach(function(item) {
               
             if (item.value === filteredData[indexField]) {
               item.checked = true
               item.setAttribute('data-value', item.value)
             }
-
-            // if (item.value === 'Pendenciar' && filteredData[indexField] === 'Pendenciar') {
-            //   item.checked = true
-            //   item.setAttribute('data-value', 'Pendenciar')
-            // }
-
-            // if (item.value === 'reprovado' && filteredData[indexField] === 'Rejeitar') {
-            //   item.checked = true
-            //   item.setAttribute('data-value', 'reprovado')
-            // }
           })
         }
 
@@ -170,7 +145,8 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       } 
     } else if (error) {
       this.error = error
-      console.log({error})
+      this.showToast('Erro', error.body.message, 'error')
+      console.log(JSON.parse(JSON.stringify(error)))
     }
   }
 
@@ -183,7 +159,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     }
   }
 
-  handleSaveSection(event) {
+  handleSaveSection() {
     let saveBtn = this.template.querySelector('[data-id="save-personal-data-btn"]')
     saveBtn.disabled = true
 
@@ -191,11 +167,14 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
     fields[ACCOUNTID_FIELD.fieldApiName]       = this.accountid
     fields[NAME_FIELD.fieldApiName]            = this.template.querySelector("[data-id='Name']").value
+    fields[FATHER_FIELD.fieldApiName]          = this.template.querySelector("[data-id='Father__c']").value
     fields[MOTHER_FIELD.fieldApiName]          = this.template.querySelector("[data-id='Mother__c']").value
-    fields[DOCUMENT_NUMBER_FIELD.fieldApiName] = this.template.querySelector("[data-id='DocumentNumber__c']").value
-    fields[CIVIL_STATUS_FIELD.fieldApiName]    = this.template.querySelector("[data-id='CivilStatus__c']").value
-    fields[PEP_FIELD.fieldApiName]             = (this.template.querySelector("[data-id='PoliticallyExposed__c']").value === 'SIM') ? true : false
     fields[BIRTHDATE_FIELD.fieldApiName]       = this.template.querySelector("[data-id='BirthDate__c']").value
+    fields[DOCUMENT_NUMBER_FIELD.fieldApiName] = this.template.querySelector("[data-id='DocumentNumber__c']").value
+    fields[BIRTHCITY_FIELD.fieldApiName]       = this.template.querySelector("[data-id='BirthCity__c']").value
+    fields[BIRTHCOUNTRY_FIELD.fieldApiName]    = this.template.querySelector("[data-id='Birth_Country__c']").value
+    fields[NATIONALITY_FIELD.fieldApiName]     = this.template.querySelector("[data-id='Nationality__c']").value
+    fields[PEP_FIELD.fieldApiName]             = (this.template.querySelector("[data-id='PoliticallyExposed__c']").value === 'SIM') ? true : false
     
     const recordInput = { fields }
 
@@ -203,7 +182,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     
     updateRecord(recordInput)
       .then(() => {
-        console.log('teste 0')
         saveBtn.disabled = false
         this.saveCheckboxes()
       })
@@ -222,14 +200,12 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       fields[OPPORTUNITY_ID_FIELD.fieldApiName] = this.opportunityid
       
       console.log({ fields })
-      
       const recordInput = { apiName: PERSONAL_DATA_OBJECT.objectApiName, fields }
       
       createRecord(recordInput)
         .then(record => {
           console.log({ record })
           this.recordPersonalSectionId = record.id
-
           this.showToast('Sucesso', 'Dados Pessoais atualizado com sucesso!', 'success')
         })
         .catch(error => {
@@ -238,13 +214,9 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     }
 
     else {
-      
-      console.log('registro já existe. Atualizando..')
-
       fields[PERSONAL_DATA_ID_FIELD.fieldApiName] = this.recordPersonalSectionId
 
       console.log({ fields })
-
       const recordInput = { fields }
 
       updateRecord(recordInput)
@@ -254,31 +226,21 @@ export default class ProposalPersonalDataComponent extends LightningElement {
         })
         .catch(error => {
           this.showToast('Erro', error.body.message, 'error')
+          console.log(JSON.parse(JSON.stringify(error)))
         })
-
-      console.log('recordPersonalSection Id: ', this.recordPersonalSectionId)
     }
   }
 
   handleChangeCheckbox(event) {
     this.checksOnlyOne(event)
-
     this.saveObjectValues(event)
   }
 
   saveObjectValues(event) {
-    console.log('tyumi entrou no saveObject')
-
-    // let nameField = event.target.getAttribute('data-field')
     let nameStatus = event.target.getAttribute('data-status')
-    let valueStatus = event.target.checked ? event.target.value : ''
+    let valueStatus = event.target.checked ? event.target.value : null
     
-    // let fields = new Map()
-    // fields.set(nameStatus, valueStatus)
-    // this.mapSection.set(nameField, fields)
-
     this.mapSection[nameStatus] = valueStatus
-
     console.log(this.mapSection)
   }
 
@@ -286,9 +248,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     let currentCheckbox = event.currentTarget.name
     let currentCheckboxValue = event.currentTarget.value
     let modal = {}
-
-    // console.log({currentCheckbox})
-    // console.log({currentCheckboxValue})
 
     this.template.querySelectorAll('input[name='+currentCheckbox+']').forEach(elem => {
       let oldValue = elem.getAttribute('data-value')
@@ -304,7 +263,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       }
       elem.setAttribute('data-value', newValue)
 
-      
       if (event.target.checked && (currentCheckboxValue == 'Rejeitar' || currentCheckboxValue == 'Pendenciar'))
       {
         let modalReason = (currentCheckboxValue == 'Rejeitar') ? 'reject' : 'pendency';
@@ -318,16 +276,10 @@ export default class ProposalPersonalDataComponent extends LightningElement {
         modal['fieldReason'] = elem.getAttribute('data-reason')
         modal['objectReason'] = 'PersonalDataSection__c'
       }
-
-      // console.log(elem.value + ' '+ elem.checked)
     })
 
-    
     let info = this.getPercentage()
     info = {...info, modal}
-
-    // console.log({modal})
-    console.log({info})
 
     this.sendInfo(info)
   }
@@ -343,14 +295,12 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   }
 
   getPercentage() {
-    //let returnedId = event.target.closest("div[data-id='ContainerDadosPessoais']").getAttribute("data-id")
-    //let topContainer = this.template.querySelector('div[data-id="' + returnedId + '"]')
-
     let returnedId = this.template.querySelector("div[data-id='ContainerDadosPessoais']").getAttribute("data-id")
     let topContainer = this.template.querySelector('div[data-id="' + returnedId + '"]')
     
     //let allCheckboxes = (topContainer.querySelectorAll('input[type="checkbox"]').length) / 3
     let selectedCheckboxes = topContainer.querySelectorAll('input[type="checkbox"]:checked')
+    let totalLines = 9
 
     let isPending = false
     let isRejected = false
@@ -363,29 +313,17 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     let countSelectedCheckbox = 0
 
     selectedCheckboxes.forEach(element => {
-      console.log(element.value)
       countSelectedCheckbox++
 
-      if (element.value === 'Aprovar') {
-        infoVariant = 'base-autocomplete'
-      }
-
-      else if (element.value === 'Pendenciar') {
-        isPending = true
-      }
-
-      else if (element.value === 'Rejeitar') {
-        isRejected = true
-      }
+      if (element.value === 'Aprovar')         infoVariant = 'base-autocomplete'
+      else if (element.value === 'Pendenciar') isPending = true
+      else if (element.value === 'Rejeitar')   isRejected = true
     })
     
     if (isPending && !isRejected) infoVariant = 'warning'
     if (isRejected) infoVariant = 'expired'
     
-    infoValue = (countSelectedCheckbox / 9) * 100
-
-    // console.log({allCheckboxes})
-    
+    infoValue = (countSelectedCheckbox / totalLines) * 100
     selectedCheckboxes = 0
     
     info.variant = infoVariant
@@ -402,5 +340,18 @@ export default class ProposalPersonalDataComponent extends LightningElement {
         variant: variant
     });
     this.dispatchEvent(event);
-  }  
+  } 
+
+  getAge(dateString) {
+    let today = new Date();
+    let birthDate = new Date(dateString.toString());
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
+  }
+
+  get isRed() {
+    return (this.idade > 60 || this.idade < 25) ? true : false
+  }
 }

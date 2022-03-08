@@ -7,15 +7,23 @@ import { loadScript } from 'lightning/platformResourceLoader';
 export default class MinuatorPerson extends LightningElement {
     personString = '';
 	telefone;
+	@track txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
+	@track txtclassnameAddress = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
 	value = ['Compõe renda'];
+	@track ownerValue = false;
+	@track consentingValue = false;
+	@track incomeComposeValue = true;
+	@track labelOption = 'Compõe renda';
     @track personObject = {};
 	@track persons = [];
 	showPersonSectionVar = false;
+	showAddressSectionVar = false;
 	showRelationshipSectionVar = false;
 	@track checkProprietario = false;
 	@track checkCompoeRenda = true;
 	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
+	addressSectionIcon = "utility:chevronright";
 	participationOptions = [
 		{ label: 'Proprietário', value: 'owner' },
 		{ label: 'Compõe renda', value: 'incomeCompose' },
@@ -34,6 +42,9 @@ export default class MinuatorPerson extends LightningElement {
 	regimeOptions = [
 		{ label: 'Comunhão total de bens', value: 'total' }
 	];
+	nameOptions = [
+		{ label: '{persons.name}', value: '{persons.name}'}
+	]
 	
 
 	  handleChange(event) {
@@ -44,29 +55,52 @@ export default class MinuatorPerson extends LightningElement {
         }
     }
 
-	get options() {
-        return [
-            { label: 'Proprietário', value: 'Proprietário' },
-            { label: 'Compõe renda', value: 'Compõe renda' },
-			{ label: 'Anuente', value: 'Anuente' },
-        ];
+	handleChangeOwner(e) {
+        this.ownerValue = !this.ownerValue;
+		console.log(this.ownerValue);
+		if(this.consentingValue && this.ownerValue && this.incomeComposeValue){
+			this.labelOption = '3 selecionados';
+		} else if(this.consentingValue || this.ownerValue){
+				this.labelOption = '2 selecionados';
+		}else{
+			this.labelOption = 'Compõe renda';
+		}
     }
 
-    get selectedValues() {
-        return this.value.join(', ');
+	handleChangeConsenting(e) {
+        this.consentingValue = !this.consentingValue;
+		if(this.consentingValue && this.ownerValue && this.incomeComposeValue){
+			this.labelOption = '3 selecionados';
+		} else if(this.consentingValue || this.ownerValue){
+				this.labelOption = '2 selecionados';
+		}else{
+			this.labelOption = 'Compõe renda';
+		}
     }
 
-    handleChange(e) {
-        this.value = e.detail.value;
-    }
+	atribuirControlesApresentacaoLista(){
+		if ( this.txtclassname == 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click')
+        {            
+            this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open';
+        }
+        else
+        {
+            this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
+        }
 
-
+	}
 
 	showPersonSection(event){
-		console.log('dataId: ' + event.currentTarget.dataset.id)		 
-		console.log("entrou 53");
+		this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';		
 		this.showPersonSectionVar = !this.showPersonSectionVar;
 		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";
+		
+		
+	}
+	showAddressSection(event){
+		this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';		
+		this.showAddressSectionVar = !this.showAddressSectionVar;
+		this.addressSectionIcon = this.showAddressSectionVar ? "utility:chevrondown" : "utility:chevronright";
 		
 		
 	}
@@ -76,10 +110,14 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	showPersonDataSection(event){
-		console.log('entrou: ' + event.currentTarget.dataset.name)
+		this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
 		let actualPerson = this.persons.filter(person => { return person.name === event.currentTarget.dataset.name});
-		actualPerson[0].showSection = !actualPerson[0].showSection
+		actualPerson[0].showSection = !actualPerson[0].showSection		
 		event.stopPropagation();
+	}
+
+	showAddressDataSection(event){
+	    this.showAddressSectionVar = !this.showAddressSectionVar
 	}
 
     connectedCallback(){
@@ -166,13 +204,13 @@ export default class MinuatorPerson extends LightningElement {
 		'            "banking": null,'+
 		'            "identityDocument": null,'+
 		'            "address": {'+
-		'                "zipcode": "85808452",'+
+		'                "zipcode": "65808452",'+
 		'                "city": "Cascavel",'+
 		'                "state": "PR",'+
 		'                "neighborhood": "FAG",'+
-		'                "street": "Rua Áscole",'+
-		'                "number": "657",'+
-		'                "complement": "Residencial Treviso"'+
+		'                "street": "Rua Coimbra",'+
+		'                "number": "891",'+
+		'                "complement": "Jd. do Solo"'+
 		'            }'+
 		'        }'+
 		'    ],'+
@@ -274,7 +312,9 @@ export default class MinuatorPerson extends LightningElement {
 			person.showSection = false;
 			person.cpf = person.documents.filter(doc => { return doc.type == 'CPF'})[0]?.number;
 			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
+			person.address.zipcode = person.address.zipcode.substring(0,5) + '-' + person.address.zipcode.substring(5,8);
 			person.cellPhone = '(' + person.cellPhone.substring(0,2) + ') ' + person.cellPhone.substring(2,3) + ' ' + person.cellPhone.substring(3,7) + '-' + person.cellPhone.substring(7,11);
+			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
 			this.persons.push(person);	
 		});
 		

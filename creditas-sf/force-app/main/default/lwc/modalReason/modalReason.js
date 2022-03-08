@@ -7,7 +7,6 @@ export default class ModalReason extends LightningElement {
     saveDisabled = true;
     optionsReason = [];
     openNote = false;
-    recordTypeIdObject;
 
     @api fieldReason;
     @api objectReason;
@@ -18,15 +17,10 @@ export default class ModalReason extends LightningElement {
     }
 
     connectedCallback(){
-        console.log('Obj Reason: '+this.objectReason);
-        console.log('Field Reason: '+this.fieldReason);
-
         getReasonValues({objectReason: this.objectReason, fieldReason: this.fieldReason})
         .then(result =>{
             if(result){
                 this.optionsReason = JSON.parse(result);
-            }else{
-                console.log('Motivos não encontrados!');
             }
         })
         .catch(error =>{

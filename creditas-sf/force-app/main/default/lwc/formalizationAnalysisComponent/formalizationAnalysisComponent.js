@@ -77,6 +77,7 @@ export default class FormalizationAnalysis extends LightningElement {
     accInfo({ data, error }) {
         if (data){
             this.accountFields = data.fields;
+            console.dir(data.fields);
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
 

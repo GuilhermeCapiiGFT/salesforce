@@ -4,8 +4,8 @@
       <li class="slds-setup-assistant__item">
         <article class="slds-setup-assistant__step">
           <div class="slds-summary-detail slds-is-open"  data-id="sectionPerson">
-            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Accordion summary" aria-controls="referenceId-72" aria-expanded="true">
-              <lightning-icon icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
+            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" onclick={showPersonSection} title="Accordion summary" aria-controls="referenceId-72" aria-expanded="true">
+              <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
               <span class="slds-assistive-text">Accordion summary</span>
             </button>
             <div class="slds-container_fluid">
@@ -57,149 +57,543 @@
 
                             <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
                               <div class="slds-grid slds-wrap" style="width:100%"> 
-                              <div class="slds-col slds-size_12-of-12" onclick={showPersonDataSection} data-name={person.name} style="cursor: pointer">{person.name} 
-                                <lightning-pill class="slds-text-align_right slds-text-color_weak">{selectedValues}</lightning-pill> 
-                              </div> 
-                              
-                                <template if:true={person.showSection}>                     
+                                <div class="slds-col slds-size_12-of-12" onclick={showPersonDataSection} data-name={person.name} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px;  "> {person.name} 
                                   
-                                    <div class="slds-col slds-size_6-of-12">
-                                      <span>
-                                        <lightning-input type="text" name="fullName" label="Nome completo" disabled="true" value={person.name} style="margin-top: 16px; margin-right: 16px; width: 97.5%"></lightning-input>
-                                      </span>
-                                    </div>
-                                    <div class="slds-col slds-size_3-of-12">
-                                      <span>
-                                        <lightning-input type="text" name="cpf" label="CPF" disabled="true" value={person.cpf} style="margin-right: 16px; margin-top: 16px"></lightning-input>
-                                      </span>
-                                  </div>
+                                    <span if:true={ownerValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Proprietário </span>
+                                    <span if:true={incomeComposeValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; margin-left: 8px; margin-right: 8px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Compõe renda </span> 
+                                    <span if:true={consentingValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Anuente </span> 
+                                  
+                              </div> 
 
-                                  <div class="slds-col slds-size_3-of-12">                                  
-                                      <lightning-checkbox-group name="Proprietário"
-                                                                label="Proprietário"
-                                                                options={options}
-                                                                value={value}
-                                                                onchange={handleChange}
-                                                                style="margin-top: 16px;">
-                                      </lightning-checkbox-group>                      
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-combobox
-                                        name="gender"
-                                        label="Gênero"
-                                        value=""
-                                        placeholder="Selecione..."
-                                        options={genderOptions}
-                                        required="true"
-                                        style="margin-right: 16px; margin-top: 8px"
-                                        >
-                                      </lightning-combobox>                               
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="nationality" label="Nacionalidade" disabled="true" value={person.nationality} style="margin-top: 8px; width: 95%"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="date" date-style="short" name="birthDate" label="Data de nascimento" disabled="true" value={person.birthdate} style="margin-top: 8px; width: 95%"></lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="marital" label="Estado civil" disabled="true" value={person.maritalStatus} style="margin-top: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_6-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="mothersName" label="Nome da mãe" disabled="true" value={person.motherName} style="margin-right: 16px; margin-top: 8px"></lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_6-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="fathersName" label="Nome do pai" disabled="true" value={person.fatherName} style="margin-top: 8px"></lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="profession" label="Profissão" disabled="true" value={person.profession} style="margin-right: 16px; margin-top: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" 
-                                                       name="Telefone" 
-                                                       label="Telefone/WhatsApp" 
-                                                       disabled="true" 
-                                                       value={person.cellPhone}
-                                                       pattern="^\(\d{2}\)\d{5}\-\d{4}$"
-                                                       max-length="15"
-                                                       onchange={handleMaskTelefone} 
-                                                       style="margin-right: 16px; margin-top: 8px" >
-                                                      
-                                      </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_6-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="mail" label="E-mail" disabled="true" value={person.email} style="margin-top: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-combobox
-                                      name="documentType"
-                                      label="Tipo de documento"
+                              <template if:true={person.showSection}>                   
+                                <div class="slds-col slds-size_6-of-12 slds-clearfix">
+                                  <span>
+                                    
+                                    <lightning-input type="text" 
+                                                     name="fullName" 
+                                                     label="Nome completo" 
+                                                     disabled="true" 
+                                                     value={person.name} 
+                                                     style="margin-top: 16px; margin-right: 16px; width: 97.5%; color: #706e68">                                      
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="cpf" 
+                                                     label="CPF" 
+                                                     disabled="true" 
+                                                     value={person.cpf} 
+                                                     style="margin-right: 16px; margin-top: 16px; color: #706e68">
+                                    </lightning-input>
+                                  </span>
+                                </div>
+
+                                <div class="slds-col slds-size_3-of-12">    
+                                  <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                      <div class="slds-combobox_container">
+                                        <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                          <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                                            <lightning-input data-id="focus" 
+                                                             read-only="true" 
+                                                             label="Participação" 
+                                                             name="searchText" 
+                                                             style="margin-top: 16px;"
+                                                             onclick={atribuirControlesApresentacaoLista} 
+                                                             value={labelOption}
+                                                             required="true"> 
+                                            </lightning-input>
+                                            <div>
+                                              <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                                                <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                icon-name="utility:down" 
+                                                                size="x-small"
+                                                                alternative-text="icon" 
+                                                                style="margin-top: 18px;" > 
+                                                </lightning-icon>
+                                              </span>
+                                            </div>                                              
+                                          </div>                                      
+                                          <!-- EXIBITION LIST -->
+                                          <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
+                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">                                                
+                                              <li role="presentation" class="slds-listbox__item">
+                                                <div data-id="option1" data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickNaoAceitouHospitais}>
+                                                  <span class="slds-media__body">
+                                                    <lightning-input type="checkbox" label="Proprietário" name="input1" onchange={handleChangeOwner}></lightning-input>
+                                                    <lightning-input type="checkbox" label="Compõe renda" name="input1" checked disabled></lightning-input>
+                                                    <lightning-input type="checkbox" label="Anuente" name="input3" onchange={handleChangeConsenting}></lightning-input>
+                                                  </span>
+                                                </div>
+                                              </li>                                               
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>                  
+                                </div>
+
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-combobox
+                                      name="gender"
+                                      label="Gênero"
                                       value=""
                                       placeholder="Selecione..."
-                                      options={documentTypeOptions}
+                                      options={genderOptions}
                                       required="true"
-                                      style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"                                
-                                      ></lightning-combobox>                     
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="issuing" label="Órgão emissor / UF" required="true" placeholder="Digite..." style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="text" name="documentNumber" label="Nº do documento" required="true" placeholder="Digite..." style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                  <div class="slds-col slds-size_3-of-12">
-                                    <span>
-                                      <lightning-input type="date" date-style="short" name="expeditionDate" label="Data de expedição" placeholder="00/00/0000" style="margin-top: 8px; margin-bottom: 8px"> </lightning-input>
-                                    </span>
-                                  </div>
-                                
-                                  
-                                </template>
-                        
-                            </div>
+                                      style="margin-right: 16px; margin-top: 8px"
+                                      >
+                                    </lightning-combobox>                               
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="nationality" 
+                                                     label="Nacionalidade" 
+                                                     disabled="true" 
+                                                     value={person.nationality} 
+                                                     style="margin-top: 8px; width: 95%; color: #706e68"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="date" 
+                                                     date-style="short" 
+                                                     name="birthDate" 
+                                                     label="Data de nascimento" 
+                                                     disabled="true" 
+                                                     value={person.birthdate} 
+                                                     style="margin-top: 8px; width: 95%; color: #706e68">
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="marital" 
+                                                     label="Estado civil" 
+                                                     disabled="true" 
+                                                     value={person.maritalStatus} 
+                                                     style="margin-top: 8px; color: #706e68"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="mothersName" 
+                                                     label="Nome da mãe" 
+                                                     disabled="true" 
+                                                     value={person.motherName} 
+                                                     style="margin-right: 16px; margin-top: 8px; color: #706e68">
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="fathersName" 
+                                                     label="Nome do pai" 
+                                                     disabled="true" 
+                                                     value={person.fatherName} 
+                                                     style="margin-top: 8px; color: #706e68">
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="profession" 
+                                                     label="Profissão"
+                                                     disabled="true" 
+                                                     value={person.profession} 
+                                                     style="margin-right: 16px; margin-top: 8px; color: #706E6B"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                      name="Telefone" 
+                                                      label="Telefone/WhatsApp" 
+                                                      disabled="true" 
+                                                      value={person.cellPhone}
+                                                      pattern="^\(\d{2}\)\d{5}\-\d{4}$"
+                                                      max-length="15"
+                                                      onchange={handleMaskTelefone} 
+                                                      style="margin-right: 16px; margin-top: 8px; color: #706E6B" >                   
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="mail" 
+                                                     label="E-mail" 
+                                                     disabled="true" 
+                                                     value={person.email} 
+                                                     style="margin-top: 8px; color: #706E6B"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-combobox
+                                                      name="documentType"
+                                                      label="Tipo de documento"
+                                                      value=""
+                                                      placeholder="Selecione..."
+                                                      options={documentTypeOptions}
+                                                      required="true"
+                                                      style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px">
+                                  </lightning-combobox>                     
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="issuing" 
+                                                     label="Órgão emissor / UF" 
+                                                     required="true" 
+                                                     placeholder="Digite..." 
+                                                     style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="text" 
+                                                     name="documentNumber" 
+                                                     label="Nº do documento" 
+                                                     required="true" 
+                                                     placeholder="Digite..." 
+                                                     style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+                                <div class="slds-col slds-size_3-of-12">
+                                  <span>
+                                    <lightning-input type="date"
+                                                     date-style="short" 
+                                                     name="expeditionDate" 
+                                                     label="Data de expedição" 
+                                                     placeholder="00/00/0000" 
+                                                     style="margin-top: 8px; margin-bottom: 8px"> 
+                                    </lightning-input>
+                                  </span>
+                                </div>
+
+                                </template>                        
+                              </div>
                             </div>                                                     
                           </li>
                         </template>
                      
                         <!-- Relationship-->
-                        <li class="slds-progress__item">
-                          <div class="slds-progress__marker"></div>
-                          <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                            <div class="slds-size_3-of-4">Relacionamentos</div>
+                        <template for:each={persons} for:item="person"> 
+                          <li class="slds-progress__item slds-is-active" key={person.id}>
+                            <div class="slds-progress__marker">
+                              <span class="slds-assistive-text">Active</span>                            
+                            </div>                        
+
+                          
+                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
+                                <div class="slds-grid slds-wrap" style="width:100%"> 
+                                  <div class="slds-col slds-size_12-of-12" onclick={showRelationshipSection} data-name={person.address} style="cursor: pointer"> Relacionamentos </div>      
+                                  <div class="slds-col slds-size_12-of-12" style="margin-top: 8px"> {person.name}</div>                              
+                                   
+                             
+                                  <template if:true={showRelationshipSectionVar}> 
+                                    <div class="slds-col slds-size_4-of-12">
+                                      <span>
+                                        <lightning-input
+                                          name="person1Name"
+                                          label="Pessoa"
+                                          value={person.name}                                      
+                                          required="true"
+                                          style="margin-top:8px"
+                                          >
+                                        </lightning-input>
+                                      </span>
+                                    </div>
+                                    
+                                                                   
+                                      <span>
+                                        <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
+                                      </span>
+                                    
+                                    <div class="slds-col slds-size_3-of-12">
+                                      <span>
+                                        <lightning-input  style="margin-top:8px" type="text" name="relationship" label="Relacionamento" required="true"  disabled="false" value='Casada com'></lightning-input>
+                                      </span>
+                                    </div>
+                                    
+                                      <span>
+                                        <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon> 
+                                      </span>
+                                    
+                                    <div class="slds-col slds-size_4-of-12">
+                                      <span>
+                                        <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="false" value='NERO PAGANINI' ></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_3-of-12">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data da união" required="true" value="2020/09/12"></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_7-of-12">
+                                      <span>
+                                        <lightning-combobox
+                                          name="regime  "
+                                          label="Regime"
+                                          value="total"
+                                          placeholder="Selecione..."
+                                          options={regimeOptions}
+                                          required="true"
+                                          style="margin-top:8px; margin-right:16px"
+                                          ></lightning-combobox>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_2-of-12">
+                                      <div class="slds-form-element">
+                                        <label class="slds-checkbox_toggle slds-grid">
+                                          <span class="slds-form-element__label slds-m-bottom_none" style="margin-top:16px">Com escritura</span>
+                                          <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16"  />
+                                          <span class="slds-checkbox_faux_container" aria-live="assertive" style="margin-top:16px">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-checkbox_on">Mostrar</span>
+                                            <span class="slds-checkbox_off">Disabled</span>
+                                          </span>
+                                        </label>
+                                      </div>
+                                    </div>
+                                   
+                                    
+                                    <div class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px">
+                                      <span >
+                                        Dados da escritura pública de declaração de união estável 
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data de registro" value="2020/09/12"></lightning-input>
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_12-of-12">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-left:50px" type="text" name="draftedAt" label="Lavrado em" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_12-of-12">
+                                      <div class="slds-form-element">
+                                        <label class="slds-checkbox_toggle slds-grid">
+                                          <span style="margin-top:8px; margin-left:50px" class="slds-form-element__label slds-m-bottom_none">Pacto antenupcial</span>
+                                          <input style="margin-top:8px" type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" />
+                                          <span class="slds-checkbox_faux_container" aria-live="assertive" style="margin-top:8px">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-checkbox_on">Mostrar</span>
+                                            <span class="slds-checkbox_off">Disabled</span>
+                                          </span>
+                                        </label>
+                                      </div>
+                                    </div>
+
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="date" required="true" date-style="short" name="datedAt" label="Data" value="2020/09/12"></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-right:16px" type="text" required="true" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px" type="text" required="true" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_12-of-12">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-left:50px" type="text" name="draftedAt" label="Lavrado no" required="true" value="" placeholder="Digite..."></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px">
+                                      <span >
+                                        Dados do registro
+                                      </span>
+                                    </div>                                  
+                                    
+                                   
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:16px; margin-right:16px; margin-left:50px" type="checkbox" name="draftedAt" label="Registro de pacto concomitante"></lightning-input>
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumberRegister" placeholder="Digite..." label="Livro n°" value="541867478"></lightning-input>
+                                      </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                      <span>
+                                        <lightning-input style="margin-top:8px" type="text" name="registerNumber" placeholder="Digite..." label="Registro n°" value="4188135113" ></lightning-input>
+                                      </span>
+                                    </div>
+
+                                    <div class="slds-col slds-size_12-of-12">
+                                      <span>
+                                        <lightning-input style="margin-top:8px; margin-left:50px; margin-bottom:16px" type="text" name="draftedAt" label="Livro n°" placeholder="Digite..."></lightning-input>
+                                      </span>
+                                    </div>
+
+                                      
+                                      
+                                </template>
+                              </div>
                             
-                          </div>
-                        </li>
+                            </div> 
+                          </li>
+                        </template>
+
                         <!-- Address-->
-                        <li class="slds-progress__item">
-                          <div class="slds-progress__marker"></div>
-                          <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                            <div class="slds-size_3-of-4">Endereço de correspondência</div>
-                          </div>
-                        </li>
-                        
+                        <template for:each={persons} for:item="person"> 
+                          <li class="slds-progress__item slds-is-active" key={person.id}>
+                            <div class="slds-progress__marker">
+                              <span class="slds-assistive-text">Active</span>                            
+                            </div>                        
+
+                          
+                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
+                                <div class="slds-grid slds-wrap" style="width:100%"> 
+                                  <div class="slds-col slds-size_12-of-12" onclick={showAddressDataSection} style="cursor: pointer"> Endereços </div>
+                                    
+                                     <div class="slds-col slds-size_12-of-12" style="margin-top: 8px"> {person.name}</div> 
+                             
+
+                                  <template if:true={showAddressSectionVar}>       
+                                      <div class="slds-col slds-size_9-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="fullAddress" 
+                                                           label="Endereço" 
+                                                           disabled="true" 
+                                                           value={person.address.street} 
+                                                           style="margin-top: 8px; margin-right: 16px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      
+                                      <div class="slds-col slds-size_3-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="number" 
+                                                           label="Número" 
+                                                           disabled="true" 
+                                                           value={person.address.number} 
+                                                           style="margin-top: 8px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_3-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="complement" 
+                                                           label="Complemento" 
+                                                           disabled="true" 
+                                                           value={person.address.complement} 
+                                                           style="margin-top: 8px; margin-right: 16px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_3-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="neighborhood" 
+                                                           label="Bairro" 
+                                                           disabled="true" 
+                                                           value={person.address.neighborhood} 
+                                                           style="margin-top: 8px; margin-right: 16px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_3-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="city" 
+                                                           label="Cidade" 
+                                                           disabled="true" 
+                                                           value={person.address.city} 
+                                                           style="margin-top: 8px; margin-right: 16px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_3-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="state" 
+                                                           label="Estado" 
+                                                           disabled="true" 
+                                                           value={person.address.state} 
+                                                           style="margin-top: 8px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_6-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="country"                                                            
+                                                           label="País" 
+                                                           disabled="true" 
+                                                           value="Brasil" 
+                                                           style="margin-top: 8px; margin-right: 16px; margin-bottom: 8px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      <div class="slds-col slds-size_6-of-12">
+                                        <span>
+                                          <lightning-input type="text" 
+                                                           name="zipcode" 
+                                                           label="CEP" 
+                                                           disabled="true" 
+                                                           value={person.address.zipcode} 
+                                                           style="margin-top: 8px; margin-bottom: 8px">
+                                          </lightning-input>
+                                        </span>
+                                      </div>
+                                      
+                                </template>
+                              </div>
+                            
+                            </div> 
+                          </li>
+                        </template>
+
                       </ol>
                       <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                         <span class="slds-assistive-text">Progress: 50%</span>

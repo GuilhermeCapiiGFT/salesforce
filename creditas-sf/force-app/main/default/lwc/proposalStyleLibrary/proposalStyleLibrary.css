@@ -41,7 +41,7 @@ div.field {
   }
 
   
-  
+
   /* Styling the form, inputs and fields - END*/
   
   /* Styling the checkboxes START */
@@ -101,6 +101,11 @@ div.field {
   input[type="checkbox"]:checked::before {
   transform: scale(1);
   } 
+
+  input.disabled-input {
+    background: #6965652b;
+    cursor: no-drop;
+  }
   
   /* Styling the checkboxes END */
   
@@ -205,5 +210,6 @@ div.field {
     border: 1px solid #4bca81;;
     color: #4bca81;;
   }
+
   
   /* Styling Buttons END*/

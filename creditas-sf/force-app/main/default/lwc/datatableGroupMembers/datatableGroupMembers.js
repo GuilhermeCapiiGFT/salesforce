@@ -1,9 +1,9 @@
 import { LightningElement, wire, api, track} from 'lwc';
-import searchGroupMember from '@salesforce/apex/GroupMembersLWC.searchGroupMember';
-import deleteMembers from '@salesforce/apex/GroupMembersLWC.deleteMembers';
+import searchGroupMember from '@salesforce/apex/GroupMembersController.searchGroupMember';
+import deleteMembers from '@salesforce/apex/GroupMembersController.deleteMembers';
 import { NavigationMixin } from 'lightning/navigation';
-import getNameGroup from '@salesforce/apex/GroupMembersLWC.getNameGroup';
-import updateMemberGroup from '@salesforce/apex/GroupMembersLWC.updateMemberGroup';
+import getNameGroup from '@salesforce/apex/GroupMembersController.getNameGroup';
+import updateMemberGroup from '@salesforce/apex/GroupMembersController.updateMemberGroup';
 import { CurrentPageReference } from 'lightning/navigation';
 
 // row actions
