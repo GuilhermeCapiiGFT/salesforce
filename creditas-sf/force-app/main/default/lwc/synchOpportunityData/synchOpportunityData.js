@@ -1,5 +1,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import getSyncInfo from '@salesforce/apex/SynchOpportunityDataController.getSyncInfo';
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
 import updateSynchingFields from '@salesforce/apex/SynchOpportunityDataController.updateSynchingFields';
 
 
