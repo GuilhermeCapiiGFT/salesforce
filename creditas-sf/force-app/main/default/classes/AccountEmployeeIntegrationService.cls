@@ -28,6 +28,9 @@ public with sharing class AccountEmployeeIntegrationService {
   }
 
   public void processRequest(){
+
+    Savepoint sp = Database.setSavepoint();
+
     try {
       this.parseBody();
       this.checkRequiredFields();
@@ -36,8 +39,10 @@ public with sharing class AccountEmployeeIntegrationService {
       this.setStatusAndMessage(200, 'Record created/updated successfully.');
     } catch (AccountEmployeeIntegrationException e) {
       this.setStatusAndMessage(400, e.getMessage());
+      Database.rollback(sp);
     } catch (Exception e){
       this.setStatusAndMessage(400, 'Error: couldn\'t process request.');
+      Database.rollback(sp);
     }
   }
 
