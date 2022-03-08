@@ -21,5 +21,10 @@
             </div>
         </lightning-card>
     </template>
+
+    <template if:true={showEventReceived}> 
+        <lightning-card title="Sincronização Concluída" icon-name="action:approval">
+        </lightning-card>
+    </template>
   
 </template>

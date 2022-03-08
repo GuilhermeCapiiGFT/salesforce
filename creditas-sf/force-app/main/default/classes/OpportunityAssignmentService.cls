@@ -38,7 +38,7 @@ public with sharing class OpportunityAssignmentService {
       Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get('mapUserAccountId');
  
       for (Opportunity op : inputOppList) {
-
+        
         if(accountUserIdMap.containsKey(op.AccountId)){
           op.OwnerId = accountUserIdMap.get(op.AccountId);
           op.FormalizationStatus__c = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
@@ -125,13 +125,13 @@ public with sharing class OpportunityAssignmentService {
         }
 
         private static List<Opportunity> getAssignedOpps() {
-          Set<String> excludedStageNames = new Set<String>{'Assinatura','HR'};
+          Set<String> formalizationStatus = new Set<String>{OpportunityFormalizationStatus.UNDER_ANALYSIS, OpportunityFormalizationStatus.AWAITING_ANALYSIS};
           return [ 
             SELECT OwnerId
             FROM Opportunity
             WHERE RecordTypeId = :opportunityRecordTypeId AND
-            CreatedDate = TODAY AND StageName NOT IN: excludedStageNames AND
-            FormalizationStatus__c NOT IN :statusFormalizationSet
+            CreatedDate = TODAY AND StageName = :stageNameTo AND
+            FormalizationStatus__c IN :formalizationStatus
             WITH SECURITY_ENFORCED
           ];
             

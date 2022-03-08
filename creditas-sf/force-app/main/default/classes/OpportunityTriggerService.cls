@@ -29,7 +29,7 @@ public with sharing class OpportunityTriggerService {
         public static void firePlatformEventSynchAccount(Map<Id,Opportunity> mapNewOpportunity) {
         for (Opportunity newOpportunity : mapNewOpportunity.values()) {
             if (newOpportunity.IsSynchEnabled__c == 'ENABLED') {
-            SynchAccount__e synch = new SynchAccount__e();
+            SynchOpportunity__e synch = new SynchOpportunity__e();
             DataBase.SaveResult sr = EventBus.publish(synch);
             }
         }
