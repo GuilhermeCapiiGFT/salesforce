@@ -1,8 +1,8 @@
-public class OpportunityIntegrationModel{
-	public conditions conditions;
-	public partner partner;
-	public participants[] participants;
-	public collaterals[] collaterals;
+public with sharing class OpportunityIntegrationVO {
+    public cls_conditions conditions;
+	public cls_partner partner;
+	public cls_participants[] participants;
+	public cls_collaterals[] collaterals;
 	public String status;	//ONGOING
 	public String productType;	//HOME_REFIN
 	public String purpose;	//OTHERS
@@ -15,54 +15,54 @@ public class OpportunityIntegrationModel{
 	public Boolean hasError;
 	public String errorMessage;
     
-	public class conditions {
-		public installments installments;
-		public interest interest;
-		public cet cet;
-		public parameters parameters;
-		public limit limitData;
-		public depositAccount depositAccount;
-		public monthlyInterestRateComposition[] monthlyInterestRateComposition;
-		public netValues netValues;
+	public class cls_conditions {
+		public cls_installments installments;
+		public cls_interest interest;
+		public cls_cet cet;
+		public cls_parameters parameters;
+		public cls_limit limitData;
+		public cls_depositAccount depositAccount;
+		public cls_monthlyInterestRateComposition[] monthlyInterestRateComposition;
+		public cls_netValues netValues;
 		public String step;	//CREDIT_ANALYSIS
 	}
-	public class installments {
-		public value value;
+	public class cls_installments {
+		public cls_value value;
 		public String type;	//FIXED
 		public Integer term;	//12
 		public String firstDueDate;	//2020-02-20
 		public String lastDueDate;	//2021-01-20
 	}
     
-	public class value {
+	public class cls_value {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
 	}
     
-	public class interest {
-		public yearly yearlyLimit;
-		public monthly monthlyLimit;
+	public class cls_interest {
+		public cls_yearly yearlyLimit;
+		public cls_monthly monthlyLimit;
         public Double yearly;
 		public Double monthly;
 	}
     
-    public class cet {
+    public class cls_cet {
        	public Double daily; //0.0007966283053657541     
         public Double monthly; //0.024176971037231043
         public Double yearly; //0.3373012296403381
 	}
     
-    public class cetLimit {
+    public class cls_cetLimit {
 		public Decimal maximum;	//30000
 		public Decimal minimum;	//1000
 	}    
     
-    public class parameters {
-		public collateralValue collateralValue;
-		public requestedAmount requestedAmount;
-		public tac tac;
-		public iof iof;
-		public additionalCosts additionalCosts;
+    public class cls_parameters {
+		public cls_collateralValue collateralValue;
+		public cls_requestedAmount requestedAmount;
+		public cls_tac tac;
+		public cls_iof iof;
+		public cls_additionalCosts additionalCosts;
 		public Integer term;	//180
 		public String uf;	//AM
 		public Integer creditScore;	//800
@@ -71,87 +71,87 @@ public class OpportunityIntegrationModel{
 		public Integer calculatorVersion;	//3
 	}
     
-    public class collateralValue {
+    public class cls_collateralValue {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
 	}
     
-    public class requestedAmount {
+    public class cls_requestedAmount {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
 	}
     
-    public class tac {
+    public class cls_tac {
 		public String currencyCode;	//BRL
 		public String amount;	//2
 	}
     
-    public class iof {
+    public class cls_iof {
 		public String currencyCode;	//BRL
 		public String amount;	//100
 	}
     
-    public class additionalCosts {
+    public class cls_additionalCosts {
 		public String currencyCode;	//BRL
 		public String amount;	//200
 	}
     
-    public class limit {
-		public cetLimit cetLimit;
-		public interest interest;
-		public total total;
-        public monthly monthly;
+    public class cls_limit {
+		public cls_cetLimit cetLimit;
+		public cls_interest interest;
+		public cls_total total;
+        public cls_monthly monthly;
 		public String installmentType;	//FIXED
 		public String dueDate;	//2020-02-10
 	}
     
-    public class yearly {
+    public class cls_yearly {
 		public Decimal maximum;	//24
 		public Decimal minimum;	//0
 	}
     
-    public class monthly {
+    public class cls_monthly {
 		public Decimal maximum;	//2
 		public Decimal minimum;	//0
 	}
     
-    public class total {
+    public class cls_total {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
 	}
     
-    public class depositAccount {
+    public class cls_depositAccount {
 		public String bankCode;	//341
 		public String branch;	//38976
 		public String accountNumber;	//897650
 		public String bankAccountType;	//CHECKINGS
 	}
     
-    public class monthlyInterestRateComposition {
+    public class cls_monthlyInterestRateComposition {
 		public String type;	//base
 		public Double value;	//0.015
 	}
     
-    public class netValues {
+    public class cls_netValues {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
 	}
     
-    public class partner {
+    public class cls_partner {
 		public String id;	//21b0f42e-f27d-4696-9cfe-2f4258e31164
 	}
     
-    public class participants {
+    public class cls_participants {
 		public List<String> roles;
-		public person person;
+		public cls_person person;
 	}
     
-    public class person {
+    public class cls_person {
 		public String id;	//PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664
 		public Integer version;	//4
 	}
     
-    public class collaterals {
+    public class cls_collaterals {
 		public String type;	//ASSET
 		public String id;	//f0e55377-0133-4bfe-8cc2-a9819df6cc92
 		public Integer version;	//10
