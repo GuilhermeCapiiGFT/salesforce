@@ -24,21 +24,16 @@ global with sharing class OpportunityIntegrationController {
             buildErrorResponse('Proponent not found in Salesforce');
         }        
         
-        commitTransactions();
-
-        if(isOperationSucess){
-            OpportunityIntegrationService.setResponse(new OpportunityIntegrationService.Response(200,opportunityId,'Opportunity successfully upserted.'),200);
-        } else {
-            buildErrorResponse('Operation Failed.');
-        }
-            
+        commitTransactions(mapPersonAccount);
+        
+        OpportunityIntegrationService.setResponse(new OpportunityIntegrationService.Response(200,opportunityId,'Opportunity successfully upserted.'),200);
     }   
     
-    public static Boolean commitTransactions(){
+    public static void commitTransactions(Map<String, String> mapPersonAccount){
         
         Savepoint sp = Database.setSavepoint();
-        
-        Database.upsertResult upsertOpp = OpportunityIntegrationService.upsertOpportunity();
+
+        Database.upsertResult upsertOpp = OpportunityIntegrationService.upsertOpportunity(mapPersonAccount);
         if(upsertOpp.isSuccess()){
             opportunityId = upsertOpp.getId();
         } else {
@@ -60,7 +55,6 @@ global with sharing class OpportunityIntegrationController {
             Database.rollback(sp);
             buildErrorResponse(errorOppRole);
         }     
-        return upsertOpp.isSuccess() && upsertQuote.isSuccess() && upsertOppRole.isSuccess();
     }
 
     private static void buildErrorResponse(String errorMessage){

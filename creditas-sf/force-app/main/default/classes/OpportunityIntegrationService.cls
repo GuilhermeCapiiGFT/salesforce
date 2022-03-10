@@ -37,129 +37,125 @@ public with sharing class OpportunityIntegrationService {
     }
 
     public static RestResponse setResponse(Response response, Integer errorCode){
-        //String errorResponse = String.isBlank(errorMessage) ? 'An error has occurred. Please, contact a Salesforce Administrator.' : errorMessage;
         RestResponse res = RestContext.response != null ?  RestContext.response : new RestResponse();
         res.responseBody = Blob.valueOf(JSON.serialize(response));
         res.statusCode = errorCode;
         return res;
     }
 
-    public static Boolean upsertOpportunity(){   
+    public static Database.upsertResult upsertOpportunity(){   
 
         Opportunity opportunityToUpsert = new Opportunity();    
-        opportunityToUpsert.Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :requestBodyObj.id]?.Id;
-        opportunityToUpsert.ExternalId__c = requestBodyObj.id;
-        opportunityToUpsert.ExternalVersion__c = Decimal.valueOf(requestBodyObj.version);
-        opportunityToUpsert.ExternalTenant__c = requestBodyObj.tenant;
+        opportunityToUpsert.Id = [SELECT Id, ExternalId__c FROM Opportunity WHERE ExternalId__c = :OpportunityIntegrationController.requestBodyObj.id]?.Id;
+        opportunityToUpsert.ExternalId__c = OpportunityIntegrationController.requestBodyObj.id;
+        opportunityToUpsert.ExternalVersion__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.version);
+        opportunityToUpsert.ExternalTenant__c = OpportunityIntegrationController.requestBodyObj.tenant;
         opportunityToUpsert.Name = accountName.split('_',2)[0];
         opportunityToUpsert.AccountId = accountName.split('_',2)[1];        
         opportunityToUpsert.StageName = 'Formalização';       
         opportunityToUpsert.CloseDate = System.today().addDays(30);                         
-        opportunityToUpsert.ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt);
-        opportunityToUpsert.ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updateAt);
-        opportunityToUpsert.ProductType__c = requestBodyObj.productType;
-        opportunityToUpsert.Description = requestBodyObj.purpose;
+        opportunityToUpsert.ExternalCreationDate__c = Date.valueOf(OpportunityIntegrationController.requestBodyObj.createdAt);
+        opportunityToUpsert.ExternalUpdatedDate__c = Date.valueOf(OpportunityIntegrationController.requestBodyObj.updateAt);
+        opportunityToUpsert.ProductType__c = OpportunityIntegrationController.requestBodyObj.productType;
+        opportunityToUpsert.Description = OpportunityIntegrationController.requestBodyObj.purpose;
 
         opportunityToUpsert.IsExternallySynched__c = true;
         opportunityToUpsert.IsSynchEnabled__c = 'ENABLED';
 
-        if(requestBodyObj.conditions.depositAccount != null){
-            opportunityToUpsert.BankCode__c = requestBodyObj.conditions.depositAccount.bankCode;
-            opportunityToUpsert.Branch__c = requestBodyObj.conditions.depositAccount.branch;
-            opportunityToUpsert.AccountNumber__c = requestBodyObj.conditions.depositAccount.accountNumber;
-            opportunityToUpsert.BankAccountType__c = requestBodyObj.conditions.depositAccount.bankAccountType;
+        if(OpportunityIntegrationController.requestBodyObj.conditions.depositAccount != null){
+            opportunityToUpsert.BankCode__c = OpportunityIntegrationController.requestBodyObj.conditions.depositAccount.bankCode;
+            opportunityToUpsert.Branch__c = OpportunityIntegrationController.requestBodyObj.conditions.depositAccount.branch;
+            opportunityToUpsert.AccountNumber__c = OpportunityIntegrationController.requestBodyObj.conditions.depositAccount.accountNumber;
+            opportunityToUpsert.BankAccountType__c = OpportunityIntegrationController.requestBodyObj.conditions.depositAccount.bankAccountType;
         }
               
-        try {
-            upsert opportunityToUpsert;  
-            opportunityId = opportunityToUpsert.Id;  
-        } catch (System.DmlException e){
-            hasError = true;
-            errorMessage = e.getDmlMessage(0);            
-            return;
-        }      
+        Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;
+        
+        Database.UpsertResult result = Database.upsert(opportunityToUpsert, oppExternalId, true);  
+        return result;
+         
     }
     public static void upsertQuote(){
         Quote quoteObject = new Quote();
         quoteObject.Id = [SELECT Id FROM Quote WHERE OpportunityId = :opportunityId LIMIT 1]?.Id;
 
-        if(requestBodyObj.conditions.installments != null){
-            if(requestBodyObj.conditions.installments.value != null){
-                quoteObject.UnitPrice__c = Decimal.valueOf(requestBodyObj.conditions.installments.value.amount);
+        if(OpportunityIntegrationController.requestBodyObj.conditions.installments != null){
+            if(OpportunityIntegrationController.requestBodyObj.conditions.installments.value != null){
+                quoteObject.UnitPrice__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.installments.value.amount);
             }
-            quoteObject.InstallmentType__c = requestBodyObj.conditions.installments.type;
-            quoteObject.Quantity__c = requestBodyObj.conditions.installments.term;
-            quoteObject.ServiceDate__c = Date.valueOf(requestBodyObj.conditions.installments.firstDueDate);
-            quoteObject.ServiceLastDate__c = Date.valueOf(requestBodyObj.conditions.installments.lastDueDate);
+            quoteObject.InstallmentType__c = OpportunityIntegrationController.requestBodyObj.conditions.installments.type;
+            quoteObject.Quantity__c = OpportunityIntegrationController.requestBodyObj.conditions.installments.term;
+            quoteObject.ServiceDate__c = Date.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.installments.firstDueDate);
+            quoteObject.ServiceLastDate__c = Date.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.installments.lastDueDate);
         }
 
-        if(requestBodyObj.conditions.interest != null){
-            quoteObject.MonthlyInterest__c =  Decimal.valueOf(requestBodyObj.conditions.interest.monthly);
-            quoteObject.YearlyInterest__c =  Decimal.valueOf(requestBodyObj.conditions.interest.yearly);  
+        if(OpportunityIntegrationController.requestBodyObj.conditions.interest != null){
+            quoteObject.MonthlyInterest__c =  Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.interest.monthly);
+            quoteObject.YearlyInterest__c =  Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.interest.yearly);  
         }
 
-        if(requestBodyObj.conditions.cet != null){
-            quoteObject.DailyCet__c = requestBodyObj.conditions.cet.daily;
-            quoteObject.MonthlyCet__c = requestBodyObj.conditions.cet.monthly;
-            quoteObject.YearlyCet__c = requestBodyObj.conditions.cet.yearly;
+        if(OpportunityIntegrationController.requestBodyObj.conditions.cet != null){
+            quoteObject.DailyCet__c = OpportunityIntegrationController.requestBodyObj.conditions.cet.daily;
+            quoteObject.MonthlyCet__c = OpportunityIntegrationController.requestBodyObj.conditions.cet.monthly;
+            quoteObject.YearlyCet__c = OpportunityIntegrationController.requestBodyObj.conditions.cet.yearly;
         }
 
-        if(requestBodyObj.conditions.parameters != null){
-            quoteObject.Term__c = requestBodyObj.conditions.parameters.term;
-            quoteObject.UF__c = requestBodyObj.conditions.parameters.uf;
-            quoteObject.CreditScore__c = requestBodyObj.conditions.parameters.creditScore;
-            quoteObject.GracePeriod__c = requestBodyObj.conditions.parameters.gracePeriod;
-            quoteObject.ParameterCalcVersion__c = requestBodyObj.conditions.parameters.calculatorVersion;
-            if (requestBodyObj.conditions.parameters.tac != null){
-                quoteObject.ParameterTac__c = Decimal.valueOf(requestBodyObj.conditions.parameters.tac.amount);
+        if(OpportunityIntegrationController.requestBodyObj.conditions.parameters != null){
+            quoteObject.Term__c = OpportunityIntegrationController.requestBodyObj.conditions.parameters.term;
+            quoteObject.UF__c = OpportunityIntegrationController.requestBodyObj.conditions.parameters.uf;
+            quoteObject.CreditScore__c = OpportunityIntegrationController.requestBodyObj.conditions.parameters.creditScore;
+            quoteObject.GracePeriod__c = OpportunityIntegrationController.requestBodyObj.conditions.parameters.gracePeriod;
+            quoteObject.ParameterCalcVersion__c = OpportunityIntegrationController.requestBodyObj.conditions.parameters.calculatorVersion;
+            if (OpportunityIntegrationController.requestBodyObj.conditions.parameters.tac != null){
+                quoteObject.ParameterTac__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.parameters.tac.amount);
             } 
-            if (requestBodyObj.conditions.parameters.iof != null){
-                quoteObject.ParameterIOF__c = Decimal.valueOf(requestBodyObj.conditions.parameters.iof.amount);
+            if (OpportunityIntegrationController.requestBodyObj.conditions.parameters.iof != null){
+                quoteObject.ParameterIOF__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.parameters.iof.amount);
             }
-            if (requestBodyObj.conditions.parameters.additionalCosts != null){
-                quoteObject.ParameterAdditionalCosts__c = Decimal.valueOf(requestBodyObj.conditions.parameters.additionalCosts.amount);
+            if (OpportunityIntegrationController.requestBodyObj.conditions.parameters.additionalCosts != null){
+                quoteObject.ParameterAdditionalCosts__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.parameters.additionalCosts.amount);
             }
-            if(requestBodyObj.conditions.parameters.collateralValue != null){
-                quoteObject.CollateralAmount__c = Decimal.valueOf(requestBodyObj.conditions.parameters.collateralValue.amount);
+            if(OpportunityIntegrationController.requestBodyObj.conditions.parameters.collateralValue != null){
+                quoteObject.CollateralAmount__c = Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.parameters.collateralValue.amount);
             }
-            if(requestBodyObj.conditions.parameters.requestedAmount != null){
-                quoteObject.RequestedAmount__c = Decimal.valueOf((requestBodyObj.conditions.parameters.requestedAmount.amount));
+            if(OpportunityIntegrationController.requestBodyObj.conditions.parameters.requestedAmount != null){
+                quoteObject.RequestedAmount__c = Decimal.valueOf((OpportunityIntegrationController.requestBodyObj.conditions.parameters.requestedAmount.amount));
             }
         }
 
-        if (requestBodyObj.conditions.parameters.contractDate != null){
-            quoteObject.ContractDate__c = Date.valueOf(requestBodyObj.conditions.parameters.contractDate);
+        if (OpportunityIntegrationController.requestBodyObj.conditions.parameters.contractDate != null){
+            quoteObject.ContractDate__c = Date.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.parameters.contractDate);
         }
 
-        if (requestBodyObj.conditions.limitData != null){
-            if (requestBodyObj.conditions.limitData.cetLimit != null){
-                quoteObject.LimitCetMinimunc__c = requestBodyObj.conditions.limitData.cetLimit.minimum;
-                quoteObject.LimitCetMaximum__c = requestBodyObj.conditions.limitData.cetLimit.maximum;
+        if (OpportunityIntegrationController.requestBodyObj.conditions.limitData != null){
+            if (OpportunityIntegrationController.requestBodyObj.conditions.limitData.cetLimit != null){
+                quoteObject.LimitCetMinimunc__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.cetLimit.minimum;
+                quoteObject.LimitCetMaximum__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.cetLimit.maximum;
             }
-            if (requestBodyObj.conditions.limitData.interest != null){
-                if (requestBodyObj.conditions.limitData.interest.yearlyLimit != null){
-                    quoteObject.yearlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.minimum; 
-                    quoteObject.yearlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.yearlyLimit.maximum;
+            if (OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest != null){
+                if (OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.yearlyLimit != null){
+                    quoteObject.yearlyLimitMinimunc__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.yearlyLimit.minimum; 
+                    quoteObject.yearlyLimitMaximum__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.yearlyLimit.maximum;
                 }
-                if (requestBodyObj.conditions.limitData.interest.monthlyLimit != null){
-                    quoteObject.monthlyLimitMinimunc__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.minimum;  
-                    quoteObject.monthlyLimitMaximum__c = requestBodyObj.conditions.limitData.interest.monthlyLimit.maximum;
+                if (OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.monthlyLimit != null){
+                    quoteObject.monthlyLimitMinimunc__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.monthlyLimit.minimum;  
+                    quoteObject.monthlyLimitMaximum__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.interest.monthlyLimit.maximum;
                 }
             }      
-            if(requestBodyObj.conditions.limitData.total != null){
-                quoteObject.LimitTotal__c = requestBodyObj.conditions.limitData.total.amount != null ? Decimal.valueOf(requestBodyObj.conditions.limitData.total.amount) : null;
+            if(OpportunityIntegrationController.requestBodyObj.conditions.limitData.total != null){
+                quoteObject.LimitTotal__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.total.amount != null ? Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.limitData.total.amount) : null;
             }     
-            quoteObject.LimitInstallmentType__c = requestBodyObj.conditions.limitData.installmentType;
-            quoteObject.LimitDueDate__c = requestBodyObj.conditions.limitData.dueDate != null ? Date.valueOf(requestBodyObj.conditions.limitData.dueDate) : null; 
+            quoteObject.LimitInstallmentType__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.installmentType;
+            quoteObject.LimitDueDate__c = OpportunityIntegrationController.requestBodyObj.conditions.limitData.dueDate != null ? Date.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.limitData.dueDate) : null; 
         } 
 
-        if (requestBodyObj.conditions.monthlyInterestRateComposition != null && !requestBodyObj.conditions.monthlyInterestRateComposition.isEmpty()){
-            quoteObject.MonthlyIntRateCompType__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].type;
-            quoteObject.MonthlyIntRateCompValue__c = requestBodyObj.conditions.monthlyInterestRateComposition[0].value;
+        if (OpportunityIntegrationController.requestBodyObj.conditions.monthlyInterestRateComposition != null && !OpportunityIntegrationController.requestBodyObj.conditions.monthlyInterestRateComposition.isEmpty()){
+            quoteObject.MonthlyIntRateCompType__c = OpportunityIntegrationController.requestBodyObj.conditions.monthlyInterestRateComposition[0].type;
+            quoteObject.MonthlyIntRateCompValue__c = OpportunityIntegrationController.requestBodyObj.conditions.monthlyInterestRateComposition[0].value;
         }
 
-        if (requestBodyObj.conditions.netValues != null){
-            quoteObject.NetValue__c = requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(requestBodyObj.conditions.netValues.amount) : null;
+        if (OpportunityIntegrationController.requestBodyObj.conditions.netValues != null){
+            quoteObject.NetValue__c = OpportunityIntegrationController.requestBodyObj.conditions.netValues.amount != null ? Decimal.valueOf(OpportunityIntegrationController.requestBodyObj.conditions.netValues.amount) : null;
         }
         quoteObject.OpportunityId = opportunityId; 
         quoteObject.Name = accountName.split('_',2)[0] + ' Quote';
@@ -176,7 +172,7 @@ public with sharing class OpportunityIntegrationService {
     
     public static void upsertOpportunityRoles(){
         Set<String> externalPersonIds = new Set<String>();
-        for(OpportunityIntegrationVO.cls_participants participant : requestBodyObj.participants)
+        for(OpportunityIntegrationVO.cls_participants participant : OpportunityIntegrationController.requestBodyObj.participants)
         {
             externalPersonIds.add(participant.person.id);
         }
@@ -197,7 +193,7 @@ public with sharing class OpportunityIntegrationService {
         }
 
         List<OpportunityRole__c> opportunityRolesToUpsert = new List<OpportunityRole__c>();
-        for(OpportunityIntegrationVO.cls_participants participant : requestBodyObj.participants)
+        for(OpportunityIntegrationVO.cls_participants participant : OpportunityIntegrationController.requestBodyObj.participants)
         {
             Id oppRoleId = externalPersonIdToOpportunityRoleMap.get(participant.person.id)?.Id;
             Id personId = externalPersonIdToAccountMap.get(participant.person.id)?.Id;
