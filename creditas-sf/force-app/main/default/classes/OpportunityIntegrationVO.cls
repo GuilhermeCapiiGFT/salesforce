@@ -1,8 +1,8 @@
 public with sharing class OpportunityIntegrationVO {
     public cls_conditions conditions;
 	public cls_partner partner;
-	public cls_participants[] participants;
-	public cls_collaterals[] collaterals;
+	public List<cls_participants> participants;
+	public List<cls_collaterals> collaterals;
 	public String status;	//ONGOING
 	public String productType;	//HOME_REFIN
 	public String purpose;	//OTHERS
@@ -157,16 +157,16 @@ public with sharing class OpportunityIntegrationVO {
 		public Integer version;	//10
 	}
     
-	public static OpportunityIntegrationModel parse(String json){
-		OpportunityIntegrationModel oppModel = new OpportunityIntegrationModel();
+	public static OpportunityIntegrationVO parse(String json){
+		OpportunityIntegrationVO oppVO = new OpportunityIntegrationVO();
 		try {
-			oppModel = (OpportunityIntegrationModel) System.JSON.deserialize(json, OpportunityIntegrationModel.class);
-			oppModel.hasError = false;
+			oppVO = (OpportunityIntegrationVO) System.JSON.deserialize(json, OpportunityIntegrationVO.class);
+			oppVO.hasError = false;
         } catch (Exception e) {
-			oppModel.hasError = true;
-			oppModel.errorMessage = e.getMessage();
+			oppVO.hasError = true;
+			oppVO.errorMessage = e.getMessage();
         }
-		return oppModel;
+		return oppVO;
 	}
 
 	public static String opportunityMock() {
