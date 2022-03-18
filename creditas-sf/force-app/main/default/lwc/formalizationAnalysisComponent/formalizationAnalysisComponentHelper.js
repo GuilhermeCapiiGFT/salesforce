@@ -35,13 +35,14 @@ export const helper = {
     } else {
         label = objInput[propertyName].label === 'Número do documento' ? dataInput.DocumentType__c : objInput[propertyName].label
     }
-    
+  
+    let inputValue = dataInput ? dataInput[propertyName] : '';
     return {    id: id, 
                 inputName: objInput[propertyName].apiName,
                 inputType: objInput[propertyName].dataType,
                 inputDisabled: !objInput[propertyName].updateable, 
                 inputLabel: label, 
-                inputValue: dataInput[propertyName],
+                inputValue: inputValue,
                 inputSection: inputSection 
             };
   }

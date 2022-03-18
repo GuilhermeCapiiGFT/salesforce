@@ -1,4 +1,4 @@
-public with sharing class insertLogUtils {
+public with sharing class InsertLogUtils {
 
     public static Boolean insertErrorLog(String endPoint, String requestBody, Integer errorCode, String errorMessage){
         Boolean returnMessage = false;

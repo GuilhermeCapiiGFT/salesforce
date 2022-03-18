@@ -1,5 +1,5 @@
 @isTest
-private with sharing class insertLogUtilsTest {
+private with sharing class InsertLogUtilsTest {
     
     @isTest
     private static void coverageTest(){

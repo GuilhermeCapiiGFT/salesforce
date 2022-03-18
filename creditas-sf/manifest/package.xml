@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>SynchAccount__e</members>
-		<members>SynchOpportunity__e</members>
-		<name>CustomObject</name>
+		<members>FormalizationAnalysisService</members>
+		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>Opportunity-Home</members>
-		<name>Layout</name>
+		<members>formalizationAnalysisComponent</members>
+		<members>formalizationAnalysisField</members>
+		<name>LightningComponentBundle</name>
 	</types>
 	<version>53.0</version>
 </Package>
