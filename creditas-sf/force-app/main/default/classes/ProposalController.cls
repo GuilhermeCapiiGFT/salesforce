@@ -6,6 +6,12 @@ public with sharing class ProposalController {
         return ProposalService.getPersonalDataSectionRecord(recordId);
     }
 
+    @AuraEnabled(cacheable=true)
+    public static Map<String, SObject> getDocuments(String recordId)
+    {
+        return ProposalService.getDocuments(recordId);
+    }
+
     @AuraEnabled
     public static String getReason(String objectReason, String fieldReason){
         return JSON.serialize(PicklistUtils.getPickListValuesWrapped(objectReason, fieldReason));

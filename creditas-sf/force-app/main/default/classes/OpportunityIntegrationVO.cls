@@ -344,7 +344,7 @@ public with sharing class OpportunityIntegrationVO {
 		' '+
 		'       },'+
 		' '+
-		'       "step":"CREDIT_ANALYSIS"'+
+		'       "step":"PENDING_SIGNATURE"'+
 		' '+
 		'    },'+
 		' '+
@@ -400,11 +400,11 @@ public with sharing class OpportunityIntegrationVO {
 		' '+
 		'    "status":"ONGOING",'+
 		' '+
-		'    "productType":"HOME_REFIN",'+
+		'    "productType":"PAYROLL/SALARY_ADVANCE",'+
 		' '+
 		'    "purpose":"OTHERS",'+
 		' '+
-		'    "id": "ID",'+
+		'    "id": "OPPORTUNITY-VO-ID-6733",'+
 		' '+
 		'    "version": "123",'+
 		' '+

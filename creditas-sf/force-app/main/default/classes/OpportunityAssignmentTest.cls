@@ -30,7 +30,7 @@ private class OpportunityAssignmentTest {
 
     // Creates a CustomQueue with a number of points for each type of queue
     List<CustomQueue__c> lstCustomQueue = new List<CustomQueue__c>();
-    lstCustomQueue.add(makeCustomQueue('DISCHARGE', 10));
+    lstCustomQueue.add(makeCustomQueue('DISCHARGING', 10));
     lstCustomQueue.add(makeCustomQueue('REFINANCING', 20));
     lstCustomQueue.add(makeCustomQueue('STORE', 30));
     lstCustomQueue.add(makeCustomQueue('PAYROLL_LOAN', 40));
@@ -50,10 +50,10 @@ private class OpportunityAssignmentTest {
     insert lstUsers;
 
     // Creates a list of Users assigned to a specific type of queue, only users assigned to that queue are able to recieve an opportunity
-    //From the list of users, EX: only user in position [0] named Test0, is only able to recieve opportunities with 'DISCHARGE' and so on
+    //From the list of users, EX: only user in position [0] named Test0, is only able to recieve opportunities with 'DISCHARGING' and so on
     List<ProductAssignedUser__c> lstProductUser = new List<ProductAssignedUser__c>();
-    lstProductUser.add(makeProductAssignedUser('DISCHARGE', lstUsers[0].Id));
-    lstProductUser.add(makeProductAssignedUser('DISCHARGE', lstUsers[1].Id));
+    lstProductUser.add(makeProductAssignedUser('DISCHARGING', lstUsers[0].Id));
+    lstProductUser.add(makeProductAssignedUser('DISCHARGING', lstUsers[1].Id));
     lstProductUser.add(makeProductAssignedUser('REFINANCING', lstUsers[1].Id));
     lstProductUser.add(makeProductAssignedUser('REFINANCING', lstUsers[2].Id));
     lstProductUser.add(makeProductAssignedUser('STORE', lstUsers[2].Id));
@@ -65,12 +65,12 @@ private class OpportunityAssignmentTest {
 
     // Create several Opportunities with different product types and External Created Dates
     List<Opportunity> lstOppty = new List<Opportunity>();
-    lstOppty.add(makeOppty(1, 'DISCHARGE', firstDttm, ''));
+    lstOppty.add(makeOppty(1, 'DISCHARGING', firstDttm, ''));
     lstOppty.add(makeOppty(2, 'REFINANCING', firstDttm, ''));
     lstOppty.add(makeOppty(3, 'STORE', firstDttm, ''));
     lstOppty.add(makeOppty(4, 'PAYROLL_LOAN', firstDttm, ''));
     lstOppty.add(makeOppty(5, 'SALARY_ADVANCE', firstDttm, ''));
-    lstOppty.add(makeOppty(6, 'DISCHARGE', secondDttm, ''));
+    lstOppty.add(makeOppty(6, 'DISCHARGING', secondDttm, ''));
     lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm, ''));
     lstOppty.add(makeOppty(8, 'STORE', secondDttm, ''));
     lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm, ''));
@@ -116,8 +116,8 @@ private class OpportunityAssignmentTest {
     // Oppty 8   'STORE'          secondDttm  Test3
     // Oppty 2   'REFINANCING'    firstDttm   Test1
     // Oppty 7   'REFINANCING'    secondDttm  Test2
-    // Oppty 1   'DISCHARGE'      firstDttm   Test0
-    // Oppty 6   'DISCHARGE'      secondDttm  
+    // Oppty 1   'DISCHARGING'      firstDttm   Test0
+    // Oppty 6   'DISCHARGING'      secondDttm  
 
     for (Opportunity opp : lstOppty) {
       switch on opp.Name {
@@ -175,8 +175,8 @@ private class OpportunityAssignmentTest {
     // Oppty 8   'STORE'          secondDttm  
     // Oppty 2   'REFINANCING'    firstDttm   Test1
     // Oppty 7   'REFINANCING'    secondDttm  
-    // Oppty 1   'DISCHARGE'      firstDttm   Test0
-    // Oppty 6   'DISCHARGE'      secondDttm  
+    // Oppty 1   'DISCHARGING'      firstDttm   Test0
+    // Oppty 6   'DISCHARGING'      secondDttm  
 
     for (Opportunity opp : lstOppty) {
       switch on opp.Name {
@@ -242,8 +242,8 @@ private class OpportunityAssignmentTest {
     // Oppty 8   'STORE'          secondDttm  
     // Oppty 2   'REFINANCING'    firstDttm   Test1
     // Oppty 7   'REFINANCING'    secondDttm  
-    // Oppty 1   'DISCHARGE'      firstDttm   
-    // Oppty 6   'DISCHARGE'      secondDttm      
+    // Oppty 1   'DISCHARGING'      firstDttm   
+    // Oppty 6   'DISCHARGING'      secondDttm      
 
     for (Opportunity opp : lstOppty) {
       switch on opp.Name {

@@ -35,7 +35,7 @@ public with sharing class ProposalServiceTest {
         
         Map<String, SObject> returnedObject;
         Test.startTest();
-        returnedObject = ProposalController.getInfoRecords(varOpportunity.Id);
+        returnedObject = ProposalService.getPersonalDataSectionRecord(varOpportunity.Id);
         Test.stopTest();
 
         System.assertNotEquals(null, returnedObject.get('dadosPessoais'), 'Result is null');

@@ -80,6 +80,28 @@ public class MinuatorSearchService {
                 return res; 
         	}    
     } 
+
+
+    public static void getPendingValidationFields(String friendlyId){
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        HttpResponse response = new HttpResponse();    
+		
+            request.setEndpoint('https://stg-api.creditas.io/home-formalization-service/contracts?friendlyId=' + friendlyId + '/sync');  
+            request.setMethod('GET');               
+            String accessToken = Test.isRunningTest() ? 'test' : getAccessToken();	             
+       		request.setHeader('grant_type', 'password');       
+            request.setHeader('Content-Type', 'application/json');        
+            request.setHeader('X-TENANT-ID', 'creditasbr');               
+            request.setHeader('Authorization', 'Bearer ' + accessToken);          
+            response = http.send(request);               
+	
+            if(response.getStatusCode() == 200) {	                
+                System.debug(response.getBody());
+            }
+    }   
+
+    
     public static String getAccessToken(){            
         Http http = new Http();
         HttpRequest request = new HttpRequest();       

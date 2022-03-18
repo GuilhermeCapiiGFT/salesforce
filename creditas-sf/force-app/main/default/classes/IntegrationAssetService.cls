@@ -15,34 +15,34 @@ public with sharing class IntegrationAssetService
     public static final String CERTIFICATE_RECORD_TYPE_NAME = 'Certificado';
     public static final String OTHERS_RECORD_TYPE_NAME = 'Outros';
 
-    public void upsertAsset()
-    {        
-        String requestBody = RestContext.request.requestBody.toString();           
+    public static Map<String, String> upsertAsset(String requestBody, IntegrationAssetVO requestBodyObj)
+    {          
+        Map<String, String> returnMap = new Map<String, String>();     
         try 
         {
-            IntegrationAssetVO requestBodyObj = IntegrationAssetVO.parse(requestBody);
-
-            if (requestBodyObj.hasError)
-            {
-                setErrorResponse(500, 'Invalid JSON format.');
-                insertErrorLog(500, requestBody, requestBodyObj.errorMessage);
-                return;
-            } 
-
             Map<String, Account> accountExternalIdToAccountMap = getOwners(requestBodyObj);
 
             Id recordTypeId = getRecordTypeId(requestBodyObj);
 
-            Boolean hasError = commitTransactions(accountExternalIdToAccountMap, requestBodyObj, requestBody, recordTypeId);
-            if(hasError)
+            Id assetId = commitTransactions(accountExternalIdToAccountMap, requestBodyObj, requestBody, recordTypeId);
+            if(assetId != null)
+            {               
+                returnMap.put('statusCode', '200');
+                returnMap.put('assetId', assetId);
+                return returnMap;
+            } else 
             {
-                setErrorResponse(500, requestBodyObj.errorMessage);
-                insertErrorLog(500, requestBody, requestBodyObj.errorMessage);
+                returnMap.put('statusCode', '500');
+                returnMap.put('errorMessage', requestBodyObj.errorMessage);
+                returnMap.put('exceptionMessage', requestBodyObj.errorMessage);
+                return returnMap;
             }
         } catch (Exception e) 
         {
-            setErrorResponse(500, '');
-            insertErrorLog(500, requestBody, e.getMessage());
+            returnMap.put('statusCode', '500');
+            returnMap.put('errorMessage', 'An unexpected error has occurred. Please, contact a Salesforce Administrator.');
+            returnMap.put('exceptionMessage', e.getMessage());
+            return returnMap;
         }
     }
 
@@ -131,10 +131,15 @@ public with sharing class IntegrationAssetService
     private static void upsertAccountFinancialRelationship(Map<String, Account> accountExternalIdToAccountMap, IntegrationAssetVO requestBodyObj, Id assetId)
     {
         Map<String, AccountFinancialRelationship__c> externalOwnerIdToAssetRelationshipMap = new Map<String, AccountFinancialRelationship__c>();
+        Set<Id> accountsIds = new Set<Id>();
+        for(Account acc : accountExternalIdToAccountMap.values())
+        {
+            accountsIds.add(acc.Id);
+        }
         for(AccountFinancialRelationship__c accountRelation : [SELECT Id, Account__r.ExternalId__c, Recurso_Financeiro__c 
                                                                             FROM AccountFinancialRelationship__c 
                                                                             WHERE Recurso_Financeiro__c = :assetId
-                                                                            AND Account__c IN :accountExternalIdToAccountMap.keySet()])
+                                                                            AND Account__c IN :accountsIds])
         {
             externalOwnerIdToAssetRelationshipMap.put(accountRelation.Account__r.ExternalId__c, accountRelation);
         }
@@ -158,7 +163,7 @@ public with sharing class IntegrationAssetService
         for (AccountFinancialRelationship__c afr : [SELECT Id
                                                     FROM AccountFinancialRelationship__c
                                                     WHERE Recurso_Financeiro__c = :assetId
-                                                    AND Account__c NOT IN :accountExternalIdToAccountMap.keySet()])
+                                                    AND Account__c NOT IN :accountsIds])
         {
             accountRelationshipsToDelete.add(afr);                                            
         }
@@ -168,7 +173,7 @@ public with sharing class IntegrationAssetService
     }
 
 
-    public static Boolean commitTransactions(Map<String, Account> accountExternalIdToAccountMap, IntegrationAssetVO requestBodyObj, String requestBody, Id recordTypeId)
+    public static Id commitTransactions(Map<String, Account> accountExternalIdToAccountMap, IntegrationAssetVO requestBodyObj, String requestBody, Id recordTypeId)
     {
         Boolean varSuccess = false, hasError = false;
         Id assetId;
@@ -201,7 +206,6 @@ public with sharing class IntegrationAssetService
                     {
                         upsertAccountFinancialRelationship(accountExternalIdToAccountMap, requestBodyObj, assetId);
                     }
-                    successReturn(assetId);
                 } catch(Exception e)
                 {
                     hasError = true;
@@ -210,63 +214,6 @@ public with sharing class IntegrationAssetService
                 }
             }
         } 
-        return hasError;
-    }
-
-
-    public static void insertErrorLog(Integer errorCode, String requestBody, String errorMessage)
-    {
-        System.debug('Error: '+errorMessage);
-        API_Transaction_Errors__b ate = new API_Transaction_Errors__b();
-        ate.Endpoint__c = '/services/apexrest/IntegrationAsset';
-        ate.RequestBody__c = requestBody;
-        ate.ReturnCode__c = errorCode;
-        ate.ErrorMessage__c = errorMessage;
-        ate.CreatedDate__c = System.now();
-        ate.CreatedBy__c = UserInfo.getUserId();
-
-        try 
-        {
-            if (!Test.isRunningTest())
-            {
-  				database.insertImmediate(ate);              
-            }
-        } catch (Exception e) 
-        {
-            setErrorResponse(500, 'Error inserting error log.');
-        }
-    }
-
-
-    public static void setErrorResponse(Integer errorCode, String errorMessage)
-    {
-        AssetResponseData resp = new AssetResponseData();
-        resp.assetId = null;
-        resp.message = String.isNotBlank(errorMessage) ? errorMessage : 'An error has occurred. Please, contact a Salesforce Administrator.';
-        resp.status = errorCode;
-
-        RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
-        res.responseBody = Blob.valueOf(JSON.serialize(resp));
-        res.statusCode = errorCode;
-    }
-
-
-    public static void successReturn(Id assetId)
-    {
-        AssetResponseData assetResponse = new AssetResponseData();
-        assetResponse.assetId = assetId;
-        assetResponse.message = 'Asset upserted';
-        assetResponse.status = 200;
-
-        RestResponse res = RestContext.response != null ? RestContext.response : new RestResponse();
-        res.responseBody = Blob.valueOf(JSON.serialize(assetResponse));
-        res.statusCode = 200;
-    }
-    
-    public class AssetResponseData
-    {
-        public String assetId;
-        public String message;
-        public Integer status;
+        return assetId;
     }
 }

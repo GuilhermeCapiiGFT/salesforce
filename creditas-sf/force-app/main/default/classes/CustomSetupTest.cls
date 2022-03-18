@@ -21,7 +21,7 @@ public class CustomSetupTest {
         insert cSetup;
 
         insert new List<CustomQueue__c>{
-            new CustomQueue__c(Name = 'DISCHARGE', ProductType__c = 'DISCHARGE', CustomSetup__c = cSetup.Id, Points__c = 10),
+            new CustomQueue__c(Name = 'DISCHARGING', ProductType__c = 'DISCHARGING', CustomSetup__c = cSetup.Id, Points__c = 10),
             new CustomQueue__c(
               Name = 'REFINANCING',
               ProductType__c = 'REFINANCING',

@@ -19,9 +19,9 @@ public class OpportunityEvaluationTest {
     CustomSetup__c cSetup = new CustomSetup__c(RecordTypeId=recordTypeId, Name = 'Test', DateFilter__c = 'CreatedDate');
 
     insert cSetup;
-
+    
     insert new List<CustomQueue__c>{
-      new CustomQueue__c(Name = 'DISCHARGE', ProductType__c = 'DISCHARGE', CustomSetup__c = cSetup.Id, Points__c = 10),
+      new CustomQueue__c(Name = 'DISCHARGING', ProductType__c = 'DISCHARGING', CustomSetup__c = cSetup.Id, Points__c = 10),
       new CustomQueue__c(
         Name = 'REFINANCING',
         ProductType__c = 'REFINANCING',
@@ -60,7 +60,7 @@ public class OpportunityEvaluationTest {
 
     // Insert opportunities and validate Opportunity.PriorityPoints__c
     Opportunity opportunity1 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
-    opportunity1.ProductType__c = 'DISCHARGE';
+    opportunity1.ProductType__c = 'DISCHARGING';
 
     Opportunity opportunity2 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opportunity2.ProductType__c = 'REFINANCING';
@@ -98,7 +98,7 @@ public class OpportunityEvaluationTest {
         Double points = opportunity.PriorityPoints__c;
 
         switch on opportunity.ProductType__c {
-            when 'DISCHARGE' {
+            when 'DISCHARGING' {
                 System.assertEquals(10, points, 'Incorrect Opportunity.PriorityPoints__c value');
             }
             when 'REFINANCING' {
@@ -126,7 +126,7 @@ public class OpportunityEvaluationTest {
     // create 200 ooportunities
     do {
       Opportunity opportunity = OpportunitySetup.createOpportunity(accountId, 'AtWork');
-      opportunity.ProductType__c = 'DISCHARGE';
+      opportunity.ProductType__c = 'DISCHARGING';
       opportunities.add(opportunity);
     } while (opportunities.size() <= 200);
 
@@ -150,7 +150,7 @@ public class OpportunityEvaluationTest {
 
     // Insert opportunities
     Opportunity opportunity1 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
-    opportunity1.ProductType__c = 'DISCHARGE';
+    opportunity1.ProductType__c = 'DISCHARGING';
 
     Opportunity opportunity2 = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opportunity2.ProductType__c = 'REFINANCING';
@@ -196,7 +196,7 @@ public class OpportunityEvaluationTest {
         Double points = opportunity.PriorityPoints__c;
 
         switch on opportunity.ProductType__c {
-            when 'DISCHARGE' {
+            when 'DISCHARGING' {
                 System.assertEquals(110, points, 'Incorrect Opportunity.PriorityPoints__c value');
             }
             when 'REFINANCING' {
