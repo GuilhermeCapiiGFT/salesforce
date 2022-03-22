@@ -11,7 +11,7 @@
                             <lightning-input type={inputType} required name={inputName} label={inputLabel} disabled={inputDisabled} value={inputValue} date-style={dateStyle}></lightning-input>
                         </template>
                         <template if:true={isPickListInput}>
-                            <lightning-combobox name={inputName} label={inputLabel} value={inputValue} placeholder="Selecione uma opção..." options={pickListOptions} onchange={handleChange} ></lightning-combobox>
+                            <lightning-combobox name={inputName} label={inputLabel} value={inputValue} disabled={inputDisabled} placeholder="Selecione uma opção..." options={pickListOptions} onchange={handleChange} ></lightning-combobox>
                         </template>
                     </div>
                 </lightning-layout-item>
@@ -46,16 +46,6 @@
                     </lightning-layout>
                 </lightning-layout-item>
             </lightning-layout>
-<<<<<<< HEAD
-            <template if:true={openModalReason}>
-                <c-modal-reason
-                    onclosemodal={handleCloseModalReason}
-                    type-reason={modalType}
-                    field={modalReasonField}>
-                </c-modal-reason>
-            </template>
-=======
->>>>>>> develop
         </div>
    
 </template>

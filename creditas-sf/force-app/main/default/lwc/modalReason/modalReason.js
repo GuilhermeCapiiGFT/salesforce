@@ -1,7 +1,7 @@
 import { api, LightningElement, wire } from 'lwc';
 import getReasonValues from '@salesforce/apex/ProposalController.getReason'
 
-
+const OTHER_REASON = 'OUTROS';
 export default class ModalReason extends LightningElement {
 
     saveDisabled = true;
@@ -30,17 +30,22 @@ export default class ModalReason extends LightningElement {
     }
 
     handlerClose(){
+        let objResultReason = {};
+        objResultReason.field = this.fieldReason;
+        objResultReason.type = this.typeReason;
+        objResultReason.object = this.objectReason;
+        objResultReason.reason = null;
         const selectedEvent = new CustomEvent('closemodal', {
             bubbles    : true,
             composed   : true,
             cancelable : true,
-            detail: {}
+            detail: objResultReason
         });
         this.dispatchEvent(selectedEvent);
     }
 
     handlerSelectReason(e){
-        if(e.target.value.toUpperCase() != 'OUTROS'){
+        if(e.target.value.toUpperCase() != OTHER_REASON){
             this.saveDisabled = false;
             this.openNote = false;
         }else{
@@ -53,16 +58,23 @@ export default class ModalReason extends LightningElement {
         this.saveDisabled = (e.target.value != '') ? false : true;
     }
 
-    handlerSave(){
+    handlerSave(event){
+        let btnAction = event.target.getAttribute('data-action');
         let objResultReason = {};
-        this.template.querySelectorAll(".form-reason").forEach(elem => {
-            objResultReason[elem.name] = (elem.value) ? elem.value : null;
-        });
+        
+        if(btnAction === 'close'){
+            objResultReason.reason = null;
+        }else{
+            this.template.querySelectorAll(".form-reason").forEach(elem => {
+                objResultReason[elem.name] = (elem.value) ? elem.value : null;
+            });
+        }
+
         objResultReason.field = this.fieldReason;
         objResultReason.type = this.typeReason;
         objResultReason.object = this.objectReason;
+        console.log({objResultReason});
         this.selectedReason(objResultReason);
-        this.handlerClose();
     }
 
     selectedReason(objResult){

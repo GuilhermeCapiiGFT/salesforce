@@ -12,7 +12,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome</label>
-        <input type="text" class="" value={name} data-id="Name" onchange={handleInputChange}  />
+        <lightning-input variant="label-hidden" type="text" class="" value={name} data-id="Name" onchange={handleInputChange}> </lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -22,7 +22,7 @@
           <label for="checkboxNameAprovado" class="slds-p-bottom_xx-small"
             style="overflow-wrap: break-word; ">Aprovado</label>
   
-          <input data-id="checkboxNameAprovado" data-field="Name"  data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Aprovar"
+          <input data-id="checkboxNameAprovado" data-field="NameStatus__c"  data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
@@ -45,7 +45,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome da Pai</label>
-        <input type="text" class="" value={father} data-id="Father__c" onchange={handleInputChange}  />
+        <lightning-input variant="label-hidden" type="text" class="" value={father} data-id="Father__c" onchange={handleInputChange}> </lightning-input> 
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -53,7 +53,7 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="fatherCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxFatherAprovado" class="">&nbsp;</label>
-          <input id="checkboxFatherAprovado" data-field="Father__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox" value="Aprovar"
+          <input id="checkboxFatherAprovado" data-field="FathersNameStatus__c" data-value={preValue} data-status="FathersNameStatus__c" name="AccountFather" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
@@ -74,7 +74,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome da Mãe</label>
-        <input type="text" class="" value={mother} data-id="Mother__c" onchange={handleInputChange}  />
+        <lightning-input variant="label-hidden" type="text" class="" value={mother} data-field="MothersNameStatus__c" data-status="MothersNameStatus__c" data-id="Mother__c" onchange={handleInputChange} > </lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -104,7 +104,7 @@
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Data de Nascimento</label>
         <!-- <input type="date" class="" value={birthdate} data-id="birthdateField" onchange={handleInputChange}/> -->
-        <lightning-input variant="label-hidden" type="date" value={birthdate} data-id="BirthDate__c"></lightning-input>
+        <lightning-input variant="label-hidden" type="date" value={birthdate} data-id="BirthDate__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -118,13 +118,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxBirthdatePendenciado">&nbsp;</label>
-          <input class="disabled-input" disabled id="checkboxBirthdatePendenciado" data-reason="BirthDatePendingReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Pendenciar"
+          <input class="disabled-input" disabled id="checkboxBirthdatePendenciado" data-reason="BirthDatePendingReason__c"  data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxBirthdateReprovado">&nbsp;</label>
-          <input class="disabled-input" disabled id="checkboxBirthdateReprovado" data-reason="BirthDateRejectReason__c" data-field="BirthDate__c" data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Rejeitar"
+          <input class="disabled-input" disabled id="checkboxBirthdateReprovado" data-reason="BirthDateRejectReason__c"  data-value={preValue} data-status="BirthDateStatus__c" name="AccountBirthdate" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -144,7 +144,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">CPF</label>
-        <input style="width: 100%;" type="text" value={documentNumber} data-id="DocumentNumber__c" onchange={handleInputChange}  />
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={documentNumber} data-id="DocumentNumber__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -154,19 +154,19 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="documentCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxCPFAprovado">&nbsp;</label>
-          <input id="checkboxCPFAprovado"  data-field="DocumentNumber__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Aprovar"
+          <input id="checkboxCPFAprovado"  data-field="CPFStatus__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxCPFPendenciado">&nbsp;</label>
-          <input id="checkboxCPFPendenciado" data-reason="CPFPendingReason__c" data-field="DocumentNumber__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Pendenciar"
+          <input id="checkboxCPFPendenciado"  data-field="CPFPendingReason__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxCPFReprovado">&nbsp;</label>
-          <input id="checkboxCPFReprovado" data-reason="CPFRejectReason__c" data-field="DocumentNumber__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Rejeitar"
+          <input id="checkboxCPFReprovado"  data-field="CPFRejectReason__c" data-value={preValue} data-status="CPFStatus__c" name="AccountCPF" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -175,7 +175,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Cidade de nascimento</label>
-        <input style="width: 100%;" type="text" value={birthCity} data-id="BirthCity__c" />
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={birthCity} data-id="BirthCity__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -185,7 +185,7 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="birthCityCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxBirthCityAprovado">&nbsp;</label>
-          <input id="checkboxBirthCityAprovado"  data-field="BirthCity__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountBirthCity" type="checkbox" value="Aprovar"
+          <input id="checkboxBirthCityAprovado"  data-field="BirthCityStatus__c" data-value={preValue} data-status="BirthCityStatus__c" name="AccountBirthCity" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
@@ -206,7 +206,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">País de nascimento</label>
-        <input style="width: 100%;" type="text" value={birthCountry} data-id="Birth_Country__c" />
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={birthCountry} data-id="Birth_Country__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -216,7 +216,7 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="birthCountryCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxBirthCountryAprovado">&nbsp;</label>
-          <input id="checkboxBirthCountryAprovado"  data-field="BirthCountry__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountBirthCountry" type="checkbox" value="Aprovar"
+          <input id="checkboxBirthCountryAprovado"  data-field="BirthCountryStatus__c" data-value={preValue} data-status="BirthCountryStatus__c" name="AccountBirthCountry" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
@@ -237,7 +237,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nacionalidade</label>
-        <input style="width: 100%;" type="text" value={nationality} data-id="Nationality__c" />
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={nationality} data-id="Nationality__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -270,7 +270,7 @@
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Politicamente Exposto?</label>
         
-        <lightning-combobox variant="label-hidden" data-id="PoliticallyExposed__c" options={politicallyExposedOptions} value={politicallyExposed}></lightning-combobox>
+        <lightning-combobox variant="label-hidden" data-id="PoliticallyExposed__c" options={politicallyExposedOptions} value={politicallyExposed} onchange={handleInputChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -290,15 +290,220 @@
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxPEPReprovado">&nbsp;</label>
-          <input id="checkboxPEPReprovado" data-field="PoliticallyExposed__c" data-reason="PersonExposedRejectReason__c"  data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Rejeitar"
+          <input id="checkboxPEPReprovado" data-field="PersonExposedRejectReason__c" data-reason=""  data-status="PoliticallyExposedPersonStatus__c" data-value={preValue} name="AccountPEP" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">RG</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={rgDocumentNumber} data-id="RG_DocumentNumber__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkboxRGAprovado" class="">&nbsp;</label>
+          <input id="checkboxRGAprovado" data-field="RGStatus__c" data-value={preValue} data-status="RGStatus__c" name="DocumentRG" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkboxRGPendenciado" class="">&nbsp;</label>
+          <input id="checkboxRGPendenciado" data-field="RGPendingReason__c" data-value={preValue} data-status="RGStatus__c" name="DocumentRG" type="checkbox" 
+            value="Pendenciar" onchange={handleChangeCheckbox} /> 
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkboxRGReprovado" class="">&nbsp;</label>
+          <input id="checkboxRGReprovado" data-field="RGRejectReason__c" data-value={preValue} data-status="RGStatus__c" name="DocumentRG" type="checkbox" 
+            value="Rejeitar" onchange={handleChangeCheckbox} /> 
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">Órgão expedidor</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={rgIssuer} data-id="RG_Issuer__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgIssuerCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkbox-rgIssuerAprovado" class="">&nbsp;</label>
+          <input id="checkbox-rgIssuerAprovado" data-value={preValue} data-status="IssuingAgencyStatus__c" name="DocumentRGIssuer" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkbox-rgIssuerPendenciado" class="">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkbox-rgIssuerPendenciado" data-value={preValue} data-status="IssuingAgencyStatus__c" name="DocumentRGIssuer" type="checkbox"
+            value="Pendenciar" onchange={handleChangeCheckbox} /> 
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkbox-rgIssuerReprovado" class="">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkbox-rgIssuerReprovado" data-value={preValue} data-status="IssuingAgencyStatus__c" name="DocumentRGIssuer" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} /> 
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">Data de expedição</label>
+        <!-- <input type="date" class="" value={birthdate} data-id="birthdateField" onchange={handleInputChange}/> -->
+        <lightning-input variant="label-hidden" type="date" value={rgIssueDate} data-id="RG_IssueDate__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12 file-icon"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgIssueDateCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkboxIssueDateAprovado">&nbsp;</label>
+          <input id="checkboxIssueDateAprovado" data-field="DispatchDateStatus__c" data-value={preValue} data-status="DispatchDateStatus__c" name="DocumentRGIssueDate" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkboxIssueDatePendenciado">&nbsp;</label>
+          <input id="checkboxIssueDatePendenciado" data-field="DateDispatchPendingReason__c" data-reason="" data-value={preValue} data-status="DispatchDateStatus__c" name="DocumentRGIssueDate" type="checkbox" value="Pendenciar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkboxIssueDateReprovado">&nbsp;</label>
+          <input class="disabled-input" disabled data-field="DispatchDateStatus__c" id="checkboxIssueDateReprovado" data-value={preValue} data-status="DispatchDateStatus__c" name="DocumentRGIssueDate" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} />
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">UF do órgão expedidor</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={rgIssuerState} data-id="RG_IssuerState__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgIssuerUFCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkbox-rgIssuerUFAprovado" class="">&nbsp;</label>
+          <input id="checkbox-rgIssuerUFAprovado" data-value={preValue} data-status="UFIssuingAgencyStatus__c" name="DocumentRGIssuerUF" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkbox-rgIssuerUFPendenciado" class="">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkbox-rgIssuerUFPendenciado" data-value={preValue} data-status="UFIssuingAgencyStatus__c" name="DocumentRGIssuerUF" type="checkbox"
+            value="Pendenciar" onchange={handleChangeCheckbox} /> 
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkbox-rgIssuerUFReprovado" class="">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkbox-rgIssuerUFReprovado" data-value={preValue} data-status="UFIssuingAgencyStatus__c" name="DocumentRGIssuerUF" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} /> 
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">CNH</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={cnhDocumentNumber} data-id="CNH_DocumentNumber__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkboxCNHAprovado" class="">&nbsp;</label>
+          <input id="checkboxCNHAprovado" data-value={preValue} data-status="CNHnumberStatus__c" name="DocumentCNH" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkboxCNHPendenciado" class="">&nbsp;</label>
+          <input id="checkboxCNHPendenciado" data-field="CNHnumberPendingReason__c" data-value={preValue} data-status="CNHnumberStatus__c" name="DocumentCNH" type="checkbox" 
+            value="Pendenciar" onchange={handleChangeCheckbox} /> 
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkboxCNHReprovado" class="">&nbsp;</label>
+          <input id="checkboxCNHReprovado" class="disabled-input" disabled data-value={preValue} data-status="CNHnumberStatus__c" name="DocumentCNH" type="checkbox" 
+            value="Rejeitar" onchange={handleChangeCheckbox} /> 
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">Data de expedição da CNH</label>
+        <!-- <input type="date" class="" value={birthdate} data-id="birthdateField" onchange={handleInputChange}/> -->
+        <lightning-input variant="label-hidden" type="date" value={cnhIssueDate} data-id="CNH_IssueDate__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12 file-icon"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="cnhIssueDateCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkboxIssueDateCNHAprovado">&nbsp;</label>
+          <input id="checkboxIssueDateCNHAprovado" data-value={preValue} data-status="CNHdispatchDateStatus__c" name="DocumentCNHIssueDate" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkboxIssueDateCNHPendenciado">&nbsp;</label>
+          <input id="checkboxIssueDateCNHPendenciado" data-field="CNHdispatchDatePendingReason__c" data-reason="" data-value={preValue} data-status="CNHdispatchDateStatus__c" name="DocumentCNHIssueDate" type="checkbox" value="Pendenciar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkboxIssueCNHDateReprovado">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkboxIssueCNHDateReprovado"  data-value={preValue} data-status="CNHdispatchDateStatus__c" name="DocumentCNHIssueDate" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} />
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-grid container">
+      <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">Órgão expedidor da CNH</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={cnhIssuer} data-id="CNH_Issuer__c" onchange={handleInputChange}></lightning-input>
+      </div>
+  
+      <div class="slds-size_2-of-12"></div>
+  
+      <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="rgIssuerCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+          <label for="checkbox-cnhIssuerAprovado" class="">&nbsp;</label>
+          <input id="checkbox-cnhIssuerAprovado" data-value={preValue} data-status="CNHissuingAgencyStatus__c" name="DocumentCNHIssuer" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control pendenciado">
+          <label for="checkbox-cnhIssuerPendenciado" class="">&nbsp;</label>
+          <input  id="checkbox-cnhIssuerPendenciado" data-field="CNHissuingAgencyPendingReason__c" data-value={preValue} data-status="CNHissuingAgencyStatus__c" name="DocumentCNHIssuer" type="checkbox"
+            value="Pendenciar" onchange={handleChangeCheckbox} /> 
+        </div>
+  
+        <div class="slds-size_4-of-12 form-control reprovado">
+          <label for="checkbox-cnhIssuerReprovado" class="">&nbsp;</label>
+          <input class="disabled-input" disabled id="checkbox-cnhIssuerReprovado" data-value={preValue} data-status="CNHissuingAgencyStatus__c" name="DocumentCNHIssuer" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} /> 
         </div>
       </div>
     </div>
 
     
     <div class="btn-container">
-      <button class="btn" onclick={handleSaveSection} data-id="save-personal-data-btn">Salvar</button>
+      <button class="btn" onclick={handleSaveSection} disabled={disabledBtnSave}>Salvar</button>
     </div>
   </div>
 </template>

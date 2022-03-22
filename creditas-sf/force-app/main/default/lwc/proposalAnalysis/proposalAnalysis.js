@@ -31,20 +31,24 @@ export default class ProposalAnalysis extends LightningElement {
 
   openModalDocument = false;
   sourceImg = '';
- 
+  // cpf_document = identity_document_img;
+
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
   openModalComite = false
   isAnalysisComplete = false
-
+  
   // Info about the buttons
   isAllApproved = false
   isAnyPending = false
   isAnyRejected = false
 
   connectedCallback() {
+    // this.mapInfoSection.set('dadosGeral', {'variant': 'base-autocomplete', 'value': 33, 'returnedId': 'dadosGeral'})
+    console.log('accountid: '+this.accountid);
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
+    this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
   }
 
   setInfoValueAndVariant(event) {
@@ -58,13 +62,13 @@ export default class ProposalAnalysis extends LightningElement {
       this.personalInfoVariant = infoSection.variant
       this.personalInfoValue = infoSection.value
 
-      if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
-        this.modalReason = infoSection.modal.modalReason
-        this.openModalReason = infoSection.modal.openModalReason
-        this.modalReasonField = infoSection.modal.fieldReason
-        this.modalReasonObject = infoSection.modal.objectReason
+      // if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
+      //   this.modalReason = infoSection.modal.modalReason
+      //   this.openModalReason = infoSection.modal.openModalReason
+      //   this.modalReasonField = infoSection.modal.fieldReason
+      //   this.modalReasonObject = infoSection.modal.objectReason
 
-      }
+      // }
     }
 
     else if (infoSection.returnedId === 'generalContainer') {
@@ -72,7 +76,7 @@ export default class ProposalAnalysis extends LightningElement {
       this.generalInfoValue = infoSection.value  
     }
 
-    else if (infoSection.returnedId === 'dadosContatoContainer') {
+    else if (infoSection.returnedId === 'ContainerDadosContato') {
       this.contactInfoVariant = infoSection.variant
       this.contactInfoValue = infoSection.value  
     }
@@ -80,6 +84,14 @@ export default class ProposalAnalysis extends LightningElement {
     else if (infoSection.returnedId === 'dadosEndereçoContainer') {
       this.addressesInfoVariant = infoSection.variant
       this.addressesInfoValue = infoSection.value  
+    }
+
+    if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
+      this.modalReason = infoSection.modal.modalReason
+      this.openModalReason = infoSection.modal.openModalReason
+      this.modalReasonField = infoSection.modal.fieldReason
+      this.modalReasonObject = infoSection.modal.objectReason
+
     }
 
     this.isCompleted()
@@ -121,6 +133,7 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   isCompleted() {
+    
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
@@ -184,17 +197,32 @@ export default class ProposalAnalysis extends LightningElement {
   handlerCloseDocumentModal(){
     this.openModalDocument = false;
   }
-  handlerCloseModalReason(){
-    this.openModalReason = false;
-  }
+
+  // handlerCloseModalReason(event){
+  //   let result = event.detail;
+  //   if( result.object =='ContactDetailsSection__c' && result.reason == null){
+  //     this.template.querySelector('c-proposal-contact-data-component').getReasonSelected(JSON.stringify(result));
+  //   }
+  //   this.openModalReason = false;
+  // }
 
   handleSaveSection() {
   }
+
   handlerSelectedReason(event){
     let result = event.detail;
     if(result){
       this.validationResult.set(result.field, JSON.parse(JSON.stringify(result)));
+
+      if(result.object =='ContactDetailsSection__c'){
+        this.template.querySelector('c-proposal-contact-data-component').getReasonSelected(JSON.stringify(result));
+      }
+
+      else if (result.object == 'PersonalDataSection__c') {
+        this.template.querySelector('c-proposal-personal-data-component').getReasonSelected(JSON.stringify(result));
+      }
     }
+    this.openModalReason = false;
   }
 
   handleComiteProposal() {

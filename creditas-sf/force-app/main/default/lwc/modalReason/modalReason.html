@@ -3,7 +3,7 @@
         <div class="slds-modal__container">
             <div class="slds-modal__header">
                 <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{modalHeader}</h1>
-                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handlerClose}>
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" data-action="close" onclick={handlerSave}>
                     <lightning-icon icon-name="utility:close"
                         alternative-text="close"
                         variant="inverse"
@@ -25,8 +25,8 @@
                 </template>
             </div>
             <div class="slds-modal__footer">
-                <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={handlerClose}>Cancel</button>
-                <button class="slds-button slds-button_brand" disabled={saveDisabled} onclick={handlerSave}>Save</button>
+                <button class="slds-button slds-button_neutral" data-action="close" aria-label="Cancel and close" onclick={handlerSave}>Cancel</button>
+                <button class="slds-button slds-button_brand" data-action="save" disabled={saveDisabled} onclick={handlerSave}>Save</button>
             </div>
         </div>
     </section>

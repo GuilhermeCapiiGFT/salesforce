@@ -1,0 +1,74 @@
+<template>
+    <div data-id="ContainerDadosContato">
+        <div class="slds-grid container slds-m-bottom_medium">
+          <label for="">
+            <span>Documento de Identificação</span>
+            <lightning-icon style="cursor: pointer;"
+              class="slds-p-left_small" icon-name="utility:file" alternative-text="file" size="xx-small" title="file">
+            </lightning-icon>
+          </label>
+        </div>
+    
+        <div class="slds-grid container">
+          <div class="slds-size_5-of-12 field">
+            <label class="slds-p-bottom_xx-small">E-mail</label>
+            <lightning-input type="email" variant="label-hidden" value={valueEmail} data-id="EMAIL" onchange={handleInputChange} disabled={fieldReadOnly}></lightning-input>
+          </div>
+      
+          <div class="slds-size_2-of-12"></div>
+      
+          <div class="slds-grid slds-size_5-of-12 checkbox-options" data-id="emailCheckboxContainer">
+            <div class="slds-size_4-of-12 form-control aprovado">
+              <label for="checkboxEmailAprovado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Aprovado</label>
+              <input data-id="checkboxEmailAprovado"  data-field="EmailStatus__c" data-status="EmailStatus__c" data-value={preValue} name="Email" type="checkbox" value="Aprovar"
+                onchange={handleChangeCheckbox} />
+            </div>
+      
+            <div class="slds-size_4-of-12 form-control pendenciado">
+              <label for="checkboxEmailPendenciado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Pendenciado</label>
+              <input data-id="checkboxEmailPendenciado" data-field="EmailPendingReason__c" data-status="EmailStatus__c" data-value={preValue} name="Email" type="checkbox" value="Pendenciar"
+                onchange={handleChangeCheckbox} /> 
+            </div>
+      
+            <div class="slds-size_4-of-12 form-control reprovado">
+              <label for="checkboxEmailReprovado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Reprovado</label>
+              <input data-id="checkboxEmailReprovado" data-field="EmailRejectReason__c" data-status="EmailStatus__c" data-value={preValue} name="Email" type="checkbox" value="Rejeitar"
+                onchange={handleChangeCheckbox} /> 
+            </div>
+          </div>
+        </div>
+    
+        <div class="slds-grid container">
+          <div class="slds-size_5-of-12 field">
+            <label class="slds-p-bottom_xx-small">Celular</label>
+            <lightning-input type="text" variant="label-hidden" value={valueSMS} data-id="SMS" onchange={handleInputChange} disabled={fieldReadOnly}></lightning-input>
+          </div>
+      
+          <div class="slds-size_2-of-12"></div>
+      
+          <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="SMSCheckboxContainer">
+            <div class="slds-size_4-of-12 form-control aprovado">
+              <label for="checkboxSMSAprovado" class="">&nbsp;</label>
+              <input id="checkboxSMSAprovado" data-field="MobileStatus__c" data-value={preValue} data-status="MobileStatus__c" name="SMS" type="checkbox" value="Aprovar"
+                onchange={handleChangeCheckbox} />
+            </div>
+      
+            <div class="slds-size_4-of-12 form-control pendenciado">
+              <label for="checkboxSMSPendenciado" class="">&nbsp;</label>
+              <input id="checkboxSMSPendenciado" data-field="MobilePendingReason__c" data-value={preValue} data-status="MobileStatus__c" name="SMS" type="checkbox"
+                value="Pendenciar" onchange={handleChangeCheckbox} /> 
+            </div>
+      
+            <div class="slds-size_4-of-12 form-control reprovado">
+              <label for="checkboxSMSReprovado" class="">&nbsp;</label>
+              <input id="checkboxSMSReprovado" data-field="MobileRejectReason__c" data-value={preValue} data-status="MobileStatus__c" name="SMS" type="checkbox" value="Rejeitar"
+                onchange={handleChangeCheckbox} /> 
+            </div>
+          </div>
+        </div>  
+        
+        <div class="btn-container">
+          <button class="btn" disabled={disabledBtnSave} onclick={handleSaveSection} >Salvar</button>
+        </div>
+      </div>
+</template>

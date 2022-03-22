@@ -1,29 +1,52 @@
 import { LightningElement, track, api} from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { loadScript } from 'lightning/platformResourceLoader';
 
-
-
-export default class MinuatorPerson extends LightningElement {
-    personString = '';
-	telefone;
+export default class MinuatorPerson extends LightningElement {    
 	@track txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
-	@track txtclassnameAddress = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
-	value = ['Compõe renda'];
+	@track txtclassnameAddress = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';	
 	@track ownerValue = false;
 	@track consentingValue = false;
 	@track incomeComposeValue = true;
 	@track labelOption = 'Compõe renda';
     @track personObject = {};
-	@track persons = [];
+	@track marriageObject = {};
+	@track persons = [];	
+	@track certidao = false;
+	@track pactoAntenupcial = false;
+	@track registroPacto = false;
+	@track registroUniao = false;
+	@track separacao = false;
+	@track alertPacto = false;
+	@track vigencia = false;
+	@track typeCertidao = "";
+	@track disableBook = true;
+	@track disableMatricula = true;
+	@track showSectionRelationshipInAddress = true;
+	@track disableRegime = true;
+	@track regimeAfter77 = false;
+	@track regimeBefore77 = false;
+	@track certidaoToggle = false;
+	@track pactoAntenupcialToggle = false;
+	@track separacaoToggle = false;
+	@track showMarriedSectionVar = false;
+	@track showStableunionSectionVar = false;	
+	@track checkProprietario = false;
+	@track checkCompoeRenda = true;
+	@track relationshipInAddress = "";
+	@track singlePerson = [];
+	personString = '';
+	telefone;
+	value = ['Compõe renda'];
 	showPersonSectionVar = false;
 	showAddressSectionVar = false;
 	showRelationshipSectionVar = false;
-	@track checkProprietario = false;
-	@track checkCompoeRenda = true;
+	hideRelationshipSectionVar = false;
+	showNamePersonAddressVar = false;
+	personRelationship = {};
+	marriageRelationship = {};
 	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
 	addressSectionIcon = "utility:chevronright";
+
 	participationOptions = [
 		{ label: 'Proprietário', value: 'owner' },
 		{ label: 'Compõe renda', value: 'incomeCompose' },
@@ -39,13 +62,35 @@ export default class MinuatorPerson extends LightningElement {
 		{ label: 'RNE - Registro Nacional de Estrangeiros', value: 'rne	' },
 		{ label: 'Documento de Classe', value: 'classDocument' }
 	];
+
 	regimeOptions = [
-		{ label: 'Comunhão total de bens', value: 'total' }
+		{ label: 'Comunhao parcial de bens', value: 'comunhaoParcial' },
+		{ label: 'Comunhão universal de bens', value: 'comunhaoUniversal' },
+		{ label: 'Separação total de bens', value: 'separacaoTotal' },
+		{ label: 'Participação final nos aquestos', value: 'participacaoAquestos' }	
 	];
-	nameOptions = [
-		{ label: '{persons.name}', value: '{persons.name}'}
-	]
 	
+	regimeOptionsBefore77 = [
+		
+		{ label: 'Comunhão parcial de bens', value: 'comParcialBefore77' },
+		{ label: 'Comunhão universal de bens', value: 'comunhaoUniversalBefore77'},
+		{ label: 'Separação total de bens', value: 'sepTotalBefore77' },
+		{ label: 'Participação final nos aquestos', value: 'aquestosBefore77'}	
+				
+	];
+
+	regimeOptionsAfter = [			
+		{ label: 'Comunhão parcial de bens', value: 'comParcialAfter77' },
+		{ label: 'Comunhão universal de bens', value: 'comunhaoUniversalAfter77'},
+		{ label: 'Separação total de bens', value: 'separationTotalAfter77' },		
+		{ label: 'Participação final nos aquestos', value: 'aquestosAfter77' },
+
+	];
+
+	typeOptions = [
+		{ label: 'Livro e folha', value: 'livroFolha' },
+		{ label: 'Matrícula', value: 'matricula' }
+	]	
 
 	  handleChange(event) {
         let i;
@@ -87,26 +132,29 @@ export default class MinuatorPerson extends LightningElement {
         {
             this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
         }
-
 	}
 
 	showPersonSection(event){
 		this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';		
 		this.showPersonSectionVar = !this.showPersonSectionVar;
-		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";
-		
-		
+		this.personSectionIcon = this.showPersonSectionVar ? "utility:chevrondown" : "utility:chevronright";			
 	}
+
 	showAddressSection(event){
 		this.txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';		
 		this.showAddressSectionVar = !this.showAddressSectionVar;
-		this.addressSectionIcon = this.showAddressSectionVar ? "utility:chevrondown" : "utility:chevronright";
-		
-		
+		this.addressSectionIcon = this.showAddressSectionVar ? "utility:chevrondown" : "utility:chevronright";	
 	}
 
 	showRelationshipSection(){
 		this.showRelationshipSectionVar = !this.showRelationshipSectionVar
+	}
+	hideRelationshipSection(){
+		this.hideRelationshipSectionVar = !this.hideRelationshipSectionVar
+	}
+
+	showNamePersonAddress(){
+		this.showNamePersonAddressVar = !this.showNamePersonAddressVar
 	}
 
 	showPersonDataSection(event){
@@ -116,8 +164,169 @@ export default class MinuatorPerson extends LightningElement {
 		event.stopPropagation();
 	}
 
-	showAddressDataSection(event){
+	showAddressDataSection(){
 	    this.showAddressSectionVar = !this.showAddressSectionVar
+	}
+
+	onchangeCertidao(event){		
+		this.certidao = event.target.checked;
+	}
+
+	onchangePacto(event){		
+		this.pactoAntenupcial = event.target.checked;
+		if(!event.target.checked){
+			this.registroPacto = false;
+		}
+			this.alertPacto = event.target.checked;
+	}
+
+	onchangeRegistroPacto(event){	
+		this.registroPacto = event.target.checked;
+		this.alertPacto = !event.target.checked;
+
+	}
+
+	onchangeSeparacao(event){
+		this.separacao = event.target.checked;
+		if(!event.target.checked){
+			
+		}
+	}
+
+	onchangeRegistroUniao(event){
+		this.registroUniao = event.target.checked;
+	}
+
+	onchangeData(event){		
+		let selectedDate = event.detail.value;				
+		if(!selectedDate){ 
+			this.disableRegime = true;
+		}else{
+			this.disableRegime = false;
+			let dateConvert = new Date( selectedDate.substring(0,4), (selectedDate.substring(5,7)-1), selectedDate.substring(8,10), ); 
+			dateConvert.setHours( 0 );
+			let dateVigente = new Date(1977,11,26);		
+			if(dateConvert >= dateVigente){
+				this.vigencia = true;
+			}else{
+				this.vigencia = false;
+			}	
+		}		
+	}
+
+	onchangeTypeCertidao(event){
+		let typeCertidao = event.detail.value;	
+		if(typeCertidao === 'livroFolha'){
+			this.disableMatricula = true;
+			this.disableBook = false;
+		}else if(typeCertidao === 'matricula'){
+			this.disableBook = true;
+			this.disableMatricula = false;
+		}
+	}
+
+	onchangeBefore77(event){		
+		let regimeSelecionado = event.detail.value;		
+
+		if(regimeSelecionado === 'comParcialBefore77'){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = true;
+			this.separacaoToggle = false;
+		
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+
+		}else if(regimeSelecionado === 'sepTotalBefore77' ){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = false;
+			this.separacaoToggle = true;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+		}else if( regimeSelecionado === 'comunhaoUniversalBefore77'){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = true;
+			this.separacaoToggle = false;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+		
+		}else if( regimeSelecionado === 'aquestosBefore77'){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = true;
+			this.separacaoToggle = false;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+		}
+	}
+
+	onchangeAfter77(event){		
+		let regimeSelecionado = event.detail.value;
+
+		if(regimeSelecionado === 'comParcialAfter77'){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = false;
+			this.separacaoToggle = false;
+		
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+
+		}else if(regimeSelecionado === 'comunhaoUniversalAfter77' ){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = false;
+			this.separacaoToggle = false;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+
+		}else if(regimeSelecionado === 'separationTotalAfter77' ){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = false;
+			this.separacaoToggle = true;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+		}else if( regimeSelecionado === 'aquestosAfter77'){
+			this.certidaoToggle = true;
+			this.pactoAntenupcialToggle = true;
+			this.separacaoToggle = false;
+
+			this.certidao = false;
+			this.pactoAntenupcial = false;
+			this.registroPacto = false;
+			this.registroUniao = false;
+			this.separacao = false;
+			this.alertPacto = false;
+		}
 	}
 
     connectedCallback(){
@@ -139,12 +348,13 @@ export default class MinuatorPerson extends LightningElement {
 		'    "persons": ['+
 		'        {'+
 		'            "name": "MÉRI TERESINHA FERRONATO PAGANINI",'+
-		'            "gender": "Feminino",'+
+		'            "gender": "female",'+
 		'            "cellPhone": "45999416710",'+
 		'            "birthdate": "1973-03-03",'+
 		'            "nationality": "Brasileira",'+
 		'            "email": "meri_ferronato@hotmail.com",'+
 		'            "profession": "sócia de empresa",'+
+		'            "maritalStatus": "married",'+
 		'            "fatherName": "JOÃO ADELINO FERRONATO",'+
 		'            "motherName": "AMABILE ABATI FERRONATO",'+
 		'            "documents": ['+
@@ -174,29 +384,30 @@ export default class MinuatorPerson extends LightningElement {
 		'                "number": "657",'+
 		'                "complement": "Residencial Treviso"'+
 		'            }'+
-		'        },'+
+		'        },'+	
 		'        {'+
 		'            "name": "NERO PAGANINI",'+
-		'            "gender": null,'+
-		'            "cellPhone": "58999416710",'+
-		'            "birthdate": "1969-01-18",'+
-		'            "nationality": null,'+
+		'            "gender": "male",'+
+		'            "cellPhone": "45999416710",'+
+		'            "birthdate": "1973-03-03",'+
+		'            "nationality": "Brasileira",'+
 		'            "email": "meri_ferronato@hotmail.com",'+
-		'            "profession": "sócio de empresa",'+
-		'            "fatherName": "OCTAVIO PAGANINI",'+
-		'            "motherName": "ORLANDINA NECKEL PAGANINI",'+
+		'            "profession": "sócia de empresa",'+
+		'            "maritalStatus": "married",'+
+		'            "fatherName": "JOÃO ADELINO FERRONATO",'+
+		'            "motherName": "AMABILE ABATI FERRONATO",'+
 		'            "documents": ['+
 		'                {'+
 		'                    "type": "RG",'+
 		'                    "expeditionDate": null,'+
-		'                    "number": "4.257.811-8",'+
+		'                    "number": "6.872.171-7",'+
 		'                    "issuingBody": "SESP/PR",'+
 		'                    "isMainDocument": false'+
 		'                },'+
 		'                {'+
 		'                    "type": "CPF",'+
 		'                    "expeditionDate": null,'+
-		'                    "number": "66283019900",'+
+		'                    "number": "45533500110",'+
 		'                    "issuingBody": null,'+
 		'                    "isMainDocument": false'+
 		'                }'+
@@ -204,19 +415,58 @@ export default class MinuatorPerson extends LightningElement {
 		'            "banking": null,'+
 		'            "identityDocument": null,'+
 		'            "address": {'+
-		'                "zipcode": "65808452",'+
+		'                "zipcode": "85808452",'+
 		'                "city": "Cascavel",'+
 		'                "state": "PR",'+
 		'                "neighborhood": "FAG",'+
-		'                "street": "Rua Coimbra",'+
-		'                "number": "891",'+
-		'                "complement": "Jd. do Solo"'+
+		'                "street": "Rua Áscole",'+
+		'                "number": "657",'+
+		'                "complement": "Residencial Treviso"'+
 		'            }'+
-		'        }'+
+		'        },'+	      
+		'        {'+
+		'            "name": "MARIANA FERRONATO PAGANINI",'+
+		'            "gender": "female",'+
+		'            "cellPhone": "45999416710",'+
+		'            "birthdate": "1973-03-03",'+
+		'            "nationality": "Brasileira",'+
+		'            "email": "meri_ferronato@hotmail.com",'+
+		'            "profession": "sócia de empresa",'+
+		'            "maritalStatus": "single",'+
+		'            "fatherName": "JOÃO ADELINO FERRONATO",'+
+		'            "motherName": "AMABILE ABATI FERRONATO",'+
+		'            "documents": ['+
+		'                {'+
+		'                    "type": "RG",'+
+		'                    "expeditionDate": null,'+
+		'                    "number": "7.872.171-7",'+
+		'                    "issuingBody": "SESP/PR",'+
+		'                    "isMainDocument": false'+
+		'                },'+
+		'                {'+
+		'                    "type": "CPF",'+
+		'                    "expeditionDate": null,'+
+		'                    "number": "48833500110",'+
+		'                    "issuingBody": null,'+
+		'                    "isMainDocument": false'+
+		'                }'+
+		'            ],'+
+		'            "banking": null,'+
+		'            "identityDocument": null,'+
+		'            "address": {'+
+		'                "zipcode": "85808452",'+
+		'                "city": "Cascavel",'+
+		'                "state": "PR",'+
+		'                "neighborhood": "FAG",'+
+		'                "street": "Rua Áscole",'+
+		'                "number": "657",'+
+		'                "complement": "Residencial Treviso"'+
+		'            }'+
+		'        }'+        
 		'    ],'+
 		'    "marriages": ['+
 		'        {'+
-		'            "regime": null,'+
+		'            "regime": "Comunhão total de bens",'+
 		'            "marriageDate": null,'+
 		'            "compulsorySeparation": null,'+
 		'            "registerPrenuptialAgreement": null,'+
@@ -225,7 +475,7 @@ export default class MinuatorPerson extends LightningElement {
 		'            "cohabitant": false,'+
 		'            "participant1": {'+
 		'                "name": "MÉRI TERESINHA FERRONATO PAGANINI",'+
-		'                "gender": null,'+
+		'                "gender": "female",'+
 		'                "cellPhone": "459994167101",'+
 		'                "birthdate": "1973-03-03",'+
 		'                "nationality": null,'+
@@ -262,8 +512,93 @@ export default class MinuatorPerson extends LightningElement {
 		'                }'+
 		'            },'+
 		'            "participant2": {'+
-		'                "name": "NERO PAGANINI",'+
-		'                "gender": null,'+
+		'                "name": "NERO SILVA PAGANINI",'+
+		'                "gender": "male",'+
+		'                "cellPhone": "459994167101",'+
+		'                "birthdate": "1969-01-18",'+
+		'                "nationality": null,'+
+		'                "email": "meri_ferronato@hotmail.com",'+
+		'                "profession": "sócio de empresa",'+
+		'                "fatherName": "OCTAVIO PAGANINI",'+
+		'                "motherName": "ORLANDINA NECKEL PAGANINI",'+
+		'                "documents": ['+
+		'                    {'+
+		'                        "type": "RG",'+
+		'                        "expeditionDate": null,'+
+		'                        "number": "4.257.811-8",'+
+		'                        "issuingBody": "SESP/PR",'+
+		'                        "isMainDocument": false'+
+		'                    },'+
+		'                    {'+
+		'                        "type": "CPF",'+
+		'                        "expeditionDate": null,'+
+		'                        "number": "66283019900",'+
+		'                        "issuingBody": null,'+
+		'                        "isMainDocument": false'+
+		'                    }'+
+		'                ],'+
+		'                "banking": null,'+
+		'                "identityDocument": null,'+
+		'                "address": {'+
+		'                    "zipcode": "85808452",'+
+		'                    "city": "Cascavel",'+
+		'                    "state": "PR",'+
+		'                    "neighborhood": "FAG",'+
+		'                    "street": "Rua Áscole",'+
+		'                    "number": "657",'+
+		'                    "complement": "Residencial Treviso"'+
+		'                }'+
+		'            }'+
+		'        },'+
+		'        {'+
+		'            "regime": "Comunhão total de bens",'+
+		'            "marriageDate": null,'+
+		'            "compulsorySeparation": null,'+
+		'            "registerPrenuptialAgreement": null,'+
+		'            "prenuptialAgreement": null,'+
+		'            "maritalStatus": "married",'+
+		'            "cohabitant": false,'+
+		'            "participant1": {'+
+		'                "name": "TERESINHA FERRONATO PAGANINI",'+
+		'                "gender": "female",'+
+		'                "cellPhone": "459994167101",'+
+		'                "birthdate": "1973-03-03",'+
+		'                "nationality": null,'+
+		'                "email": "meri_ferronato@hotmail.com",'+
+		'                "profession": "sócia de empresa",'+
+		'                "fatherName": "JOÃO ADELINO FERRONATO",'+
+		'                "motherName": "AMABILE ABATI FERRONATO",'+
+		'                "documents": ['+
+		'                    {'+
+		'                        "type": "RG",'+
+		'                        "expeditionDate": null,'+
+		'                        "number": "6.872.171-7",'+
+		'                        "issuingBody": "SESP/PR",'+
+		'                        "isMainDocument": false'+
+		'                    },'+
+		'                    {'+
+		'                        "type": "CPF",'+
+		'                        "expeditionDate": null,'+
+		'                        "number": "71133500110",'+
+		'                        "issuingBody": null,'+
+		'                        "isMainDocument": false'+
+		'                    }'+
+		'                ],'+
+		'                "banking": null,'+
+		'                "identityDocument": null,'+
+		'                "address": {'+
+		'                    "zipcode": "85808452",'+
+		'                    "city": "Cascavel",'+
+		'                    "state": "PR",'+
+		'                    "neighborhood": "FAG",'+
+		'                    "street": "Rua Áscole",'+
+		'                    "number": "657",'+
+		'                    "complement": "Residencial Treviso"'+
+		'                }'+
+		'            },'+
+		'            "participant2": {'+
+		'                "name": "PEDRO SILVA PAGANINI",'+
+		'                "gender": "male",'+
 		'                "cellPhone": "459994167101",'+
 		'                "birthdate": "1969-01-18",'+
 		'                "nationality": null,'+
@@ -309,62 +644,51 @@ export default class MinuatorPerson extends LightningElement {
 		this.personObject.persons.forEach(person => {
 			i++;
 			person.id = 'person'+i;
-			person.showSection = false;
+			person.showSection = false;				
 			person.cpf = person.documents.filter(doc => { return doc.type == 'CPF'})[0]?.number;
 			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
 			person.address.zipcode = person.address.zipcode.substring(0,5) + '-' + person.address.zipcode.substring(5,8);
 			person.cellPhone = '(' + person.cellPhone.substring(0,2) + ') ' + person.cellPhone.substring(2,3) + ' ' + person.cellPhone.substring(3,7) + '-' + person.cellPhone.substring(7,11);
-			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
-			this.persons.push(person);	
+			
+			if(person.maritalStatus === "single"){
+				this.singlePerson.push(person);
+			}
+			this.persons.push(person);				
 		});
 		
-
-
-
-        /*
-handleMaskTelefone(event) {
-        const x = event.target.value
-            .replace(/\D+/g, '')
-            .match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-        event.target.value =
-            !x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ``);
+        i = 0;
+		this.personObject.marriages.forEach(marriage => {
+			i++;	
+			marriage.id = 'marriage'+i;
+			marriage.index = i;
+			marriage.showSection = false;
+			if(marriage.maritalStatus === "married" && marriage.participant1.gender == "female"){
+				marriage.maritalStatus = "Casada com" ;
+				this.showMarriedSectionVar = true;
+				this.showStableunionSectionVar = false;	
+			}else if(marriage.maritalStatus === "married" && marriage.participant1.gender == "male"){
+				marriage.maritalStatus = "Casado com" ;
+				this.showMarriedSectionVar = true;
+				this.showStableunionSectionVar = false;	
+			}else if(marriage.maritalStatus === "married" && marriage.participant2.gender == "male"){
+				marriage.maritalStatus = "Casado com" ;
+				this.showMarriedSectionVar = true;
+				this.showStableunionSectionVar = false;	
+			}else if(marriage.maritalStatus === "married" && marriage.participant2.gender == "female"){
+				marriage.maritalStatus = "Casada com" ;
+				this.showMarriedSectionVar = true;
+				this.showStableunionSectionVar = false;	
+			}else if(marriage.maritalStatus === "stable_union"){
+				marriage.maritalStatus = "União estável com ";
+				this.showMarriedSectionVar = false;
+				this.showStableunionSectionVar = true;
+				
+			}else if(!marriage.maritalStatus){
+				this.showSectionRelationshipInAddress = false;
+				this.hideRelationshipSectionVar = false;
+			}			
+			this.marriageObject = marriage;			
+		});
     }
-
-
-
-
-		
-        ({
-    // Create SVG, path, populate with default values from controller
-    render: function(component, helper) {
-        var result = this.superRender(),
-            xmlns = "http://www.w3.org/2000/svg",
-            updateContainer = result[0].querySelector("#progressContainer"),
-            value = component.get("v.value"),
-            dValue = "M 1 0 A 1 1 0 "+Math.floor(value / 50)+" 1 "+
-                Math.cos(2 * Math.PI * value / 100)+" "+
-                Math.sin(2 * Math.PI * value / 100)+" L 0 0",
-            svg = document.createElementNS(xmlns,"svg"),
-            path = document.createElementNS(xmlns,"path");
-        svg.setAttributeNS(null,"viewBox", "-1 -1 2 2");
-        path.setAttributeNS(null, "class", "slds-progress-ring__path");
-        path.setAttributeNS(null, "d", dValue);
-        svg.appendChild(path);
-        updateContainer.appendChild(svg);
-        return result;
-    },
-    // Update the progress bar on a rerender event
-    rerender: function(component, helper) {
-        var value = component.get("v.value"),
-            dValue = "M 1 0 A 1 1 0 "+Math.floor(value / 50)+" 1 "+
-                Math.cos(2 * Math.PI * value / 100)+" "+
-                Math.sin(2 * Math.PI * value / 100)+" L 0 0",
-            svg = component.getElement().querySelector("svg"),
-            path = svg.childNodes[0];
-        this.superRerender();
-        path.setAttributeNS(null, "d", dValue);
-    }
-})
-        */
-    }
+	
 }

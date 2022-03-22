@@ -110,13 +110,12 @@ export default class FormalizationAnalysis extends LightningElement {
     docInfo({ data, error }) {
         if (data){
             this.documentFields = { RG: data.fields, CPF: data.fields, PIS: data.fields };
-            console.dir(data.fields);
             this.searchInformationMethod();
         } else if (error)    {
             this.showToast('Error', JSON.stringify(error), 'error');
         }  
     }
-
+    //getFields and build the dataForms to generate fields dynamically
     searchInformationMethod(){
     
         if (this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
@@ -207,95 +206,7 @@ export default class FormalizationAnalysis extends LightningElement {
         }
     
     }
-    /*
-    //getFields and build the dataForms to generate fields dynamically
-    @wire (getInformation, {aOpportunityId : '$recordId'} )
-    wiredOpportunity( wiredResult ){
-        if(wiredResult.data === undefined){
-            this.isLoading = true;
-        } else if (wiredResult.data && this.documentFields !== undefined && this.accountFields !== undefined && this.addressFields !== undefined && this.contactsFields !== undefined) {
-            this.fullData = wiredResult.data;
 
-            let dataAddress = wiredResult.data.Enderecos__r ? [...wiredResult.data.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'] : [];
-            let dataDocuments = wiredResult.data.Documentos__r ? [...wiredResult.data.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {}) : { CPF: {DocumentType__c : 'CPF'}, RG: {DocumentType__c : 'RG'}, PIS: {DocumentType__c : 'PIS'} };
-            let dataContacts = wiredResult.data.CommunicationContacts__r ? [...wiredResult.data.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {}) : { SMS : {Code__c : ''}, EMAIL: {Code__c : ''}};
-            //General Section Variables
-            let generalDataFields = [];
-            let resultedArrayGeneral = [];
-            //Personal Data Section Variables
-            let personalDataFields = ['FirstName__c', 'Mother__c', 'BirthDate__c', 'Gender__c','Age__c','CPF.DocumentNumber__c','RG.DocumentNumber__c', 'RG.Issuer__c', 'RG.IssueDate__c', 'RG.IssuerState__c', 'CivilStatus__c','PIS.DocumentNumber__c', 'ExternalCreationDate__c', 'AdmissionDate__c', 'ExternalUpdatedDate__c'];
-            let resultedArrayPersonalData = [];
-            //Contacts Data Section Variables
-            let contactDataFields = ['SMS.Code__c','EMAIL.Code__c'];
-            let resultedArrayContactsData = [];
-            //Address Section Variables
-            let addressDataFields = ['PostalCode__c', 'Street__c', 'StreetNumber__c', 'Complement__c', 'Neighborhood__c', 'AreaLevel2__c', 'AreaLevel1__c'];
-            let resultedArrayAddressData = [];
-            //Bank Information Section Variables
-            let bankDataFields = ['BankName__c', 'Agency__c', 'BankAccountNumber__c'];
-            let resultedArrayBankData = [];
-            //Company Section Variables
-            let companyDataFields = ['CompanyName__c', 'CompanyCNPJ__c', 'CompanyStatus__c', 'Margin__c'];
-            let resultedArrayCompanyData = [];
-            
-            //Account fields logic to generate array PersonalData + Bank + CompanyData
-            Object.getOwnPropertyNames(this.accountFields).forEach( propertyName => {
-
-                if( personalDataFields.includes(propertyName) ){
-                    
-                    resultedArrayPersonalData.push( helper.returnNewObject(personalDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'PersonalData'));
-
-                } else if( bankDataFields.includes(propertyName) ){
-                    
-                    resultedArrayBankData.push( helper.returnNewObject(bankDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Bank'));
-
-                } else if( companyDataFields.includes(propertyName) ){
-                   
-                    resultedArrayCompanyData.push( helper.returnNewObject(companyDataFields.indexOf(propertyName),this.accountFields,this.fullData,propertyName,'Company'));
-                }
-
-            });
-            
-            //PersonalData complementary Array
-            Object.getOwnPropertyNames(this.documentFields).forEach( typeOfDocument => {
-                Object.getOwnPropertyNames(this.documentFields[typeOfDocument]).forEach( propertyName => {
-                    if(personalDataFields.includes(`${typeOfDocument}.${propertyName}`)){
-                        let indexNumber = personalDataFields.indexOf(`${typeOfDocument}.${propertyName}`);
-                        resultedArrayPersonalData.push( helper.returnNewObject( indexNumber, this.documentFields[typeOfDocument], dataDocuments[typeOfDocument], propertyName, 'PersonalData') );
-                    }
-                })
-            });
-
-            //Contacts Array
-            Object.getOwnPropertyNames(this.contactsFields).forEach( typeOfContact => {
-                Object.getOwnPropertyNames(this.contactsFields[typeOfContact]).forEach( propertyName => {
-                    if(contactDataFields.includes(`${typeOfContact}.${propertyName}`)){
-                        let fieldLabel = contactDataFields.indexOf(`${typeOfContact}.${propertyName}`) === 0 ? 'Telefone': 'E-mail';
-                        resultedArrayContactsData.push( helper.returnNewObject(contactDataFields.indexOf(`${typeOfContact}.${propertyName}`),this.contactsFields[typeOfContact],dataContacts[typeOfContact],propertyName,'Contact',fieldLabel) );
-                    }
-                })
-            });
-
-            //Address Array
-            Object.getOwnPropertyNames(this.addressFields).forEach( propertyName => {
-                if(addressDataFields.includes(propertyName)){
-                    resultedArrayAddressData.push( helper.returnNewObject(addressDataFields.indexOf(propertyName),this.addressFields,dataAddress,propertyName,'Address'));
-                }
-            });
-
-            this.dataPersonal = helper.sortArray([...resultedArrayPersonalData]);
-            this.dataContact = helper.sortArray([...resultedArrayContactsData]);
-            this.dataAddress = helper.sortArray([...resultedArrayAddressData]);
-            this.dataBank = helper.sortArray([...resultedArrayBankData]);
-            this.dataCompany = helper.sortArray([...resultedArrayCompanyData]);
-            this.isLoading = false;          
-        } else if (wiredResult.error) {
-            
-            this.showToast('Error', JSON.stringify(wiredResult.error), 'error');
-
-        }
-    }
-    */
     handleProgress(event){
         if(event.detail.variant === 'reject'){
             

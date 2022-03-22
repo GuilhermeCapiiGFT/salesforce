@@ -21,3 +21,11 @@
 .alignSpan{
     align-items: right
 }
+
+.colorIconMessage{
+    fill:white
+}
+
+.colorIconMessage{    
+    padding: 8px;    
+}

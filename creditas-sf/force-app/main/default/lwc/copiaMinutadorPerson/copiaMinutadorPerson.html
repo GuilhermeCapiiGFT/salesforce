@@ -1,0 +1,386 @@
+<template>
+  <div style="width:100%; height:64px">
+  <div class="slds-float--right">
+    <button class="slds-button slds-button_icon-border-filled" title="Sincronizar" onclick={openSyncModal}>        
+      <lightning-icon icon-name="utility:refresh" size="x-small" alternative-text="Approved"></lightning-icon>
+      <span class="slds-assistive-text">Sync</span>
+    </button>
+  </div>
+  </div>
+
+
+  <!-- sync modal-->
+  <template if:true={isModalOpen}>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeSyncModal}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Sincronização</h2>
+            </header>
+            <!-- Modal/Popup Box LWC body starts here -->
+            <div class="slds-modal__content" id="modal-content-id-1">
+                <div class="syncModalContentTitle slds-size_2-of-2">Pessoas / JOANA MACHADO</div>
+
+                <div class="syncFieldLabel slds-size_2-of-2"> Telefone/WhatsApp</div>     
+                <div class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight slds-size_2-of-2" style="margin-left:64px">
+                  <lightning-icon class="yellow-icon slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                  icon-name="utility:database" 
+                                  size="x-small"
+                                  alternative-text="icon"> 
+                  </lightning-icon>
+                  <span class="syncFieldValue">(51) 9 9784-5487</span>     
+                </div>      
+
+                <div class="syncFieldLabel slds-size_2-of-2"> E-mail</div>   
+                <div class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight slds-size_2-of-2" style="margin-left:64px">
+                  <lightning-icon class="yellow-icon slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                  icon-name="utility:database" 
+                                  size="x-small"
+                                  alternative-text="icon"> 
+                  </lightning-icon>
+                  <span class="syncFieldValue">joana.machado@gmail.com</span>     
+                </div>                                                                     
+                     
+                     
+            </div>
+            <!-- Modal/Popup Box LWC footer starts here -->
+            <footer class="slds-modal__footer">           
+                <button class="slds-button slds-button_brand" onclick={closeSyncModal}>Entendi</button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <lightning-card>    
+    <ul class="slds-accordion">
+        <li class="slds-accordion__list-item">
+          <section class="slds-accordion__section slds-is-open">
+            <div class="slds-accordion__summary" onclick={showPersonSection}>
+              <h2 class="slds-accordion__summary-heading">
+                <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-72" aria-expanded="true" title="Accordion summary">
+                  <lightning-icon icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>
+                  <lightning-progress-ring value="25" style="margin-left:12px"> 1 </lightning-progress-ring>
+                  <!-- <div class="slds-progress-ring" style="margin-left:12px">
+                    <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80">
+                      <svg viewBox="-1 -1 2 2">
+                        <path class="slds-progress-ring__path" d="M 1 0 A 1 1 0 1 1 0.73 -0.68 L 0 0"></path>
+                      </svg>
+                    </div>
+                    <div class="slds-progress-ring__content">
+                      <p style="font-family:Segoe UI; font-style:normal; font-weight: normal; font-size: 13px; line-height: 20px;"> 1</p>
+                    </div>
+                    <div class="slds-progress-ring__progress-head">
+                      <svg viewBox="-1 -1 2 2">
+                        <circle class="slds-progress-ring__path" cx="0.511" cy="-0.476" r="0.2"></circle>
+                      </svg>
+                    </div>
+                  </div> -->
+                  <span class="slds-accordion__summary-content"
+                        style="margin-left:12px; 
+                                                                      font-family: Segoe UI;
+                                                                      font-style: normal;
+                                                                      font-weight: bold;
+                                                                      font-size: 16px;
+                                                                      line-height: 24px;">Pessoas</span>
+                </button>
+                <span class="slds-align_absolute-right"> Não validado </span>
+              </h2>
+            </div>
+            <div class="slds-accordion__content" id="referenceId-72">
+              <template if:true={showPersonSectionVar}>
+                <div class="slds-progress slds-progress_vertical">
+                  <ol class="slds-progress__list">
+                    <template for:each={persons} for:item="person">
+                      <li class="slds-progress__item slds-is-active" key={person.id}>
+                        <div class="slds-progress__marker"></div>
+                        <!-- <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon" title="Complete"> -->
+                          <!-- <lightning-icon icon-name="utility:success" size="xx-small"></lightning-icon> -->
+                          <!-- <span class="slds-assistive-text">Complete</span> -->
+                        <!-- </span> -->
+                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
+                          <span onclick={showPersonDataSection} style="cursor: pointer">{person.name}</span>
+                          <template if:true={person.showSection}>
+                            <div class="slds-grid slds-wrap" style="width:100%">
+                              <div class="slds-col slds-size_6-of-12">
+                                <span>
+                                  <lightning-input type="text" name="fullName" label="Nome Completo" disabled="true" value={person.name}></lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="cpf" label="CPF" disabled="true" value={person.cpf}></lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-combobox
+                                    name="participation"
+                                    label="Participação"
+                                    value=""
+                                    options={participationOptions}
+                                    disabled="true"
+                                    ></lightning-combobox>
+                                  <!-- <lightning-input type="text" name="participation" label="Participação"> </lightning-input> -->
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-combobox
+                                    name="gender"
+                                    label="Gênero"
+                                    value=""
+                                    placeholder="Selecione..."
+                                    options={genderOptions}
+                                    required="true"
+                                    ></lightning-combobox>
+                                  <!-- <lightning-input type="text" name="gender" label="Gênero"> </lightning-input> -->
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="nationality" label="Nacionalidade" disabled="true"> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="date" name="birthDate" label="Data de Nascimento" disabled="true" value={person.birthdate}></lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="marital" label="Estado Civil" disabled="true"> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_6-of-12">
+                                <span>
+                                  <lightning-input type="text" name="mothersName" label="Nome da Mãe" disabled="true" value={person.motherName}></lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_6-of-12">
+                                <span>
+                                  <lightning-input type="text" name="fathersName" label="Nome do Pai" disabled="true" value={person.fatherName}></lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="profession" label="Profissão" disabled="true" value={person.profession}> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="phone" label="Telefone/WhatsApp" disabled="true" value={person.cellPhone}> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_6-of-12">
+                                <span>
+                                  <lightning-input type="text" name="mail" label="E-mail" disabled="true" value={person.email}> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-combobox
+                                  name="documentType"
+                                  label="Tipo de Documento"
+                                  value=""
+                                  placeholder="Selecione..."
+                                  options={documentTypeOptions}
+                                  required="true"
+                                  ></lightning-combobox>
+                                  <!-- <lightning-input type="text" name="documentType" label="Tipo de Documento"> </lightning-input> -->
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="issuing" label="Órgão Emissor / UF" required="true"> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="text" name="documentNumber" label="Nº de Documento" required="true"> </lightning-input>
+                                </span>
+                              </div>
+                              <div class="slds-col slds-size_3-of-12">
+                                <span>
+                                  <lightning-input type="date" name="expeditionDate" label="Data de Expedição"> </lightning-input>
+                                </span>
+                              </div>
+                            </div>
+                          </template>
+                        </div>
+                      </li>
+                    </template>
+                    <!-- <li class="slds-progress__item slds-is-active">
+                      <div class="slds-progress__marker">
+                        <span class="slds-assistive-text">Active</span>
+                      </div>
+                      <div class="slds-progress__item_content slds-grid slds-grid_align-spread">HENRIQUE MACHADO</div>
+                    </li> -->
+                    <li class="slds-progress__item slds-is-active">
+                      <div class="slds-progress__marker"></div>
+                      <div onclick={showRelationshipSection} style="cursor: pointer" class="slds-progress__item_content slds-grid slds-grid_align-spread">Relacionamentos</div>
+                      <template if:true={showRelationshipSectionVar}>
+                        <div class="slds-grid slds-wrap" style="width:100%">
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="person1Name" label="Pessoa" disabled="true" value='JOANA MACHADO'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              >>> 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="relationship" label="Relationamento" disabled="true" value='Casada com'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              >>> 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="person2Name" label="Pessoa" disabled="true" value='HENRIQUE MACHADO'></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_1-of-12">
+                            <span>
+                              can 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              <lightning-combobox
+                                name="regime  "
+                                label="Regime"
+                                value=""
+                                placeholder="Selecione..."
+                                options={regimeOptions}
+                                required="true"
+                                ></lightning-combobox>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              Dados da escritura pública de declaração de união estável 
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="date" name="datedAt" label="Datado em" value="2020/09/12"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <span>
+                              <lightning-input type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_3-of-12">
+                            <div class="slds-form-element">
+                              <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Dados do registro</span>
+                                <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" />
+                                <span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
+                                  <span class="slds-checkbox_faux"></span>
+                                  <span class="slds-checkbox_on">Mostrar</span>
+                                  <span class="slds-checkbox_off">Disabled</span>
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              <lightning-input type="text" name="draftedAt" label="Lavrado em" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_12-of-12">
+                            <span>
+                              Dados do registro da escritura
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="checkbox" name="draftedAt" label="Registro de pacto concomitante"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="text" name="bookNumberRegister" label="Livro n°" value="541867478"></lightning-input>
+                            </span>
+                          </div>
+                          <div class="slds-col slds-size_4-of-12">
+                            <span>
+                              <lightning-input type="text" name="registerNumber" label="Registro n°" value="4188135113"></lightning-input>
+                            </span>
+                          </div>
+                        </div>  
+                      </template>
+                    </li>
+                    <li class="slds-progress__item slds-is-active">
+                      <div class="slds-progress__marker"></div>
+                      <div class="slds-progress__item_content slds-grid slds-grid_align-spread">Endereço de Correspondência</div>
+                    </li>
+                  </ol>
+                  <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" role="progressbar">
+                    <span class="slds-assistive-text"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </section>
+        </li>
+        <li class="slds-accordion__list-item">
+          <section class="slds-accordion__section">
+            <div class="slds-accordion__summary">
+              <h2 class="slds-accordion__summary-heading">
+                <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-73" aria-expanded="false" title="Accordion summary">
+                  <lightning-icon icon-name="utility:chevronright" size="x-small" style="margin-left:12px"></lightning-icon>
+                  <lightning-progress-ring value="0" style="margin-left:12px"> </lightning-progress-ring>
+                  <span class="slds-accordion__summary-content" style="margin-left:12px; 
+                                                                font-family: Segoe UI;
+                                                                font-style: normal;
+                                                                font-weight: bold;
+                                                                font-size: 16px;
+                                                                line-height: 24px;">Dados Bancários</span>
+                </button>
+              </h2>
+            </div>
+            <div hidden="" class="slds-accordion__content" id="referenceId-73">Accordion details - B</div>
+          </section>
+        </li>
+        <li class="slds-accordion__list-item">
+          <section class="slds-accordion__section">
+            <div class="slds-accordion__summary">
+              <h2 class="slds-accordion__summary-heading">
+                <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-controls="referenceId-74" aria-expanded="false" title="Accordion summary">
+                  <lightning-icon icon-name="utility:chevronright" size="x-small" style="margin-left:12px"></lightning-icon>
+                  <lightning-progress-ring value="0" style="margin-left:12px"> </lightning-progress-ring>
+                  <span class="slds-accordion__summary-content" style="margin-left:12px; 
+                                                                font-family: Segoe UI;
+                                                                font-style: normal;
+                                                                font-weight: bold;
+                                                                font-size: 16px;
+                                                                line-height: 24px;">Garantias</span>
+                </button>
+              </h2>
+            </div>
+            <div hidden="" class="slds-accordion__content" id="referenceId-74">Accordion details - C</div>
+          </section>
+        </li>
+      </ul>
+    </lightning-card>
+  </template>
