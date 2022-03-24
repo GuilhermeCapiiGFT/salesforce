@@ -72,7 +72,6 @@ public with sharing class OpportunityIntegrationService {
         if(HOME_REFIN == recordTypeProductMap.get('recordType') || AUTO_FIN ==  recordTypeProductMap.get('recordType')){
             oppStageName = [SELECT StageName FROM Opportunity WHERE ExternalId__c = :externalId]?.StageName;
         }
-
         Opportunity opportunityToUpsert = new Opportunity(
 
             ExternalId__c = externalId,
@@ -96,7 +95,6 @@ public with sharing class OpportunityIntegrationService {
         );
           
         Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;
-        
         Database.UpsertResult result = Database.upsert(opportunityToUpsert, oppExternalId, false);
         return result;
         
@@ -230,7 +228,7 @@ public with sharing class OpportunityIntegrationService {
             oppRTId = Util.getRecordTypeIdbyName('Opportunity', 'Home');
         } else if(recordTypeDevName == AUTO_FIN){
             oppRTId = Util.getRecordTypeIdbyName('Opportunity', 'AutoFin');
-        } else if(recordTypeDevName == 'PAYROLL'){
+        } else {
             oppRTId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
         }
         return oppRTId; 
