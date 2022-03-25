@@ -13,8 +13,11 @@ export default class MinuatorPerson extends LightningElement {
 	@track certidao = false;
 	@track pactoAntenupcial = false;
 	@track registroPacto = false;
+	@track registroPactoSeparacao = false;
 	@track registroUniao = false;
 	@track separacao = false;
+	@track separacaoPacto = false;
+	@track pactoAntenupcialSeparacao = false;
 	@track alertPacto = false;
 	@track vigencia = false;
 	@track typeCertidao = "";
@@ -27,6 +30,7 @@ export default class MinuatorPerson extends LightningElement {
 	@track certidaoToggle = false;
 	@track pactoAntenupcialToggle = false;
 	@track separacaoToggle = false;
+	@track separacaoPactoAntenupcialToggle = false;
 	@track showMarriedSectionVar = false;
 	@track showStableunionSectionVar = false;	
 	@track checkProprietario = false;
@@ -39,7 +43,6 @@ export default class MinuatorPerson extends LightningElement {
 	showPersonSectionVar = false;
 	showAddressSectionVar = false;
 	showRelationshipSectionVar = false;
-	hideRelationshipSectionVar = false;
 	showNamePersonAddressVar = false;
 	personRelationship = {};
 	marriageRelationship = {};
@@ -90,33 +93,43 @@ export default class MinuatorPerson extends LightningElement {
 	typeOptions = [
 		{ label: 'Livro e folha', value: 'livroFolha' },
 		{ label: 'Matrícula', value: 'matricula' }
-	]	
+	]		 
 
-	  handleChange(event) {
-        let i;
-        let checkboxes = this.template.querySelectorAll('[data-id="checkbox"]')
-        for(i=0; i<checkboxes.length; i++) {
-            checkboxes[i].checked = event.target.checked;
-        }
-    }
+	handleChangeOwner(event) {		
+		let participacao = this.template.querySelectorAll('[data-participacao="' + event.currentTarget.dataset.id + '"]')
+		let consentingChecked = this.template.querySelectorAll('[data-checkbox="' + event.currentTarget.dataset.id + '"]')				
 
-	handleChangeOwner(e) {
-        this.ownerValue = !this.ownerValue;
-		console.log(this.ownerValue);
-		if(this.consentingValue && this.ownerValue && this.incomeComposeValue){
+		if(event.target.checked){
+			participacao[0].classList.add('participacao');
+			participacao[0].classList.remove('participacaoHidden');
+		}else{
+			participacao[0].classList.remove('participacao');
+			participacao[0].classList.add('participacaoHidden');
+		}		
+		
+		if(event.target.checked && consentingChecked[2].checked && this.incomeComposeValue){
 			this.labelOption = '3 selecionados';
-		} else if(this.consentingValue || this.ownerValue){
+		} else if(event.target.checked || consentingChecked[2].checked){
 				this.labelOption = '2 selecionados';
 		}else{
 			this.labelOption = 'Compõe renda';
 		}
     }
 
-	handleChangeConsenting(e) {
-        this.consentingValue = !this.consentingValue;
-		if(this.consentingValue && this.ownerValue && this.incomeComposeValue){
+	handleChangeConsenting(event) {		
+		let participacao = this.template.querySelectorAll('[data-participacao="' + event.currentTarget.dataset.id + '"]')
+		let ownerChecked = this.template.querySelectorAll('[data-checkbox="' + event.currentTarget.dataset.id + '"]')
+		
+		if(event.target.checked){
+			participacao[2].classList.add('participacao');
+			participacao[2].classList.remove('participacaoHidden');
+		}else{
+			participacao[2].classList.remove('participacao');
+			participacao[2].classList.add('participacaoHidden');
+		}
+		if(event.target.checked && ownerChecked[0].checked && this.incomeComposeValue){
 			this.labelOption = '3 selecionados';
-		} else if(this.consentingValue || this.ownerValue){
+		} else if(event.target.checked || ownerChecked[0].checked){
 				this.labelOption = '2 selecionados';
 		}else{
 			this.labelOption = 'Compõe renda';
@@ -148,10 +161,7 @@ export default class MinuatorPerson extends LightningElement {
 
 	showRelationshipSection(){
 		this.showRelationshipSectionVar = !this.showRelationshipSectionVar
-	}
-	hideRelationshipSection(){
-		this.hideRelationshipSectionVar = !this.hideRelationshipSectionVar
-	}
+	}	
 
 	showNamePersonAddress(){
 		this.showNamePersonAddressVar = !this.showNamePersonAddressVar
@@ -169,7 +179,8 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	onchangeCertidao(event){		
-		this.certidao = event.target.checked;
+		this.certidao = event.target.checked;	
+
 	}
 
 	onchangePacto(event){		
@@ -179,17 +190,28 @@ export default class MinuatorPerson extends LightningElement {
 		}
 			this.alertPacto = event.target.checked;
 	}
+	onchangePactoSeparacao(event){		
+		this.pactoAntenupcialSeparacao = event.target.checked;
+		if(!event.target.checked){
+			this.registroPactoSeparacao = false;
+		}
+			this.alertPactoSeparacao = event.target.checked;
+	}
 
 	onchangeRegistroPacto(event){	
 		this.registroPacto = event.target.checked;
 		this.alertPacto = !event.target.checked;
 
 	}
+	onchangeRegistroPactoSeparacao(event){	
+		this.registroPactoSeparacao = event.target.checked;
+		this.alertPactoSeparacao = !event.target.checked;
+
+	}
 
 	onchangeSeparacao(event){
 		this.separacao = event.target.checked;
-		if(!event.target.checked){
-			
+		if(!event.target.checked){			
 		}
 	}
 
@@ -225,107 +247,166 @@ export default class MinuatorPerson extends LightningElement {
 		}
 	}
 
-	onchangeBefore77(event){		
+	onchangeBefore77(event){
+		if(this.certidaoToggle){
+		const elementCertidao = this.template.querySelector('[data-id="certidaoToggleId"]'); 
+		elementCertidao.checked = false;				
+		}
+		if(this.pactoAntenupcialToggle){
+		const elementPacto = this.template.querySelector('[data-id="pactoToggle"]'); 
+		elementPacto.checked = false;
+		}
+		if(this.separacaoPactoAntenupcialToggle){
+			const elementPactoSeparacao = this.template.querySelector('[data-id="separacaoPactoToggleId"]'); 
+			elementPactoSeparacao.checked = false;
+		}
 		let regimeSelecionado = event.detail.value;		
 
 		if(regimeSelecionado === 'comParcialBefore77'){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = true;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 		
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 
 		}else if(regimeSelecionado === 'sepTotalBefore77' ){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = false;
 			this.separacaoToggle = true;
+			this.separacaoPactoAntenupcialToggle = true;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = true;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
-			this.separacao = false;
+			this.separacao = false;		
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
+
 		}else if( regimeSelecionado === 'comunhaoUniversalBefore77'){
 			this.certidaoToggle = true;
-			this.pactoAntenupcialToggle = true;
+			this.pactoAntenupcialToggle = false;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 		
 		}else if( regimeSelecionado === 'aquestosBefore77'){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = true;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 		}
 	}
 
-	onchangeAfter77(event){		
+	onchangeAfter77(event){	
+		if(this.certidaoToggle){
+		const elementCertidao = this.template.querySelector('[data-id="certidaoToggleId"]'); 
+		elementCertidao.checked = false;				
+		}
+		if(this.pactoAntenupcialToggle){
+		const elementPacto = this.template.querySelector('[data-id="pactoToggle"]'); 
+		elementPacto.checked = false;
+		}
+		if(this.separacaoPactoAntenupcialToggle){
+			const elementPactoSeparacao = this.template.querySelector('[data-id="separacaoPactoToggleId"]'); 
+			elementPactoSeparacao.checked = false;
+		}
+			
 		let regimeSelecionado = event.detail.value;
 
 		if(regimeSelecionado === 'comParcialAfter77'){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = false;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 		
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 
 		}else if(regimeSelecionado === 'comunhaoUniversalAfter77' ){
 			this.certidaoToggle = true;
-			this.pactoAntenupcialToggle = false;
+			this.pactoAntenupcialToggle = true;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 
 		}else if(regimeSelecionado === 'separationTotalAfter77' ){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = false;
 			this.separacaoToggle = true;
+			this.separacaoPactoAntenupcialToggle = true;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = true;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
-			this.separacao = false;
+			this.separacao = false;	
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
+
 		}else if( regimeSelecionado === 'aquestosAfter77'){
 			this.certidaoToggle = true;
 			this.pactoAntenupcialToggle = true;
 			this.separacaoToggle = false;
+			this.separacaoPactoAntenupcialToggle = false;
 
 			this.certidao = false;
 			this.pactoAntenupcial = false;
+			this.pactoAntenupcialSeparacao = false;
 			this.registroPacto = false;
+			this.registroPactoSeparacao = false;
 			this.registroUniao = false;
 			this.separacao = false;
 			this.alertPacto = false;
+			this.alertPactoSeparacao = false;
 		}
 	}
 
@@ -471,7 +552,7 @@ export default class MinuatorPerson extends LightningElement {
 		'            "compulsorySeparation": null,'+
 		'            "registerPrenuptialAgreement": null,'+
 		'            "prenuptialAgreement": null,'+
-		'            "maritalStatus": "married",'+
+		'            "maritalStatus": "stable_union",'+
 		'            "cohabitant": false,'+
 		'            "participant1": {'+
 		'                "name": "MÉRI TERESINHA FERRONATO PAGANINI",'+
@@ -644,7 +725,8 @@ export default class MinuatorPerson extends LightningElement {
 		this.personObject.persons.forEach(person => {
 			i++;
 			person.id = 'person'+i;
-			person.showSection = false;				
+			person.showSection = false;	
+				
 			person.cpf = person.documents.filter(doc => { return doc.type == 'CPF'})[0]?.number;
 			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
 			person.address.zipcode = person.address.zipcode.substring(0,5) + '-' + person.address.zipcode.substring(5,8);
@@ -653,6 +735,10 @@ export default class MinuatorPerson extends LightningElement {
 			if(person.maritalStatus === "single"){
 				this.singlePerson.push(person);
 			}
+             
+            let listName = person.name.split(' ');
+			person.formatedName = listName[0] + ' ' + listName[listName.length-1];
+			
 			this.persons.push(person);				
 		});
 		
@@ -662,31 +748,21 @@ export default class MinuatorPerson extends LightningElement {
 			marriage.id = 'marriage'+i;
 			marriage.index = i;
 			marriage.showSection = false;
-			if(marriage.maritalStatus === "married" && marriage.participant1.gender == "female"){
+			if(marriage.maritalStatus === "married" && marriage.participant1.gender === "female"){
 				marriage.maritalStatus = "Casada com" ;
 				this.showMarriedSectionVar = true;
 				this.showStableunionSectionVar = false;	
-			}else if(marriage.maritalStatus === "married" && marriage.participant1.gender == "male"){
+			}else if(marriage.maritalStatus === "married" && marriage.participant1.gender === "male"){
 				marriage.maritalStatus = "Casado com" ;
-				this.showMarriedSectionVar = true;
-				this.showStableunionSectionVar = false;	
-			}else if(marriage.maritalStatus === "married" && marriage.participant2.gender == "male"){
-				marriage.maritalStatus = "Casado com" ;
-				this.showMarriedSectionVar = true;
-				this.showStableunionSectionVar = false;	
-			}else if(marriage.maritalStatus === "married" && marriage.participant2.gender == "female"){
-				marriage.maritalStatus = "Casada com" ;
 				this.showMarriedSectionVar = true;
 				this.showStableunionSectionVar = false;	
 			}else if(marriage.maritalStatus === "stable_union"){
 				marriage.maritalStatus = "União estável com ";
 				this.showMarriedSectionVar = false;
-				this.showStableunionSectionVar = true;
-				
+				this.showStableunionSectionVar = true;				
 			}else if(!marriage.maritalStatus){
 				this.showSectionRelationshipInAddress = false;
-				this.hideRelationshipSectionVar = false;
-			}			
+							}			
 			this.marriageObject = marriage;			
 		});
     }

@@ -80,7 +80,10 @@ export default class ProposalContactDataComponent extends LightningElement {
       this.communicationValue.set('SMS', data.SMS ? Object.assign({},data.SMS) : {'sobjectType': 'CommunicationContacts__c', Account__c: this.accountid, Channel__c: "SMS", Code__c: null});
 
       this.valueSMS = data.SMS ? data.SMS.Code__c : null;
-      this.valueEmail = data.EMAIL? data.EMAIL.Code__c : null;
+      this.valueEmail = data.EMAIL ? data.EMAIL.Code__c : null;
+      
+      console.log('communication')
+      console.log(this.communicationValue)
     }
     else if(result.error){
       console.log(result.error);
@@ -129,9 +132,12 @@ export default class ProposalContactDataComponent extends LightningElement {
     this.disabledBtnSave = true;
     let payload = Array.from(this.communicationValue.values());
 
+    console.log({payload})
+
     upsertCommunicationContacts({listCommunication : payload})
     .then( result=>{
       refreshApex(this.resultRecordCommunication);
+      console.log(result)
       this.saveFieldsValidation();
     })
     .catch(error =>{

@@ -8,30 +8,22 @@
               <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
               <span class="slds-assistive-text">Accordion summary</span>
             </button>
+
+            <!-- PERSON SECTION--> 
             <div class="slds-container_fluid">
               <div class="slds-summary-detail__title">
                 <div class="slds-setup-assistant__step-summary">
                   <div class="slds-media">
                     <div class="slds-media__figure">
-                      <div class="slds-progress-ring slds-progress-ring_active-step slds-progress-ring_large">
-                        <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25">
-                          <svg viewBox="-1 -1 2 2">
-                            <path class="slds-progress-ring__path" id="slds-progress-ring-path-55" d="M 1 0 A 1 1 0 0 0 -0.48 -0.88 L 0 0"></path>
-                          </svg>
-                        </div>
-                        <div class="slds-progress-ring__content">1</div>
-                        <div class="slds-progress-ring__progress-head">
-                          <svg viewBox="-1 -1 2 2">
-                            <circle class="slds-progress-ring__path" id="slds-progress-ring-path-57" cx="-0.33599999999999997" cy="-0.616" r="0.2"></circle>
-                          </svg>
-                        </div>
-                      </div>
+                      <lightning-progress-ring value="25" size="large" variant="base-autocomplete" onclick={showPersonSection}> 1 </lightning-progress-ring>
                     </div>
                     <div class="slds-media__body slds-m-top_x-small">
                       <div class="slds-media">
-                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">                          
                           <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
-                            <button class="slds-button slds-button_reset" aria-controls="referenceId-72" onclick={showPersonSection} aria-expanded="true">Pessoas</button>
+                            <button class="slds-button slds-button_reset" aria-controls="referenceId-72" onclick={showPersonSection} aria-expanded="true" style="font-family: Segoe UI; font-style: normal; font-weight: bold; font-size: 16px; line-height: 24px;">
+                              Pessoas
+                            </button>
                           </h3>                          
                         </div>                        
                         <div class="slds-media__figure slds-media__figure_reverse">
@@ -41,39 +33,34 @@
                     </div>
                   </div>
                 </div>
-              </div>
-
+              </div>              
               <div aria-hidden="true" class="slds-summary-detail__content" id="referenceId-72">
                 <template if:true={showPersonSectionVar}>
                   <div class="slds-setup-assistant__step-detail">
                     <div class="slds-progress slds-progress_vertical slds-progress_success">
                       <ol class="slds-progress__list slds-progress__list-bordered">  
-
                         <template for:each={persons} for:item="person">
                           <li class="slds-progress__item slds-is-active" key={person.id}>
                             <div class="slds-progress__marker">
                               <span class="slds-assistive-text">Active</span>
                             </div>
-
+                            
                             <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
                               <div class="slds-grid slds-wrap" style="width:100%"> 
-                                <div class="slds-col slds-size_12-of-12" onclick={showPersonDataSection} data-name={person.name} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px;  "> {person.name}                         
-                                    <span if:true={ownerValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Proprietário </span>
-                                    <span if:true={incomeComposeValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; margin-left: 8px; margin-right: 8px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Compõe renda </span> 
-                                    <span if:true={consentingValue} style="float: right; padding-left: 5px; padding-right: 5px; padding-bottom: 2px; border-width: 0.5px; border-style: solid; border-radius: 9px; border-color: rgb(174, 174, 174); font-weight: bold"> Anuente </span> 
+                                <div class="slds-col slds-size_12-of-12" onclick={showPersonDataSection} data-name={person.name} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px; "> {person.formatedName}                       
+                                    <span class="participacaoHidden" data-participacao={person.id} > Proprietário </span>
+                                    <span class="participacao" data-participacao={person.id} style="margin-left: 8px; margin-right: 8px"> Compõe renda </span> 
+                                    <span class="participacaoHidden" data-participacao={person.id}> Anuente </span> 
                                 </div> 
-
-                              <template if:true={person.showSection}>        
-
-                                <div class="slds-col slds-size_6-of-12 slds-clearfix">
-                                  <div class="slds-form-element">        
-                                    <div class="slds-form-element__control"> 
-                                      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">                                                                              
+                                <template if:true={person.showSection}>  
+                                  <div class="slds-col slds-size_6-of-12 slds-clearfix">
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">                                                                              
                                           <lightning-input type="text" 
                                                           name="fullName" 
                                                           label="Nome completo" 
-                                                          disabled="true" 
-                                                          
+                                                          disabled="true"                                                           
                                                           value={person.name} 
                                                           style="margin-top: 16px; margin-right: 16px; width: 97.5%; color: #706e68">                                      
                                           </lightning-input>
@@ -88,109 +75,20 @@
                                             </span>
                                           </div>     
                                         </div>             
-                                    </div>
-                                  </div>
-                                </div>
-                                 
-                                <div class="slds-col slds-size_3-of-12 slds-clearfix">
-                                  <div class="slds-form-element">        
-                                    <div class="slds-form-element__control"> 
-                                      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">  
-                                        <lightning-input type="text" 
-                                                        name="cpf" 
-                                                        label="CPF" 
-                                                        disabled="true" 
-                                                        value={person.cpf} 
-                                                        style="margin-right: 16px; margin-top: 16px; color: #706e68">
-                                        </lightning-input>
-                                      <div>
-                                        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                          <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                          icon-name="utility:database" 
-                                                          size="x-small"
-                                                          alternative-text="icon" 
-                                                          style="margin-top: 10px;" > 
-                                          </lightning-icon>
-                                        </span>
-                                    </div>     
-                                  </div>             
-                                </div>
-                              </div>
-                              </div>
-
-                                <div class="slds-col slds-size_3-of-12">    
-                                  <div class="slds-form-element">
-                                    <div class="slds-form-element__control">
-                                      <div class="slds-combobox_container">
-                                        <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
-                                          <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
-                                            <lightning-input data-id="focus" 
-                                                             read-only="true" 
-                                                             label="Participação" 
-                                                             name="searchText" 
-                                                             style="margin-top: 16px;"
-                                                             onclick={atribuirControlesApresentacaoLista} 
-                                                             value={labelOption}
-                                                             required="true"> 
-                                            </lightning-input>
-                                            <div>
-                                              <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
-                                                <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                icon-name="utility:down" 
-                                                                size="x-small"
-                                                                alternative-text="icon" 
-                                                                style="margin-top: 18px;" > 
-                                                </lightning-icon>
-                                              </span>
-                                            </div>                                              
-                                          </div>                                      
-                                          <!-- EXIBITION LIST -->
-                                          <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
-                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">                                                
-                                              <li role="presentation" class="slds-listbox__item">
-                                                <div data-id="option1" data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickNaoAceitouHospitais}>
-                                                  <span class="slds-media__body">
-                                                    <lightning-input type="checkbox" label="Proprietário" name="input1" onchange={handleChangeOwner}></lightning-input>
-                                                    <lightning-input type="checkbox" label="Compõe renda" name="input1" checked disabled></lightning-input>
-                                                    <lightning-input type="checkbox" label="Anuente" name="input3" onchange={handleChangeConsenting}></lightning-input>
-                                                  </span>
-                                                </div>
-                                              </li>                                               
-                                            </ul>
-                                          </div>
-                                        </div>
                                       </div>
                                     </div>
-                                  </div>                  
-                                </div>
-
-                                <div class="slds-col slds-size_3-of-12">
-                                  <span>
-                                    <lightning-combobox
-                                      name="gender"
-                                      label="Gênero"
-                                      value=""
-                                      placeholder="Selecione..."
-                                      options={genderOptions}
-                                      required="true"
-                                      style="margin-right: 16px; margin-top: 8px"
-                                      >
-                                    </lightning-combobox>                               
-                                  </span>
-                                </div>
-                              
+                                  </div>
                                   <div class="slds-col slds-size_3-of-12 slds-clearfix">
                                     <div class="slds-form-element">        
                                       <div class="slds-form-element__control"> 
-                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">  
                                           <lightning-input type="text" 
-                                                          name="nationality" 
-                                                          label="Nacionalidade" 
+                                                          name="cpf" 
+                                                          label="CPF" 
                                                           disabled="true" 
-                                                          value={person.nationality} 
-                                                          style="margin-top: 8px; width: 95%; color: #706e68"> 
+                                                          value={person.cpf} 
+                                                          style="margin-right: 16px; margin-top: 16px; color: #706e68">
                                           </lightning-input>
-
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
@@ -202,850 +100,955 @@
                                             </span>
                                           </div>     
                                         </div>             
-                                    </div>                                
-                                  </div> 
-                                </div>
-
-                                <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-                                  <div class="slds-form-element">        
-                                    <div class="slds-form-element__control"> 
-                                      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                        <lightning-input type="date" 
-                                                        date-style="short" 
-                                                        name="birthDate" 
-                                                        label="Data de nascimento" 
-                                                        disabled="true" 
-                                                        value={person.birthdate} 
-                                                        style="margin-top: 8px; width: 95%; color: #706e68">
-                                        </lightning-input>
-
-                                        <div>
-                                          <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                            <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                            icon-name="utility:database" 
-                                                            size="x-small"
-                                                            alternative-text="icon" 
-                                                            style="margin-top: 10px;" > 
-                                            </lightning-icon>
-                                          </span>
-                                        </div>     
-                                              
-                                      </div>             
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-
-                                <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-                                  <div class="slds-form-element">        
-                                    <div class="slds-form-element__control"> 
-                                      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                        <lightning-input type="text" 
-                                                        name="marital" 
-                                                        label="Estado civil" 
-                                                        disabled="true" 
-                                                        value={person.maritalStatus} 
-                                                        style="margin-top: 8px; color: #706e68"> 
-                                        </lightning-input>
-                                        <div>
-                                          <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                            <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                            icon-name="utility:database" 
-                                                            size="x-small"
-                                                            alternative-text="icon" 
-                                                            style="margin-top: 10px;" > 
-                                            </lightning-icon>
-                                          </span>
-                                        </div> 
-                                      </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                    <lightning-input type="text" 
-                                                     name="mothersName" 
-                                                     label="Nome da mãe" 
-                                                     disabled="true" 
-                                                     value={person.motherName} 
-                                                     style="margin-right: 16px; margin-top: 8px; color: #706e68">
-                                    </lightning-input>
-                                    <div>
-                                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                        icon-name="utility:database" 
-                                                        size="x-small"
-                                                        alternative-text="icon" 
-                                                        style="margin-top: 10px;" > 
-                                        </lightning-icon>
-                                      </span>
-                                    </div> 
-                                  </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                    <lightning-input type="text" 
-                                                     name="fathersName" 
-                                                     label="Nome do pai" 
-                                                     disabled="true" 
-                                                     value={person.fatherName} 
-                                                     style="margin-top: 8px; color: #706e68">
-                                    </lightning-input>
-                                    <div>
-                                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                        icon-name="utility:database" 
-                                                        size="x-small"
-                                                        alternative-text="icon" 
-                                                        style="margin-top: 10px;" > 
-                                        </lightning-icon>
-                                      </span>
-                                    </div> 
-                                  </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                    <lightning-input type="text" 
-                                                     name="profession" 
-                                                     label="Profissão"
-                                                     disabled="true" 
-                                                     value={person.profession} 
-                                                     style="margin-right: 16px; margin-top: 8px; color: #706E6B"> 
-                                    </lightning-input>
-                                    <div>
-                                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                        icon-name="utility:database" 
-                                                        size="x-small"
-                                                        alternative-text="icon" 
-                                                        style="margin-top: 10px;" > 
-                                        </lightning-icon>
-                                      </span>
-                                    </div> 
-                                  </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                    <lightning-input type="text" 
-                                                      name="Telefone" 
-                                                      label="Telefone/WhatsApp" 
-                                                      disabled="true" 
-                                                      value={person.cellPhone}
-                                                      pattern="^\(\d{2}\)\d{5}\-\d{4}$"
-                                                      max-length="15"
-                                                      onchange={handleMaskTelefone} 
-                                                      style="margin-right: 16px; margin-top: 8px; color: #706E6B" >                   
-                                    </lightning-input>
-                                    <div>
-                                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                        icon-name="utility:database" 
-                                                        size="x-small"
-                                                        alternative-text="icon" 
-                                                        style="margin-top: 10px;" > 
-                                        </lightning-icon>
-                                      </span>
-                                    </div> 
-                                  </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                    <lightning-input type="text" 
-                                                     name="mail" 
-                                                     label="E-mail" 
-                                                     disabled="true" 
-                                                     value={person.email} 
-                                                     style="margin-top: 8px; color: #706E6B"> 
-                                    </lightning-input>
-                                    <div>
-                                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                        icon-name="utility:database" 
-                                                        size="x-small"
-                                                        alternative-text="icon" 
-                                                        style="margin-top: 10px"> 
-                                        </lightning-icon>
-                                      </span>
-                                    </div> 
-                                  </div>      
-                                  </div>                                 
-                                </div>
-                              </div>
-
-                              <div class="slds-col slds-size_3-of-12">
-                                  <span>
-                                    <lightning-combobox
-                                                      name="documentType"
-                                                      label="Tipo de documento"
-                                                      value=""
-                                                      placeholder="Selecione..."
-                                                      options={documentTypeOptions}
-                                                      required="true"
-                                                      style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px">
-                                    </lightning-combobox>                     
-                                  </span>
-                              </div>
-                              <div class="slds-col slds-size_3-of-12">
-                                  <span>
-                                    <lightning-input type="text" 
-                                                     name="issuing" 
-                                                     label="Órgão emissor / UF" 
-                                                     required="true" 
-                                                     placeholder="Digite..." 
-                                                     style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
-                                    </lightning-input>
-                                  </span>
-                                </div>
-                                <div class="slds-col slds-size_3-of-12">
-                                  <span>
-                                    <lightning-input type="text" 
-                                                     name="documentNumber" 
-                                                     label="Nº do documento" 
-                                                     required="true" 
-                                                     placeholder="Digite..." 
-                                                     style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
-                                    </lightning-input>
-                                  </span>
-                                </div>
-
-                              <div class="slds-col slds-size_3-of-12">   
-                                <div class="slds-form-element">        
-                                  <div class="slds-form-element__control"> 
-                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                      <lightning-input type="date"
-                                                        date-style="short" 
-                                                        name="expeditionDate" 
-                                                        label="Data de expedição" 
-                                                        placeholder="00/00/0000" 
-                                                        style="margin-top: 8px; margin-bottom: 8px"> 
-                                      </lightning-input>                                                 
-                                    </div>             
+                                  <div class="slds-col slds-size_3-of-12">    
+                                    <div class="slds-form-element">
+                                      <div class="slds-form-element__control">
+                                        <div class="slds-combobox_container">
+                                          <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                                              <lightning-input data-id="focus" 
+                                                              read-only="true" 
+                                                              label="Participação" 
+                                                              name="searchText" 
+                                                              style="margin-top: 16px;"
+                                                              onclick={atribuirControlesApresentacaoLista} 
+                                                              value={labelOption}
+                                                              required="true"> 
+                                              </lightning-input>
+                                              <div>
+                                                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                                                  <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                  icon-name="utility:down" 
+                                                                  size="x-small"
+                                                                  alternative-text="icon" 
+                                                                  style="margin-top: 18px;" > 
+                                                  </lightning-icon>
+                                                </span>
+                                              </div>                                              
+                                            </div>                                      
+                                            <!-- EXIBITION LIST -->
+                                            <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
+                                              <ul class="slds-listbox slds-listbox_vertical" role="presentation">                                                
+                                                <li role="presentation" class="slds-listbox__item">
+                                                  <div data-id="option1" data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickNaoAceitouHospitais}>
+                                                    <span class="slds-media__body">
+                                                      <lightning-input type="checkbox" label="Proprietário" data-checkbox={person.id} data-id={person.id} onchange={handleChangeOwner}></lightning-input>
+                                                      <lightning-input type="checkbox" label="Compõe renda" data-checkbox={person.id} checked disabled></lightning-input>
+                                                      <lightning-input type="checkbox" label="Anuente" data-checkbox={person.id} data-id={person.id} onchange={handleChangeConsenting}></lightning-input>
+                                                    </span>
+                                                  </div>
+                                                </li>                                               
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>                  
                                   </div>
-                                </div>
-                              </div>
-
-                              </template>                        
+                                  <div class="slds-col slds-size_3-of-12">
+                                    <span>
+                                      <lightning-combobox 
+                                                        name="gender"
+                                                        label="Gênero"
+                                                        value=""
+                                                        placeholder="Selecione..."
+                                                        options={genderOptions}
+                                                        required="true"
+                                                        style="margin-right: 16px; margin-top: 8px">
+                                      </lightning-combobox>                               
+                                    </span>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12 slds-clearfix">
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none"> 
+                                          <lightning-input type="text" 
+                                                          name="nationality" 
+                                                          label="Nacionalidade" 
+                                                          disabled="true" 
+                                                          value={person.nationality} 
+                                                          style="margin-top: 8px; width: 95%; color: #706e68"> 
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div>     
+                                        </div>             
+                                      </div>                                
+                                    </div> 
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="date" 
+                                                          date-style="short" 
+                                                          name="birthDate" 
+                                                          label="Data de nascimento" 
+                                                          disabled="true" 
+                                                          value={person.birthdate} 
+                                                          style="margin-top: 8px; width: 95%; color: #706e68">
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div>
+                                        </div>             
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                          name="marital" 
+                                                          label="Estado civil" 
+                                                          disabled="true" 
+                                                          value={person.maritalStatus} 
+                                                          style="margin-top: 8px; color: #706e68"> 
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                          name="mothersName" 
+                                                          label="Nome da mãe" 
+                                                          disabled="true" 
+                                                          value={person.motherName} 
+                                                          style="margin-right: 16px; margin-top: 8px; color: #706e68">
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                          name="fathersName" 
+                                                          label="Nome do pai" 
+                                                          disabled="true" 
+                                                          value={person.fatherName} 
+                                                          style="margin-top: 8px; color: #706e68">
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                          name="profession" 
+                                                          label="Profissão"
+                                                          disabled="true" 
+                                                          value={person.profession} 
+                                                          style="margin-right: 16px; margin-top: 8px; color: #706E6B"> 
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                            name="Telefone" 
+                                                            label="Telefone/WhatsApp" 
+                                                            disabled="true" 
+                                                            value={person.cellPhone}
+                                                            pattern="^\(\d{2}\)\d{5}\-\d{4}$"
+                                                            max-length="15"
+                                                            onchange={handleMaskTelefone} 
+                                                            style="margin-right: 16px; margin-top: 8px; color: #706E6B" >                   
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px;" > 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="text" 
+                                                          name="mail" 
+                                                          label="E-mail" 
+                                                          disabled="true" 
+                                                          value={person.email} 
+                                                          style="margin-top: 8px; color: #706E6B"> 
+                                          </lightning-input>
+                                          <div>
+                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                              <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              icon-name="utility:database" 
+                                                              size="x-small"
+                                                              alternative-text="icon" 
+                                                              style="margin-top: 10px"> 
+                                              </lightning-icon>
+                                            </span>
+                                          </div> 
+                                        </div>      
+                                      </div>                                 
+                                    </div>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12">
+                                    <span>
+                                      <lightning-combobox
+                                                        name="documentType"
+                                                        label="Tipo de documento"
+                                                        value=""
+                                                        placeholder="Selecione..."
+                                                        options={documentTypeOptions}
+                                                        required="true"
+                                                        style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px">
+                                      </lightning-combobox>                     
+                                    </span>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12">
+                                    <span>
+                                      <lightning-input type="text" 
+                                                      name="issuing" 
+                                                      label="Órgão emissor / UF" 
+                                                      required="true" 
+                                                      placeholder="Digite..." 
+                                                      style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+                                      </lightning-input>
+                                    </span>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12">
+                                    <span>
+                                      <lightning-input type="text" 
+                                                      name="documentNumber" 
+                                                      label="Nº do documento" 
+                                                      required="true" 
+                                                      placeholder="Digite..." 
+                                                      style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+                                      </lightning-input>
+                                    </span>
+                                  </div>
+                                  <div class="slds-col slds-size_3-of-12">   
+                                    <div class="slds-form-element">        
+                                      <div class="slds-form-element__control"> 
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                          <lightning-input type="date"
+                                                            date-style="short" 
+                                                            name="expeditionDate" 
+                                                            label="Data de expedição" 
+                                                            placeholder="00/00/0000" 
+                                                            style="margin-top: 8px; margin-bottom: 8px"> 
+                                          </lightning-input>                                                 
+                                        </div>             
+                                      </div>
+                                    </div>
+                                  </div>
+                                </template>                        
                               </div>
                             </div>                                                     
                           </li>
                         </template>
                      
-                        <!-- Relationship--> 
-                        <template if:false={hideRelationshipSectionVar}>                        
+                        <!-- Relationship-->                                             
                           <li class="slds-progress__item slds-is-active">
-                            <div class="slds-progress__marker">
-                              <span class="slds-assistive-text">Active</span>                            
-                            </div>                      
-
-                            <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
-                              <div class="slds-grid slds-wrap" style="width:100%"> 
+                              <div class="slds-progress__marker">
+                                <span class="slds-assistive-text">Active</span>                            
+                              </div>    
+                              <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
+                                <div class="slds-grid slds-wrap" style="width:100%"> 
                                   <div class="slds-col slds-size_12-of-12" onclick={showRelationshipSection} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px"> Relacionamentos </div>      
                                   <template for:each={personObject.marriages} for:item="marriage" for:index="index"> 
-
                                     <template if:true={showRelationshipSectionVar}> 
-                                      <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> Relacionamento {marriage.index} </div> 
-                                      <div class="slds-col slds-size_4-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input
-                                            name="person1Name"
-                                            label="Pessoa"
-                                            value={marriage.participant1.name}                                      
-                                            required="true"
-                                            style="margin-top:8px"
-                                            disabled="true"
-                                            >
-                                          </lightning-input>
-                                        </span>
-                                      </div>
-                                                                                                        
-                                        <span key={marriage.id}>
-                                          <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
-                                        </span>
-                                      
-                                      <div class="slds-col slds-size_3-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input  style="margin-top:8px" type="text" name="relationship" label="Relacionamento" required="true"  disabled="true" value={marriage.maritalStatus}></lightning-input>
-                                        </span>
-                                      </div>
-                                      
-                                        <span key={marriage.id}>
-                                          <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon> 
-                                        </span>
-                                      
-                                      <div class="slds-col slds-size_4-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
-                                        </span>
-                                      </div>
+                                        <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> Relacionamento {marriage.index} </div> 
+                                        <div class="slds-col slds-size_4-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input
+                                              name="person1Name"
+                                              label="Pessoa"
+                                              value={marriage.participant1.name}                                   
+                                              required="true"
+                                              style="margin-top:8px"
+                                              disabled="true">
+                                            </lightning-input>
+                                          </span>
+                                        </div>       
+                                                                                                                                                   
+                                          <span key={marriage.id}>
+                                            <lightning-icon class="slds-align_absolute-center" style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
+                                          </span> 
+                                                                   
+                                        <div class="slds-col slds-size_3-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input  style="margin-top:8px" type="text" name="relationship" label="Relacionamento" required="true"  disabled="true" value={marriage.maritalStatus}></lightning-input>
+                                          </span>
+                                        </div>  
+                                                                
+                                          <span key={marriage.id}>
+                                            <lightning-icon class="slds-align_absolute-center" style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon> 
+                                          </span>   
+                                                                      
+                                        <div class="slds-col slds-size_4-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
+                                          </span>
+                                        </div>
 
-
-                                    <!-- Estado Civil Casado -->
-                                    <template if:true={showMarriedSectionVar}> 
-                                      <div class="slds-col slds-size_3-of-12" key={marriage.id}>
-                                        <div class="slds-form-element">        
-                                          <div class="slds-form-element__control"> 
-                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date" date-style="short" name="datedAt" label="Data do casamento" required="true" value="" data-id="dataRegime" onchange={onchangeData}></lightning-input>
-                                            </div>             
+                                      <!-- Estado Civil Casado -->
+                                      <template if:true={showMarriedSectionVar}> 
+                                        <div class="slds-col slds-size_3-of-12" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date" date-style="short" name="datedAt" label="Data do casamento" required="true" value="" data-id="dataRegime" onchange={onchangeData}></lightning-input>
+                                              </div>             
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-
-                                      <div class="slds-col slds-size_9-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-combobox if:false={vigencia}
-                                            name="regime "
-                                            data-id="regimeBefore77"
-                                            label="Regime"
-                                            value="regimeOptionsBefore77"
-                                            options={regimeOptionsBefore77}
-                                            placeholder="Selecione..."                                          
-                                            required="true"                                                   
-                                            onchange={onchangeBefore77}   
-                                            disabled={disableRegime}                                                                
-                                            style="margin-top:8px"
-                                            ></lightning-combobox>
-
+                                        <div class="slds-col slds-size_9-of-12" key={marriage.id} >
+                                          <span>
+                                            <lightning-combobox if:false={vigencia}
+                                                                name="regime "
+                                                                data-id="regimeBefore77"
+                                                                label="Regime"
+                                                                value="regimeOptionsBefore77"
+                                                                options={regimeOptionsBefore77}
+                                                                placeholder="Selecione..."                                          
+                                                                required="true"                                                   
+                                                                onchange={onchangeBefore77}   
+                                                                disabled={disableRegime}                                                                
+                                                                style="margin-top:8px; margin-right:60px;">
+                                            </lightning-combobox>
                                             <lightning-combobox if:true={vigencia}
-                                            name="regime  "
-                                            data-id="regimeAfter77"
-                                            label="Regime"
-                                            value="regimeOptionsAfter"
-                                            options={regimeOptionsAfter}
-                                            placeholder="Selecione..."                                          
-                                            required="true"                                          
-                                            onchange={onchangeAfter77}  
-                                            disabled={disableRegime}                                                                    
-                                            style="margin-top:8px; margin-right:16px"
-                                            ></lightning-combobox>
+                                                                name="regime  "
+                                                                data-id="regimeAfter77"
+                                                                label="Regime"
+                                                                value="regimeOptionsAfter"
+                                                                options={regimeOptionsAfter}
+                                                                placeholder="Selecione..."                                          
+                                                                required="true"                                          
+                                                                onchange={onchangeAfter77}  
+                                                                disabled={disableRegime}                                                                    
+                                                                style="margin-top:8px; margin-right:60px;">
+                                            </lightning-combobox>
+                                          </span>
+                                        </div>
+                                    
+                                        <div if:true={certidaoToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <lightning-input data-id="certidaoToggleId" class="toggleCertidao" type="toggle" label="Dados da certidão" name="input1" onchange={onchangeCertidao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
+                                        </div>
 
-                                        </span>
-                                      </div>
-                                   
-                                      <div if:true={certidaoToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                        <lightning-input data-id="certidaoToggle" class="toggleCertidao" type="toggle" label="Dados da certidão" name="input1" onchange={onchangeCertidao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
-                                      </div>
+                                        <!-- Mostrar dados da certidão -->                                      
+                                        <div if:true={certidao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
+                                          <span >
+                                            Dados da certidão
+                                          </span>
+                                        </div> 
 
-                                      <!-- Mostrar dados da certidão -->
-                                      
-                                      <div if:true={certidao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
-                                        <span >
-                                          Dados da certidão
-                                        </span>
-                                      </div> 
+                                        <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
+                                          <span>
+                                            <lightning-combobox
+                                                              name="type"
+                                                              label="Tipo"
+                                                              value="type"
+                                                              placeholder="Selecione..."
+                                                              options={typeOptions}                                          
+                                                              style="margin-top:8px; margin-right:16px; margin-left:50px"
+                                                              onchange={onchangeTypeCertidao}>
+                                            </lightning-combobox>
+                                          </span>
+                                        </div>
 
-                                      <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
-                                        <span>
-                                          <lightning-combobox
-                                            name="type"
-                                            label="Tipo"
-                                            value="type"
-                                            placeholder="Selecione..."
-                                            options={typeOptions}                                          
-                                            style="margin-top:8px; margin-right:16px; margin-left:50px"
-                                            onchange={onchangeTypeCertidao}
+                                        <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 16px" type="text" name="sheetNumber" label="Folha n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="matriculaNumber" label="Matrícula" disabled={disableMatricula} placeholder="Digite..." value=""></lightning-input>
+                                          </span>
+                                        </div>
 
-                                            ></lightning-combobox>
-                                        </span>
-                                      </div>
+                                        <div if:true={certidao} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right: 60px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>
 
-                                      <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
-                                        </span>
-                                      </div>
-                                      <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-right: 16px" type="text" name="sheetNumber" label="Folha n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
-                                        </span>
-                                      </div>
-                                      <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px" type="text" name="matriculaNumber" label="Matrícula" disabled={disableMatricula} placeholder="Digite..." value=""></lightning-input>
-                                        </span>
-                                      </div>
+                                        <div if:true={pactoAntenupcialToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <lightning-input data-id="pactoToggle" type="toggle" label="Pacto antenupcial" name="input1" onchange={onchangePacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
+                                        </div>
 
-                                      <div if:true={certidao} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-left:50px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..."></lightning-input>
-                                        </span>
-                                      </div>
+                                        <!-- Mostrar dados do Pacto Antenupcial -->
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
+                                          <span >
+                                            Dados do pacto antenupcial
+                                          </span>
+                                        </div> 
 
-                                      <div if:true={pactoAntenupcialToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                        <lightning-input data-id="pactoToggle" type="toggle" label="Pacto antenupcial" name="input1" onchange={onchangePacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
-                                      </div>
-
-                                      <!-- Mostrar dados do Pacto Antenupcial -->
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
-                                        <span >
-                                          Dados do pacto antenupcial
-                                        </span>
-                                      </div> 
-
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
-                                        <div class="slds-form-element">        
-                                          <div class="slds-form-element__control"> 
-                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
-                                            </div>             
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                              </div>             
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" required="true" value="15641853418348"></lightning-input>
-                                        </span>
-                                      </div>
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" required="true" value="1184183183541"></lightning-input>
-                                        </span>
-                                      </div>
-
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_10-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" required="true" value="" placeholder="Digite..."></lightning-input>
-                                        </span>
-                                      </div>
-
-                                      <!-- Seção de registro -->
-                                      <div if:true={pactoAntenupcial} class="slds-col slds-size_2-of-12" key={marriage.id}>
-                                        <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroPacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; float:right"></lightning-input>
-                                      </div>
-
-                                      <div if:true={alertPacto} class="slds-col slds-size_12-of-12" key={marriage.id}>             
-                                          <div style="background-color: gray; margin-left:50px; margin-top:16px">                                                                                             
-                                              <lightning-icon class="colorIconMessage" variant="inverse" icon-name="utility:info" size="small" style="margin-left: 5px"></lightning-icon>
-                                              <span style="color: white;"> Em caso de registro de pacto concomitante, certifique-se que a cidade do devedor seja a mesma que a da garantia. </span>  
-                                          </div>                              
-                                      </div>
-
-                                      <!-- Mostrar dados seção de registro -->
-                                      <div if:true={registroPacto} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px" key={marriage.id}>
-                                        <span >
-                                          Dados do registro 
-                                        </span>
-                                      </div>
-
-                                      <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
-                                        </span>
-                                      </div>
-                                      <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
-                                        </span>
-                                      </div>
-
-                                      <div if:true={registroPacto} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                        <span>
-                                          <lightning-input style="margin-top:8px; margin-left:100px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..." ></lightning-input>
-                                        </span>
-                                      </div>      
-                                      
-                                    <!-- Separação obrigatória --> 
-                                    <div if:true={separacaoToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                      <lightning-input data-id="separacaoToggle" type="toggle" label="Separação obrigatória" name="input1" onchange={onchangeSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
-                                    </div>                                  
-
-                                    <!-- Dados separação obrigatória -->
-                                    <div if:true={separacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-left:50px" type="text" name="draftedAt" label="Artigo" value="" placeholder="Digite..."></lightning-input>
-                                      </span>
-                                    </div>
-
-                                    <div if:true={separacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-left:16px" type="text" name="draftedAt" label="Inciso" value="" placeholder="Digite..."></lightning-input>
-                                      </span>
-                                    </div>                      
-        
-                                </template>
-
-
-                                <!-- União estável-->
-                                <template if:true={showStableunionSectionVar}> 
-                                    <div class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                      <span>
-                                        <lightning-combobox
-                                          name="regime  "
-                                          label="Regime"
-                                          value="regimeOptions"
-                                          options={regimeOptions}
-                                          placeholder="Selecione..."                                          
-                                          required="true"                                          
-                                          style="margin-top:8px; margin-left:50px"
-                                          ></lightning-combobox>
-                                      </span>
-                                    </div>
-                                 
-                                    <div class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
-                                      <span >
-                                        Dados da escritura pública de declaração de união estável 
-                                      </span>
-                                    </div>
-
-                                    <div class="slds-col slds-size_1-of-3" key={marriage.id}> 
-                                      <div class="slds-form-element">        
-                                        <div class="slds-form-element__control"> 
-                                          <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                            <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
-                                          </div>             
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" required="true" value="15641853418348"></lightning-input>
+                                          </span>
                                         </div>
-                                      </div>
-                                    </div>         
-                                    
-                                    <div class="slds-col slds-size_1-of-3" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
-                                      </span>
-                                    </div>
-                                    <div class="slds-col slds-size_1-of-3" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
-                                      </span>
-                                    </div>
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" required="true" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
 
-                                    <div class="slds-col slds-size_10-of-12" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
-                                      </span>
-                                    </div>
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_10-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" required="true" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>
 
-                                    <div class="slds-col slds-size_2-of-12" key={marriage.id}>
-                                      <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroUniao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; float:right"></lightning-input>
-                                    </div>
-                       
-                                    
-                                    <!-- Mostrar dados seção de registro -->
-                                    <div if:true={registroUniao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px" key={marriage.id}>
-                                      <span >
-                                        Dados do registro 
-                                      </span>
-                                    </div>
+                                        <!-- Seção de registro -->
+                                        <div if:true={pactoAntenupcial} class="slds-col slds-size_2-of-12" key={marriage.id}>
+                                          <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroPacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; margin-right: 60px; float:right"></lightning-input>
+                                        </div>
 
-                                    <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
-                                      </span>
-                                    </div>
-                                    <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
-                                      </span>
-                                    </div>
+                                        <div if:true={alertPacto} class="slds-col slds-size_12-of-12" key={marriage.id}>             
+                                            <div style="background-color: gray; margin-left:50px; margin-top:16px; margin-right: 60px">                                                                                             
+                                                <lightning-icon class="colorIconMessage" variant="inverse" icon-name="utility:info" size="small" style="margin-left: 5px"></lightning-icon>
+                                                <span style="color: white;"> Em caso de registro de pacto concomitante, certifique-se que a cidade do devedor seja a mesma que a da garantia. </span>  
+                                            </div>                              
+                                        </div>
 
-                                    <div if:true={registroUniao} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                      <span>
-                                        <lightning-input style="margin-top:8px; margin-left:100px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..."></lightning-input>
-                                      </span>
-                                    </div>      
-                                  </template>     
+                                        <!-- Mostrar dados seção de registro -->
+                                        <div if:true={registroPacto} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px" key={marriage.id}>
+                                          <span >
+                                            Dados do registro 
+                                          </span>
+                                        </div>
+
+                                        <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
+
+                                        <div if:true={registroPacto} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right: 60px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..." ></lightning-input>
+                                          </span>
+                                        </div>      
+                                        
+                                        <!-- Separação obrigatória --> 
+                                        <div if:true={separacaoToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <lightning-input data-id="separacaoToggle" type="toggle" label="Separação obrigatória" name="input1" onchange={onchangeSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
+                                        </div> 
+
+                                        <!-- Dados separação obrigatória -->
+                                        <div if:true={separacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-left:50px" type="text" name="draftedAt" label="Artigo" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>
+
+                                        <div if:true={separacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-left:16px; margin-right: 60px" type="text" name="draftedAt" label="Inciso" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>
                                       
-                                </template>                              
-                              </template>
-                            </div>
-                          </div> 
-                        </li>
-                        </template>
+                                        <div if:true={separacaoPactoAntenupcialToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <lightning-input data-id="separacaoPactoToggleId" checked type="toggle" label="Pacto antenupcial" name="input1" onchange={onchangePactoSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
+                                        </div>
+
+                                        <!-- Mostrar dados do Pacto Antenupcial em Separação-->
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
+                                          <span >
+                                            Dados do pacto antenupcial
+                                          </span>
+                                        </div> 
+
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                              </div>             
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" required="true" value="15641853418348"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" required="true" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
+
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_10-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" required="true" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>
+
+                                        <!-- Seção de registro Pacto Antenupcial em Separação-->
+                                        <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_2-of-12" key={marriage.id}>
+                                          <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroPactoSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; margin-right: 60px; float:right"></lightning-input>
+                                        </div>
+
+                                        <div if:true={alertPactoSeparacao} class="slds-col slds-size_12-of-12" key={marriage.id}>             
+                                            <div style="background-color: gray; margin-left:50px; margin-top:16px; margin-right: 60px">                                                                                             
+                                                <lightning-icon class="colorIconMessage" variant="inverse" icon-name="utility:info" size="small" style="margin-left: 5px"></lightning-icon>
+                                                <span style="color: white;"> Em caso de registro de pacto concomitante, certifique-se que a cidade do devedor seja a mesma que a da garantia. </span>  
+                                            </div>                              
+                                        </div>
+
+                                        <!-- Mostrar dados seção de registro Pacto Antenupcial em Separação -->
+                                        <div if:true={registroPactoSeparacao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px" key={marriage.id}>
+                                          <span >
+                                            Dados do registro 
+                                          </span>
+                                        </div>
+
+                                        <div if:true={registroPactoSeparacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={registroPactoSeparacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
+
+                                        <div if:true={registroPactoSeparacao} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right: 60px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..." ></lightning-input>
+                                          </span>
+                                        </div>     
+                                      </template>
+
+
+                                      <!-- União estável-->
+                                      <template if:true={showStableunionSectionVar}> 
+                                        <div class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-combobox
+                                              name="regime  "
+                                              label="Regime"
+                                              value="regimeOptions"
+                                              options={regimeOptions}
+                                              placeholder="Selecione..."                                          
+                                              required="true"                                          
+                                              style="margin-top:8px; margin-left:50px"
+                                              ></lightning-combobox>
+                                          </span>
+                                        </div>
+                                        <div class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
+                                          <span >
+                                            Dados da escritura pública de declaração de união estável 
+                                          </span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3" key={marriage.id}> 
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                              </div>             
+                                            </div>
+                                          </div>
+                                        </div>  
+                                        <div class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div class="slds-col slds-size_2-of-12" key={marriage.id}>
+                                          <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroUniao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; float:right"></lightning-input>
+                                        </div>                       
+                                        
+                                        <!-- Mostrar dados seção de registro -->
+                                        <div if:true={registroUniao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px" key={marriage.id}>
+                                          <span >
+                                            Dados do registro 
+                                          </span>
+                                        </div>
+                                        <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                          </span>
+                                        </div>
+                                        <div if:true={registroUniao} class="slds-col slds-size_12-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px; margin-left:100px" type="text" name="draftedAt" label="Lavrado no" value="" placeholder="Digite..."></lightning-input>
+                                          </span>
+                                        </div>      
+                                      </template>
+                                    </template>                              
+                                  </template>
+                                </div>
+                              </div> 
+                          </li>
                         
 
-                        <!-- Address-->                        
+                          <!-- Address-->                        
                           <li class="slds-progress__item slds-is-active" >
                             <div class="slds-progress__marker">
                               <span class="slds-assistive-text">Active</span>                            
-                            </div>                      
-                          
+                            </div>       
                             <div class="slds-progress__item_content slds-grid slds-grid_align-spread" > 
-                                <div class="slds-grid slds-wrap" style="width:100%"> 
-
-                                  <div class="slds-col slds-size_12-of-12" onclick={showAddressDataSection} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px"> Endereços</div>
-                                  <template for:each={personObject.marriages} for:item="marriage" for:index="index">                                  
-                       
-                                    <template if:true={showAddressSectionVar}>     
-                                        
-                                        
-                                       <template if:true={showSectionRelationshipInAddress} key={marriage.id}>
+                              <div class="slds-grid slds-wrap" style="width:100%"> 
+                                <div class="slds-col slds-size_12-of-12" onclick={showAddressDataSection} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px"> Endereços</div>
+                                  <template for:each={personObject.marriages} for:item="marriage" for:index="index">      
+                                    <template if:true={showAddressSectionVar}>  
+                                      <template if:true={showSectionRelationshipInAddress} key={marriage.id}>
                                         <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> Relacionamento {marriage.index} </div> 
-                                          <div class="slds-col slds-size_4-of-12" key={marriage.id}>
-                                            <span>
-                                              <lightning-input 
-                                                name="person1Name"
-                                                label="Pessoa"
-                                                value={marriage.participant1.name}                                   
-                                                required="true"
-                                                style="margin-top:8px"
-                                                disabled="true"
-                                                >
-                                              </lightning-input>
-                                            </span>
-                                          </div>
-                                                                                                            
-                                            <span key={marriage.id}>
-                                              <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
-                                            </span>
-                                          
-                                          <div class="slds-col slds-size_3-of-12" key={marriage.id}>
-                                            <span>
-                                              <lightning-input  style="margin-top:8px" type="text" name="relationship" label="Relacionamento" required="true"  disabled="true" value={marriage.maritalStatus}></lightning-input>
-                                            </span>
-                                          </div>
-                                          
-                                            <span key={marriage.id}>
-                                              <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon> 
-                                            </span>
-                                          
-                                          <div class="slds-col slds-size_4-of-12" key={marriage.id}>
-                                            <span>
-                                              <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
-                                            </span>
-                                          </div>
-                                       </template>
+                                        <div class="slds-col slds-size_4-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input 
+                                              name="person1Name"
+                                              label="Pessoa"
+                                              value={marriage.participant1.name}                                   
+                                              required="true"
+                                              style="margin-top:8px"
+                                              disabled="true">
+                                            </lightning-input>
+                                          </span>
+                                        </div>                                                                                                            
+                                          <span key={marriage.id}>
+                                            <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
+                                          </span>                                          
+                                        <div class="slds-col slds-size_3-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input  style="margin-top:8px" type="text" name="relationship" label="Relacionamento" required="true"  disabled="true" value={marriage.maritalStatus}></lightning-input>
+                                          </span>
+                                        </div>                                          
+                                          <span key={marriage.id}>
+                                            <lightning-icon style="margin-top:32px; margin-left:5px; margin-right:5px" icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon> 
+                                          </span>                                          
+                                        <div class="slds-col slds-size_4-of-12" key={marriage.id}>
+                                          <span>
+                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
+                                          </span>
+                                        </div>
+                                      </template>
 
-                                       <template if:false={showSectionRelationshipInAddress} key={marriage.id}>
+                                      <template if:false={showSectionRelationshipInAddress} key={marriage.id}>
                                         <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> {marriage.name} </div> 
-                                       </template>
-                                          <div class="slds-col slds-size_9-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="fullAddress" 
-                                                                  label="Endereço" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.street} 
-                                                                  style="margin-top: 8px; margin-right: 16px; margin-left:50px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px; margin-left:50px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>
-                                          
-                                          <div class="slds-col slds-size_3-of-12 slds-clearfix"  key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="number" 
-                                                                  label="Número" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.number} 
-                                                                  style="margin-top: 8px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>
-
-                                          <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="complement" 
-                                                                  label="Complemento" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.complement} 
-                                                                  style="margin-top: 8px; margin-right: 16px; margin-left:50px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px; margin-left:50px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                              </div>                                 
-                                            </div>
+                                      </template>
+                                        <div class="slds-col slds-size_9-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="fullAddress" 
+                                                                label="Endereço" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.street} 
+                                                                style="margin-top: 8px; margin-right: 16px; margin-left:50px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px; margin-left:50px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
                                           </div>
-
-                                          <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="neighborhood" 
-                                                                  label="Bairro" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.neighborhood} 
-                                                                  style="margin-top: 8px; margin-right: 16px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>
-                                          <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="city" 
-                                                                  label="Cidade" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.city} 
-                                                                  style="margin-top: 8px; margin-right: 16px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>
-                                          <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="state" 
-                                                                  label="Estado" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.state} 
-                                                                  style="margin-top: 8px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                              </div>                                 
-                                            </div>
+                                        </div>                                          
+                                        <div class="slds-col slds-size_3-of-12 slds-clearfix"  key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="number" 
+                                                                label="Número" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.number} 
+                                                                style="margin-top: 8px; margin-right: 60px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
                                           </div>
-
-                                          <div class="slds-col slds-size_6-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="country"                                                            
-                                                                  label="País" 
-                                                                  disabled="true" 
-                                                                  value="Brasil" 
-                                                                  style="margin-top: 8px; margin-right: 16px; margin-bottom: 8px; margin-left:50px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px; margin-left:50px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>
-                                          <div class="slds-col slds-size_6-of-12 slds-clearfix" key={marriage.id}>
-                                            <div class="slds-form-element">        
-                                              <div class="slds-form-element__control"> 
-                                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                  <lightning-input type="text" 
-                                                                  name="zipcode" 
-                                                                  label="CEP" 
-                                                                  disabled="true" 
-                                                                  value={marriage.participant1.address.zipcode} 
-                                                                  style="margin-top: 8px; margin-bottom: 8px">
-                                                  </lightning-input>
-                                                  <div>
-                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                                                      <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                                                      icon-name="utility:database" 
-                                                                      size="x-small"
-                                                                      alternative-text="icon" 
-                                                                      style="margin-top: 10px"> 
-                                                      </lightning-icon>
-                                                    </span>
-                                                  </div> 
-                                                </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>                                          
-                                     </template>
+                                        </div>
+                                        <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="complement" 
+                                                                label="Complemento" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.complement} 
+                                                                style="margin-top: 8px; margin-right: 16px; margin-left:50px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px; margin-left:50px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>
+                                        <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="neighborhood" 
+                                                                label="Bairro" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.neighborhood} 
+                                                                style="margin-top: 8px; margin-right: 16px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>
+                                        <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="city" 
+                                                                label="Cidade" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.city} 
+                                                                style="margin-top: 8px; margin-right: 16px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>
+                                        <div class="slds-col slds-size_3-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="state" 
+                                                                label="Estado" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.state} 
+                                                                style="margin-top: 8px; margin-right: 60px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="country"                                                            
+                                                                label="País" 
+                                                                disabled="true" 
+                                                                value="Brasil" 
+                                                                style="margin-top: 8px; margin-right: 16px; margin-bottom: 8px; margin-left:50px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px; margin-left:50px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>
+                                        <div class="slds-col slds-size_6-of-12 slds-clearfix" key={marriage.id}>
+                                          <div class="slds-form-element">        
+                                            <div class="slds-form-element__control"> 
+                                              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                <lightning-input type="text" 
+                                                                name="zipcode" 
+                                                                label="CEP" 
+                                                                disabled="true" 
+                                                                value={marriage.participant1.address.zipcode} 
+                                                                style="margin-top: 8px; margin-bottom: 8px; margin-right: 60px">
+                                                </lightning-input>
+                                                <div>
+                                                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                                                    <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                                    icon-name="utility:database" 
+                                                                    size="x-small"
+                                                                    alternative-text="icon" 
+                                                                    style="margin-top: 10px"> 
+                                                    </lightning-icon>
+                                                  </span>
+                                                </div> 
+                                              </div>      
+                                            </div>                                 
+                                          </div>
+                                        </div>                                          
+                                    </template>
                                   </template>
 
-                                  <!-- SIngle Person -->
-
-                                  <template for:each={singlePerson} for:item="single">                                  
-                       
-                                    <template if:true={showAddressSectionVar}>                                             
-                                                                             
-
-                                       <template if:true={showSectionRelationshipInAddress} key={single.id}>
-                                        <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={single.id}> {single.name} </div> 
-                                       </template>
+                                  <!-- Single Person -->
+                                  <template for:each={singlePerson} for:item="single">   
+                                      <template if:true={showAddressSectionVar}>                                            
+                                        <template if:true={showSectionRelationshipInAddress} key={single.id}>
+                                          <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={single.id}> {person.formatedName} </div> 
+                                        </template>
                                           <div class="slds-col slds-size_9-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1068,10 +1071,9 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
+                                              </div>                                 
                                             </div>
-                                          
+                                          </div>                                          
                                           <div class="slds-col slds-size_3-of-12 slds-clearfix"  key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1081,7 +1083,7 @@
                                                                   label="Número" 
                                                                   disabled="true" 
                                                                   value={single.address.number} 
-                                                                  style="margin-top: 8px">
+                                                                  style="margin-top: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>
                                                     <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
@@ -1094,10 +1096,9 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
+                                              </div>                                 
                                             </div>
-
+                                          </div>
                                           <div class="slds-col slds-size_3-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1123,7 +1124,6 @@
                                               </div>                                 
                                             </div>
                                           </div>
-
                                           <div class="slds-col slds-size_3-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1146,9 +1146,9 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
+                                              </div>                                 
                                             </div>
+                                          </div>
                                           <div class="slds-col slds-size_3-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1171,9 +1171,9 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
+                                              </div>                                 
                                             </div>
+                                          </div>
                                           <div class="slds-col slds-size_3-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1183,7 +1183,7 @@
                                                                   label="Estado" 
                                                                   disabled="true" 
                                                                   value={single.address.state} 
-                                                                  style="margin-top: 8px">
+                                                                  style="margin-top: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>
                                                     <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
@@ -1199,7 +1199,6 @@
                                               </div>                                 
                                             </div>
                                           </div>
-
                                           <div class="slds-col slds-size_6-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1222,9 +1221,9 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
+                                              </div>                                 
                                             </div>
+                                          </div>
                                           <div class="slds-col slds-size_6-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
                                               <div class="slds-form-element__control"> 
@@ -1234,7 +1233,7 @@
                                                                   label="CEP" 
                                                                   disabled="true" 
                                                                   value={single.address.zipcode} 
-                                                                  style="margin-top: 8px; margin-bottom: 8px">
+                                                                  style="margin-top: 8px; margin-bottom: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>
                                                     <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
@@ -1247,17 +1246,14 @@
                                                     </span>
                                                   </div> 
                                                 </div>      
-                                                </div>                                 
-                                              </div>
-                                            </div>                                          
+                                              </div>                                 
+                                            </div>
+                                          </div>                                          
                                      </template>
                                   </template>
-
                               </div>                            
                             </div> 
-                          </li>
-                        
-
+                          </li>                       
                       </ol>
                       <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                         <span class="slds-assistive-text">Progress: 50%</span>
@@ -1274,44 +1270,29 @@
       <!-- Dados Bancários-->
       <li class="slds-setup-assistant__item">
         <article class="slds-setup-assistant__step">
-          <div class="slds-summary-detail">
-            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Toggle details for Learn How to Use Profiles to Control Visibility" aria-controls="step-2-summary-action" aria-expanded="false">
-              <svg class="slds-button__icon slds-summary-detail__action-icon" aria-hidden="true">
-                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use>
-              </svg>
-              <span class="slds-assistive-text">Toggle details for Learn How to Use Profiles to Control Visibility</span>
+          <div class="slds-summary-detail slds-is-open"  data-id="sectionBank">
+            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Accordion summary" aria-controls="referenceId-77" aria-expanded="false">
+              <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
+              <span class="slds-assistive-text">Accordion summary</span>
             </button>
             <div class="slds-container_fluid">
               <div class="slds-summary-detail__title">
                 <div class="slds-setup-assistant__step-summary">
                   <div class="slds-media">
                     <div class="slds-media__figure">
-                      <div class="slds-progress-ring slds-progress-ring_complete slds-progress-ring_large">
-                        <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-                          <svg viewBox="-1 -1 2 2">
-                            <circle class="slds-progress-ring__path" id="slds-progress-ring-path-58" cx="0" cy="0" r="1"></circle>
-                          </svg>
-                        </div>
-                        <div class="slds-progress-ring__content">
-                          <span class="slds-icon_container slds-icon-utility-check" title="Complete">
-                            <svg class="slds-icon" aria-hidden="true">
-                              <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use>
-                            </svg>
-                            <span class="slds-assistive-text">Complete</span>
-                          </span>
-                        </div>
-                      </div>
+                      <lightning-progress-ring value="0" size="large" variant="base-autocomplete"> 2 </lightning-progress-ring>
                     </div>
                     <div class="slds-media__body slds-m-top_x-small">
                       <div class="slds-media">
                         <div class="slds-setup-assistant__step-summary-content slds-media__body">
                           <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
-                            <button class="slds-button slds-button_reset" aria-controls="step-2-summary-action" aria-expanded="false">Dados bancários</button>
-                          </h3>
-                          
+                            <button class="slds-button slds-button_reset" aria-controls="step-2-summary-action" aria-expanded="false" style="font-family: Segoe UI; font-style: normal; font-weight: bold; font-size: 16px; line-height: 24px;">
+                              Dados bancários
+                            </button>
+                          </h3>                          
                         </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
-                          <p class="slds-text-align_right slds-text-color_weak">Validado</p>
+                          <p class="slds-text-align_right slds-text-color_weak"> Não validado</p>
                         </div>
                       </div>
                     </div>
@@ -1320,72 +1301,11 @@
               </div>
               <div aria-hidden="true" class="slds-summary-detail__content" id="step-2-summary-action">
                 <div class="slds-setup-assistant__step-detail">
-                  <div class="slds-progress slds-progress_vertical slds-progress_success">
-                    <ol class="slds-progress__list slds-progress__list-bordered">
-                      <li class="slds-progress__item slds-is-completed">
-                        <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
-                          <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
-                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use>
-                          </svg>
-                          <span class="slds-assistive-text">Complete</span>
-                        </span>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Dados bancários.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <div class="slds-form-element">
-                              <label class="slds-checkbox_toggle slds-grid">
-                                <span class="slds-form-element__label slds-m-bottom_none slds-assistive-text">Dados bancários</span>
-                                <input type="checkbox" name="checkbox-toggle-45" value="checkbox-toggle-45" aria-describedby="checkbox-toggle-45" checked="" />
-                                <span id="checkbox-toggle-45" class="slds-checkbox_faux_container" aria-live="assertive">
-                                  <span class="slds-checkbox_faux"></span>
-                                  <span class="slds-checkbox_on">On</span>
-                                  <span class="slds-checkbox_off">Off</span>
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="slds-progress__item slds-is-active">
-                        <div class="slds-progress__marker">
-                          <span class="slds-assistive-text">Active</span>
-                        </div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <a href="#">View in Trailhead</a>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="slds-progress__item">
-                        <div class="slds-progress__marker"></div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, lorem ipsum dolor.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <button class="slds-button slds-button_outline-brand">Add Users</button>
-                          </div>
-                        </div>
-                      </li>
-                    </ol>
+                  <div class="slds-progress slds-progress_vertical slds-progress_success">                    
                     <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                       <span class="slds-assistive-text">Progress: 50%</span>
                     </div>
-                  </div>
-                  <div class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light" role="status">
-                    <div class="slds-media__figure">
-                      <span class="slds-icon_container slds-icon-utility-info" title="information">
-                        <svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true">
-                          <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
-                        </svg>
-                        <span class="slds-assistive-text">information</span>
-                      </span>
-                    </div>
-                    <div class="slds-media__body">
-                      <p>It looks as if duplicates exist for this lead.
-                        <a href="#">View Duplicates</a>
-                      </p>
-                    </div>
-                  </div>
+                  </div>                  
                 </div>
               </div>
             </div>
@@ -1397,33 +1317,25 @@
       <li class="slds-setup-assistant__item">
         <article class="slds-setup-assistant__step">
           <div class="slds-summary-detail">
-            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Toggle details for Turn On Tracking for Profiles" aria-controls="step-3-summary-action" aria-expanded="false">
-              <svg class="slds-button__icon slds-summary-detail__action-icon" aria-hidden="true">
-                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use>
-              </svg>
-              <span class="slds-assistive-text">Toggle details for Turn On Tracking for Profiles</span>
+            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Accordion summary" aria-controls="referenceId-72" aria-expanded="true">
+              <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
+              <span class="slds-assistive-text">Accordion summary</span>
             </button>
             <div class="slds-container_fluid">
               <div class="slds-summary-detail__title">
                 <div class="slds-setup-assistant__step-summary">
                   <div class="slds-media">
                     <div class="slds-media__figure">
-                      <div class="slds-progress-ring slds-progress-ring_large">
-                        <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                          <svg viewBox="-1 -1 2 2">
-                            <path class="slds-progress-ring__path" id="slds-progress-ring-path-59" d="M 1 0 A 1 1 0 0 0 1.00 -0.00 L 0 0"></path>
-                          </svg>
-                        </div>
-                        <div class="slds-progress-ring__content">3</div>
-                      </div>
+                      <lightning-progress-ring value="0" size="large" variant="base-autocomplete"> 3 </lightning-progress-ring>
                     </div>
                     <div class="slds-media__body slds-m-top_x-small">
                       <div class="slds-media">
                         <div class="slds-setup-assistant__step-summary-content slds-media__body">
                           <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
-                            <button class="slds-button slds-button_reset" aria-controls="step-3-summary-action" aria-expanded="false">Garantias</button>
-                          </h3>
-                          
+                            <button class="slds-button slds-button_reset" aria-controls="step-3-summary-action" aria-expanded="false" style="font-family: Segoe UI; font-style: normal; font-weight: bold; font-size: 16px; line-height: 24px;">
+                              Garantias
+                            </button>
+                          </h3>                          
                         </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
                           <p class="slds-text-align_right slds-text-color_weak">Não validado</p>
@@ -1436,51 +1348,13 @@
               <div aria-hidden="true" class="slds-summary-detail__content" id="step-3-summary-action">
                 <div class="slds-setup-assistant__step-detail">
                   <div class="slds-progress slds-progress_vertical slds-progress_success">
-                    <ol class="slds-progress__list slds-progress__list-bordered">
-                      <li class="slds-progress__item slds-is-completed">
-                        <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
-                          <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
-                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use>
-                          </svg>
-                          <span class="slds-assistive-text">Complete</span>
-                        </span>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Turn on Lightning for all users.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <div class="slds-form-element">
-                              <label class="slds-checkbox_toggle slds-grid">
-                                <span class="slds-form-element__label slds-m-bottom_none slds-assistive-text">Turn on Lightning for all users</span>
-                                <input type="checkbox" name="checkbox-toggle-46" value="checkbox-toggle-46" aria-describedby="checkbox-toggle-46" checked="" />
-                                <span id="checkbox-toggle-46" class="slds-checkbox_faux_container" aria-live="assertive">
-                                  <span class="slds-checkbox_faux"></span>
-                                  <span class="slds-checkbox_on">On</span>
-                                  <span class="slds-checkbox_off">Off</span>
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
+                    <ol class="slds-progress__list slds-progress__list-bordered">                      
                       <li class="slds-progress__item slds-is-active">
                         <div class="slds-progress__marker">
                           <span class="slds-assistive-text">Active</span>
                         </div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <a href="#">View in Trailhead</a>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="slds-progress__item">
-                        <div class="slds-progress__marker"></div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, lorem ipsum dolor.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <button class="slds-button slds-button_outline-brand">Add Users</button>
-                          </div>
-                        </div>
-                      </li>
+                        </span>                        
+                      </li>                     
                     </ol>
                     <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                       <span class="slds-assistive-text">Progress: 50%</span>
@@ -1494,12 +1368,7 @@
                         </svg>
                         <span class="slds-assistive-text">information</span>
                       </span>
-                    </div>
-                    <div class="slds-media__body">
-                      <p>It looks as if duplicates exist for this lead.
-                        <a href="#">View Duplicates</a>
-                      </p>
-                    </div>
+                    </div>                    
                   </div>
                 </div>
               </div>
@@ -1512,36 +1381,28 @@
       <li class="slds-setup-assistant__item">
         <article class="slds-setup-assistant__step">
           <div class="slds-summary-detail">
-            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Toggle details for Setup Einstein Visibility for Admins" aria-controls="step-4-summary-action" aria-expanded="false">
-              <svg class="slds-button__icon slds-summary-detail__action-icon" aria-hidden="true">
-                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use>
-              </svg>
-              <span class="slds-assistive-text">Toggle details for Setup Einstein Visibility for Admins</span>
+            <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" title="Accordion summary" aria-controls="referenceId-72" aria-expanded="true">
+              <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
+              <span class="slds-assistive-text">Accordion summary</span>
             </button>
             <div class="slds-container_fluid">
               <div class="slds-summary-detail__title">
                 <div class="slds-setup-assistant__step-summary">
                   <div class="slds-media">
                     <div class="slds-media__figure">
-                      <div class="slds-progress-ring slds-progress-ring_large">
-                        <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                          <svg viewBox="-1 -1 2 2">
-                            <path class="slds-progress-ring__path" id="slds-progress-ring-path-60" d="M 1 0 A 1 1 0 0 0 1.00 -0.00 L 0 0"></path>
-                          </svg>
-                        </div>
-                        <div class="slds-progress-ring__content">5</div>
-                      </div>
+                      <lightning-progress-ring value="0" size="large" variant="base-autocomplete"> 4 </lightning-progress-ring>
                     </div>
                     <div class="slds-media__body slds-m-top_x-small">
                       <div class="slds-media">
                         <div class="slds-setup-assistant__step-summary-content slds-media__body">
                           <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
-                            <button class="slds-button slds-button_reset" aria-controls="step-4-summary-action" aria-expanded="false">Créditos</button>
-                          </h3>
-                          
+                            <button class="slds-button slds-button_reset" aria-controls="step-4-summary-action" aria-expanded="false" style="font-family: Segoe UI; font-style: normal; font-weight: bold; font-size: 16px; line-height: 24px;">
+                              Créditos
+                            </button>
+                          </h3>                          
                         </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
-                          <p class="slds-text-align_right slds-text-color_weak">Não validado</p>
+                          <p class="slds-text-align_right slds-text-color_weak"> Não validado</p>
                         </div>
                       </div>
                     </div>
@@ -1550,72 +1411,11 @@
               </div>
               <div aria-hidden="true" class="slds-summary-detail__content" id="step-4-summary-action">
                 <div class="slds-setup-assistant__step-detail">
-                  <div class="slds-progress slds-progress_vertical slds-progress_success">
-                    <ol class="slds-progress__list slds-progress__list-bordered">
-                      <li class="slds-progress__item slds-is-completed">
-                        <span class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
-                          <svg class="slds-icon slds-icon_xx-small" aria-hidden="true">
-                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use>
-                          </svg>
-                          <span class="slds-assistive-text">Complete</span>
-                        </span>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Turn on Lightning for all users.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <div class="slds-form-element">
-                              <label class="slds-checkbox_toggle slds-grid">
-                                <span class="slds-form-element__label slds-m-bottom_none slds-assistive-text">Turn on Lightning for all users</span>
-                                <input type="checkbox" name="checkbox-toggle-47" value="checkbox-toggle-47" aria-describedby="checkbox-toggle-47" checked="" />
-                                <span id="checkbox-toggle-47" class="slds-checkbox_faux_container" aria-live="assertive">
-                                  <span class="slds-checkbox_faux"></span>
-                                  <span class="slds-checkbox_on">On</span>
-                                  <span class="slds-checkbox_off">Off</span>
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="slds-progress__item slds-is-active">
-                        <div class="slds-progress__marker">
-                          <span class="slds-assistive-text">Active</span>
-                        </div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <a href="#">View in Trailhead</a>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="slds-progress__item">
-                        <div class="slds-progress__marker"></div>
-                        <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                          <div class="slds-size_3-of-4">Lorem ipsum dolor sit amet, lorem ipsum dolor.</div>
-                          <div class="slds-grid slds-grid_align-end slds-size_1-of-4">
-                            <button class="slds-button slds-button_outline-brand">Add Users</button>
-                          </div>
-                        </div>
-                      </li>
-                    </ol>
+                  <div class="slds-progress slds-progress_vertical slds-progress_success">                    
                     <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                       <span class="slds-assistive-text">Progress: 50%</span>
                     </div>
-                  </div>
-                  <div class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light" role="status">
-                    <div class="slds-media__figure">
-                      <span class="slds-icon_container slds-icon-utility-info" title="information">
-                        <svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true">
-                          <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
-                        </svg>
-                        <span class="slds-assistive-text">information</span>
-                      </span>
-                    </div>
-                    <div class="slds-media__body">
-                      <p>It looks as if duplicates exist for this lead.
-                        <a href="#">View Duplicates</a>
-                      </p>
-                    </div>
-                  </div>
+                  </div>                  
                 </div>
               </div>
             </div>

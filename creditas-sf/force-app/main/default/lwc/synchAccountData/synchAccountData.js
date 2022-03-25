@@ -1,21 +1,17 @@
-import { LightningElement, track, api, wire } from 'lwc';
-import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } from 'lightning/empApi';
+import { LightningElement, api } from 'lwc';
+import { subscribe } from 'lightning/empApi';
 import getAccountData from '@salesforce/apex/SynchAccountDataController.getAccountData';
 import checkSynchingField from '@salesforce/apex/SynchAccountDataController.checkSynchingField';
 
 export default class SynchAccountData extends LightningElement {
-    @api channelName = '/event/SynchAccount__e';
-    subscription = {};
-    
-    @track account;
-    @track error;
     @api recordId;
-    @track showSynchButton = false;
-    @track showComponent = false;
-    @track showSynchingScreen = false;
-    @track showEventReceived = false;
-    
-
+    channelName = '/event/SynchAccount__e';
+    subscription = {};
+    account;
+    error;
+    showSynchButton = false;
+    showSynchingScreen = false;
+    showEventReceived = false;
 
     connectedCallback(){
         let myComponent = this;
@@ -24,14 +20,13 @@ export default class SynchAccountData extends LightningElement {
         getAccountData({accountId: this.recordId}) 
             .then(result => { 
                 this.account = result;
-                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c || result.IsSynchEnabled__c == 'ENABLED'){
-                    this.showComponent = true;
+                if (result.IsSynchEnabled__c == 'DISABLED' || !result.IsSynchEnabled__c){
                     this.showSynchButton = true;
                 } else if (result.IsSynchEnabled__c == 'SYNCHING'){
-                    this.showComponent = true;
                     this.showSynchingScreen = true;
+                } else if (result.IsSynchEnabled__c == 'ENABLED'){
+                    this.showEventReceived = true;
                 }
-
             })
             .catch(error => {
                 this.error = error;

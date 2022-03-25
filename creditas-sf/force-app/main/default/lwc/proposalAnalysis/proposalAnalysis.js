@@ -31,7 +31,6 @@ export default class ProposalAnalysis extends LightningElement {
 
   openModalDocument = false;
   sourceImg = '';
-  // cpf_document = identity_document_img;
 
   openModalRejection = false;
   openModalPendency = false
@@ -45,10 +44,9 @@ export default class ProposalAnalysis extends LightningElement {
   isAnyRejected = false
 
   connectedCallback() {
-    // this.mapInfoSection.set('dadosGeral', {'variant': 'base-autocomplete', 'value': 33, 'returnedId': 'dadosGeral'})
-    console.log('accountid: '+this.accountid);
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
     this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
+    this.mapInfoSection.set('ContainerDadosEndereco', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosEndereco'})
   }
 
   setInfoValueAndVariant(event) {
@@ -61,14 +59,6 @@ export default class ProposalAnalysis extends LightningElement {
     if (infoSection.returnedId === 'ContainerDadosPessoais') {
       this.personalInfoVariant = infoSection.variant
       this.personalInfoValue = infoSection.value
-
-      // if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
-      //   this.modalReason = infoSection.modal.modalReason
-      //   this.openModalReason = infoSection.modal.openModalReason
-      //   this.modalReasonField = infoSection.modal.fieldReason
-      //   this.modalReasonObject = infoSection.modal.objectReason
-
-      // }
     }
 
     else if (infoSection.returnedId === 'generalContainer') {
@@ -81,7 +71,7 @@ export default class ProposalAnalysis extends LightningElement {
       this.contactInfoValue = infoSection.value  
     }
 
-    else if (infoSection.returnedId === 'dadosEndereçoContainer') {
+    else if (infoSection.returnedId === 'ContainerDadosEndereco') {
       this.addressesInfoVariant = infoSection.variant
       this.addressesInfoValue = infoSection.value  
     }
@@ -198,14 +188,6 @@ export default class ProposalAnalysis extends LightningElement {
     this.openModalDocument = false;
   }
 
-  // handlerCloseModalReason(event){
-  //   let result = event.detail;
-  //   if( result.object =='ContactDetailsSection__c' && result.reason == null){
-  //     this.template.querySelector('c-proposal-contact-data-component').getReasonSelected(JSON.stringify(result));
-  //   }
-  //   this.openModalReason = false;
-  // }
-
   handleSaveSection() {
   }
 
@@ -221,6 +203,11 @@ export default class ProposalAnalysis extends LightningElement {
       else if (result.object == 'PersonalDataSection__c') {
         this.template.querySelector('c-proposal-personal-data-component').getReasonSelected(JSON.stringify(result));
       }
+        
+      else if (result.object == 'AddressDataSection__c') {
+        this.template.querySelector('c-proposal-addresses-component').getReasonSelected(JSON.stringify(result));
+      }
+
     }
     this.openModalReason = false;
   }

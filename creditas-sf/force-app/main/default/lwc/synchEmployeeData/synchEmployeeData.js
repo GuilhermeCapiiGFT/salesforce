@@ -11,7 +11,6 @@ const EMPLOYEE_FIELDS = [SYNC_ENABLED_FIELD, EXT_SYNC_FIELD];
 export default class SynchEmployeeData extends LightningElement {
   @api recordId;
   channelName = '/event/SynchEmployee__e';
-  // syncButtonClicked = false;
   employee;
   error;
 
@@ -19,9 +18,6 @@ export default class SynchEmployeeData extends LightningElement {
   parseEmployee({ data, error }) {
     if (data) {
       this.employee = data;
-      // if (this.isSynching) {
-      //   this.syncButtonClicked = true;
-      // }
     } else if (error) {
       this.error = error;
     }
@@ -44,7 +40,6 @@ export default class SynchEmployeeData extends LightningElement {
   handleClick() {
     updateSynchingFields({ employeeId: this.recordId })
       .then(() => {
-        // this.syncButtonClicked = true;
         this.notifyChange();
       })
       .catch(error => {

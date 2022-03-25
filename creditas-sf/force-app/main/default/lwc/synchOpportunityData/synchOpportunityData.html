@@ -1,21 +1,19 @@
 <template>
-    <template if:true={showComponent}>
-        <template if:true={showSynchOppButton}>
-            <div class="exampleHolder">                               
-                <lightning-button 
-                    id="botao" 
-                    icon-name="utility:sync" 
-                    label="Sincronizar dados da Oportunidade"  
-                    onclick={clickHandler} 
-                    class="slds-button slds-button_brand slds-button_stretch slds-align_absolute-center"                   
-                    variant="brand"> 
-                </lightning-button>                
-            </div>
-        </template>
+    <template if:true={showSynchButton}>
+        <div class="exampleHolder">                               
+            <lightning-button 
+                id="botao" 
+                icon-name="utility:sync" 
+                label="Sincronizar dados da Oportunidade"  
+                onclick={clickHandler} 
+                variant="brand" 
+                style="display: grid; width: 100%"> 
+            </lightning-button>                
+        </div>
     </template>
     
     <template if:true={showSynchingScreen}>
-        <lightning-card title="A sincronização foi iniciada, por favor, aguarde.">    
+        <lightning-card title="A sincronização foi iniciada, aguarde">    
             <div class="exampleHolder" style="height:100px">
                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
             </div>
@@ -26,5 +24,4 @@
         <lightning-card title="Sincronização Concluída" icon-name="action:approval">
         </lightning-card>
     </template>
-  
 </template>

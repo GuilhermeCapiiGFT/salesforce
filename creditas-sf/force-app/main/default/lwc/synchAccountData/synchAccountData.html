@@ -1,19 +1,15 @@
 <template>
-    <template if:true={showComponent}>
-        <template if:true={showSynchButton}> 
-            <div class="exampleHolder" >                               
-                <lightning-button 
-                    id="botao" 
-                    icon-name="utility:sync" 
-                    label="Sincronizar dados da conta"  
-                    onclick={clickHandler} 
-                    
-                    variant="brand" 
-                    style="display: grid; width: 100%"> 
-                </lightning-button> 
-                
-            </div>
-        </template>
+    <template if:true={showSynchButton}> 
+        <div class="exampleHolder" >                               
+            <lightning-button 
+                id="botao" 
+                icon-name="utility:sync" 
+                label="Sincronizar dados da conta"  
+                onclick={clickHandler} 
+                variant="brand" 
+                style="display: grid; width: 100%"> 
+            </lightning-button>             
+        </div>
     </template>
 
     <template if:true={showSynchingScreen}>
@@ -28,5 +24,4 @@
         <lightning-card title="Sincronização Concluída" icon-name="action:approval">
         </lightning-card>
     </template>
-
 </template>
