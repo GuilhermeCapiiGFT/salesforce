@@ -1,6 +1,6 @@
 public with sharing class ProposalWarrantyController {
     
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static FinancialResources__c getFinancialResource(String opportunityId){
         try {
             return ProposalWarrantyService.getGuarantee(opportunityId);
