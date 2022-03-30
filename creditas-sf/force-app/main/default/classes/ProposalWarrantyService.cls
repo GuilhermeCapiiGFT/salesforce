@@ -16,7 +16,24 @@ public with sharing class ProposalWarrantyService {
         }
     }
 
-    // public static WarrantyDataSection__c getWarrantyDataSection(String opportunityId){
-    //     WarrantyDataSection__c war = [SELECT RenavamStatus__c,RenavamPendingReason__c,RenavamObservation__c]
-    // }
+    public static Boolean saveFinancialResource(FinancialResources__c financialResource){
+        Database.UpsertResult upsertResult = Database.upsert(financialResource,false);
+        return upsertResult.isSuccess();
+    }
+
+    public static WarrantyDataSection__c getWarrantyDataSection(String opportunityId){
+        List<WarrantyDataSection__c> warrantySection = [SELECT Id,UFplateStatus__c,RenavamStatus__c,PlateStatus__c,ModelYearStatus__c,ModelStatus__c,LicensingStateStatus__c,FIPEtableCodeStatus__c,ColorStatus__c,ChassiStatus__c,ChassiRejectReason__c,BrandStatus__c FROM WarrantyDataSection__c WHERE Opportunity__c = :opportunityId WITH SECURITY_ENFORCED];
+
+        if(warrantySection.isEmpty()){
+            return new WarrantyDataSection__c();
+        } else {
+            return warrantySection[0];
+        }
+
+    }
+
+    public static Boolean saveWarrantyDataSection(WarrantyDataSection__c warrantyObject){
+        Database.UpsertResult upsertResult = Database.upsert(warrantyObject,false);
+        return upsertResult.isSuccess();
+    }
 }
