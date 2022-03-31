@@ -24,11 +24,11 @@ public with sharing class ProposalContactDataService {
                                         MobileStatus__c,
                                         MobileRejectReason__c,
                                         MobilePendingReason__c,
-                                        MobileDescription__c,
+                                        MobileObservation__c,
                                         EmailStatus__c,
                                         EmailRejectReason__c,
                                         EmailPendingReason__c,
-                                        EmailDescription__c
+                                        EmailObservation__c
                                         FROM ContactDetailsSection__c
                                         WHERE Opportunity__c =: opportunityId
                                         LIMIT 1];

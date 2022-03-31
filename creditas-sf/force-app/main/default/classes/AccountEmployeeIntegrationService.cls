@@ -2,6 +2,9 @@ public with sharing class AccountEmployeeIntegrationService {
   public class AccountEmployeeIntegrationException extends Exception {
   }
 
+  public class AccountNotFoundException extends Exception {
+  }
+
   RestRequest request;
   AccountEmployeeIntegrationVO requestBodyObject;
   Integer statusCode;
@@ -27,34 +30,31 @@ public with sharing class AccountEmployeeIntegrationService {
     this.request = request;
   }
 
-  public void processRequest(){
-
-    Savepoint sp = Database.setSavepoint();
-
+  public void processRequest() {
     try {
       this.parseBody();
       this.checkRequiredFields();
-      this.createAccounts();
+      this.checkAccounts();
       this.upsertEmployee();
       this.setStatusAndMessage(200, 'Record created/updated successfully.');
     } catch (AccountEmployeeIntegrationException e) {
       this.setStatusAndMessage(400, e.getMessage());
-      Database.rollback(sp);
-    } catch (Exception e){
+    } catch (AccountNotFoundException e) {
+      this.setStatusAndMessage(500, e.getMessage());
+    } catch (Exception e) {
       this.setStatusAndMessage(400, 'Error: couldn\'t process request.');
-      Database.rollback(sp);
     }
   }
 
-  public Integer getStatusCode(){
+  public Integer getStatusCode() {
     return this.statusCode;
   }
 
-  public String getMessage(){
+  public String getMessage() {
     return this.message;
   }
 
-  private void setStatusAndMessage(Integer code, String message){
+  private void setStatusAndMessage(Integer code, String message) {
     this.statusCode = code;
     this.message = message;
   }
@@ -105,37 +105,22 @@ public with sharing class AccountEmployeeIntegrationService {
     }
   }
 
-  private void createAccounts() {
-    Id recordTypeIdPessoaFisica = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-    Id recordTypeIdPessoaJuridica = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
+  private void checkAccounts() {
+    Map<String, Boolean> statusByAccountExternalId = new Map<String, Boolean>{
+      this.personExternalId => false,
+      this.companyExternalId => false
+    };
 
-    Set<String> accountsExternalIds = new Set<String>{ this.personExternalId, this.companyExternalId };
-    for (Account account : this.getAccountsByExternalIds(accountsExternalIds)) {
-      accountsExternalIds.remove(account.ExternalId__c);
+    for (Account account : this.getAccountsByExternalIds(statusByAccountExternalId.keySet())) {
+      statusByAccountExternalId.put(account.ExternalId__c, true);
     }
 
-    if (!accountsExternalIds.isEmpty()) {
-      List<Account> newAccounts = new List<Account>();
+    if (!statusByAccountExternalId.get(this.personExternalId)) {
+      throw new AccountNotFoundException('Error: account record not found for the provided personId.');
+    }
 
-      for (String externalId : accountsExternalIds) {
-        newAccounts.add(
-          new Account(
-            Name = externalId,
-            RecordTypeId = externalId == this.personExternalId ? recordTypeIdPessoaFisica : recordTypeIdPessoaJuridica,
-            ExternalId__c = externalId,
-            ExternalTenant__c = this.requestBodyObject.tenant,
-            ExternalVersion__c = Decimal.valueOf(this.requestBodyObject.version),
-            ExternalCreationDate__c = this.getParsedDateTime(this.requestBodyObject.createdAt),
-            ExternalUpdatedDate__c = this.getParsedDateTime(this.requestBodyObject.updatedAt)
-          )
-        );
-      }
-
-      try {
-        insert newAccounts;
-      } catch (Exception e) {
-        throw new AccountEmployeeIntegrationException('Error: Account records creation failed.', e);
-      }
+    if (!statusByAccountExternalId.get(this.companyExternalId)) {
+      throw new AccountNotFoundException('Error: account record not found for the provided companyId.');
     }
   }
 
@@ -148,7 +133,6 @@ public with sharing class AccountEmployeeIntegrationService {
   }
 
   private Date getParsedDate(String dateString) {
-
     if (String.isBlank(dateString)) {
       return null;
     }
@@ -163,29 +147,6 @@ public with sharing class AccountEmployeeIntegrationService {
       );
     } catch (Exception e) {
       throw new AccountEmployeeIntegrationException('Error: couldn\'t parse date string: ' + dateString + '.', e);
-    }
-  }
-
-  private DateTime getParsedDateTime(String dateTimeString) {
-
-    if (String.isBlank(dateTimeString)) {
-      return null;
-    }
-
-    try {
-      List<String> dateTimeParts = dateTimeString.split('T');
-      String dateString = dateTimeParts[0];
-      String timeString = dateTimeParts[1].split('\\.')[0];
-      String parsedDateTime = dateString + ' ' + timeString;
-
-      return DateTime.valueOf(parsedDateTime);
-    } catch (Exception e) {
-      throw new AccountEmployeeIntegrationException(
-        'Error: couldn\'t parse dateTime string ' +
-        dateTimeString +
-        '.',
-        e
-      );
     }
   }
 }

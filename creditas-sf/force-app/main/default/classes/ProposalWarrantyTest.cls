@@ -88,25 +88,56 @@ private with sharing class ProposalWarrantyTest {
     }
 
     @isTest
-    private static void testSaveFinancialResourceSucess(){
+    private static void testSaveMethodSucess(){
+        String oppId = [SELECT Id FROM Opportunity WHERE ExternalId__c = 'OPP-JORGE-CAPACIDOCA-NO-RESOURCE']?.Id;
         FinancialResources__c financialResource = FinancialResourceSetup.createFinancialResource('Auto');
+        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovado', Opportunity__c = oppId);
+
         Test.startTest();
-            Boolean operationSucess = ProposalWarrantyController.saveFinancialResource(financialResource);
+            ProposalWarrantyController.saveMethod(warrantyObject, financialResource);
         Test.stopTest();
-        System.assert(operationSucess, 'Should be true');
+
         System.assertEquals(2, [SELECT Count() FROM FinancialResources__c], '2 Record should exist');
+        System.assertEquals(2, [SELECT Count() FROM WarrantyDataSection__c], '2 Record should exist');
     }
 
     @isTest
-    private static void testSaveFinancialResourceFail(){
+    private static void testSaveFinancialResourceException(){
+        String oppId = [SELECT Id FROM Opportunity WHERE ExternalId__c = 'OPP-JORGE-CAPACIDOCA-NO-RESOURCE']?.Id;
+        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovado', Opportunity__c = oppId);
         String autoRTId = Util.getRecordTypeIdbyName('FinancialResources__c', 'Auto');
         FinancialResources__c financialResource = new FinancialResources__c(Plate__c = 'DBZ-2077', RecordTypeId = autoRTId, ExternalTenant__c = 'blabla');
+        Exception testException;
         Test.startTest();
-            Boolean operationSucess = ProposalWarrantyController.saveFinancialResource(financialResource);
+            try{
+                ProposalWarrantyController.saveMethod(warrantyObject, financialResource);
+            }catch(Exception e){
+                testException = e;
+            }
         Test.stopTest();
-        System.debug(operationSucess);
-        System.assert(!operationSucess, 'Should be false');
-        System.assertEquals(1, [SELECT Count() FROM FinancialResources__c], '2 Record should exist');
+
+        System.assertEquals('System.AuraHandledException', testException.getTypeName(), 'Wrong exception was thrown');
+        System.assertEquals(1, [SELECT Count() FROM FinancialResources__c], 'only 1 FinancialResources__c should exist');
+        System.assertEquals(1, [SELECT Count() FROM WarrantyDataSection__c], 'only 1 WarrantyDataSection__c should exist');
+    }
+
+    @isTest
+    private static void testSaveWarrantyDataException(){
+        FinancialResources__c financialResource = FinancialResourceSetup.createFinancialResource('Auto');
+        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovado');
+        Exception testException;
+
+        Test.startTest();
+            try{
+                ProposalWarrantyController.saveMethod(warrantyObject, financialResource);
+            }catch(Exception e){
+                testException = e;
+            }
+        Test.stopTest();
+        
+        System.assertEquals('System.AuraHandledException', testException.getTypeName(), 'Wrong exception was thrown');
+        System.assertEquals(1, [SELECT Count() FROM FinancialResources__c], 'only 1 Record should exist');
+        System.assertEquals(1, [SELECT Count() FROM WarrantyDataSection__c], 'only 1 Record should exist');
     }
 
     @isTest
@@ -148,25 +179,6 @@ private with sharing class ProposalWarrantyTest {
         System.assertEquals('Invalid id: FAKE_WARRANTY_DATA_ID', testException.getMessage(), 'Wrong exception Thrown');
     }
 
-    @isTest
-    private static void testSaveWarrantyDataSucess(){
-        String oppId = [SELECT Id FROM Opportunity WHERE ExternalId__c = 'OPP-JORGE-CAPACIDOCA-NO-RESOURCE']?.Id;
-        WarrantyDataSection__c warrantyData = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovado', Opportunity__c = oppId);
-        Test.startTest();
-            Boolean operationSucess = ProposalWarrantyController.saveWarrantyDataSection(warrantyData);
-        Test.stopTest();
-        System.assert(operationSucess, 'Should be true');
-        System.assertEquals(2, [SELECT Count() FROM WarrantyDataSection__c], '2 Record should exist');
-    }
-
-    @isTest
-    private static void testSaveWarrantyDataFail(){
-        WarrantyDataSection__c warrantyData = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovado');
-        Test.startTest();
-            Boolean operationSucess = ProposalWarrantyController.saveWarrantyDataSection(warrantyData);
-        Test.stopTest();
-        System.assert(!operationSucess, 'Should be false');
-        System.assertEquals(1, [SELECT Count() FROM WarrantyDataSection__c], 'only 1 Record should exist');
-    }
+    
     
 }

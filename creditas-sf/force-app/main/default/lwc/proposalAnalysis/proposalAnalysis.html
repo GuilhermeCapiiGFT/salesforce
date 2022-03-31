@@ -116,17 +116,22 @@
 
 			  <!-- 6th Accordion -->
 			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
+				  <lightning-progress-ring value={warrantyInfoValue} variant={warrantyInfoVariant} class="progressCircle"></lightning-progress-ring>
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
-							  <div class="slds-accordion__summary">
-								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content">Dados de Garantia</span>
-								  </h2>
-							  </div>
-							  <!-- conteúdo aqui -->
+							  	<div class="slds-accordion__summary">
+								  	<h2 class="slds-accordion__summary-heading">
+									  	<span class="geral slds-accordion__summary-content">Dados de Garantia</span>
+								  	</h2>
+							  	</div>
+							  	<div class="slds-accordion__content">
+									<c-proposal-warranty-component 
+										opportunityid={opportunityid}
+										onsendinfo={setInfoValueAndVariant}>
+									</c-proposal-warranty-component>
+								</div>
 						  </section>
 					  </li>
 				  </div>
@@ -149,6 +154,35 @@
 					  </li>
 				  </div>
 			  </div>
+
+			  <!-- 8th Accordion -->
+			  <div class="slds-progress__item">
+				<lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
+
+				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+					<li class="slds-accordion__list-item">
+						<section class="slds-accordion__section">
+							<div class="slds-accordion__summary">
+								<h2 class="slds-accordion__summary-heading">
+									<span class="geral slds-accordion__summary-content">Links Rápidos</span>
+								</h2>
+							</div>
+							<div class="slds-accordion__content">
+								<lightning-layout multiple-rows="true" class="content-quick-links">
+									<template for:each={sectionQuickLinks} for:item="item">
+										<lightning-layout-item key={item.label} flexibility="auto" size="3" padding="around-small">
+											<a href={item.url} target="_blank">
+												<div class="custom-box slds-p-around_small slds-text-align_center">{item.label}</div>
+											</a>
+										</lightning-layout-item>
+									</template>
+								</lightning-layout>
+							</div>
+						</section>
+					</li>
+				</div>
+			</div>
+			
 		  </ol>
 	  </div>
 

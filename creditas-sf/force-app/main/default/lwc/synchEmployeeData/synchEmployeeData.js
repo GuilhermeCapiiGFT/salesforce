@@ -1,7 +1,12 @@
 import { LightningElement, api, wire } from 'lwc';
 import { subscribe } from 'lightning/empApi';
-import { getRecord, getFieldValue, getRecordNotifyChange } from 'lightning/uiRecordApi';
-import updateSynchingFields from '@salesforce/apex/SynchEmployeeDataController.updateSynchingFields';
+import {
+  getRecord,
+  updateRecord,
+  getFieldValue,
+  generateRecordInputForUpdate,
+  getRecordNotifyChange
+} from 'lightning/uiRecordApi';
 
 import SYNC_ENABLED_FIELD from '@salesforce/schema/Employee__c.IsSynchEnabled__c';
 import EXT_SYNC_FIELD from '@salesforce/schema/Employee__c.IsExternallySynched__c';
@@ -23,9 +28,9 @@ export default class SynchEmployeeData extends LightningElement {
     }
   }
 
-  get isSyncEnabled() {
+  get isEnabled() {
     const syncEnabled = getFieldValue(this.employee, SYNC_ENABLED_FIELD);
-    return syncEnabled === 'ENABLED' || syncEnabled === 'SYNCHING';
+    return syncEnabled === 'ENABLED';
   }
 
   get isSynching() {
@@ -38,13 +43,10 @@ export default class SynchEmployeeData extends LightningElement {
   }
 
   handleClick() {
-    updateSynchingFields({ employeeId: this.recordId })
-      .then(() => {
-        this.notifyChange();
-      })
-      .catch(error => {
-        this.error = error;
-      });
+    const record = generateRecordInputForUpdate(this.employee);
+    record.fields[SYNC_ENABLED_FIELD.fieldApiName] = 'SYNCHING';
+    record.fields[EXT_SYNC_FIELD.fieldApiName] = false;
+    updateRecord(record).catch(error => (this.error = error));
   }
 
   subscribeSynchEmployeeEvent(component) {

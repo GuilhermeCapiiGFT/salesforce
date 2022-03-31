@@ -2,6 +2,17 @@
 private class AccountEmployeeIntegrationServiceTest {
   private static final String ENDPOINT = '/services/apexrest/Account/Employee/upsertEmployee';
 
+  @TestSetup
+  static void makeData() {
+    String accountPersonRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
+    String accountCompanyRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
+
+    insert new List<Account>{
+      new Account(Name = 'João da Silva', ExternalId__c = 'TEST-PERSON-001', RecordTypeId = accountPersonRecordTypeId),
+      new Account(Name = 'Creditas', ExternalId__c = 'TEST-COMPANY-001', RecordTypeId = accountCompanyRecordTypeId)
+    };
+  }
+
   @IsTest
   private static void testInsertEmployeeSuccess() {
     String json = getJsonPayload();
@@ -21,12 +32,8 @@ private class AccountEmployeeIntegrationServiceTest {
     Test.stopTest();
 
     List<Employee__c> employees = getEmployees();
-    Map<Id, Account> accountsById = new Map<Id, Account>(getAccounts());
 
     System.assertEquals(1, employees.size(), '1 employee record should have been created');
-    System.assertEquals(2, accountsById.size(), '2 account records should have been created');
-    System.assert(accountsById.containsKey(employees.get(0).PersonAccount__c), 'Person account not created');
-    System.assert(accountsById.containsKey(employees.get(0).Company__c), 'Company account not created');
   }
 
   @IsTest
@@ -48,22 +55,12 @@ private class AccountEmployeeIntegrationServiceTest {
     Test.stopTest();
 
     List<Employee__c> employees = getEmployees();
-    List<Account> accounts = getAccounts();
 
     System.assertEquals(0, employees.size(), 'No employee record should\'ve been created');
-    System.assertEquals(0, accounts.size(), 'No account record should\'ve been created');
   }
 
   @IsTest
   private static void testUpdateEmployeeSuccess() {
-    String accountPersonRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-    String accountCompanyRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
-
-    insert new List<Account>{
-      new Account(Name = 'João da Silva', ExternalId__c = 'TEST-PERSON-001', RecordTypeId = accountPersonRecordTypeId),
-      new Account(Name = 'Creditas', ExternalId__c = 'TEST-COMPANY-001', RecordTypeId = accountCompanyRecordTypeId)
-    };
-
     insert new Employee__c(
       Name = 'João da Silva - Creditas',
       ExternalId__c = 'TEST-EMPLOYEE-001',
@@ -99,14 +96,6 @@ private class AccountEmployeeIntegrationServiceTest {
 
   @IsTest
   private static void testUpdateEmployeeFail() {
-    String accountPersonRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-    String accountCompanyRecordTypeId = Util.getRecordTypeIdbyName('Account', 'Pessoa_Juridica');
-
-    insert new List<Account>{
-      new Account(Name = 'João da Silva', ExternalId__c = 'TEST-PERSON-001', RecordTypeId = accountPersonRecordTypeId),
-      new Account(Name = 'Creditas', ExternalId__c = 'TEST-COMPANY-001', RecordTypeId = accountCompanyRecordTypeId)
-    };
-
     insert new Employee__c(
       Name = 'João da Silva - Creditas',
       ExternalId__c = 'TEST-EMPLOYEE-001',
@@ -155,10 +144,6 @@ private class AccountEmployeeIntegrationServiceTest {
         Company__r.Name
       FROM Employee__c
     ];
-  }
-
-  private static List<Account> getAccounts() {
-    return [SELECT Id FROM Account];
   }
 
   private static String getJsonPayload() {

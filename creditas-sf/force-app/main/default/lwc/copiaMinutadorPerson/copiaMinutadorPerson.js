@@ -187,6 +187,7 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	setSyncFields(sectionId){
+		debugger
 		let fieldsList = this.syncFieldsMap[sectionId]?.split(',');
 		if(fieldsList){
 			fieldsList.forEach(field => {
@@ -371,6 +372,61 @@ export default class MinuatorPerson extends LightningElement {
 			this.separacao = false;
 			this.alertPacto = false;
 		}
+	}
+
+	getPersonObject(personId){
+		let actualPerson = this.persons.filter(person => { return person.id === personId})[0];
+
+		return '{'+
+					'"mainDocument": {'+
+						'"type": '+actualPerson.mainDocument?.type+ ','+
+						'"code": '+actualPerson.mainDocument?.code+
+					'},'+
+					'"fullName": '+actualPerson.name+','+
+					'"gender": '+actualPerson.gender+','+
+					'"birthDate": {},'+ //Why is this an Object?
+					'"civilStatus":'+actualPerson.maritalStatus+','+
+					'"cityOfBirth":'+ "value here" +','+ //Where does this come from?
+					'"countryOfBirth":'+ "value here" +','+
+					'"nationality":'+actualPerson.nationality+','+
+					'"filiation": ['+
+					actualPerson.motherName ? (
+						'{'+
+							'"type": "MOTHER",'+
+							'"name":'+actualPerson.motherName+
+						'}'
+					) : ''+
+					actualPerson.fatherName ? (
+						actualPerson.motherName ? ',' : ''+
+						'{'+
+							'"type": "FATHER",'+
+							'"name":'+actualPerson.fatherName+
+						'}'
+					) : ''+
+					'],'+
+					'"currentVersion": 1'+ //Where does this come from?
+				'}';
+	}
+
+	getAddressObject(personId){
+		let actualPerson = this.persons.filter(person => { return person.id === personId})[0];
+		let address = actualPerson.address;
+
+		return 	'{'+
+					'"type": "BILLING",'+ //Where does this come from?
+					'"country": "BR",'+ //Where does this come from?
+					'"administrativeAreaLevel1": "Administrative level 1",'+ //what is this
+					'"administrativeAreaLevel2": "Administrative level 2",'+ //what is this
+					'"administrativeAreaLevel3": "Administrative level 3",'+ //what is this
+					'"administrativeAreaLevel4": "Administrative level 4",'+ //what is this
+					'"administrativeAreaLevel5": "Administrative level 5",'+ //what is this
+					'"neighborhood":'+address.neighborhood+','+ 
+					'"street":'+address.street+','+
+					'"number":'+address.number+','+
+					'"complement":'+address.complement+','+
+					'"zipCode":'+address.zipcode+','+
+					'"personCurrentVersion": 0'+ //Where does this come from?
+		  		'}';
 	}
 
     connectedCallback(){

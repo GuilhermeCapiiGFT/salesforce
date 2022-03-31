@@ -67,10 +67,12 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.nameId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
                                                               style="margin-top: 10px;" > 
+                                                              
                                               </lightning-icon>
                                             </span>
                                           </div>     
@@ -86,12 +88,13 @@
                                                           name="cpf" 
                                                           label="CPF" 
                                                           disabled="true" 
-                                                          value={person.cpf} 
+                                                          value={person.mainDocument.number} 
                                                           style="margin-right: 16px; margin-top: 16px; color: #706e68">
                                           </lightning-input>
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.cpfId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -114,7 +117,7 @@
                                                               label="Participação" 
                                                               name="searchText" 
                                                               style="margin-top: 16px;"
-                                                              onclick={atribuirControlesApresentacaoLista} 
+                                                              onclick={signControlsExibitionList} 
                                                               value={labelOption}
                                                               required="true"> 
                                               </lightning-input>
@@ -165,7 +168,7 @@
                                     <div class="slds-form-element">        
                                       <div class="slds-form-element__control"> 
                                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none"> 
-                                          <lightning-input type="text" 
+                                          <lightning-input type="text"                                                           
                                                           name="nationality" 
                                                           label="Nacionalidade" 
                                                           disabled="true" 
@@ -175,6 +178,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.nationalityId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -201,6 +205,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.birthdateId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -220,12 +225,13 @@
                                                           name="marital" 
                                                           label="Estado civil" 
                                                           disabled="true" 
-                                                          value={person.maritalStatus} 
+                                                          value={person.maritalPersonStatus} 
                                                           style="margin-top: 8px; color: #706e68"> 
                                           </lightning-input>
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.maritalStatusId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -251,6 +257,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.motherNameId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -276,6 +283,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.fatherNameId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -301,6 +309,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.professionId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -329,6 +338,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.cellPhoneId}
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -354,6 +364,7 @@
                                           <div>
                                             <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
                                               <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                                                              data-id={person.emailId}               
                                                               icon-name="utility:database" 
                                                               size="x-small"
                                                               alternative-text="icon" 
@@ -421,7 +432,8 @@
                           </li>
                         </template>
                      
-                        <!-- Relationship-->                                             
+                        <!-- Relationship--> 
+                        <template if:false={hideRelationshipSectionVar}>                        
                           <li class="slds-progress__item slds-is-active">
                               <div class="slds-progress__marker">
                                 <span class="slds-assistive-text">Active</span>                            
@@ -431,13 +443,13 @@
                                   <div class="slds-col slds-size_12-of-12" onclick={showRelationshipSection} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px"> Relacionamentos </div>      
                                   <template for:each={personObject.marriages} for:item="marriage" for:index="index"> 
                                     <template if:true={showRelationshipSectionVar}> 
-                                        <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> Relacionamento {marriage.index} </div> 
+                                        <div class="slds-col slds-size_12-of-12" style="padding-top: 20px" key={marriage.id}> Relacionamento {marriage.index} </div> 
                                         <div class="slds-col slds-size_4-of-12" key={marriage.id}>
                                           <span>
                                             <lightning-input
                                               name="person1Name"
                                               label="Pessoa"
-                                              value={marriage.participant1.name}                                   
+                                              value={marriage.participant1Name}                                    
                                               required="true"
                                               style="margin-top:8px"
                                               disabled="true">
@@ -461,24 +473,24 @@
                                                                       
                                         <div class="slds-col slds-size_4-of-12" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
+                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2Name} ></lightning-input>
                                           </span>
                                         </div>
 
                                       <!-- Estado Civil Casado -->
-                                      <template if:true={showMarriedSectionVar}> 
+                                      <template if:true={marriage.maritalMarried}> 
                                         <div class="slds-col slds-size_3-of-12" key={marriage.id}>
                                           <div class="slds-form-element">        
                                             <div class="slds-form-element__control"> 
                                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date" date-style="short" name="datedAt" label="Data do casamento" required="true" value="" data-id="dataRegime" onchange={onchangeData}></lightning-input>
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date" date-style="short" name="datedAt" label="Data do casamento" required="true" value="" data-id="dataRegime" onchange={onchangeDataMarried}></lightning-input>
                                               </div>             
                                             </div>
                                           </div>
                                         </div>
                                         <div class="slds-col slds-size_9-of-12" key={marriage.id} >
                                           <span>
-                                            <lightning-combobox if:false={vigencia}
+                                            <lightning-combobox if:false={vigenciaMarried}
                                                                 name="regime "
                                                                 data-id="regimeBefore77"
                                                                 label="Regime"
@@ -487,10 +499,10 @@
                                                                 placeholder="Selecione..."                                          
                                                                 required="true"                                                   
                                                                 onchange={onchangeBefore77}   
-                                                                disabled={disableRegime}                                                                
+                                                                disabled={disableRegimeMarried}                                                                
                                                                 style="margin-top:8px; margin-right:60px;">
                                             </lightning-combobox>
-                                            <lightning-combobox if:true={vigencia}
+                                            <lightning-combobox if:true={vigenciaMarried}
                                                                 name="regime  "
                                                                 data-id="regimeAfter77"
                                                                 label="Regime"
@@ -499,7 +511,7 @@
                                                                 placeholder="Selecione..."                                          
                                                                 required="true"                                          
                                                                 onchange={onchangeAfter77}  
-                                                                disabled={disableRegime}                                                                    
+                                                                disabled={disableRegimeMarried}                                                                    
                                                                 style="margin-top:8px; margin-right:60px;">
                                             </lightning-combobox>
                                           </span>
@@ -510,7 +522,7 @@
                                         </div>
 
                                         <!-- Mostrar dados da certidão -->                                      
-                                        <div if:true={certidao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
+                                        <div if:true={certidao} data-id="certidaoId" class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px" key={marriage.id}>
                                           <span >
                                             Dados da certidão
                                           </span>
@@ -532,17 +544,17 @@
 
                                         <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" data-id="bookId" name="bookNumber" label="Livro n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 16px" type="text" name="sheetNumber" label="Folha n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 16px" type="text" data-id="sheetId" name="sheetNumber" label="Folha n°" disabled={disableBook} placeholder="Digite..." value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={certidao} class="slds-col slds-size_1-of-4" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="matriculaNumber" label="Matrícula" disabled={disableMatricula} placeholder="Digite..." value=""></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" data-id="matriculaId" type="text" name="matriculaNumber" label="Matrícula" disabled={disableMatricula} placeholder="Digite..." value=""></lightning-input>
                                           </span>
                                         </div>
 
@@ -553,7 +565,7 @@
                                         </div>
 
                                         <div if:true={pactoAntenupcialToggle} class="slds-col slds-size_12-of-12" key={marriage.id}>
-                                          <lightning-input data-id="pactoToggle" type="toggle" label="Pacto antenupcial" name="input1" onchange={onchangePacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
+                                          <lightning-input data-id="pactoToggleId" type="toggle" label="Pacto antenupcial" name="input1" onchange={onchangePacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:8px; margin-left:50px"></lightning-input>
                                         </div>
 
                                         <!-- Mostrar dados do Pacto Antenupcial -->
@@ -567,19 +579,19 @@
                                           <div class="slds-form-element">        
                                             <div class="slds-form-element__control"> 
                                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value=""></lightning-input>
                                               </div>             
                                             </div>
                                           </div>
                                         </div>
                                         <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" required="true" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" placeholder="Digite..." label="Livro n°" required="true" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={pactoAntenupcial} class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" required="true" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" placeholder="Digite..." label="Folha n°" required="true" value=""></lightning-input>
                                           </span>
                                         </div>
 
@@ -610,12 +622,12 @@
 
                                         <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" placeholder="Digite..." value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={registroPacto} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" placeholder="Digite..." value=""></lightning-input>
                                           </span>
                                         </div>
 
@@ -658,19 +670,19 @@
                                           <div class="slds-form-element">        
                                             <div class="slds-form-element__control"> 
                                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value=""></lightning-input>
                                               </div>             
                                             </div>
                                           </div>
                                         </div>
                                         <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" required="true" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" placeholder="Digite..." name="bookNumber" label="Livro n°" required="true" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={pactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" required="true" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" placeholder="Digite..." name="sheetNumber" label="Folha n°" required="true" value=""></lightning-input>
                                           </span>
                                         </div>
 
@@ -701,12 +713,12 @@
 
                                         <div if:true={registroPactoSeparacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" placeholder="Digite..." name="bookNumber" label="Livro n°" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={registroPactoSeparacao} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" placeholder="Digite..." name="sheetNumber" label="Folha n°" value=""></lightning-input>
                                           </span>
                                         </div>
 
@@ -719,7 +731,7 @@
 
 
                                       <!-- União estável-->
-                                      <template if:true={showStableunionSectionVar}> 
+                                      <template if:true={marriage.maritalStable}> 
                                         <div class="slds-col slds-size_12-of-12" key={marriage.id}>
                                           <span>
                                             <lightning-combobox
@@ -728,8 +740,9 @@
                                               value="regimeOptions"
                                               options={regimeOptions}
                                               placeholder="Selecione..."                                          
-                                              required="true"                                          
-                                              style="margin-top:8px; margin-left:50px"
+                                              required="true"        
+                                              disabled={disableRegimeStableUnion}                                     
+                                              style="margin-top:8px; margin-left:50px; margin-right: 60px"
                                               ></lightning-combobox>
                                           </span>
                                         </div>
@@ -742,28 +755,28 @@
                                           <div class="slds-form-element">        
                                             <div class="slds-form-element__control"> 
                                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"  date-style="short" name="datedAt" label="Data" required="true" value="2020/09/12"></lightning-input>
+                                                <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date" onchange={onchangeDataStableUnion} date-style="short" name="datedAt" label="Data" required="true" value=""></lightning-input>
                                               </div>             
                                             </div>
                                           </div>
                                         </div>  
                                         <div class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber"  placeholder="Digite..." label="Livro n°" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div class="slds-col slds-size_1-of-3" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" placeholder="Digite..." label="Folha n°" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div class="slds-col slds-size_10-of-12" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt" label="Lavrado no" value="Cartório de Serviços Distritais da Comarca de Curitiba / PR"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" placeholder="Digite..." name="draftedAt" label="Lavrado no" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div class="slds-col slds-size_2-of-12" key={marriage.id}>
-                                          <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={onchangeRegistroUniao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; float:right"></lightning-input>
+                                          <lightning-input type="toggle" label="Dados do registro" data-id="registroUniaoToggleId" name="input1" onchange={onchangeRegistroUniao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar" style="margin-top:16px; margin-right: 60px; float:right"></lightning-input>
                                         </div>                       
                                         
                                         <!-- Mostrar dados seção de registro -->
@@ -774,12 +787,12 @@
                                         </div>
                                         <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" label="Livro n°" value="15641853418348"></lightning-input>
+                                            <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber" placeholder="Digite..." label="Livro n°" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={registroUniao} class="slds-col slds-size_1-of-2" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px" type="text" name="sheetNumber" label="Folha n°" value="1184183183541"></lightning-input>
+                                            <lightning-input style="margin-top:8px" type="text" name="sheetNumber" placeholder="Digite..." label="Folha n°" value=""></lightning-input>
                                           </span>
                                         </div>
                                         <div if:true={registroUniao} class="slds-col slds-size_12-of-12" key={marriage.id}>
@@ -792,8 +805,8 @@
                                   </template>
                                 </div>
                               </div> 
-                          </li>
-                        
+                            </li>
+                          </template>
 
                           <!-- Address-->                        
                           <li class="slds-progress__item slds-is-active" >
@@ -812,7 +825,7 @@
                                             <lightning-input 
                                               name="person1Name"
                                               label="Pessoa"
-                                              value={marriage.participant1.name}                                   
+                                              value={marriage.participant1Name}                                   
                                               required="true"
                                               style="margin-top:8px"
                                               disabled="true">
@@ -832,13 +845,13 @@
                                           </span>                                          
                                         <div class="slds-col slds-size_4-of-12" key={marriage.id}>
                                           <span>
-                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2.name} ></lightning-input>
+                                            <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true" disabled="true" value={marriage.participant2Name} ></lightning-input>
                                           </span>
                                         </div>
                                       </template>
 
                                       <template if:false={showSectionRelationshipInAddress} key={marriage.id}>
-                                        <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> {marriage.name} </div> 
+                                        <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={marriage.id}> {marriage.participant1Name} </div> 
                                       </template>
                                         <div class="slds-col slds-size_9-of-12 slds-clearfix" key={marriage.id}>
                                           <div class="slds-form-element">        
@@ -848,7 +861,7 @@
                                                                 name="fullAddress" 
                                                                 label="Endereço" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.street} 
+                                                                
                                                                 style="margin-top: 8px; margin-right: 16px; margin-left:50px">
                                                 </lightning-input>
                                                 <div>
@@ -873,7 +886,7 @@
                                                                 name="number" 
                                                                 label="Número" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.number} 
+                                                               
                                                                 style="margin-top: 8px; margin-right: 60px">
                                                 </lightning-input>
                                                 <div>
@@ -898,7 +911,7 @@
                                                                 name="complement" 
                                                                 label="Complemento" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.complement} 
+                                                                
                                                                 style="margin-top: 8px; margin-right: 16px; margin-left:50px">
                                                 </lightning-input>
                                                 <div>
@@ -923,7 +936,7 @@
                                                                 name="neighborhood" 
                                                                 label="Bairro" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.neighborhood} 
+                                                                
                                                                 style="margin-top: 8px; margin-right: 16px">
                                                 </lightning-input>
                                                 <div>
@@ -948,7 +961,7 @@
                                                                 name="city" 
                                                                 label="Cidade" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.city} 
+                                                                
                                                                 style="margin-top: 8px; margin-right: 16px">
                                                 </lightning-input>
                                                 <div>
@@ -973,7 +986,7 @@
                                                                 name="state" 
                                                                 label="Estado" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.state} 
+                                                                
                                                                 style="margin-top: 8px; margin-right: 60px">
                                                 </lightning-input>
                                                 <div>
@@ -1023,7 +1036,7 @@
                                                                 name="zipcode" 
                                                                 label="CEP" 
                                                                 disabled="true" 
-                                                                value={marriage.participant1.address.zipcode} 
+                                                               
                                                                 style="margin-top: 8px; margin-bottom: 8px; margin-right: 60px">
                                                 </lightning-input>
                                                 <div>
@@ -1047,7 +1060,7 @@
                                   <template for:each={singlePerson} for:item="single">   
                                       <template if:true={showAddressSectionVar}>                                            
                                         <template if:true={showSectionRelationshipInAddress} key={single.id}>
-                                          <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={single.id}> {person.formatedName} </div> 
+                                          <div class="slds-col slds-size_12-of-12" style="margin-top: 8px" key={single.id}> {single.formatedName} </div> 
                                         </template>
                                           <div class="slds-col slds-size_9-of-12 slds-clearfix" key={single.id}>
                                             <div class="slds-form-element">        
@@ -1057,7 +1070,7 @@
                                                                   name="fullAddress" 
                                                                   label="Endereço" 
                                                                   disabled="true" 
-                                                                  value={single.address.street} 
+                                                                  
                                                                   style="margin-top: 8px; margin-right: 16px; margin-left:50px">
                                                   </lightning-input>
                                                   <div>
@@ -1082,7 +1095,7 @@
                                                                   name="number" 
                                                                   label="Número" 
                                                                   disabled="true" 
-                                                                  value={single.address.number} 
+                                                                  
                                                                   style="margin-top: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>
@@ -1107,7 +1120,7 @@
                                                                   name="complement" 
                                                                   label="Complemento" 
                                                                   disabled="true" 
-                                                                  value={single.address.complement} 
+                                                                  
                                                                   style="margin-top: 8px; margin-right: 16px; margin-left:50px">
                                                   </lightning-input>
                                                   <div>
@@ -1132,7 +1145,7 @@
                                                                   name="neighborhood" 
                                                                   label="Bairro" 
                                                                   disabled="true" 
-                                                                  value={single.address.neighborhood} 
+                                                                  
                                                                   style="margin-top: 8px; margin-right: 16px">
                                                   </lightning-input>
                                                   <div>
@@ -1157,7 +1170,7 @@
                                                                   name="city" 
                                                                   label="Cidade" 
                                                                   disabled="true" 
-                                                                  value={single.address.city} 
+                                                                 
                                                                   style="margin-top: 8px; margin-right: 16px">
                                                   </lightning-input>
                                                   <div>
@@ -1182,7 +1195,7 @@
                                                                   name="state" 
                                                                   label="Estado" 
                                                                   disabled="true" 
-                                                                  value={single.address.state} 
+                                                                  
                                                                   style="margin-top: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>
@@ -1232,7 +1245,7 @@
                                                                   name="zipcode" 
                                                                   label="CEP" 
                                                                   disabled="true" 
-                                                                  value={single.address.zipcode} 
+                                                                  
                                                                   style="margin-top: 8px; margin-bottom: 8px; margin-right: 60px">
                                                   </lightning-input>
                                                   <div>

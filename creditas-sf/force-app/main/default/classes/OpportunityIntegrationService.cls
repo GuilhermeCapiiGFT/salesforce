@@ -84,7 +84,7 @@ public with sharing class OpportunityIntegrationService {
             RecordTypeId = oppRecordTypeId,
             ExternalCreationDate__c = getDateValue(requestBodyObj?.createdAt),
             ExternalUpdatedDate__c = getDateValue(requestBodyObj?.updateAt),
-            ProductType__c = recordTypeProductMap.get('productType'),
+            ProductType__c = recordTypeProductMap.get('productType') == null ? recordTypeProductMap.get('recordType') : recordTypeProductMap.get('productType'),
             Description = requestBodyObj.purpose,
             IsExternallySynched__c = true,
             IsSynchEnabled__c = 'ENABLED',
@@ -93,7 +93,6 @@ public with sharing class OpportunityIntegrationService {
             AccountNumber__c = requestBodyObj.conditions?.depositAccount?.accountNumber,
             BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType
         );
-          
         Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;
         Database.UpsertResult result = Database.upsert(opportunityToUpsert, oppExternalId, false);
         return result;
@@ -101,6 +100,14 @@ public with sharing class OpportunityIntegrationService {
     }
 
     public static Database.upsertResult upsertQuote(OpportunityIntegrationVO requestBodyObj){
+        String montlhyType;
+        Double monthlyValue;
+        
+        if(requestBodyObj.conditions?.monthlyInterestRateComposition != null && !requestBodyObj.conditions?.monthlyInterestRateComposition.isEmpty()){
+            montlhyType = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.type;
+            monthlyValue = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.value;
+        }
+
         Quote quoteObject = new Quote(
 
             UnitPrice__c = getDecimalValue(requestBodyObj.conditions?.installments?.value?.amount),
@@ -133,8 +140,8 @@ public with sharing class OpportunityIntegrationService {
             LimitTotal__c = getDecimalValue(requestBodyObj.conditions?.limitData?.total?.amount), 
             LimitInstallmentType__c = requestBodyObj.conditions?.limitData?.installmentType,
             LimitDueDate__c = getDateValue(requestBodyObj.conditions?.limitData?.dueDate), 
-            MonthlyIntRateCompType__c = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.type,
-            MonthlyIntRateCompValue__c = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.value,
+            MonthlyIntRateCompType__c = montlhyType,
+            MonthlyIntRateCompValue__c = getDecimalValue(monthlyValue),
             NetValue__c = getDecimalValue(requestBodyObj?.conditions?.netValues?.amount),
             OpportunityId = opportunityId, 
             Name = mapPersonIdAccountName.get('accountName') + ' Quote'
@@ -209,12 +216,12 @@ public with sharing class OpportunityIntegrationService {
 
     private static Map<String,String> createRTProductMap(String stringInput){
 
-        List<String> splittedString = stringInput.split('/');
+        List<String> splittedString = stringInput.replace('REQUESTING','PAYROLL_LOAN').split('/');
         Map<String,String> RecordTypeProductMap = new Map<String,String>();
 
         RecordTypeProductMap.put('recordType',splittedString.remove(0));
 
-        if( splittedString.contains('PAYROLL_LOAN') && splittedString.size() > 1){
+        if( splittedString.contains('REGULAR') && splittedString.size() > 1){
             RecordTypeProductMap.put('productType',splittedString.remove(1));
         } else if(!splittedString.isEmpty()){
             RecordTypeProductMap.put('productType',splittedString.remove(0));

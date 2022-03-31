@@ -32,10 +32,6 @@ input[type="text"]:focus {
   padding-bottom: 0.8em;
 }
 
-.slds-accordion__content {
-  padding: 1.3em 0 1.3em 0;
-}
-
 .slds-accordion__summary-content {
   font-weight: bold;
 }

@@ -1,27 +1,28 @@
 <template>
-  <template if:false={isSyncEnabled}>
-    <lightning-layout>
-      <lightning-layout-item flexibility="auto">
-        <lightning-button
-          icon-name="utility:sync"
-          label="Sincronizar dados do colaborador"
-          onclick={handleClick}
-          variant="brand"
-          style="display: grid; width: 100%">
-        </lightning-button>
-      </lightning-layout-item>
-    </lightning-layout>
+  <template if:true={isSynching}>
+    <lightning-card title="A sincronização foi iniciada, aguarde">
+      <div style="height: 100px">
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+      </div>
+    </lightning-card>
   </template>
-  <template if:true={isSyncEnabled}>
-    <template if:true={isSynching}>
-      <lightning-card title="A sincronização foi iniciada, aguarde">
-        <div style="height: 100px">
-          <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
-        </div>
-      </lightning-card>
-    </template>
-    <template if:false={isSynching}>
+  <template if:false={isSynching}>
+    <template if:true={isEnabled}>
       <lightning-card title="Sincronização Concluída" icon-name="action:approval"> </lightning-card>
+    </template>
+    <template if:false={isEnabled}>
+      <lightning-layout>
+        <lightning-layout-item flexibility="auto">
+          <lightning-button
+            icon-name="utility:sync"
+            label="Sincronizar dados do colaborador"
+            onclick={handleClick}
+            variant="brand"
+            style="display: grid; width: 100%"
+          >
+          </lightning-button>
+        </lightning-layout-item>
+      </lightning-layout>
     </template>
   </template>
 </template>

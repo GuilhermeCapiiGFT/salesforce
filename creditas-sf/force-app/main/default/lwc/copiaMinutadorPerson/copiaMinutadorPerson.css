@@ -8,12 +8,12 @@
 
 .slds-progress_vertical .slds-progress__item::after{
     top: 14px;
-    bottom: 0%;
+    /* bottom: 0%; */
 }
 
 .slds-progress_vertical .slds-progress__item::before{
     top: 0%;
-    bottom: 0%;
+    /* bottom: 0%; */
 }
 
 .slds-icon .slds-input__icon .slds-input__icon_left .slds-icon-text-default{

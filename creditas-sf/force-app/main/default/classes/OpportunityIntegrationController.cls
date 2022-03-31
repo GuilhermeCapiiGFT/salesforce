@@ -80,9 +80,9 @@ global with sharing class OpportunityIntegrationController {
     }   
 
     private static String buildErrorMessage(List<Database.Error> errorList){
-        String stringResponse;
+        String stringResponse = '';
         for(Database.error error : errorList){
-            String errorMessage = ' Fields error: ' + error.getFields() + ' Message error: ' + error.getMessage();
+            String errorMessage = ' Fields error: ' + error.getFields();
             stringResponse += errorMessage;
         }
         return stringResponse;

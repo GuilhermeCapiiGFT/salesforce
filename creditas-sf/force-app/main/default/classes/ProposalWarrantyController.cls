@@ -10,12 +10,6 @@ public with sharing class ProposalWarrantyController {
         }
     }
 
-    @AuraEnabled
-    public static Boolean saveFinancialResource(FinancialResources__c financialResource){
-       
-        return ProposalWarrantyService.saveFinancialResource(financialResource);
-    }
-
     @AuraEnabled(cacheable=true)
     public static WarrantyDataSection__c getWarrantyDataSection(String opportunityId){
         try {
@@ -27,8 +21,14 @@ public with sharing class ProposalWarrantyController {
     }
 
     @AuraEnabled
-    public static Boolean saveWarrantyDataSection(WarrantyDataSection__c warrantyObject){
-        
-        return ProposalWarrantyService.saveWarrantyDataSection(warrantyObject);
+    public static void saveMethod(WarrantyDataSection__c warrantyObject, FinancialResources__c financialResource){
+        SavePoint sp = Database.setSavePoint();
+        try {
+            ProposalWarrantyService.saveWarrantyDataSection(warrantyObject);
+            ProposalWarrantyService.saveFinancialResource(financialResource);
+        } catch (Exception e) {
+            Database.rollback(sp);
+            throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
+        }
     }
 }

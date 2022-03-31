@@ -16,13 +16,12 @@ public with sharing class ProposalWarrantyService {
         }
     }
 
-    public static Boolean saveFinancialResource(FinancialResources__c financialResource){
-        Database.UpsertResult upsertResult = Database.upsert(financialResource,false);
-        return upsertResult.isSuccess();
+    public static void saveFinancialResource(FinancialResources__c financialResource){
+        Database.UpsertResult upsertResult = Database.upsert(financialResource);
     }
 
     public static WarrantyDataSection__c getWarrantyDataSection(String opportunityId){
-        List<WarrantyDataSection__c> warrantySection = [SELECT Id,UFplateStatus__c,RenavamStatus__c,PlateStatus__c,ModelYearStatus__c,ModelStatus__c,LicensingStateStatus__c,FIPEtableCodeStatus__c,ColorStatus__c,ChassiStatus__c,ChassiRejectReason__c,BrandStatus__c FROM WarrantyDataSection__c WHERE Opportunity__c = :opportunityId WITH SECURITY_ENFORCED];
+        List<WarrantyDataSection__c> warrantySection = [SELECT Id,UFplateStatus__c,RenavamStatus__c,RenavamPendingReason__c,RenavamRejectReason__c,RenavamObservation__c,PlateStatus__c,ModelYearStatus__c,ModelYearRejectReason__c,ModelYearObservation__c,ModelStatus__c,ModelRejectReason__c,ModelObservation__c,LicensingStateStatus__c,LicensingStateRejectReason__c,LicensingStateObservation__c,FIPEtableCodeStatus__c,ColorStatus__c,ChassiStatus__c,ChassiRejectReason__c,ChassiObservation__c,BrandStatus__c FROM WarrantyDataSection__c WHERE Opportunity__c = :opportunityId WITH SECURITY_ENFORCED];
 
         if(warrantySection.isEmpty()){
             return new WarrantyDataSection__c();
@@ -32,8 +31,7 @@ public with sharing class ProposalWarrantyService {
 
     }
 
-    public static Boolean saveWarrantyDataSection(WarrantyDataSection__c warrantyObject){
-        Database.UpsertResult upsertResult = Database.upsert(warrantyObject,false);
-        return upsertResult.isSuccess();
+    public static void saveWarrantyDataSection(WarrantyDataSection__c warrantyObject){
+        Database.UpsertResult upsertResult = Database.upsert(warrantyObject);
     }
 }

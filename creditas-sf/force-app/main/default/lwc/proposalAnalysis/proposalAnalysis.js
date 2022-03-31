@@ -1,4 +1,17 @@
 import { LightningElement, api } from 'lwc';
+
+const quickLinks = [
+  {label : 'Crivo', url: 'https://creditas-crivo.crivo.com.br/Login.aspx?ReturnUrl=%2Fresultado.aspx%3Flogs%3D2682204&logs=2682204'},
+  {label : 'BrFlow', url: 'https://www.brflow.com.br/autenticacao/autenticacao/login'},
+  {label : 'Receita Federal', url: 'https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp'},
+  {label : 'Checktudo', url: 'https://www.checktudo.com.br/'},
+  {label : 'Emailage', url: 'https://app.emailage.com/query'},
+  {label : 'Data Trust', url: 'https://datatrust.clearsale.com.br/#/'},
+  {label : 'DENATRAM', url: 'https://portalservicos.senatran.serpro.gov.br/#/consultas/veiculo'},
+  {label : 'Zapay', url: 'https://usezapay.com.br/creditas'},
+  {label : 'OITI - Visualizar', url: 'https://www.certiface.com.br:8443/certifacepainel/#/dashboard'},
+  {label : 'OITI - Enviar', url: 'https://www.certiface.com.br/tokensms/certifacetoken/oiti'}
+]
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
@@ -9,18 +22,21 @@ export default class ProposalAnalysis extends LightningElement {
 
   // Info sections
   mapInfoSection = new Map()
+  sectionQuickLinks = quickLinks;
 
   // Info about progress ring variants
   generalInfoVariant = ''
   personalInfoVariant = ''
   contactInfoVariant = ''
   addressesInfoVariant = ''
+  warrantyInfoVariant = ''
 
   // Info about progress ring value
   generalInfoValue = 0
   personalInfoValue = 0
   contactInfoValue = 0
   addressesInfoValue = 0
+  warrantyInfoValue = ''
 
   // Info about Modal
   openModalReason = false;
@@ -47,6 +63,7 @@ export default class ProposalAnalysis extends LightningElement {
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
     this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
     this.mapInfoSection.set('ContainerDadosEndereco', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosEndereco'})
+    this.mapInfoSection.set('ContainerDadosGarantia', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosGarantia'})
   }
 
   setInfoValueAndVariant(event) {
@@ -74,6 +91,11 @@ export default class ProposalAnalysis extends LightningElement {
     else if (infoSection.returnedId === 'ContainerDadosEndereco') {
       this.addressesInfoVariant = infoSection.variant
       this.addressesInfoValue = infoSection.value  
+    }
+
+    else if (infoSection.returnedId === 'ContainerDadosGarantia') {
+      this.warrantyInfoVariant = infoSection.variant
+      this.warrantyInfoValue = infoSection.value  
     }
 
     if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
@@ -206,6 +228,10 @@ export default class ProposalAnalysis extends LightningElement {
         
       else if (result.object == 'AddressDataSection__c') {
         this.template.querySelector('c-proposal-addresses-component').getReasonSelected(JSON.stringify(result));
+      }
+
+      else if (result.object == 'WarrantyDataSection__c') {
+        this.template.querySelector('c-proposal-warranty-component').getReasonSelected(JSON.stringify(result));
       }
 
     }

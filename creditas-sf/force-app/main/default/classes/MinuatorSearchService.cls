@@ -114,9 +114,11 @@ public class MinuatorSearchService {
             string createBody = '{ "username" : "{!$Credential.Username}", "password" : "{!$Credential.Password}", "grant_type": "password"}';
  			request.setBody(createBody);
             request.setMethod('POST'); 
-            request.setHeader('Content-Type', 'application/json');           
-          	response = http.send(request);
+            request.setHeader('Content-Type', 'application/json'); 
             
+           
+          	response = http.send(request);
+             
             if(response.getStatusCode() == 201) {                   
               	returnToken = (TokenAccess) System.JSON.deserialize(response.getBody(), TokenAccess.class);                 
                 return returnToken.access_token;

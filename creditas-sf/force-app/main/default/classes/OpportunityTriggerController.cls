@@ -27,7 +27,7 @@ public without sharing class OpportunityTriggerController extends TriggerHandler
     }
 
     public override void afterInsert() {
-
+     
     }
 
     public override void beforeUpdate() {
@@ -37,7 +37,5 @@ public without sharing class OpportunityTriggerController extends TriggerHandler
 
     public override void afterUpdate() {
       OpportunityAssignmentController.handleAtWorkOpportunityAssignment(newOpportunities);
-    }
-    
-      
+    }  
   }
