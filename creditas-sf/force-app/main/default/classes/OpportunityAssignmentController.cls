@@ -16,10 +16,12 @@ public with sharing class OpportunityAssignmentController {
 
   public static void handleAtWorkOpportunityAssignment(List<Opportunity> lstOpportunity) {
     OpportunityAssignmentService.opportunityRecordTypeDevName = ATWORK;
-    OpportunityAssignmentService.stageNameFrom = 'HR';
-    OpportunityAssignmentService.stageNameTo = 'Formalização';
-    OpportunityAssignmentService.statusFormalizationFrom = OpportunityFormalizationStatus.UNDER_ANALYSIS;
-    OpportunityAssignmentService.statusFormalizationSet = new Set<String>{OpportunityFormalizationStatus.NEW_PROPOSAL};
+    OpportunityAssignmentService.stageNameMap = new Map<String,String>{ 'stageNameFrom' => 'Contrato Assinado', 
+                                                                        'stageNameTo' => 'Aprovado por RH',
+                                                                        'stageNameFromPendency' => 'Pendenciado para Consultoria',
+                                                                        'stageNameToPendency' => 'Retorno de Pendência de Formalização',
+                                                                        'stageNameAwaitingAnalysis' => 'Aguardando Análise de Formalização',
+                                                                        'stageNameUnderAnalysis' => 'Em Análise de Formalização'};
     runOpportunityAssignment(lstOpportunity);
   }
 

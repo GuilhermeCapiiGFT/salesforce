@@ -95,8 +95,9 @@ global with sharing class IntegrationAccountINTest {
             List<Addresses__c> createdAddresses = [SELECT Id FROM Addresses__c];
             System.assertEquals(2, createdAddresses.size(),'Addresses successfully upserted.');
             
-            List<Documents__c> createdDocuments = [SELECT Id FROM Documents__c];
+            List<Documents__c> createdDocuments = [SELECT Id, RecordType.DeveloperName FROM Documents__c];
             System.assertEquals(1, createdDocuments.size(),'Documents successfully upserted.');
+        	System.assertEquals( 'CPF', createdDocuments[0].RecordType.DeveloperName, 'check if the Record Type was correctly set');
             
             List<FinancialResources__c> createdIncomes = [SELECT Id FROM FinancialResources__c];
             System.assertEquals(5, createdIncomes.size(),'FinancialResources successfully upserted.');

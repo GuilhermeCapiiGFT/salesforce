@@ -25,7 +25,7 @@ public with sharing class OpportunityIntegrationControllerTest {
 
         System.assertEquals(1, [SELECT Count() FROM Opportunity],'Opportunity failed to be inserted.');
 
-		System.assertEquals('Assinatura', [SELECT StageName FROM Opportunity]?.StageName,'Opportunity stage should be Assinatura');
+		System.assertEquals('Novo', [SELECT StageName FROM Opportunity]?.StageName,'Opportunity stage should be Novo');
         
         System.assertEquals(1, [SELECT Count() FROM Quote],'Quote failed to be inserted.');
         
@@ -43,6 +43,11 @@ public with sharing class OpportunityIntegrationControllerTest {
 		RestContext.request = reqInsert;
 		RestContext.response = resInsert;            
 		OpportunityIntegrationController.putMethod();
+		Opportunity atWorkOpp = [SELECT StageName FROM Opportunity];
+		atWorkOpp.StageName = 'Aprovado por RH';
+		TriggerHandler.bypass('OpportunityTriggerController');
+		update atWorkOpp;
+		TriggerHandler.clearAllBypasses();
         Test.startTest();
         	RestRequest req = new RestRequest(); 
         	RestResponse res = new RestResponse();      
@@ -58,7 +63,7 @@ public with sharing class OpportunityIntegrationControllerTest {
 
         System.assertEquals(1, [SELECT Count() FROM Opportunity],'Only 1 opportunity should exist.');
 
-		System.assertEquals('HR', [SELECT StageName FROM Opportunity]?.StageName,'Opportunity failed to be updated.');
+		System.assertEquals('Aprovado por RH', [SELECT StageName FROM Opportunity]?.StageName,'Opportunity failed to be updated.');
         
         System.assertEquals(1, [SELECT Count() FROM Quote],'Quote failed to be inserted.');
         
@@ -101,7 +106,7 @@ public with sharing class OpportunityIntegrationControllerTest {
         	RestContext.response = res;            
             OpportunityIntegrationController.putMethod();          
         Test.stopTest();
-        System.debug(res);
+
 		System.assertEquals(res.statusCode, 200, 'Expected 200');
 		
         System.assertEquals(1, [SELECT Count() FROM Opportunity],'Opportunity failed to be inserted.');

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Mapeamento de campos para sincronização personalizada de campos</description>
-    <label>Custom Field Tracking Map</label>
-    <pluralLabel>Customs Fields Tracking Map</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

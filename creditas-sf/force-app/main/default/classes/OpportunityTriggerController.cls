@@ -33,6 +33,7 @@ public without sharing class OpportunityTriggerController extends TriggerHandler
     public override void beforeUpdate() {
       OpportunityTriggerService.updateIsExternallySynced(newOpportunitiesById, oldOpportunitiesById);
       OpportunityTriggerService.firePlatformEventSynchAccount(newOpportunitiesById);
+      OpportunityEvaluationController.evaluateOnUpdate(newOpportunities);
     }
 
     public override void afterUpdate() {

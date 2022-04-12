@@ -1,58 +1,65 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { subscribe } from 'lightning/empApi';
-import getSyncInfo from '@salesforce/apex/SynchOpportunityDataController.getSyncInfo';
-import updateSynchingFields from '@salesforce/apex/SynchOpportunityDataController.updateSynchingFields';
+import {
+  getRecord,
+  updateRecord,
+  getFieldValue,
+  generateRecordInputForUpdate,
+  getRecordNotifyChange
+} from 'lightning/uiRecordApi';
+
+import SYNC_ENABLED_FIELD from '@salesforce/schema/Opportunity.IsSynchEnabled__c';
+import EXT_SYNC_FIELD from '@salesforce/schema/Opportunity.IsExternallySynched__c';
+
+const OPPORTUNITY_FIELDS = [SYNC_ENABLED_FIELD, EXT_SYNC_FIELD];
 
 export default class SynchOpportunityData extends LightningElement {
-    @api recordId;
-    channelName = '/event/SynchOpportunity__e';
-    subscription = {};
-    opportunity;
-    error;
-    showSynchButton = false;
-    showSynchingScreen = false;
-    showEventReceived = false;
+  @api recordId;
+  channelName = '/event/SynchOpportunity__e';
+  opportunity;
+  error;
 
-    connectedCallback(){
-        let myComponent = this;
-        this.subscribeSynchOpportunityEvent(myComponent)
-
-        getSyncInfo({oppId: this.recordId}) 
-            .then(result => { 
-                this.opportunity = result;
-                 if(this.opportunity.IsSynchEnabled__c == 'DISABLED' || !this.opportunity.IsSynchEnabled__c){
-                    this.showSynchButton = true;
-                } else if (this.opportunity.IsSynchEnabled__c == 'SYNCHING'){
-                    this.showSynchingScreen = true;
-                } else if (result.IsSynchEnabled__c == 'ENABLED'){
-                    this.showEventReceived = true;
-                }
-        })
-        .catch(error => {
-            this.error = error;
-        });
+  @wire(getRecord, { recordId: '$recordId', fields: OPPORTUNITY_FIELDS })
+  parseEmployee({ data, error }) {
+    if (data) {
+      this.opportunity = data;
+    } else if (error) {
+      this.error = error;
     }
+  }
 
-    clickHandler(){
-        updateSynchingFields({opp: this.opportunity}) 
-            .then(result => { 
-                this.showSynchButton = false;
-                this.showSynchingScreen = true;
-            })
-            .catch(error => {
-                this.error = error;
-            });
-    }
+  get isEnabled() {
+    const syncEnabled = getFieldValue(this.opportunity, SYNC_ENABLED_FIELD);
+    return syncEnabled === 'ENABLED';
+  }
 
-    subscribeSynchOpportunityEvent(myComponent){
-        const messageCallback = function(response) {
-            myComponent.showSynchingScreen = false;
-            myComponent.showEventReceived = true;
-        };
+  get isSynching() {
+    const syncEnabled = getFieldValue(this.opportunity, SYNC_ENABLED_FIELD);
+    return syncEnabled === 'SYNCHING';
+  }
 
-        subscribe(myComponent.channelName, -1, messageCallback)       
-        .then(response => {
-            myComponent.subscription = response;
-        });
-    }
+  connectedCallback() {
+    this.subscribeSynchEmployeeEvent(this);
+  }
+
+  handleClick() {
+    const record = generateRecordInputForUpdate(this.opportunity);
+    record.fields[SYNC_ENABLED_FIELD.fieldApiName] = 'SYNCHING';
+    record.fields[EXT_SYNC_FIELD.fieldApiName] = false;
+    updateRecord(record).catch(error => (this.error = error));
+  }
+
+  subscribeSynchEmployeeEvent(component) {
+    const callback = function () {
+      component.notifyChange();
+    };
+
+    subscribe(component.channelName, -1, callback).then(response => {
+      component.subscription = response;
+    });
+  }
+
+  notifyChange() {
+    getRecordNotifyChange([{ recordId: this.recordId }]);
+  }
 }

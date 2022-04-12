@@ -1,6 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 
 import ADDRESSES_OBJECT from '@salesforce/schema/Addresses__c';
+import SECTION_OBJECT from '@salesforce/schema/AddressDataSection__c';
 
 import CEPSTATUS from '@salesforce/schema/AddressDataSection__c.CEPStatus__c';
 import CEPPENDING from '@salesforce/schema/AddressDataSection__c.CEPPendingReason__c';
@@ -48,7 +49,6 @@ import upsertAddress from '@salesforce/apex/ProposalAddressesController.saveAddr
 import getRecordAddressSection from '@salesforce/apex/ProposalAddressesController.getAddressSectiontDetails';
 import upsertAddressSection from '@salesforce/apex/ProposalAddressesController.saveAddressSection';
 
-
 const FIELDSVALIDATIONCEP = [CEPSTATUS, CEPPENDING, CEPREJECT, CEPOBSERVATION]
 const FIELDSVALIDATIONSTREET = [STREETSTATUS, STREETPENDING, STREETREJECT, STREETOBSERVATION]
 const FIELDSVALIDATIONADDRESSNUMBER = [ADDRESSNUMBERSTATUS, ADDRESSNUMBERPENDING, ADDRESSNUMBERREJECT, ADDRESSNUMBEROBSERVATION]
@@ -57,7 +57,6 @@ const FIELDSVALIDATIONNEIGHBORHOOD = [NEIGHBORHOODSTATUS, NEIGHBORHOODPENDING, N
 const FIELDSVALIDATIONCITY = [CITYSTATUS, CITYPENDING, CITYREJECT, CITYOBSERVATION]
 const FIELDSVALIDATIONSTATE = [STATESTATUS, STATEPENDING, STATEREJECT, STATEOBSERVATION]
 const FIELDSVALIDATIONCOUNTRY = [COUNTRYSTATUS]
-
 
 export default class ProposalAddressesComponent extends LightningElement {
 
@@ -68,17 +67,10 @@ export default class ProposalAddressesComponent extends LightningElement {
   address
   recordTypeId
   
-  fieldsValidationCEP = FIELDSVALIDATIONCEP
-  fieldsValidationStreet = FIELDSVALIDATIONSTREET
-  fieldsValidationAddressNumber = FIELDSVALIDATIONADDRESSNUMBER
-  fieldsValidationComplementNumber = FIELDSVALIDATIONCOMPLEMENTNUMBER
-  fieldsValidationNeighborhood = FIELDSVALIDATIONNEIGHBORHOOD
-  fieldsValidationCity = FIELDSVALIDATIONCITY
-  fieldsValidationState = FIELDSVALIDATIONSTATE
-  fieldsValidationCountry = FIELDSVALIDATIONCOUNTRY
+  fieldsValidation = [FIELDSVALIDATIONCEP, FIELDSVALIDATIONSTREET, FIELDSVALIDATIONADDRESSNUMBER, FIELDSVALIDATIONCOMPLEMENTNUMBER, FIELDSVALIDATIONNEIGHBORHOOD, FIELDSVALIDATIONCITY, FIELDSVALIDATIONSTATE, FIELDSVALIDATIONCOUNTRY]
   fieldsStatus = ['CEPStatus__c', 'StreetAddressStatus__c', 'AddressNumberStatus__c', 'AddOnStatus__c', 'NeighborhoodStatus__c', 'CityStatus__c', 'StateStatus__c', 'CountryStatus__c']
   
-  // Controller button save
+  // Controller save button
   disabledBtnSave = true
 
   recordAddressId = ''
@@ -104,39 +96,10 @@ export default class ProposalAddressesComponent extends LightningElement {
   // refresh apex
   recordAddress
   resultRecordAddress
-
+  
   // validation object for the address section
   objValidationSection = {
-    'sobjectType': 'AddressDataSection__c',
-    CEPStatus__c: "",
-    CEPPendingReason__c: "",
-    CEPRejectReason__c: "",
-    CEPobservation__c: "",
-    StreetAddressStatus__c: "",
-    StreetAddressPendingReason__c: "",
-    StreetAddressRejectReason__c: "",
-    StreetAddressObservation__c: "",
-    AddressNumberStatus__c: "",
-    AddressNumberPendingReason__c: "",
-    AddressNumberRejectReason__c: "",
-    AddressNumberObservation__c: "",
-    AddOnStatus__c: "",
-    AddOnPendingReason__c: "",
-    AddOnRejectReason__c: "",
-    AddOnObservation__c: "",
-    NeighborhoodStatus__c: "",
-    NeighborhoodPendingReason__c: "",
-    NeighborhoodRejectReason__c: "",
-    NeighborhoodObservation__c: "",
-    CityStatus__c: "",
-    CityPendingReason__c: "",
-    CityRejectReason__c: "",
-    CityObservation__c: "",
-    StateStatus__c: "",
-    StatePendingReason__c: "",
-    StateRejectReason__c: "",
-    StateObservation__c: "",
-    CountryStatus__c: ""
+    'sobjectType': SECTION_OBJECT.objectApiName
   }
   
   @wire(getRecordAddress, { accountId: '$accountid' })
@@ -144,19 +107,8 @@ export default class ProposalAddressesComponent extends LightningElement {
     this.resultRecordAddress = result
     if (result.data) {
       let data = result.data[0]
-  
-      this.addressValue.push(data ? Object.assign({}, data) : {
-        'sobjectType': 'Addresses__c',
-        Account__c: this.accountid,
-        PostalCode__c: null,
-        Street__c: null,
-        StreetNumber__c: null,
-        Complement__c: null,
-        Neighborhood__c: null,
-        AreaLevel2__c: null,
-        AreaLevel1__c: null,
-        Country__c: null,
-      })
+
+      this.addressValue.push(data ? Object.assign({}, data) : {'sobjectType': ADDRESSES_OBJECT.objectApiName, Account__c: this.accountid})
 
       this.cepNumber.value          = data?.PostalCode__c    ? data.PostalCode__c   : null
       this.street.value             = data?.Street__c        ? data.Street__c       : null
@@ -167,8 +119,6 @@ export default class ProposalAddressesComponent extends LightningElement {
       this.state.value              = data?.AreaLevel1__c    ? data.AreaLevel1__c   : null
       this.country.value            = data?.Country__c       ? data.Country__c      : null
             
-      console.log('addressValue')
-      console.dir(this.addressValue)
     }
 
     else if (result.error) {
@@ -180,7 +130,6 @@ export default class ProposalAddressesComponent extends LightningElement {
   @wire(getObjectInfo, { objectApiName: ADDRESSES_OBJECT  })
   recordTypeAddress({ error, data }) {
     if(data) {
-      
       this.cepNumber.fieldReadOnly     = !data?.fields?.PostalCode__c?.updateable     
       this.street.fieldReadOnly        = !data?.fields?.Street__c?.updateable  
       this.streetNumber.fieldReadOnly  = !data?.fields?.StreetNumber__c?.updateable        
@@ -189,7 +138,6 @@ export default class ProposalAddressesComponent extends LightningElement {
       this.city.fieldReadOnly          = !data?.fields?.AreaLevel2__c?.updateable
       this.state.fieldReadOnly         = !data?.fields?.AreaLevel1__c?.updateable 
       this.country.fieldReadOnly       = !data?.fields?.Country__c?.updateable 
-      
     }
     else if(error){
       console.log(error);
@@ -203,6 +151,9 @@ export default class ProposalAddressesComponent extends LightningElement {
     if (result.data) {
       let resultValidationSection = { ...this.objValidationSection, ...result.data }
       this.objValidationSection = resultValidationSection
+
+      console.log(this.objValidationSection)
+
       let listStatus = this.fieldsStatus
 
       for (let index in listStatus) {
@@ -229,9 +180,7 @@ export default class ProposalAddressesComponent extends LightningElement {
     this.disabledBtnSave = true;
     let payload = this.addressValue;
 
-    console.log({payload})
-
-    upsertAddress({listAddress : payload})
+    upsertAddress({addresses : payload})
     .then(result => {
       refreshApex(this.resultRecordCommunication);
       console.log({ result }) 
@@ -247,8 +196,10 @@ export default class ProposalAddressesComponent extends LightningElement {
   saveFieldsValidation() {
     this.objValidationSection.Opportunity__c = this.opportunityid;
     let payload = this.objValidationSection
-    console.log({payload})
-    upsertAddressSection({recordAddressSection : payload})
+    
+    console.log({ payload })
+    
+    upsertAddressSection({addressSection : payload})
     .then(result => {
       refreshApex(this.recordAddress);
       this.showToast('', 'Registro atualizado com sucesso!', 'success')
@@ -262,37 +213,25 @@ export default class ProposalAddressesComponent extends LightningElement {
   }
 
   handleChangeCheckbox(event) {
-    this.checksOnlyOne(event);
-    this.saveObjectValues(event);
+    this.checksOnlyOne(event)
+    this.saveObjectValues(event)
   }
 
   saveObjectValues(event) {
-    let nameStatus = event.target.getAttribute('data-status');
+    let nameStatus = event.target.getAttribute('data-status')
     let valueStatus = event.target.checked ? event.target.value : null;
 
-    let fieldsCEPAPI              = this.fieldsValidationCEP.map((item) => item.fieldApiName);
-    let fieldsStreetAPI           = this.fieldsValidationStreet.map((item) => item.fieldApiName);
-    let fieldsAddressNumberAPI    = this.fieldsValidationAddressNumber.map((item) => item.fieldApiName);
-    let fieldsComplementNumberAPI = this.fieldsValidationComplementNumber.map((item) => item.fieldApiName);
-    let fieldsNeighborhoodAPI     = this.fieldsValidationNeighborhood.map((item) => item.fieldApiName);
-    let fieldsCityAPI             = this.fieldsValidationCity.map((item) => item.fieldApiName);
-    let fieldsStateAPI            = this.fieldsValidationState.map((item) => item.fieldApiName);
-
+    for (let field of this.fieldsValidation)
+    {
+      let fieldApi = field.map(item => item.fieldApiName)
+      fieldApi.indexOf(nameStatus) > - 1 ? this.resetFieldsValidation(fieldApi) : ''
+    }
     
-    fieldsCEPAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsCEPAPI):'';
-    fieldsStreetAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsStreetAPI):'';
-    fieldsAddressNumberAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsAddressNumberAPI):'';
-    fieldsComplementNumberAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsComplementNumberAPI):'';
-    fieldsNeighborhoodAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsNeighborhoodAPI):'';
-    fieldsCityAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsCityAPI):'';
-    fieldsStateAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsStateAPI):'';
-    
-    
-    this.objValidationSection[nameStatus] = valueStatus;
+    this.objValidationSection[nameStatus] = valueStatus
   }
 
   resetFieldsValidation(fieldsValidationAPI){
-    fieldsValidationAPI.map((item) => this.objValidationSection[item] = null);
+    fieldsValidationAPI.map((item) => this.objValidationSection[item] = null)
   }
 
   checksOnlyOne(event) {
@@ -316,11 +255,11 @@ export default class ProposalAddressesComponent extends LightningElement {
 
       if (event.target.checked && (currentCheckboxValue == 'Rejeitar' || currentCheckboxValue == 'Pendenciar'))
       {
-        let modalReason = (currentCheckboxValue == 'Rejeitar') ? 'reject' : 'pendency';
-        modal['modalReason'] = modalReason;
-        modal['openModalReason'] = true;
-        modal['fieldReason'] = event.target.getAttribute('data-field');
-        modal['objectReason'] = 'AddressDataSection__c';
+        let modalReason = (currentCheckboxValue == 'Rejeitar') ? 'reject' : 'pendency'
+        modal['modalReason'] = modalReason
+        modal['openModalReason'] = true
+        modal['fieldReason'] = event.target.getAttribute('data-field')
+        modal['objectReason'] = SECTION_OBJECT.objectApiName
       }
     });
 
@@ -347,33 +286,33 @@ export default class ProposalAddressesComponent extends LightningElement {
     let selectedCheckboxes = topContainer.querySelectorAll('input[type="checkbox"]:checked')
     let totalLines = 8;
 
-    let isPending = false;
-    let isRejected = false;
+    let isPending = false
+    let isRejected = false
 
-    let infoVariant = '';
-    let infoValue = '';
+    let infoVariant = ''
+    let infoValue = ''
 
-    let info = {};
+    let info = {}
     
-    let countSelectedCheckbox = 0;
+    let countSelectedCheckbox = 0
 
     selectedCheckboxes.forEach(element => {
-      countSelectedCheckbox++;
+      countSelectedCheckbox++
 
       if (element.value === 'Aprovar')         infoVariant = 'base-autocomplete'
       else if (element.value === 'Pendenciar') isPending = true
       else if (element.value === 'Rejeitar')   isRejected = true
     })
     
-    if (isPending && !isRejected) infoVariant = 'warning';
-    if (isRejected) infoVariant = 'expired';
+    if (isPending && !isRejected) infoVariant = 'warning'
+    if (isRejected) infoVariant = 'expired'
     
-    infoValue = (countSelectedCheckbox / totalLines) * 100;
+    infoValue = (countSelectedCheckbox / totalLines) * 100
     selectedCheckboxes = 0;
     
-    info.variant = infoVariant;
-    info.value = infoValue;
-    info.returnedId = returnedId;
+    info.variant = infoVariant
+    info.value = infoValue
+    info.returnedId = returnedId
   
     this.controllerSave(info.value)
 
@@ -381,7 +320,7 @@ export default class ProposalAddressesComponent extends LightningElement {
   }
 
   controllerSave(percentageSection){
-    this.disabledBtnSave = (percentageSection != 100) ? true : false;
+    this.disabledBtnSave = (percentageSection != 100) ? true : false
   }
 
   showToast(title, message, variant) {
@@ -390,59 +329,59 @@ export default class ProposalAddressesComponent extends LightningElement {
         message: message,
         variant: variant
     });
-    this.dispatchEvent(event);
+    this.dispatchEvent(event)
   }
 
   @api
   getReasonSelected(result){
-    let validationReason = JSON.parse(result);
+    let validationReason = JSON.parse(result)
     if(validationReason.reason == null){
-      this.uncheckReason(validationReason.field);
+      this.uncheckReason(validationReason.field)
     }else{
-      this.setMapReason(validationReason);
+      this.setMapReason(validationReason)
     }
   }
 
   uncheckReason(reason){
-    let field = this.template.querySelector('[data-field="'+reason+'"]');
-    field.checked = false;
-    field.setAttribute('data-value', '');
-    let info = this.getPercentage();
-    this.sendInfo(info);
+    let field = this.template.querySelector('[data-field="'+reason+'"]')
+    field.checked = false
+    field.setAttribute('data-value', '')
+    let info = this.getPercentage()
+    this.sendInfo(info)
   }
 
   setMapReason(selectedReason){
 
-    let observation = selectedReason.observation ? selectedReason.observation : '';
-    let objValidationSection = this.objValidationSection;
+    let observation = selectedReason.observation ? selectedReason.observation : ''
+    let objValidationSection = this.objValidationSection
 
     if( ['CEPPendingReason__c','CEPRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.CEPobservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.CEPobservation__c = observation
     }
     else if(['StreetAddressPendingReason__c','StreetAddressRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.StreetAddressObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.StreetAddressObservation__c = observation
     }
     else if(['AddressNumberPendingReason__c','AddressNumberRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.AddressNumberObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.AddressNumberObservation__c = observation
     }
     else if(['AddOnPendingReason__c','AddOnRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.AddOnObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.AddOnObservation__c = observation
     }
     else if(['NeighborhoodPendingReason__c','NeighborhoodRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.NeighborhoodObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.NeighborhoodObservation__c = observation
     }
     else if(['CityPendingReason__c','CityRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.CityObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.CityObservation__c = observation
     }
     else if(['StatePendingReason__c','StateRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.StateObservation__c = observation;
+      objValidationSection[selectedReason.field] = selectedReason.reason
+      objValidationSection.StateObservation__c = observation
     }
   }
 

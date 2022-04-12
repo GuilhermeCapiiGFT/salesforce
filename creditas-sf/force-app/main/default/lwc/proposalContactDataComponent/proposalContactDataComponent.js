@@ -5,12 +5,12 @@ import COMMUNICATIONCONTACT_OBJECT from '@salesforce/schema/CommunicationContact
 import MOBILESTATUS from '@salesforce/schema/ContactDetailsSection__c.MobileStatus__c';
 import MOBILEREJECTION from '@salesforce/schema/ContactDetailsSection__c.MobileRejectReason__c';
 import MOBILEPENDING from '@salesforce/schema/ContactDetailsSection__c.MobilePendingReason__c';
-import MOBILEDESC from '@salesforce/schema/ContactDetailsSection__c.MobileDescription__c';
+import MOBILEDESC from '@salesforce/schema/ContactDetailsSection__c.MobileObservation__c';
 
 import EMAILSTATUS from '@salesforce/schema/ContactDetailsSection__c.EmailStatus__c';
 import EMAILREJECTION from '@salesforce/schema/ContactDetailsSection__c.EmailRejectReason__c';
 import EMAILPENDING from '@salesforce/schema/ContactDetailsSection__c.EmailPendingReason__c';
-import EMAILDESC from '@salesforce/schema/ContactDetailsSection__c.EmailDescription__c';
+import EMAILDESC from '@salesforce/schema/ContactDetailsSection__c.EmailObservation__c';
 
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -40,7 +40,7 @@ export default class ProposalContactDataComponent extends LightningElement {
   // Controller btn save
   disabledBtnSave = true;
   
-  // Personal Data Info
+  // Contact Data Info
   recordContactDataId = '';
   contactData;
   
@@ -63,11 +63,11 @@ export default class ProposalContactDataComponent extends LightningElement {
     'MobileStatus__c': '',
     'MobileRejectReason__c': '',
     'MobilePendingReason__c': '',
-    'MobileDescription__c': '',
+    'MobileObservation__c': '',
     'EmailStatus__c': '',
     'EmailRejectReason__c': '',
     'EmailPendingReason__c': '',
-    'EmailDescription__c':''
+    'EmailObservation__c':''
   }
   
   //get record communication
@@ -80,10 +80,7 @@ export default class ProposalContactDataComponent extends LightningElement {
       this.communicationValue.set('SMS', data.SMS ? Object.assign({},data.SMS) : {'sobjectType': 'CommunicationContacts__c', Account__c: this.accountid, Channel__c: "SMS", Code__c: null});
 
       this.valueSMS = data.SMS ? data.SMS.Code__c : null;
-      this.valueEmail = data.EMAIL ? data.EMAIL.Code__c : null;
-      
-      console.log('communication')
-      console.log(this.communicationValue)
+      this.valueEmail = data.EMAIL? data.EMAIL.Code__c : null;
     }
     else if(result.error){
       console.log(result.error);
@@ -132,12 +129,9 @@ export default class ProposalContactDataComponent extends LightningElement {
     this.disabledBtnSave = true;
     let payload = Array.from(this.communicationValue.values());
 
-    console.log({payload})
-
     upsertCommunicationContacts({listCommunication : payload})
     .then( result=>{
       refreshApex(this.resultRecordCommunication);
-      console.log(result)
       this.saveFieldsValidation();
     })
     .catch(error =>{
@@ -305,11 +299,11 @@ export default class ProposalContactDataComponent extends LightningElement {
 
     if( ['EmailPendingReason__c','EmailRejectReason__c'].includes(selectedReason.field)){
       objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.EmailDescription__c = description;
+      objValidationSection.EmailObservation__c = description;
     }
     else if(['MobilePendingReason__c','MobileRejectReason__c'].includes(selectedReason.field)){
       objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.MobileDescription__c = description;
+      objValidationSection.MobileObservation__c = description;
     }
   }
 

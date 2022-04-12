@@ -1,15 +1,6 @@
 <template>
   <div data-id="ContainerDadosEndereco">
 
-    {cepNumber.value}
-    {street.value}
-    {streetNumber.value}
-    {complement.value}
-    {neighborhood.value}
-    {city.value}
-    {state.value}
-    {country.value}
-
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">CEP</label>
@@ -64,7 +55,7 @@
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxStreetReprovado">&nbsp;</label>
-          <input data-id="checkboxStreetReprovado"  data-field="StreetAddressPendingReason__c" data-value={preValue} data-status="StreetAddressStatus__c" name="AddressesStreet" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxStreetReprovado"  data-field="StreetAddressRejectReason__c" data-value={preValue} data-status="StreetAddressStatus__c" name="AddressesStreet" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -118,13 +109,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxComplementPendenciado">&nbsp;</label>
-          <input data-id="checkboxComplementPendenciado"  data-field="AddressNumberPendingReason__c" data-value={preValue} data-status="AddOnStatus__c" name="AddressesAddOn" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxComplementPendenciado"  data-field="AddOnPendingReason__c" data-value={preValue} data-status="AddOnStatus__c" name="AddressesAddOn" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxComplementReprovado">&nbsp;</label>
-          <input data-id="checkboxComplementReprovado"  data-field="AddressNumberRejectReason__c" data-value={preValue} data-status="AddOnStatus__c" name="AddressesAddOn" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxComplementReprovado"  data-field="AddOnRejectReason__c" data-value={preValue} data-status="AddOnStatus__c" name="AddressesAddOn" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>

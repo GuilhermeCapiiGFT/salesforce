@@ -1,14 +1,3 @@
-/***********************************************************************************************************************
- * Copyright © 2021 Creditas
- * =======================================================================================================================
- * @description Utility methods for Strings
- * 
- =======================================================================================================================
- * History
- * -------
- * VERSION   AUTHOR                  DATE            DETAIL      Description
- * 1.0       Matheus Fernandes       16/02/2021      Created     Class creation
- **********************************************************************************************************************/
 public with sharing class StringUtils {
   public static String singleQuoteThis(String value) {
     String singleQuote = '\'';
@@ -23,5 +12,9 @@ public with sharing class StringUtils {
     }
 
     return singleQuotedSeparatedValues.removeEnd(separator);
+  }
+
+  public static String getSingleQuotedSeparatedValues(Set<String> values, String separator) {
+    return getSingleQuotedSeparatedValues(new List<String>(values), separator);
   }
 }

@@ -15,12 +15,18 @@ export default class ProposalAnalysis extends LightningElement {
   personalInfoVariant = ''
   contactInfoVariant = ''
   addressesInfoVariant = ''
+  warrantyInfoVariant = ''
+  incomeInfoVariant = ''
+  operationInfoVariant = ''
 
   // Info about progress ring value
   generalInfoValue = 0
   personalInfoValue = 0
   contactInfoValue = 0
   addressesInfoValue = 0
+  warrantyInfoValue = ''
+  operationInfoValue = 0
+  incomeInfoValue = 0
 
   // Info about Modal
   openModalReason = false;
@@ -43,10 +49,22 @@ export default class ProposalAnalysis extends LightningElement {
   isAnyPending = false
   isAnyRejected = false
 
+  sectionComponentMap = new Map([
+    ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
+    ["PersonalDataSection__c", "c-proposal-personal-data-component"],
+    ["AddressDataSection__c", "c-proposal-addresses-component"],
+    ["WarrantyDataSection__c", "c-proposal-warranty-component"],
+    ["IncomeDataSection__c", "c-proposal-income-data-component"],
+    ["OperationSection__c", "c-proposal-operation-component"]
+  ])
+
   connectedCallback() {
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
     this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
     this.mapInfoSection.set('ContainerDadosEndereco', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosEndereco'})
+    this.mapInfoSection.set('ContainerDadosGarantia', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosGarantia'})
+    this.mapInfoSection.set('ContainerOperation', {'variant': '', 'value': 0, 'returnedId': 'ContainerOperation'})
+    this.mapInfoSection.set('ContainerDadosRenda', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosRenda'})
   }
 
   setInfoValueAndVariant(event) {
@@ -74,6 +92,21 @@ export default class ProposalAnalysis extends LightningElement {
     else if (infoSection.returnedId === 'ContainerDadosEndereco') {
       this.addressesInfoVariant = infoSection.variant
       this.addressesInfoValue = infoSection.value  
+    }
+
+    else if (infoSection.returnedId === 'ContainerDadosGarantia') {
+      this.warrantyInfoVariant = infoSection.variant
+      this.warrantyInfoValue = infoSection.value  
+    }
+    
+    else if (infoSection.returnedId === 'ContainerDadosRenda') {
+      this.incomeInfoVariant = infoSection.variant
+      this.incomeInfoValue = infoSection.value  
+    }
+      
+    else if (infoSection.returnedId === 'ContainerOperation') {
+      this.operationInfoVariant = infoSection.variant
+      this.operationInfoValue = infoSection.value  
     }
 
     if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
@@ -191,21 +224,13 @@ export default class ProposalAnalysis extends LightningElement {
   handleSaveSection() {
   }
 
-  handlerSelectedReason(event){
+  handlerSelectedReason(event) {
     let result = event.detail;
-    if(result){
+    if(result) {
       this.validationResult.set(result.field, JSON.parse(JSON.stringify(result)));
 
-      if(result.object =='ContactDetailsSection__c'){
-        this.template.querySelector('c-proposal-contact-data-component').getReasonSelected(JSON.stringify(result));
-      }
-
-      else if (result.object == 'PersonalDataSection__c') {
-        this.template.querySelector('c-proposal-personal-data-component').getReasonSelected(JSON.stringify(result));
-      }
-        
-      else if (result.object == 'AddressDataSection__c') {
-        this.template.querySelector('c-proposal-addresses-component').getReasonSelected(JSON.stringify(result));
+      if (this.sectionComponentMap.has(result.object)) {
+        this.template.querySelector(this.sectionComponentMap.get(result.object)).getReasonSelected(JSON.stringify(result));
       }
 
     }

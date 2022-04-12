@@ -32,10 +32,6 @@ input[type="text"]:focus {
   padding-bottom: 0.8em;
 }
 
-.slds-accordion__content {
-  padding: 1.3em 0 1.3em 0;
-}
-
 .slds-accordion__summary-content {
   font-weight: bold;
 }
@@ -64,6 +60,7 @@ input[type="checkbox"] {
   transform: translateY(-0.075em);
   display: grid;
   place-content: center;
+  cursor: pointer;
 }
 
 input[type="checkbox"]::before {
@@ -218,6 +215,11 @@ input.disabled-input {
   border: 1px solid #4bca81;;
   color: #4bca81;;
 }
-
   
-  /* Styling Buttons END*/
+/* Styling Buttons END*/
+
+/* Styling Section - START*/
+.header-section{
+  cursor: pointer;
+}
+/* Styling Section - END*/

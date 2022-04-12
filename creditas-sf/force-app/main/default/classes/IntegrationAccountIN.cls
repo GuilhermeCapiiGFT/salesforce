@@ -334,6 +334,7 @@ global without sharing class IntegrationAccountIN {
                 documentsSF.Id = documentsExternalIdsToSalesForceDocumentsMap.get(doc.id)?.Id;
                 documentsSF.ExternalId__c = doc.id;
                 documentsSF.DocumentType__c = doc.type;
+                documentsSF.recordTypeId = Util.getRecordTypeIdbyName('Documents__c', doc.type);
                 documentsSF.DocumentNumber__c = doc.code;             
                 documentsSF.Issuer__c = doc.issuer;
                 documentsSF.IssuerState__c = doc.issuerState;

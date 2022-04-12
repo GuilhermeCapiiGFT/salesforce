@@ -12,13 +12,6 @@
     <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
         <div class="slds-modal__container">
             <header class="slds-modal__header">
-                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeSyncModal}>
-                    <lightning-icon icon-name="utility:close"
-                        alternative-text="close"
-                        variant="inverse"
-                        size="small" ></lightning-icon>
-                    <span class="slds-assistive-text">Close</span>
-                </button>
                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Sincronização</h2>
             </header>
             <!-- Modal/Popup Box LWC body starts here -->
@@ -97,17 +90,19 @@
                         <template for:each={persons} for:item="person">
 
                           
-                          <li class="slds-progress__item" key={person.id}>
+                          <li class="slds-progress__item slds-is-active" key={person.id}>
 
-                            <span if:true={person.isWarningSection} style="background-color:transparent" class="slds-icon_container slds-icon-utility-warning slds-progress__marker slds-progress__marker_icon" title="Error">
-                              <lightning-icon class="yellow-icon" 
-                              icon-name="utility:warning" 
-                              size="xx-small"
-                              alternative-text="icon"> 
-                              </lightning-icon>   
+                            <span if:true={person.isWarningSection} style="background-color:White" title="Error">
+                              <div class="slds-progress__marker" style="border-color:transparent">
+                                <lightning-icon class="yellow-icon" 
+                                icon-name="utility:warning" 
+                                size="xx-small"
+                                alternative-text="icon"> 
+                                </lightning-icon>   
+                              </div>
                             </span>
 
-                            <div if:true={person.isActiveSection} data-id={person.id} class="slds-progress__item slds-is-active">
+                            <div if:true={person.isActiveSection} data-id={person.id}>
                               <div class="slds-progress__marker">
                                 <span class="slds-assistive-text">Active</span> 
                               </div>                            
@@ -226,6 +221,8 @@
                                 <div class="slds-col slds-size_3-of-12">
                                   <span>
                                     <lightning-combobox 
+                                      data-id={person.genderInputId}
+                                      onchange={onChangePersonInput}
                                       name="gender"
                                       label="Gênero"
                                       value=""

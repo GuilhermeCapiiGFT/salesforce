@@ -1,15 +1,9 @@
-/***********************************************************************************************************************
- * Copyright © 2021 Creditas
- * =======================================================================================================================
- * @description Opportunity evaluation - set opportunity priority based on setup record at CustomSetup__c
- * 
- =======================================================================================================================
- * History
- * -------
- * VERSION   AUTHOR                  DATE            DETAIL      Description
- * 1.0       Matheus Fernandes       15/02/2021      Created     Class creation
- **********************************************************************************************************************/
 public with sharing class OpportunityEvaluationService {
+  public static final String STAGENAME_NEW = 'Novo';
+  public static final String STAGENAME_SIGNED = 'Contrato Assinado';
+  public static final String STAGENAME_HR = 'Aprovado por RH';
+  public static final String STAGENAME_PENDENCY_RETURN = 'Retorno de Pendência de Formalização';
+
   private static final String RECORD_TYPE_NAME_ATWORK = 'AtWork';
 
   public static String pendencyReturnApiName = CustomSetupController.getPendencyReturnApiName();
@@ -40,6 +34,18 @@ public with sharing class OpportunityEvaluationService {
     }
 
     return productsByRecordTypeName;
+  }
+
+  public static List<Opportunity> filterOpportunitiesToEvaluate(List<Opportunity> opportunities) {
+    List<Opportunity> resultOpportunities = new List<Opportunity>();
+
+    for (Opportunity opportunity : opportunities) {
+      if (TriggerHelper.changedToExpectedValue(opportunity, 'StageName', STAGENAME_PENDENCY_RETURN)) {
+        resultOpportunities.add(opportunity);
+      }
+    }
+
+    return resultOpportunities;
   }
 
   public OpportunityEvaluationService() {
@@ -74,11 +80,10 @@ public with sharing class OpportunityEvaluationService {
       return '';
     }
 
-    String soqlSelect = 'SELECT RecordTypeId, ProductType__c, PendencyReturn__c, PriorityPoints__c FROM Opportunity';
+    String soqlSelect = 'SELECT RecordTypeId, ProductType__c, StageName, PriorityPoints__c FROM Opportunity';
     String soqlWhere = '';
 
     for (String recordTypeName : priorityPointsMap.keySet()) {
-
       if (recordTypeName == RECORD_TYPE_NAME_ATWORK) {
         soqlWhere += getAtWorkQueryString();
       }
@@ -94,32 +99,33 @@ public with sharing class OpportunityEvaluationService {
 
   private String getAtWorkQueryString() {
     String recordTypeId = String.valueOf(Util.getRecordTypeIdbyName('Opportunity', RECORD_TYPE_NAME_ATWORK));
-    String newProposal = OpportunityFormalizationStatus.NEW_PROPOSAL;
-    String awaitingAnalysis = OpportunityFormalizationStatus.AWAITING_ANALYSIS;
+    List<String> stageNames = new List<String>{
+      STAGENAME_NEW,
+      STAGENAME_SIGNED,
+      STAGENAME_HR,
+      STAGENAME_PENDENCY_RETURN
+    };
+
+    String filterRecordTypeId = 'RecordTypeId = ' + StringUtils.singleQuoteThis(recordTypeId);
 
     String filterProductsCriteria = '';
     if (!this.products.isEmpty()) {
-      filterProductsCriteria = ' AND (' +
+      filterProductsCriteria =
+        ' AND (' +
         'ProductType__c IN (' +
         StringUtils.getSingleQuotedSeparatedValues(this.products, ',') +
         ')';
 
       if (this.products.contains(pendencyReturnApiName)) {
-        filterProductsCriteria += ' OR PendencyReturn__c = TRUE';
+        filterProductsCriteria += ' OR StageName = ' + StringUtils.singleQuoteThis(STAGENAME_PENDENCY_RETURN);
       }
 
       filterProductsCriteria += ')';
     }
 
-    return ' OR (RecordTypeId = ' +
-      StringUtils.singleQuoteThis(recordTypeId) +
-      filterProductsCriteria +
-      ' AND (FormalizationStatus__c = ' +
-      StringUtils.singleQuoteThis(newProposal) +
-      ' OR (PendencyReturn__c = TRUE' +
-      ' AND FormalizationStatus__c IN (' +
-      StringUtils.getSingleQuotedSeparatedValues(new List<String>{ newProposal, awaitingAnalysis }, ',') +
-      +'))))';
+    String filterStageName = 'AND StageName IN (' + StringUtils.getSingleQuotedSeparatedValues(stageNames, ',') + ')';
+
+    return ' OR (' + filterRecordTypeId + filterProductsCriteria + filterStageName + ')';
   }
 
   public void evaluateOpportunities() {
@@ -127,11 +133,11 @@ public with sharing class OpportunityEvaluationService {
       return;
     }
 
-    for (Opportunity opp : this.opportunities) {
-      String opportunityRecordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opp.RecordTypeId);
+    for (Opportunity opportunity : this.opportunities) {
+      String opportunityRecordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opportunity.RecordTypeId);
       if (this.priorityPointsMap.containsKey(opportunityRecordTypeName)) {
-        opp.PriorityPoints__c = this.getPriorityPoints(opp, opportunityRecordTypeName);
-        this.changedOpportunities.add(opp);
+        opportunity.PriorityPoints__c = this.getPriorityPoints(opportunity, opportunityRecordTypeName);
+        this.changedOpportunities.add(opportunity);
       }
     }
   }
@@ -142,16 +148,16 @@ public with sharing class OpportunityEvaluationService {
 
     Double priorityPoints = pointsByProduct.containsKey(productType) ? pointsByProduct.get(productType) : 0;
 
-    if (opportunity.PendencyReturn__c) {
+    if (opportunity.StageName == STAGENAME_PENDENCY_RETURN) {
       priorityPoints += pointsByProduct.get(pendencyReturnApiName);
     }
 
     return priorityPoints;
   }
 
-  public void updateChangedOpportunities(){
+  public void updateChangedOpportunities() {
     if (Trigger.isExecuting && Trigger.isAfter && !this.changedOpportunities.isEmpty()) {
       update this.changedOpportunities;
-    }    
+    }
   }
 }

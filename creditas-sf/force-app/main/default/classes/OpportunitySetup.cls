@@ -11,16 +11,17 @@
 @isTest
 public with sharing class OpportunitySetup {
 
-    public static Opportunity createOpportunity(Id aAccountId, String aRecordTypeDevName){
-        String lOppRT = Util.getRecordTypeIdbyName('Opportunity', aRecordTypeDevName);
+    public static Opportunity createOpportunity(Id accountId, String recordTypeDevName){
+        Map<String,String> mapStageName = new Map<String,String>{'AtWork' => 'Novo','AutoFin' => 'Crédito', 'Home' => 'Emissão e Pré-Assinatura'};
+        String lOppRT = Util.getRecordTypeIdbyName('Opportunity', recordTypeDevName);
         return new Opportunity(
             Name = 'Opp Test 1',
             CloseDate = Date.today().addDays(30),
             RecordTypeId = lOppRT,
-            AccountId = aAccountId,
+            AccountId = accountId,
             ExternalTenant__c = 'creditasbr',
             ExternalVersion__c = 1,
-            StageName = 'Emissão e Pré-Assinatura'
+            StageName = mapStageName.get(recordTypeDevName)
         );
     }
 

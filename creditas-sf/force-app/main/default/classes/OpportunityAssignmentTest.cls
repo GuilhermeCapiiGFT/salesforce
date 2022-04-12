@@ -15,6 +15,7 @@ private class OpportunityAssignmentTest {
   static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
   static DateTime secondDttm = firstDttm.addSeconds(1);
   static Id cSetupId;
+  private static string opApprovedByRH = 'Aprovado por RH';
 
   @TestSetup
   static void makeData() {
@@ -87,7 +88,7 @@ private class OpportunityAssignmentTest {
     // Change opportunities to trigger the assignments
     List<Opportunity> lstOppty = [SELECT Id, Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
     for (Opportunity op : lstOppty) {
-      op.StageName = 'Formalização';
+      op.StageName = opApprovedByRH;
       if (op.Name == 'Test Oppty 7' || op.Name == 'Test Oppty 8') {
         lstOpptyAssignFirst.add(op);
       } else {
@@ -154,7 +155,7 @@ private class OpportunityAssignmentTest {
     // Change opportunities to trigger the assignments
     List<Opportunity> lstOppty = [SELECT Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
     for (Opportunity op : lstOppty) {
-      op.StageName = 'Formalização';
+      op.StageName = opApprovedByRH;
     }
 
     Test.startTest();
@@ -221,7 +222,7 @@ private class OpportunityAssignmentTest {
     // Change opportunities to trigger the assignments
     List<Opportunity> lstOppty = [SELECT Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
     for (Opportunity op : lstOppty) {
-      op.StageName = 'Formalização';
+      op.StageName = opApprovedByRH;
     }    
 
     Test.startTest();
@@ -281,7 +282,7 @@ private class OpportunityAssignmentTest {
     oppList.addAll(oppsToCreate);
     for(Opportunity iOpp : oppList){
       iOpp.AccountId =  accountId;
-      iOpp.StageName = 'Formalização';
+      iOpp.StageName = opApprovedByRH;
     }
     Test.startTest();
       update oppList;
@@ -302,8 +303,7 @@ private class OpportunityAssignmentTest {
     }
     Opportunity opp = OpportunitySetup.createOpportunity(accountId, 'AtWork');
     opp.Name = 'Test Oppty ' + num;
-    opp.StageName = 'HR';
-    opp.FormalizationStatus__c = 'NewProposal';
+    opp.StageName = 'Contrato Assinado';
     opp.ProductType__c = prodType;
     opp.ExternalCreationDate__c = externalCreatedDttm;
     return opp;

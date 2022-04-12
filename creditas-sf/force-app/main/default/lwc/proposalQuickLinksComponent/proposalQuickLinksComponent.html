@@ -1,0 +1,13 @@
+<template>
+    <div data-id="ContainerLinksRapidos">
+        <lightning-layout multiple-rows="true" class="content-quick-links">
+            <template for:each={sectionQuickLinks} for:item="item">
+                <lightning-layout-item key={item.label} flexibility="auto" size="12" small-device-size="4" medium-device-size="3"  padding="around-small">
+                    <a href={item.url} target="_blank">
+                        <div class="custom-box slds-p-around_small slds-text-align_center">{item.label}</div>
+                    </a>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+    </div>
+</template>

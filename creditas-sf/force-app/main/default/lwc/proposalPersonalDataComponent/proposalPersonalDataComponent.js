@@ -66,8 +66,8 @@ import DISPATCHISSUERSTATUSCNH from '@salesforce/schema/PersonalDataSection__c.C
 import DISPATCHISSUERPENDINGCNH from '@salesforce/schema/PersonalDataSection__c.CNHissuingAgencyPendingReason__c';
 import DISPATCHISSUEROBSERVATIONCNH from '@salesforce/schema/PersonalDataSection__c.CNHissuingAgencyObservation__c';
 
-import getRecordId from '@salesforce/apex/ProposalController.getInfoRecords';
-import getDocuments from '@salesforce/apex/ProposalController.getDocuments';
+import getRecordId from '@salesforce/apex/ProposalPersonalDataController.getInfoRecords';
+import getDocuments from '@salesforce/apex/ProposalPersonalDataController.getDocuments';
 
 const ACCOUNT_FIELDS = [NAME_FIELD, MOTHER_FIELD, DOCUMENT_NUMBER_FIELD, CIVIL_STATUS_FIELD, PEP_FIELD, BIRTHDATE_FIELD, FATHER_FIELD, BIRTHCITY_FIELD, BIRTHCOUNTRY_FIELD, NATIONALITY_FIELD]
 const RG_DOCUMENTS_FIELDS = [RG_NUMBER_FIELD, RG_ISSUER_FIELD, RG_ISSUER_STATE_FIELD, RG_ISSUE_DATE_FIELD]
@@ -182,7 +182,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
       this.account = data
       this.error = undefined
 
-      console.log(JSON.parse(JSON.stringify(this.account)))
 
       let fields = this.account.fields
       this.name = fields.Name.value
@@ -214,7 +213,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   @wire(getDocuments, { recordId: '$accountid' })
   getDocumentsInfo({ error, data }) {
     if (data) {
-      console.log('getDocumentsInfo', JSON.parse(JSON.stringify(data)))
       
       if (data.RG && Object.keys(data.RG).length !== 0) {
         let rgDoc = data.RG
@@ -239,10 +237,9 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   getDataSectionId({ error, data }) {
     if (data) {
       this.error = undefined
-      console.log(JSON.parse(JSON.stringify(data)))
 
       this.recordPersonalSectionId = Object.keys(data).length === 0 ? '' : data.dadosPessoais.Id
-      
+    
       if (this.recordPersonalSectionId !== '') {
         
         this.personalData = data.dadosPessoais
@@ -252,7 +249,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
           this.mapSection[item] = filteredData[item]         
         }
 
-        console.log('mapSection: ', this.mapSection)
         for (let indexField in filteredData) {
           this.template.querySelectorAll("[data-status='"+indexField+"']").forEach(function(item) {
             if (item.value === filteredData[indexField]) {
@@ -298,7 +294,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   }
 
   handleSaveSection() {
-    console.time()
     this.disabledBtnSave = true
 
     const fields = {}
@@ -342,7 +337,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
       createRecord(recordInput)
         .then(() => {
-        console.log({recordInput})
         this.saveDocumentCNH()
       })
         .catch(error => {
@@ -382,7 +376,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
       createRecord(recordInput)
         .then(() => {
-        console.log({recordInput})
         this.saveCheckboxes()
       })
       .catch(error => {
@@ -413,12 +406,10 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     {
       fields[OPPORTUNITY_ID_FIELD.fieldApiName] = this.opportunityid
       
-      console.log({ fields })
       const recordInput = { apiName: PERSONAL_DATA_OBJECT.objectApiName, fields }
       
       createRecord(recordInput)
         .then(record => {
-          console.log({ record })
           this.recordPersonalSectionId = record.id
           this.disabledBtnSave = false
           this.showToast('Sucesso', 'Dados Pessoais atualizado com sucesso!', 'success')
@@ -431,12 +422,10 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     else {
       fields[PERSONAL_DATA_ID_FIELD.fieldApiName] = this.recordPersonalSectionId
 
-      console.log({ fields })
       const recordInput = { fields }
 
       updateRecord(recordInput)
         .then(recordInput => {
-          console.log({ recordInput })
           this.disabledBtnSave = false
           this.showToast('Sucesso', 'Dados Pessoais atualizado com sucesso!', 'success')
         })
@@ -473,7 +462,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     fieldsIssuerCNH.indexOf(nameStatus) > -1 ?       this.resetFieldsValidation(fieldsIssuerCNH):'';
     
     this.mapSection[nameStatus] = valueStatus
-    console.log(this.mapSection)
   }
 
   resetFieldsValidation(fieldsValidationAPI) {
@@ -507,7 +495,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
         modal['openModalReason'] = true
         modal['fieldReason'] = event.target.getAttribute('data-field')
         modal['objectReason'] = 'PersonalDataSection__c'
-        console.log({modal})
       }
     })
 
@@ -596,7 +583,6 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   @api
   getReasonSelected(result) {
     let validationReason = JSON.parse(result);
-    console.log({validationReason})
     if(validationReason.reason == null) {
       this.uncheckReason(validationReason.field);
     }
@@ -656,6 +642,5 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   showError(error) {
     this.error = error
     this.showToast('Erro', error.body.message, 'error')
-    console.log(JSON.parse(JSON.stringify(error)))
   }
 }

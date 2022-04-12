@@ -14,12 +14,13 @@ public with sharing class OpportunityIntegrationService {
     }
     private static Map<String,String> mapPersonIdAccountName = new Map<String,String>();
     public static String opportunityId;
+
     private static final String HOME_REFIN = 'HOME_REFIN';
     private static final String AUTO_FIN = 'AUTO_FIN';
+    private static final String ATWORK = 'PAYROLL';
+
     private static Map<String,String> mapStageName = new Map<String,String>{
-                                                            'PENDING_SIGNATURE' => 'Assinatura', 
-                                                            'PENDING_HR' => 'HR', 
-                                                            'PENDING_FORMALIZATION' => 'Formalização',
+                                                            ATWORK => 'Novo',
                                                             HOME_REFIN => 'Emissão e Pré-Assinatura',
                                                             AUTO_FIN => 'Crédito'
                                                         };
@@ -52,16 +53,6 @@ public with sharing class OpportunityIntegrationService {
         return res;
     }
     
-    private static String getStageName(String step, String recordTypeDevName){
-        if(HOME_REFIN == recordTypeDevName){
-            return mapStageName.get(recordTypeDevName);
-        } else if(AUTO_FIN == recordTypeDevName){
-            return mapStageName.get(recordTypeDevName);
-        } else {
-            return mapStageName.get(step);
-        }
-    }
-
     public static Database.upsertResult upsertOpportunity(OpportunityIntegrationVO requestBodyObj){
 
         String externalId = requestBodyObj?.id;
@@ -69,7 +60,7 @@ public with sharing class OpportunityIntegrationService {
         String oppRecordTypeId = selectOppRecordTypeId(recordTypeProductMap.get('recordType'));
         String oppStageName;
         
-        if(HOME_REFIN == recordTypeProductMap.get('recordType') || AUTO_FIN ==  recordTypeProductMap.get('recordType')){
+        if(HOME_REFIN == recordTypeProductMap.get('recordType') || AUTO_FIN ==  recordTypeProductMap.get('recordType') || ATWORK ==  recordTypeProductMap.get('recordType') ){
             oppStageName = [SELECT StageName FROM Opportunity WHERE ExternalId__c = :externalId]?.StageName;
         }
         Opportunity opportunityToUpsert = new Opportunity(
@@ -79,7 +70,7 @@ public with sharing class OpportunityIntegrationService {
             ExternalTenant__c = requestBodyObj?.tenant,
             Name = mapPersonIdAccountName.get('accountName'),
             Account = new Account(ExternalId__c = mapPersonIdAccountName.get('personId')),
-            StageName = oppStageName == null ? getStageName(requestBodyObj?.conditions?.step, recordTypeProductMap.get('recordType')) : oppStageName,
+            StageName = oppStageName == null ? mapStageName.get(recordTypeProductMap.get('recordType')) : oppStageName,
             CloseDate = Date.today().addDays(30),
             RecordTypeId = oppRecordTypeId,
             ExternalCreationDate__c = getDateValue(requestBodyObj?.createdAt),
@@ -101,6 +92,14 @@ public with sharing class OpportunityIntegrationService {
     }
 
     public static Database.upsertResult upsertQuote(OpportunityIntegrationVO requestBodyObj){
+        String montlhyType;
+        Double monthlyValue;
+        
+        if(requestBodyObj.conditions?.monthlyInterestRateComposition != null && !requestBodyObj.conditions?.monthlyInterestRateComposition.isEmpty()){
+            montlhyType = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.type;
+            monthlyValue = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.value;
+        }
+
         Quote quoteObject = new Quote(
 
             UnitPrice__c = getDecimalValue(requestBodyObj.conditions?.installments?.value?.amount),
@@ -133,8 +132,8 @@ public with sharing class OpportunityIntegrationService {
             LimitTotal__c = getDecimalValue(requestBodyObj.conditions?.limitData?.total?.amount), 
             LimitInstallmentType__c = requestBodyObj.conditions?.limitData?.installmentType,
             LimitDueDate__c = getDateValue(requestBodyObj.conditions?.limitData?.dueDate), 
-            MonthlyIntRateCompType__c = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.type,
-            MonthlyIntRateCompValue__c = requestBodyObj.conditions?.monthlyInterestRateComposition[0]?.value,
+            MonthlyIntRateCompType__c = montlhyType,
+            MonthlyIntRateCompValue__c = getDecimalValue(monthlyValue),
             NetValue__c = getDecimalValue(requestBodyObj?.conditions?.netValues?.amount),
             OpportunityId = opportunityId, 
             Name = mapPersonIdAccountName.get('accountName') + ' Quote'
@@ -209,12 +208,12 @@ public with sharing class OpportunityIntegrationService {
 
     private static Map<String,String> createRTProductMap(String stringInput){
 
-        List<String> splittedString = stringInput.split('/');
+        List<String> splittedString = stringInput.replace('REQUESTING','PAYROLL_LOAN').split('/');
         Map<String,String> RecordTypeProductMap = new Map<String,String>();
 
         RecordTypeProductMap.put('recordType',splittedString.remove(0));
 
-        if( splittedString.contains('PAYROLL_LOAN') && splittedString.size() > 1){
+        if( splittedString.contains('REGULAR') && splittedString.size() > 1){
             RecordTypeProductMap.put('productType',splittedString.remove(1));
         } else if(!splittedString.isEmpty()){
             RecordTypeProductMap.put('productType',splittedString.remove(0));

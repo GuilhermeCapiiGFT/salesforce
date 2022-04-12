@@ -29,21 +29,6 @@ export default class ModalReason extends LightningElement {
         })
     }
 
-    handlerClose(){
-        let objResultReason = {};
-        objResultReason.field = this.fieldReason;
-        objResultReason.type = this.typeReason;
-        objResultReason.object = this.objectReason;
-        objResultReason.reason = null;
-        const selectedEvent = new CustomEvent('closemodal', {
-            bubbles    : true,
-            composed   : true,
-            cancelable : true,
-            detail: objResultReason
-        });
-        this.dispatchEvent(selectedEvent);
-    }
-
     handlerSelectReason(e){
         if(e.target.value.toUpperCase() != OTHER_REASON){
             this.saveDisabled = false;
@@ -73,7 +58,9 @@ export default class ModalReason extends LightningElement {
         objResultReason.field = this.fieldReason;
         objResultReason.type = this.typeReason;
         objResultReason.object = this.objectReason;
-        console.log({objResultReason});
+
+        console.log({objResultReason})
+
         this.selectedReason(objResultReason);
     }
 
@@ -86,5 +73,4 @@ export default class ModalReason extends LightningElement {
         });
         this.dispatchEvent(selectedEvent);
     }
-
 }
