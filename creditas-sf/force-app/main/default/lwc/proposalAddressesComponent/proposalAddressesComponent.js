@@ -180,7 +180,7 @@ export default class ProposalAddressesComponent extends LightningElement {
     this.disabledBtnSave = true;
     let payload = this.addressValue;
 
-    upsertAddress({addresses : payload})
+    upsertAddress({listAddress : payload})
     .then(result => {
       refreshApex(this.resultRecordCommunication);
       console.log({ result }) 
@@ -199,7 +199,7 @@ export default class ProposalAddressesComponent extends LightningElement {
     
     console.log({ payload })
     
-    upsertAddressSection({addressSection : payload})
+    upsertAddressSection({recordAddressSection : payload})
     .then(result => {
       refreshApex(this.recordAddress);
       this.showToast('', 'Registro atualizado com sucesso!', 'success')

@@ -52,7 +52,7 @@ private with sharing class AccountCompanyIntegrationControllerTest {
     }
 
     @isTest
-    private static void testEmptyProducts(){
+    private static void testInvalidProducts(){
 
         RestRequest req = new RestRequest(); 
         RestResponse res = new RestResponse();
@@ -67,10 +67,9 @@ private with sharing class AccountCompanyIntegrationControllerTest {
         AccountCompanyIntegrationController.upsertCompany();
         Test.stopTest();
 
-        System.assertEquals(200, res.statusCode, 'Expected 200');
-        System.assertEquals(1, [SELECT Count() FROM Account], 'Expected 1 account');
+        System.assertEquals(500, res.statusCode, 'Expected 500');
         String responseBodyString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
-        System.assertEquals('Company successfully upserted.', responseBodyString, 'wrong returned message');
+        System.assertEquals('Payload must have at least one enabledProduct.', responseBodyString, 'wrong returned message');
     }
 
     @isTest

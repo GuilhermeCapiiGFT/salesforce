@@ -44,7 +44,7 @@ public class MinuatorSearchVO{
 	class cls_sources {
 		@AuraEnabled public String type;	//MDO
 		@AuraEnabled public String numberVo;	//MDO
-		@AuraEnabled public String expeditionDate;
+		@AuraEnabled public cls_expeditionDate expeditionDate;
 		@AuraEnabled public String issuingBody;	//MDO
 	}
 	class cls_gender {

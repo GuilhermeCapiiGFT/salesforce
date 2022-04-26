@@ -75,7 +75,7 @@ public with sharing class OpportunityIntegrationService {
             RecordTypeId = oppRecordTypeId,
             ExternalCreationDate__c = getDateValue(requestBodyObj?.createdAt),
             ExternalUpdatedDate__c = getDateValue(requestBodyObj?.updateAt),
-            ProductType__c = recordTypeProductMap.get('productType'),
+            ProductType__c = recordTypeProductMap.get('productType') == null ? recordTypeProductMap.get('recordType') : recordTypeProductMap.get('productType'),
             Description = requestBodyObj.purpose,
             IsExternallySynched__c = true,
             IsSynchEnabled__c = 'ENABLED',
@@ -84,7 +84,6 @@ public with sharing class OpportunityIntegrationService {
             AccountNumber__c = requestBodyObj.conditions?.depositAccount?.accountNumber,
             BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType
         );
-          
         Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;
         Database.UpsertResult result = Database.upsert(opportunityToUpsert, oppExternalId, false);
         return result;

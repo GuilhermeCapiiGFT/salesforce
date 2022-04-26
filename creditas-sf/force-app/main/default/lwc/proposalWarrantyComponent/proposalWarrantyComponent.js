@@ -1,14 +1,11 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
-import { getSObjectValue, refreshApex } from '@salesforce/apex';
+import { refreshApex, getSObjectValue } from '@salesforce/apex';
 import getFinancialResource from '@salesforce/apex/ProposalWarrantyController.getFinancialResource';
 import getWarrantyDataSection from '@salesforce/apex/ProposalWarrantyController.getWarrantyDataSection';
-import saveMethod from '@salesforce/apex/ProposalWarrantyController.saveMethod';
 
 import WARRANTY_SECTION_OBJECT from '@salesforce/schema/WarrantyDataSection__c';
-import OPPORTUNITY_ID_FIELD from '@salesforce/schema/WarrantyDataSection__c.Opportunity__c';
 import RENAVAN_STATUS from '@salesforce/schema/WarrantyDataSection__c.RenavamStatus__c';
 import RENAVAN_PENDING from '@salesforce/schema/WarrantyDataSection__c.RenavamPendingReason__c';
 import RENAVAN_REJECT from '@salesforce/schema/WarrantyDataSection__c.RenavamRejectReason__c';
@@ -27,9 +24,6 @@ import STATE_STATUS from '@salesforce/schema/WarrantyDataSection__c.UFplateStatu
 import LICENSING_STATE_STATUS from '@salesforce/schema/WarrantyDataSection__c.LicensingStateStatus__c';
 import LICENSING_STATE_REJECT from '@salesforce/schema/WarrantyDataSection__c.LicensingStateRejectReason__c';
 import LICENSING_STATE_OBS from '@salesforce/schema/WarrantyDataSection__c.LicensingStateObservation__c';
-import CHASSIS_STATUS from '@salesforce/schema/WarrantyDataSection__c.ChassiStatus__c';
-import CHASSIS_REJECT from '@salesforce/schema/WarrantyDataSection__c.ChassiRejectReason__c';
-import CHASSIS_OBS from '@salesforce/schema/WarrantyDataSection__c.ChassiObservation__c';
 import FIPE_CODE_STATUS from '@salesforce/schema/WarrantyDataSection__c.FIPEtableCodeStatus__c';
 
 import FINANCIAL_RESOURCE_OBJECT from '@salesforce/schema/FinancialResources__c';
@@ -42,21 +36,21 @@ import MODEL_FIELD from '@salesforce/schema/FinancialResources__c.Model__c';
 import COLOR_FIELD from '@salesforce/schema/FinancialResources__c.Color__c';
 import STATE_FIELD from '@salesforce/schema/FinancialResources__c.State__c';
 import LICENSING_STATE_FIELD from '@salesforce/schema/FinancialResources__c.LicensingState__c';
-import CHASSIS_FIELD from '@salesforce/schema/FinancialResources__c.Chassis__c';
 import FIPE_CODE_FIELD from '@salesforce/schema/FinancialResources__c.ExternalCodeOrigin__c';
+// import CHASSI_FIELD from '@salesforce/schema/FinancialResources__c.ResourceKey__c';
 
 const RECORD_FIELDS = new Map([
-  ['inputRenavan', RENAVAN_FIELD],
-  ['inputPlate', PLATE_FIELD],
-  ['inputManufacturingYear', MANUFACTURING_YEAR_FIELD],
-  ['inputModelYear', MODEL_YEAR_FIELD],
-  ['inputBrand', BRAND_FIELD],
-  ['inputModel', MODEL_FIELD],
-  ['inputColor', COLOR_FIELD],
-  ['inputState', STATE_FIELD],
-  ['inputLicensingState', LICENSING_STATE_FIELD],
-  ['inputChassis', CHASSIS_FIELD],
-  ['inputFipeCode', FIPE_CODE_FIELD]
+  [RENAVAN_FIELD, { elementId: 'inputRenavan', updateable: false }],
+  [PLATE_FIELD, { elementId: 'inputPlate', updateable: false }],
+  [MANUFACTURING_YEAR_FIELD, { elementId: 'inputManufacturingYear', updateable: false }],
+  [MODEL_YEAR_FIELD, { elementId: 'inputModelYear', updateable: false }],
+  [BRAND_FIELD, { elementId: 'inputBrand', updateable: false }],
+  [MODEL_FIELD, { elementId: 'inputModel', updateable: false }],
+  [COLOR_FIELD, { elementId: 'inputColor', updateable: false }],
+  [STATE_FIELD, { elementId: 'inputState', updateable: false }],
+  [LICENSING_STATE_FIELD, { elementId: 'inputLicensingState', updateable: false }],
+  [FIPE_CODE_FIELD, { elementId: 'inputFipeCode', updateable: false }]
+  // [CHASSI_FIELD, { elementId: 'inputChassi', updateable: false }],
 ]);
 
 const STATUS_FIELDS = [
@@ -69,50 +63,23 @@ const STATUS_FIELDS = [
   COLOR_STATUS,
   STATE_STATUS,
   LICENSING_STATE_STATUS,
-  CHASSIS_STATUS,
   FIPE_CODE_STATUS
-];
-
-const SECTION_FIELDS = [
-  [RENAVAN_STATUS, RENAVAN_PENDING, RENAVAN_REJECT, RENAVAN_OBS],
-  [PLATE_STATUS],
-  [MANUFACTURING_YEAR_STATUS],
-  [MODEL_YEAR_STATUS, MODEL_YEAR_REJECT, MODEL_YEAR_OBS],
-  [BRAND_STATUS],
-  [MODEL_STATUS, MODEL_REJECT, MODEL_OBS],
-  [COLOR_STATUS],
-  [STATE_STATUS],
-  [LICENSING_STATE_STATUS, LICENSING_STATE_REJECT, LICENSING_STATE_OBS],
-  [CHASSIS_STATUS, CHASSIS_REJECT, CHASSIS_OBS],
-  [FIPE_CODE_STATUS]
 ];
 
 export default class ProposalWarrantyComponent extends LightningElement {
   @api opportunityid;
 
-  recordFields = RECORD_FIELDS;
-  statusFields = STATUS_FIELDS;
-  sectionFields = SECTION_FIELDS;
-
+  fieldConfig = RECORD_FIELDS;
   financialResource;
-  financialResourceTransaction;
   @track financialResourceInfo;
-  recordTypeId;
-  licensingStatePicklistValues;
-
   warrantyDataSection;
-  warrantyDataSectionTransaction;
-
   completionPercentage = 0;
-
-  disabledSaveButton = false;
 
   @wire(getFinancialResource, { opportunityId: '$opportunityid' })
   setFinancialResource({ data, error }) {
     if (data) {
       this.financialResource = data;
-      this.financialResourceTransaction = { ...this.financialResource };
-      refreshApex(this.financialResource);
+      console.log('financialResource=>',this.financialResource);
     } else if (error) {
       this.showError(error);
     }
@@ -122,11 +89,6 @@ export default class ProposalWarrantyComponent extends LightningElement {
   setWarrantyDataSection({ data, error }) {
     if (data) {
       this.warrantyDataSection = data;
-      this.warrantyDataSectionTransaction = {
-        ...this.warrantyDataSection
-      };
-      this.warrantyDataSectionTransaction[OPPORTUNITY_ID_FIELD.fieldApiName] = this.opportunityid;
-      refreshApex(this.warrantyDataSection);
       this.setFieldsInitialState();
     } else if (error) {
       this.showError(error);
@@ -137,18 +99,7 @@ export default class ProposalWarrantyComponent extends LightningElement {
   setFinancialResourceInfo({ data, error }) {
     if (data) {
       this.financialResourceInfo = data;
-    } else if (error) {
-      this.showError(error);
-    }
-  }
-
-  @wire(getPicklistValues, {
-    recordTypeId: '$financialResource.RecordTypeId',
-    fieldApiName: LICENSING_STATE_FIELD
-  })
-  setLicensingStatePicklistValues({ data, error }) {
-    if (data) {
-      this.licensingStatePicklistValues = data.values;
+      console.log('financialResourceInfo=>',data);
     } else if (error) {
       this.showError(error);
     }
@@ -156,16 +107,27 @@ export default class ProposalWarrantyComponent extends LightningElement {
 
   @api
   getReasonSelected(result) {
-    const resonWrapper = JSON.parse(result);
-    if (resonWrapper.reason == null) {
-      this.uncheckReason(resonWrapper.field);
+    const validationReason = JSON.parse(result);
+    if (validationReason.reason == null) {
+      this.uncheckReason(validationReason.field);
     } else {
-      this.setReason(resonWrapper);
+      // this.setMapReason(validationReason);
     }
   }
 
+  // connectedCallback() {
+  //   getRecordNotifyChange({ recordId: this.opportunityid });
+  // }
+
+  uncheckReason(reason) {
+    const field = this.template.querySelector(`[data-field=${reason}]`);
+    field.checked = false;
+    field.setAttribute('data-value', '');
+    this.sendInfo(this.getInfo());
+  }
+
   setFieldsInitialState() {
-    for (const fieldDefinition of this.statusFields) {
+    for (const fieldDefinition of STATUS_FIELDS) {
       const fieldApiName = fieldDefinition.fieldApiName;
       const elements = this.template.querySelectorAll([`[data-status=${fieldApiName}]`]);
       elements.forEach(element => {
@@ -179,81 +141,15 @@ export default class ProposalWarrantyComponent extends LightningElement {
     this.sendInfo(this.getInfo());
   }
 
-  uncheckReason(reason) {
-    const field = this.template.querySelector(`[data-field=${reason}]`);
-    field.checked = false;
-    field.setAttribute('data-value', '');
-    this.sendInfo(this.getInfo());
-  }
-
-  setReason(reasonWrapper) {
-    const observation = reasonWrapper.description ? reasonWrapper.description : '';
-    const reason = reasonWrapper.reason;
-    const reasonApiName = reasonWrapper.field;
-    let observationApiName;
-
-    switch (reasonApiName) {
-      case RENAVAN_PENDING.fieldApiName:
-      case RENAVAN_REJECT.fieldApiName:
-        observationApiName = RENAVAN_OBS.fieldApiName;
-        break;
-      case MODEL_YEAR_REJECT.fieldApiName:
-        observationApiName = MODEL_YEAR_OBS.fieldApiName;
-        break;
-      case MODEL_REJECT.fieldApiName:
-        observationApiName = MODEL_OBS.fieldApiName;
-        break;
-      case CHASSIS_REJECT.fieldApiName:
-        observationApiName = CHASSIS_OBS.fieldApiName;
-        break;
-      case LICENSING_STATE_REJECT.fieldApiName:
-        observationApiName = LICENSING_STATE_OBS.fieldApiName;
-    }
-
-    this.warrantyDataSectionTransaction[reasonApiName] = reason;
-    this.warrantyDataSectionTransaction[observationApiName] = observation;
-  }
-
   handleCheckboxChange(event) {
-    const currentCheckbox = event.target;
-    const currentRowCheckboxes = this.template.querySelectorAll(
-      `input[name=${currentCheckbox.name}]`
-    );
-
+    const currentCheckbox = event.currentTarget;
+    const currentRowCheckboxes = this.template.querySelectorAll(`input[name=${currentCheckbox.name}]`);
     this.checkOnlyOne(currentCheckbox, currentRowCheckboxes);
 
     const info = this.getInfo();
     const modal = this.getModal(currentCheckbox);
 
     this.sendInfo({ ...info, modal });
-    this.saveTransactionValue(currentCheckbox);
-  }
-
-  sendInfo(detail) {
-    const event = new CustomEvent('sendinfo', {
-      bubbles: true,
-      composed: true,
-      cancelable: true,
-      detail
-    });
-
-    this.dispatchEvent(event);
-  }
-
-  saveTransactionValue(checkbox) {
-    const fieldName = checkbox.getAttribute('data-status');
-    const value = checkbox.checked ? checkbox.value : null;
-    this.resetSectionFields(fieldName);
-    this.warrantyDataSectionTransaction[fieldName] = value;
-  }
-
-  resetSectionFields(fieldName) {
-    for (const fieldDefinitions of this.sectionFields) {
-      const fieldNames = fieldDefinitions.map(field => field.fieldApiName);
-      if (fieldNames.indexOf(fieldName) > -1) {
-        fieldNames.forEach(name => (this.warrantyDataSectionTransaction[name] = null));
-      }
-    }
   }
 
   checkOnlyOne(checkbox, rowCheckboxes) {
@@ -280,29 +176,12 @@ export default class ProposalWarrantyComponent extends LightningElement {
     this.updateCompletionPercentage(selectedCheckboxes);
 
     const variant = this.getVariant(selectedCheckboxes);
-    return {
-      variant,
-      value: this.completionPercentage,
-      returnedId: 'ContainerDadosGarantia'
-    };
-  }
-
-  getModal(checkbox) {
-    const modal = {};
-
-    if (checkbox.checked && (checkbox.value == 'Rejeitado' || checkbox.value == 'Pendenciado')) {
-      modal['modalReason'] = checkbox.value == 'Rejeitado' ? 'reject' : 'pendency';
-      modal['openModalReason'] = true;
-      modal['fieldReason'] = checkbox.getAttribute('data-field');
-      modal['objectReason'] = WARRANTY_SECTION_OBJECT.objectApiName;
-    }
-
-    return modal;
+    return { variant, value: this.completionPercentage, returnedId: 'ContainerDadosGarantia' };
   }
 
   updateCompletionPercentage(checkboxes) {
     const selected = checkboxes.length;
-    const total = this.recordFields.size;
+    const total = this.fieldConfig.size;
     this.completionPercentage = (selected / total) * 100;
   }
 
@@ -333,35 +212,28 @@ export default class ProposalWarrantyComponent extends LightningElement {
     return variant;
   }
 
-  handleInputChange(event) {
-    const value = event.target.value;
-    const elementId = event.target.getAttribute('data-id');
-    const fieldDefinition = this.recordFields.get(elementId);
-    const fieldApiName = fieldDefinition.fieldApiName;
-    this.financialResourceTransaction[fieldApiName] = value;
+  getModal(checkbox) {
+    const modal = {};
+
+    if (checkbox.checked && (checkbox.value == 'Rejeitado' || checkbox.value == 'Pendenciado')) {
+      modal['modalReason'] = checkbox.value == 'Rejeitado' ? 'reject' : 'pendency';
+      modal['openModalReason'] = true;
+      modal['fieldReason'] = checkbox.getAttribute('data-field');
+      modal['objectReason'] = WARRANTY_SECTION_OBJECT.objectApiName;
+    }
+
+    return modal;
   }
 
-  async handleSaveSection() {
-    this.disabledSaveButton = true;
+  sendInfo(detail) {
+    const event = new CustomEvent('sendinfo', {
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+      detail
+    });
 
-    const records = {
-      warrantyObject: this.warrantyDataSectionTransaction,
-      financialResource: this.financialResourceTransaction
-    };
-
-    try {
-      await saveMethod(records);
-      getRecordNotifyChange([
-        { recordId: this.financialResource.Id },
-        { recordId: this.warrantyDataSection.Id }
-      ]);
-      this.showToast('Registro atualizado com sucesso!', '', 'success');
-      this.disabledSaveButton = false;
-    } catch (error) {
-      const message = error?.body?.message ? error.body.message : '';
-      this.showToast('Erro ao atualizar registro!', message, 'error');
-      this.disabledSaveButton = false;
-    }
+    this.dispatchEvent(event);
   }
 
   showError(error) {
@@ -446,30 +318,16 @@ export default class ProposalWarrantyComponent extends LightningElement {
     return this.getFinancialResourceValue(LICENSING_STATE_FIELD);
   }
 
-  get licensingStateOptions() {
-    const options = [];
-
-    if (this.licensingStatePicklistValues) {
-      for (const item of this.licensingStatePicklistValues) {
-        const { label, value } = item;
-        const option = { label, value };
-        options.push(option);
-      }
-    }
-
-    return options;
-  }
-
   get licensingStateDisabled() {
     return this.isFieldDisabled(LICENSING_STATE_FIELD);
   }
 
-  get chassis() {
-    return this.getFinancialResourceValue(CHASSIS_FIELD);
+  get chassi() {
+    return this.getFinancialResourceValue(CHASSI_FIELD);
   }
 
-  get chassisDisabled() {
-    return this.isFieldDisabled(CHASSIS_FIELD);
+  get chassiDisabled() {
+    return this.isFieldDisabled(CHASSI_FIELD);
   }
 
   get fipeCode() {
@@ -481,7 +339,7 @@ export default class ProposalWarrantyComponent extends LightningElement {
   }
 
   get saveButtonDisabled() {
-    return this.disabledSaveButton || (this.completionPercentage === 100 ? false : true);
+    return this.completionPercentage === 100 ? false : true;
   }
 
   getFinancialResourceValue(fieldDefinition) {

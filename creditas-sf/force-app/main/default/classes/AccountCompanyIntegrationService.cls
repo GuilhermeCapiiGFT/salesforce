@@ -8,7 +8,8 @@ public with sharing class AccountCompanyIntegrationService {
         String products;
         if(request?.enabledProducts != null && !request.enabledProducts.isEmpty() && request.enabledProducts.size() > 1){
             products = String.join(request.enabledProducts,';');
-        } else if (!request.enabledProducts.isEmpty()){
+
+        } else {
             products = request?.enabledProducts[0];
         }      
 

@@ -187,6 +187,7 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	setSyncFields(sectionId){
+		debugger
 		let fieldsList = this.syncFieldsMap[sectionId]?.split(',');
 		if(fieldsList){
 			fieldsList.forEach(field => {
@@ -321,15 +322,6 @@ export default class MinuatorPerson extends LightningElement {
 		}
 	}
 
-	onChangePersonInput(event){
-		let splittedId =  event.currentTarget.dataset.id.split('_');
-		let actualPersonId = splittedId[0];
-		let actualFieldName = splittedId[1];
-		let actualPerson = this.persons.filter(person => { return person.id === actualPersonId })[0];
-		actualPerson[actualFieldName] = event.target.value;
-		this.getPersonObject(actualPersonId);
-	}
-
 	onchangeAfter77(event){		
 		let regimeSelecionado = event.detail.value;
 
@@ -383,7 +375,6 @@ export default class MinuatorPerson extends LightningElement {
 	}
 
 	getPersonObject(personId){
-		debugger
 		let actualPerson = this.persons.filter(person => { return person.id === personId})[0];
 
 		return '{'+
@@ -751,6 +742,7 @@ export default class MinuatorPerson extends LightningElement {
 		'';
 
         this.personObject = JSON.parse(this.personString);
+		debugger;
 		var i = 0;
 		this.personObject.persons.forEach(person => {
 			i++;
@@ -758,7 +750,6 @@ export default class MinuatorPerson extends LightningElement {
 			person.id = personId;
 			person.cellPhoneId = personId+"cellPhone";
 			person.emailId = personId+"email";
-			person.genderInputId = personId+'_gender';
 			person.isActiveSection = true;
 			person.isWarningSection = false;
 			person.showSection = false;				

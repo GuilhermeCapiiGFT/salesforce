@@ -18,6 +18,11 @@ global with sharing class AccountCompanyIntegrationController {
             return;
         }
 
+        if(request?.enabledProducts == null || request.enabledProducts.isEmpty()){
+            buildResponse(response, 'Payload must have at least one enabledProduct.', 500);
+            return;
+        }
+
         Database.upsertResult result = AccountCompanyIntegrationService.upsertCompany(request);
         if(result.isSuccess()){
             buildResponse(response, 'Company successfully upserted.', 200);
