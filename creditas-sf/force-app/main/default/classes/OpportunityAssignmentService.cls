@@ -1,11 +1,15 @@
 public with sharing class OpportunityAssignmentService {
 
-    private static final String awaitingFormaliztion = 'Aguardando Análise de Formalização';
+    private static final String AWAITING_FORMALIZATION_ANALYSIS = 'Aguardando Análise de Formalização';
+    private static final String UNDER_FORMALIZATION_ANALYSIS = 'Em Análise de Formalização';
+    private static final String AWAITING_COMITEE = 'Aguardando Distribuição de Comitê';
+    private static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê';
 
     public static string opportunityRecordTypeDevName;
     public static Map<String,String> stageNameMap;
-    private Map<String, Set<String>> mapAssignedOppStages;
-    private Map<String,String> mapStagesToSet;
+
+    private static Map<String, Set<String>> mapAssignedOppStages;
+    private static Map<String,String> mapStagesToSet = new Map<String,String>();
 
     public static Boolean saveToCache = false;
 
@@ -19,14 +23,14 @@ public with sharing class OpportunityAssignmentService {
                                                             'stageNameCommiteeAnalysis' => stageNameList.remove(0)};
 
       mapAssignedOppStages = new Map<String,Set<String>>{
-        'AtWork' => new Set<String>{awaitingFormaliztion,'Em Análise de Formalização'},
-        'AutoFin' => new Set<String>{''}
+        'AtWork' => new Set<String>{AWAITING_FORMALIZATION_ANALYSIS,UNDER_FORMALIZATION_ANALYSIS},
+        'AutoFin' => new Set<String>{AWAITING_FORMALIZATION_ANALYSIS,UNDER_FORMALIZATION_ANALYSIS,AWAITING_COMITEE_ANALYSIS}
       };
 
       mapStagesToSet = new Map<String,String>{
-        'Aprovado por RH' => awaitingFormaliztion,
-        'Retorno de Pendência de Formalização' => awaitingFormaliztion,
-        'Aguardando Distribuição de Comitê' => 'Aguardando Análise de Comitê'
+        'Aprovado por RH' => AWAITING_FORMALIZATION_ANALYSIS,
+        'Retorno de Pendência de Formalização' => AWAITING_FORMALIZATION_ANALYSIS,
+        AWAITING_COMITEE => AWAITING_COMITEE_ANALYSIS
       };
 
       return stageMap;
@@ -64,11 +68,11 @@ public with sharing class OpportunityAssignmentService {
       
       Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
       
+      Map<String,String> accountUserIdMap = new Map<String,String>();
+
       if(OpportunityAssignmentController.ATWORK == recordTypeDevName || OpportunityAssignmentController.AUTOFIN == recordTypeDevName){
-        Map<String,String> accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap');
-      } else {
-        Map<String,String> accountUserIdMap = new Map<String,String>();
-      }
+        accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap');
+      } 
  
       for (Opportunity op : inputOppList) {
         

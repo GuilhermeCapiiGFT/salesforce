@@ -12,12 +12,12 @@ public with sharing class OpportunityAssignmentController {
 
     if(runAtWork){
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(ATWORK));
-      stageNameSet.addAl(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização'});
+      stageNameSet.addAll(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização'});
     }
 
     if(runAutoFin){
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(AUTOFIN));
-      stageNameSet.addAl(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização','Aguardando Distribuição de Comitê'});
+      stageNameSet.addAll(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização','Aguardando Distribuição de Comitê'});
     }
     
     if(runAtWork || runAutoFin){
@@ -34,21 +34,21 @@ public with sharing class OpportunityAssignmentController {
 
   private static Boolean checkAutoFinAssignment(List<Opportunity> lstOpportunity) {
     OpportunityAssignmentService.opportunityRecordTypeDevName = AUTOFIN;
-    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(new List<String>{'','','','','',''});
+    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(new List<String>{'Novo','Aguardando Distribuição de Formalização','Pendência OPS','Retorno de Pendência de Formalização','Em Análise de Formalização','Em Análise de Comitê de Formalização'});
     return OpportunityAssignmentService.checkOpportunities(lstOpportunity);
   }
 
-  private static void runOpportunityAssignment(Boolean atWork, Boolean autoFin){
+  private static void runOpportunityAssignment(Boolean runAtWork, Boolean runAutoFin){
 
     Map<String,List<Opportunity>> oppRecordTypeIdMap = OpportunityAssignmentService.getOpportunitiesMap(recordTypeIdSet, stageNameSet);
 
     List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
     
-    if(atWork){
+    if(runAtWork){
       opportunitiesToUpdate.addAll(runAssignment(oppRecordTypeIdMap.get(OpportunityAssignmentService.getRecordTypeId(ATWORK)), ATWORK));
     }
 
-    if(autoFin){
+    if(runAutoFin){
       opportunitiesToUpdate.addAll(runAssignment(oppRecordTypeIdMap.get(OpportunityAssignmentService.getRecordTypeId(AUTOFIN)), AUTOFIN));
     }
    
