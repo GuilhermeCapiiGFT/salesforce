@@ -1,14 +1,16 @@
-import { LightningElement } from 'lwc';
+import { LightningElement,api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
 
 export default class ModalProposalComite extends LightningElement {
-
+    @api recordId
     modalHeader = 'Deseja enviar ao Comitê';
     showDescription = false;
     selected;
     otherReason;
+    observation;
     picklistValues;
+    loadingPicklist = true;
     
     connectedCallback(){
       getMapPickList({objApiName: 'Opportunity', fieldApiName: 'CommiteeReason__c'}).then( result => {
@@ -16,7 +18,7 @@ export default class ModalProposalComite extends LightningElement {
     }).catch(error => {
         console.log(JSON.stringify(error));
     }).finally( () => {
-        
+      this.loadingPicklist = false;
     })
     }
     /*
@@ -35,8 +37,6 @@ export default class ModalProposalComite extends LightningElement {
     }
 
     handleChange(event){
-        //let selectedOptionsList = event.detail.value;
-        //let selectArray = Array.from(selectedOptionsList);
         if(event.detail.value.includes('OTHER')){
             this.showDescription = true;
         } else {
@@ -45,13 +45,27 @@ export default class ModalProposalComite extends LightningElement {
         this.selected = event.detail.value.join(';');
     }
 
-    handleCloseModal() {
+    handleCloseModal(event) {
         const closeEvent = new CustomEvent('closemodal');
         this.dispatchEvent(closeEvent);
     }
+
     handleSendCommitee(event){
-        let valid = this.checkRequiredFields();
-        console.log(valid);
+        //let valid = this.checkRequiredFields();
+        //console.log(valid);
+        console.log(this.selected);
+        if(this.selected === undefined || this.selected.size() === 0) {
+          this.showToast('Aviso','Por favor selecione pelo menos 1 motivo para prosseguir.','warning');
+        }
+        let opp = {
+          Id: recordId,
+          CommiteeReason__c: this.selected,
+          CommiteeOtherReason__c: this.otherReason,
+          CommiteeObservation__c: this.observation,
+          StageName: 'Aguardando Análise de Comitê'
+        };
+
+        console.dir(opp);
     }
 
     genericOnChange(event) {
