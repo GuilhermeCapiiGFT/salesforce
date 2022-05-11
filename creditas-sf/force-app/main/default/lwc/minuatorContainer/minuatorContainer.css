@@ -12,35 +12,11 @@
     bottom: 19px;
 }
 
-.slds-icon .slds-input__icon .slds-input__icon_left .slds-icon-text-default{
-    position: absolute;
-    z-index: 1;
-    margin: 0.5% 0 0 92%;
+.slds-card {
+   border: 0px 1px 1px 1px solid #DDDBDA;
+   border-top: 0px;
 }
 
-.alignSpan{
-    align-items: right
-}
-
-.colorIconMessage{
-    fill:white
-}
-
-.colorIconMessage{    
-    padding: 8px;    
-}
-.participacao{
-    float: right; 
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 2px; 
-    border-width: 0.5px; 
-    border-style: solid; 
-    border-radius: 9px; 
-    border-color: rgb(174, 174, 174); 
-    font-weight: bold
-}
-
-.participacaoHidden{
-    visibility: hidden;
+.borderHeader{
+    --slds-c-card-radius-border: 0px 0px 4px 4px !important ;    
 }

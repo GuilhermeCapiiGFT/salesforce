@@ -1,71 +1,95 @@
 public with sharing class OpportunityEvaluationService {
   public static final String STAGENAME_NEW = 'Novo';
-  public static final String STAGENAME_SIGNED = 'Contrato Assinado';
-  public static final String STAGENAME_HR = 'Aprovado por RH';
+  public static final String STAGENAME_APPROVED_BY_HR = 'Aprovado por RH';
   public static final String STAGENAME_PENDENCY_RETURN = 'Retorno de Pendência de Formalização';
+  public static final String STAGENAME_SENT_COMMITTEE = 'Aguardando Distribuição para Comitê de Formalização';
 
-  private static final String RECORD_TYPE_NAME_ATWORK = 'AtWork';
+  private static final String RECORDTYPENAME_ATWORK = 'AtWork';
+  private static final String RECORDTYPENAME_AUTOFIN = 'AutoFin';
 
-  public static String pendencyReturnApiName = CustomSetupController.getPendencyReturnApiName();
+  private static String pendencyReturnApiName = CustomSetupController.getPendencyReturnApiName();
+  private static String committeeApiName = CustomSetupController.getCommitteeApiName();
 
-  private Map<String, Map<String, Double>> priorityPointsMap;
+  private static Map<String, Set<String>> trackedStageNamesByRecordType = new Map<String, Set<String>>{
+    RECORDTYPENAME_ATWORK => new Set<String>{
+      STAGENAME_NEW,
+      STAGENAME_APPROVED_BY_HR,
+      STAGENAME_PENDENCY_RETURN,
+      STAGENAME_SENT_COMMITTEE
+    },
+    RECORDTYPENAME_AUTOFIN => new Set<String>{ STAGENAME_NEW, STAGENAME_PENDENCY_RETURN, STAGENAME_SENT_COMMITTEE }
+  };
 
-  private List<String> products;
+  private static Map<String, Set<String>> priorityStageNamesByRecordType = new Map<String, Set<String>>{
+    RECORDTYPENAME_ATWORK => new Set<String>{ STAGENAME_PENDENCY_RETURN, STAGENAME_SENT_COMMITTEE },
+    RECORDTYPENAME_AUTOFIN => new Set<String>{ STAGENAME_PENDENCY_RETURN, STAGENAME_SENT_COMMITTEE }
+  };
 
+  private Map<String, Set<String>> productsByRecordType;
   private List<Opportunity> opportunities;
-
   private List<Opportunity> changedOpportunities;
-
   private String query;
 
-  public static Map<String, Map<String, Double>> createPriorityPointsMap(List<CustomQueue__c> customQueues) {
-    Map<String, Map<String, Double>> productsByRecordTypeName = new Map<String, Map<String, Double>>();
-
-    for (CustomQueue__c cQueue : customQueues) {
-      String recordTypeName = cQueue.CustomSetup__r.RecordType.DeveloperName;
-      String product = cQueue.ProductType__c;
-      Double points = cQueue.Points__c;
-
-      if (productsByRecordTypeName.containsKey(recordTypeName)) {
-        productsByRecordTypeName.get(recordTypeName).put(product, points);
-      } else {
-        productsByRecordTypeName.put(recordTypeName, new Map<String, Double>{ product => points });
-      }
-    }
-
-    return productsByRecordTypeName;
-  }
-
-  public static List<Opportunity> filterOpportunitiesToEvaluate(List<Opportunity> opportunities) {
-    List<Opportunity> resultOpportunities = new List<Opportunity>();
+  public static List<Opportunity> getPriorityOpportunities(List<Opportunity> opportunities) {
+    List<Opportunity> priorityOpportunities = new List<Opportunity>();
 
     for (Opportunity opportunity : opportunities) {
-      if (TriggerHelper.changedToExpectedValue(opportunity, 'StageName', STAGENAME_PENDENCY_RETURN)) {
-        resultOpportunities.add(opportunity);
+      if (isPriority(opportunity)) {
+        priorityOpportunities.add(opportunity);
       }
     }
 
-    return resultOpportunities;
+    return priorityOpportunities;
+  }
+
+  private static boolean isPriority(Opportunity opportunity) {
+    String recordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opportunity.RecordTypeId);
+    if (priorityStageNamesByRecordType.containsKey(recordTypeName)) {
+      for (String stageName : priorityStageNamesByRecordType.get(recordTypeName)) {
+        if (TriggerHelper.changedToExpectedValue(opportunity, 'StageName', stageName)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   public OpportunityEvaluationService() {
+    this.opportunities = new List<Opportunity>();
     this.changedOpportunities = new List<Opportunity>();
-    this.products = new List<String>();
+    this.productsByRecordType = new Map<String, Set<String>>();
   }
 
-  public void setPriorityPointsMap(Map<String, Map<String, Double>> priorityPointsMap) {
-    this.priorityPointsMap = priorityPointsMap;
-  }
-
-  public void setProducts(List<CustomQueue__c> processingCustomQueues) {
-    this.products = new List<String>();
-    for (CustomQueue__c cQueue : processingCustomQueues) {
-      products.add(cQueue.ProductType__c);
+  public void setProducts(List<CustomQueue__c> customQueues) {
+    this.productsByRecordType = new Map<String, Set<String>>();
+    for (CustomQueue__c queue : customQueues) {
+      String recordTypeName = Util.getRecordTypeDeveloperNameById('CustomQueue__c', queue.RecordTypeId);
+      if (!this.productsByRecordType.containsKey(recordTypeName)) {
+        this.productsByRecordType.put(recordTypeName, new Set<String>());
+      }
+      this.productsByRecordType.get(recordTypeName).add(queue.QueueName__c);
     }
   }
 
   public void setOpportunities(List<Opportunity> opportunities) {
     this.opportunities = opportunities;
+  }
+
+  public void evaluateOpportunities() {
+    Map<String, Map<String, Double>> productPointsByRecordType = CustomSetupController.getProductPointsByRecordType();
+
+    if (this.opportunities.isEmpty()) {
+      this.selectOpportunities();
+    }
+
+    for (Opportunity opportunity : this.opportunities) {
+      String recordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opportunity.RecordTypeId);
+      if (productPointsByRecordType.containsKey(recordTypeName)) {
+        Map<String, Double> pointsByProduct = productPointsByRecordType.get(recordTypeName);
+        opportunity.PriorityPoints__c = this.getPriorityPoints(opportunity, pointsByProduct);
+        this.changedOpportunities.add(opportunity);
+      }
+    }
   }
 
   public void selectOpportunities() {
@@ -76,17 +100,15 @@ public with sharing class OpportunityEvaluationService {
   }
 
   private String getQueryString() {
-    if (priorityPointsMap.isEmpty()) {
+    if (this.productsByRecordType.isEmpty()) {
       return '';
     }
 
-    String soqlSelect = 'SELECT RecordTypeId, ProductType__c, StageName, PriorityPoints__c FROM Opportunity';
+    String soqlSelect = 'SELECT RecordTypeId, QueueName__c, StageName, PriorityPoints__c FROM Opportunity';
     String soqlWhere = '';
 
-    for (String recordTypeName : priorityPointsMap.keySet()) {
-      if (recordTypeName == RECORD_TYPE_NAME_ATWORK) {
-        soqlWhere += getAtWorkQueryString();
-      }
+    for (String recordTypeName : this.productsByRecordType.keySet()) {
+      soqlWhere += ' OR (' + this.getBuQueryString(recordTypeName) + ')';
     }
 
     if (String.isNotBlank(soqlWhere)) {
@@ -97,59 +119,46 @@ public with sharing class OpportunityEvaluationService {
     return '';
   }
 
-  private String getAtWorkQueryString() {
-    String recordTypeId = String.valueOf(Util.getRecordTypeIdbyName('Opportunity', RECORD_TYPE_NAME_ATWORK));
-    List<String> stageNames = new List<String>{
-      STAGENAME_NEW,
-      STAGENAME_SIGNED,
-      STAGENAME_HR,
-      STAGENAME_PENDENCY_RETURN
-    };
+  private String getBuQueryString(String recordTypeName) {
+    String recordTypeId = String.valueOf(Util.getRecordTypeIdbyName('Opportunity', recordTypeName));
+    Set<String> stageNames = trackedStageNamesByRecordType.get(recordTypeName);
+    Set<String> products = this.productsByRecordType.get(recordTypeName);
 
-    String filterRecordTypeId = 'RecordTypeId = ' + StringUtils.singleQuoteThis(recordTypeId);
-
-    String filterProductsCriteria = '';
-    if (!this.products.isEmpty()) {
-      filterProductsCriteria =
+    String filterProducts = '';
+    if (!products.isEmpty()) {
+      filterProducts =
         ' AND (' +
-        'ProductType__c IN (' +
-        StringUtils.getSingleQuotedSeparatedValues(this.products, ',') +
+        'QueueName__c IN (' +
+        StringUtils.getSingleQuotedSeparatedValues(products, ',') +
         ')';
 
-      if (this.products.contains(pendencyReturnApiName)) {
-        filterProductsCriteria += ' OR StageName = ' + StringUtils.singleQuoteThis(STAGENAME_PENDENCY_RETURN);
+      if (products.contains(pendencyReturnApiName)) {
+        filterProducts += ' OR StageName = ' + StringUtils.singleQuoteThis(STAGENAME_PENDENCY_RETURN);
+      } 
+      
+      if (products.contains(committeeApiName)) {
+        filterProducts += ' OR StageName = ' + StringUtils.singleQuoteThis(STAGENAME_SENT_COMMITTEE);
       }
 
-      filterProductsCriteria += ')';
+      filterProducts += ')';
     }
 
-    String filterStageName = 'AND StageName IN (' + StringUtils.getSingleQuotedSeparatedValues(stageNames, ',') + ')';
-
-    return ' OR (' + filterRecordTypeId + filterProductsCriteria + filterStageName + ')';
+    return 'RecordTypeId = ' +
+      StringUtils.singleQuoteThis(recordTypeId) +
+      ' AND StageName IN (' +
+      StringUtils.getSingleQuotedSeparatedValues(stageNames, ',') +
+      ')' +
+      filterProducts;
   }
 
-  public void evaluateOpportunities() {
-    if (this.priorityPointsMap == null || this.priorityPointsMap.isEmpty()) {
-      return;
-    }
-
-    for (Opportunity opportunity : this.opportunities) {
-      String opportunityRecordTypeName = Util.getRecordTypeDeveloperNameById('Opportunity', opportunity.RecordTypeId);
-      if (this.priorityPointsMap.containsKey(opportunityRecordTypeName)) {
-        opportunity.PriorityPoints__c = this.getPriorityPoints(opportunity, opportunityRecordTypeName);
-        this.changedOpportunities.add(opportunity);
-      }
-    }
-  }
-
-  private Double getPriorityPoints(Opportunity opportunity, String recordTypeDevName) {
-    Map<String, Double> pointsByProduct = this.priorityPointsMap.get(recordTypeDevName);
-    String productType = opportunity.ProductType__c;
-
+  private Double getPriorityPoints(Opportunity opportunity, Map<String, Double> pointsByProduct) {
+    String productType = opportunity.QueueName__c;
     Double priorityPoints = pointsByProduct.containsKey(productType) ? pointsByProduct.get(productType) : 0;
 
     if (opportunity.StageName == STAGENAME_PENDENCY_RETURN) {
       priorityPoints += pointsByProduct.get(pendencyReturnApiName);
+    } else if (opportunity.StageName == STAGENAME_SENT_COMMITTEE) {
+      priorityPoints += pointsByProduct.get(committeeApiName);
     }
 
     return priorityPoints;

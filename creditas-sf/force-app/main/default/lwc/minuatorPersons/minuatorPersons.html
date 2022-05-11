@@ -1,7 +1,7 @@
-<template>
-    <li class="slds-setup-assistant__item">
+<template>  
+    <li class="slds-setup-assistant__item" >
         <article class="slds-setup-assistant__step">
-          <div class="slds-summary-detail slds-is-open"  data-id="sectionPerson">
+          <div class="slds-summary-detail slds-is-open" data-id="sectionPerson">
             <button class="slds-button slds-button_icon slds-m-right_x-small slds-m-top_x-small" onclick={showPersonSection} title="Accordion summary" aria-controls="referenceId-72" aria-expanded="true">
               <lightning-icon  icon-name={personSectionIcon} size="x-small" style="margin-left:12px"></lightning-icon>  
               <span class="slds-assistive-text">Accordion summary</span>
@@ -22,8 +22,8 @@
                             <button class="slds-button slds-button_reset" aria-controls="referenceId-72" onclick={showPersonSection} aria-expanded="true" style="font-family: Segoe UI; font-style: normal; font-weight: bold; font-size: 16px; line-height: 24px;">
                               Pessoas
                             </button>
-                          </h3>                          
-                        </div>                        
+                          </h3>
+                        </div>
                         <div class="slds-media__figure slds-media__figure_reverse">
                           <p class="slds-text-align_right slds-text-color_weak">Não validado</p>
                         </div>
@@ -31,7 +31,7 @@
                     </div>
                   </div>
                 </div>
-              </div>              
+              </div>
               <div aria-hidden="true" class="slds-summary-detail__content" id="referenceId-72">
                 <template if:true={showPersonSectionVar}>
                   <div class="slds-setup-assistant__step-detail">
@@ -50,12 +50,7 @@
                                       index={index}
                                       person={person}
                                       onshowcustomer={handleShowCustomer}
-                                      onupdatecustomer={handleUpdateCustomer}
-                                      onupdatetypedocument={handleDocumentType}
-                                      onupdatenumberdocument={handleDocumentNumber}
-                                      onupdateissuingbody={handleDocumentIssuingBody}
-                                      onupdatedocumentexpeditiondate={handleDocumentExpeditionDate}
-                                      >
+                                      onupdatecustomer={handleUpdateCustomer}>
                                     </c-minuator-person-customer>
                               </div>
                             </li>
@@ -65,7 +60,10 @@
                               <span class="slds-assistive-text">Active</span>
                           </div>
                           <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                                <c-minuator-person-relationships >
+                                <c-minuator-person-relationships 
+                                  persons={customers}
+                                  relationships={relationships}
+                                  onupdaterelationships={handleUpdateRelationships}>
                                 </c-minuator-person-relationships>
                           </div>
                         </li>
@@ -74,11 +72,20 @@
                               <span class="slds-assistive-text">Active</span>
                           </div>
                           <div class="slds-progress__item_content slds-grid slds-grid_align-spread">
-                                <c-minuator-person-addresses>
+                                <c-minuator-person-addresses
+                                  persons={customers}
+                                  relationships={relationships}>
                                 </c-minuator-person-addresses>
                           </div>
                         </li>
-                      </ol>
+                      </ol> 
+                      <div> 
+                        <hr style="margin-top: 1px; margin-left: 30px; margin-bottom: 20px;">                          
+                        <button class="slds-button slds-button_brand"> Validar </button>   
+                                         
+                          
+                      </div>
+                           
                       <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
                         <span class="slds-assistive-text">Progress: 50%</span>
                       </div>

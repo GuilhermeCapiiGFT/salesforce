@@ -30,8 +30,8 @@
     <recordUpdates>
         <name>NomeRecursoFinanceiros</name>
         <label>NomeRecursoFinanceiros</label>
-        <locationX>154</locationX>
-        <locationY>278</locationY>
+        <locationX>156</locationX>
+        <locationY>302</locationY>
         <inputAssignments>
             <field>Name</field>
             <value>
@@ -42,7 +42,7 @@
     </recordUpdates>
     <start>
         <locationX>30</locationX>
-        <locationY>27</locationY>
+        <locationY>26</locationY>
         <connector>
             <targetReference>NomeRecursoFinanceiros</targetReference>
         </connector>

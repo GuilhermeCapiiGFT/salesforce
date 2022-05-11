@@ -1,14 +1,3 @@
-/***********************************************************************************************************************
- * Copyright © 2021 Creditas
- * =======================================================================================================================
- * @description Test class for CustomSetupController
- * 
- =======================================================================================================================
- * History
- * -------
- * VERSION   AUTHOR                  DATE            DETAIL      Description
- * 1.0       Matheus Fernandes       17/02/2021      Created     Class creation
- **********************************************************************************************************************/
 @isTest
 public class CustomSetupTest {
   @TestSetup
@@ -23,46 +12,66 @@ public class CustomSetupTest {
 
     insert cSetup;
 
+    Id queueRecordTypeId = Util.getRecordTypeIdbyName('CustomQueue__c', 'AtWork');
+
     insert new List<CustomQueue__c>{
       new CustomQueue__c(
         Name = 'DISCHARGING',
-        ProductType__c = 'DISCHARGING',
+        QueueName__c = 'DISCHARGING',
         CustomSetup__c = cSetup.Id,
-        Points__c = 10
+        Points__c = 10,
+        recordTypeId = queueRecordTypeId
       ),
       new CustomQueue__c(
         Name = 'REFINANCING',
-        ProductType__c = 'REFINANCING',
+        QueueName__c = 'REFINANCING',
         CustomSetup__c = cSetup.Id,
-        Points__c = 20
+        Points__c = 20,
+        recordTypeId = queueRecordTypeId
       ),
-      new CustomQueue__c(Name = 'STORE', ProductType__c = 'STORE', CustomSetup__c = cSetup.Id, Points__c = 30),
+      new CustomQueue__c(
+        Name = 'STORE',
+        QueueName__c = 'STORE',
+        CustomSetup__c = cSetup.Id,
+        Points__c = 30,
+        recordTypeId = queueRecordTypeId
+      ),
       new CustomQueue__c(
         Name = 'PAYROLL_LOAN',
-        ProductType__c = 'PAYROLL_LOAN',
+        QueueName__c = 'PAYROLL_LOAN',
         CustomSetup__c = cSetup.Id,
-        Points__c = 40
+        Points__c = 40,
+        recordTypeId = queueRecordTypeId
       ),
       new CustomQueue__c(
         Name = 'SALARY_ADVANCE',
-        ProductType__c = 'SALARY_ADVANCE',
+        QueueName__c = 'SALARY_ADVANCE',
         CustomSetup__c = cSetup.Id,
-        Points__c = 50
+        Points__c = 50,
+        recordTypeId = queueRecordTypeId
       ),
       new CustomQueue__c(
         Name = 'PENDENCY_RETURN',
-        ProductType__c = 'PENDENCY_RETURN',
+        QueueName__c = 'PENDENCY_RETURN',
         CustomSetup__c = cSetup.Id,
-        Points__c = 100
+        Points__c = 100,
+        recordTypeId = queueRecordTypeId
       )
     };
   }
 
   @isTest
   private static void testGetPendencyReturnApiName() {
+    Test.startTest();
     String pendencyReturnApiName = CustomSetupController.getPendencyReturnApiName();
-
+    Test.stopTest();
     System.assert(String.isNotBlank(pendencyReturnApiName), 'Pendency Return ApiName should have a value');
+  }
+
+  @isTest
+  private static void testGetCommitteeApiName() {
+    String committeeApiName = CustomSetupController.getCommitteeApiName();
+    System.assert(String.isNotBlank(committeeApiName), 'Committee ApiName should have a value');
   }
 
   @isTest
@@ -89,20 +98,20 @@ public class CustomSetupTest {
   }
 
   @IsTest
-  private static void testGetPriorityPointsByProduct() {
-    Map<String, Map<String, Double>> priorityPointsByProduct;
+  private static void testGetProductPointsByRecordType() {
+    Map<String, Map<String, Double>> productsByRecordType;
 
     Test.startTest();
 
-    priorityPointsByProduct = CustomSetupController.getPriorityPointsByProduct();
+    productsByRecordType = CustomSetupController.getProductPointsByRecordType();
 
     Test.stopTest();
 
-    System.assertEquals(1, priorityPointsByProduct.size(), 'Expected 1 item in map');
-    System.assertEquals(6, priorityPointsByProduct.get('AtWork').size(), 'Expected 6 items for \'AtWork\' record type');
+    System.assertEquals(1, productsByRecordType.size(), 'Expected 1 item in map');
+    System.assertEquals(6, productsByRecordType.get('AtWork').size(), 'Expected 6 items for \'AtWork\' record type');
     System.assertEquals(
       10,
-      priorityPointsByProduct.get('AtWork').get('DISCHARGING'),
+      productsByRecordType.get('AtWork').get('DISCHARGING'),
       'Expected 10 points for \'AtWork\' product \'DISCHARGING\''
     );
   }

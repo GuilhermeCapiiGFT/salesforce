@@ -4,7 +4,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Situação Profissional</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={status.value} disabled={status.fieldReadOnly} data-id="Status__c" onchange={handleInputChange}></lightning-input>
+        <lightning-combobox variant="label-hidden" options={professionalStateOptions} type="text" value={status.value} disabled={status.fieldReadOnly} data-id="inputState" onchange={handleInputChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -34,7 +34,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Profissão</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={jobTitle.value} disabled={jobTitle.fieldReadOnly} data-id="JobTitle__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="text" value={jobTitle.value} disabled={jobTitle.fieldReadOnly} data-id="inputJobTitle" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -64,7 +64,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Patrimônio</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={networth.value} disabled={networth.fieldReadOnly} data-id="Networth__c" onchange={handleInputChange}></lightning-input>
+        <lightning-combobox variant="label-hidden"  type="text" options={netWorthOptions} value={networth.value} disabled={networth.fieldReadOnly} data-id="Networth__c" onchange={handleNetworthChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -94,7 +94,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Informada</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={monthlyIncome.value} disabled={monthlyIncome.fieldReadOnly} data-id="MonthlyIncome__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={monthlyIncome.value} disabled={monthlyIncome.fieldReadOnly} data-id="inputMonthlyIncome" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -124,7 +124,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Mínima</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={minimalRequiredIncome.value} disabled={minimalRequiredIncome.fieldReadOnly} data-id="MinimalRequiredIncome__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={minimalRequiredIncome.value} disabled={minimalRequiredIncome.fieldReadOnly} data-id="inputMinimalMonthlyIncome" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -154,7 +154,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Considerada</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={presumedMonthlyIncome.value} disabled={presumedMonthlyIncome.fieldReadOnly} data-id="PresumedMonthlyIncome__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={presumedMonthlyIncome.value} disabled={presumedMonthlyIncome.fieldReadOnly} data-id="inputPresumedMonthlyIncome" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -184,7 +184,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Confirmada</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={confirmedMonthlyIncome.value} disabled={confirmedMonthlyIncome.fieldReadOnly} data-id="ConfirmedMonthlyIncome__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={confirmedMonthlyIncome.value} disabled={confirmedMonthlyIncome.fieldReadOnly} data-id="inputConfirmedMonthlyIncome" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -212,7 +212,7 @@
     </div>
 
     <div class="btn-container">
-      <button class="btn" disabled={disabledBtnSave} onclick={handleSaveSection} >Salvar</button>
+      <button class="btn" disabled={controllerSave} onclick={handleSaveSection} >Salvar</button>
     </div>
 
   </div>

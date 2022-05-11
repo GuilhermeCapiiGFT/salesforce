@@ -3,6 +3,7 @@ import { LightningElement } from 'lwc';
 export default class MinuatorContainer extends LightningElement {
 
     data;
+	dataEdited;
 
     connectedCallback() {
 
@@ -56,6 +57,30 @@ export default class MinuatorContainer extends LightningElement {
 		'           "profession": "Assistente Social",'+
 		'           "fatherName": "CARLOS GONÇALVES FILHO",'+
 		'           "motherName": "MERY LUCY FRANCISCO GONÇALVES",'+
+		'			"address": { '+
+        '               "sources": { '+
+        '                   "zipcode": "MDO", '+ 
+        '                   "city": "MDO", '+
+        '                   "state": "MDO", '+
+        '                   "neighborhood": "MDO", '+
+        '                   "street": "MDO", '+
+        '                   "number": "MDO", '+
+        '                   "complement": "MDO" '+
+        '               }, '+
+        '               "validation": { '+
+        '                   "isValidated": false, '+
+        '                   "validatedAt": null, '+
+        '                   "validatorEmail": null '+
+        '               }, '+
+        '               "pendingValidation": [], '+
+        '               "zipcode": "27660-971", '+
+        '               "city": "Rio das Ostras", '+
+        '               "state": "RJ", '+
+        '               "neighborhood": "Formoso", '+
+        '               "street": "Rua Doutor João Garcia da Fonseca", '+
+        '               "number": "2209", '+
+        '               "complement": "casa 1" '+
+        '               }, '+
 		'           "identityDocument": { '+ 
 		'               "sources": { '+ 
 		'                   "type": "MDO",'+
@@ -121,6 +146,30 @@ export default class MinuatorContainer extends LightningElement {
 		'           "profession": "Advogado",'+
 		'           "fatherName": "EDUARDO JOSÉ COSTA KÖNIG DA SILVA",'+
 		'           "motherName": "VÂNIA MARIA BOECHAT KÖNIG",'+
+		'			"address": { '+
+        '               "sources": { '+
+        '                   "zipcode": "MDO", '+ 
+        '                   "city": "MDO", '+
+        '                   "state": "MDO", '+
+        '                   "neighborhood": "MDO", '+
+        '                   "street": "MDO", '+
+        '                   "number": "MDO", '+
+        '                   "complement": "MDO" '+
+        '               }, '+
+        '               "validation": { '+
+        '                   "isValidated": false, '+
+        '                   "validatedAt": null, '+
+        '                   "validatorEmail": null '+
+        '               }, '+
+        '               "pendingValidation": [], '+
+        '               "zipcode": "27660-971", '+
+        '               "city": "Rio das Ostras", '+
+        '               "state": "RJ", '+
+        '               "neighborhood": "Formoso", '+
+        '               "street": "Rua Doutor João Garcia da Fonseca", '+
+        '               "number": "2209", '+
+        '               "complement": "casa 1" '+
+        '               }, '+
 		'           "identityDocument": { '+ 
 		'               "sources": { '+ 
 		'                   "type": "MDO",'+
@@ -143,15 +192,15 @@ export default class MinuatorContainer extends LightningElement {
 		'       }, '+	
 		'       { '+ 	
 		'           "sources": { '+ 
-		'               "name": "MDO",'+
+		'               "name": "Analisador",'+
 		'               "gender": null, '+
-		'               "nationality": "MDO",'+
-		'               "cellPhone": "MDO",'+
-		'               "birthdate": "MDO",'+
-		'               "email": "MDO",'+
-		'               "profession": "MDO",'+
-		'               "fatherName": "MDO",'+
-		'               "motherName": "MDO",'+
+		'               "nationality": "Analisador",'+
+		'               "cellPhone": "Analisador",'+
+		'               "birthdate": "Analisador",'+
+		'               "email": "Analisador",'+
+		'               "profession": "Analisador",'+
+		'               "fatherName": "Analisador",'+
+		'               "motherName": "Analisador",'+
 		'               "composeIncome": "Analisador",'+
 		'               "isPropertyOwner": "Analisador" '+
 		'           }, '+
@@ -166,7 +215,7 @@ export default class MinuatorContainer extends LightningElement {
 		'           "maritalStatus": "DIVORCED",'+
 		'           "mainDocument": { '+ 
 		'               "sources": { '+ 
-		'                   "number": "MDO" '+
+		'                   "number": "Analisador" '+
 		'               }, '+
 		'               "validation": { '+ 
 		'                   "isValidated": false, '+
@@ -186,12 +235,36 @@ export default class MinuatorContainer extends LightningElement {
 		'           "profession": "Assistente Social",'+
 		'           "fatherName": "CARLOS GONÇALVES FILHO",'+
 		'           "motherName": "MERY LUCY FRANCISCO GONÇALVES",'+
+		'			"address": { '+
+        '               "sources": { '+
+        '                   "zipcode": "Analisador", '+ 
+        '                   "city": "Analisador", '+
+        '                   "state": "Analisador", '+
+        '                   "neighborhood": "Analisador", '+
+        '                   "street": "Analisador", '+
+        '                   "number": "Analisador", '+
+        '                   "complement": "Analisador" '+
+        '               }, '+
+        '               "validation": { '+
+        '                   "isValidated": false, '+
+        '                   "validatedAt": null, '+
+        '                   "validatorEmail": null '+
+        '               }, '+
+        '               "pendingValidation": [], '+
+        '               "zipcode": "27660-971", '+
+        '               "city": "Rio das Ostras", '+
+        '               "state": "RJ", '+
+        '               "neighborhood": "Formoso", '+
+        '               "street": "Rua Doutor João Garcia da Fonseca", '+
+        '               "number": "2209", '+
+        '               "complement": "casa 1" '+
+        '               }, '+
 		'           "identityDocument": { '+ 
 		'               "sources": { '+ 
 		'                   "type": "MDO",'+
 		'                   "number": "MDO",'+
 		'                   "expeditionDate": null, '+
-		'                   "issuingBody": "MDO" '+
+		'                   "issuingBody": "Analisador" '+
 		'               }, '+
 		'               "validation": { '+  
 		'                   "isValidated": false, '+
@@ -251,6 +324,30 @@ export default class MinuatorContainer extends LightningElement {
 		'           "profession": "Assistente Social",'+
 		'           "fatherName": "CARLOS GONÇALVES FILHO",'+
 		'           "motherName": "MERY LUCY FRANCISCO GONÇALVES",'+
+		'			"address": { '+
+        '               "sources": { '+
+        '                   "zipcode": "MDO", '+ 
+        '                   "city": "MDO", '+
+        '                   "state": "MDO", '+
+        '                   "neighborhood": "MDO", '+
+        '                   "street": "MDO", '+
+        '                   "number": "MDO", '+
+        '                   "complement": "MDO" '+
+        '               }, '+
+        '               "validation": { '+
+        '                   "isValidated": false, '+
+        '                   "validatedAt": null, '+
+        '                   "validatorEmail": null '+
+        '               }, '+
+        '               "pendingValidation": [], '+
+        '               "zipcode": "27660-971", '+
+        '               "city": "Rio das Flores", '+
+        '               "state": "RJ", '+
+        '               "neighborhood": "Formoso", '+
+        '               "street": "Rua Doutor Gilberto Garcia da Fonseca", '+
+        '               "number": "2209", '+
+        '               "complement": "casa 1" '+
+        '               }, '+
 		'           "identityDocument": { '+ 
 		'               "sources": { '+ 
 		'                   "type": "MDO",'+
@@ -272,28 +369,29 @@ export default class MinuatorContainer extends LightningElement {
 		'           "consentingParticipant": null '+
 		'       } '+ 
 		'   ], '+
-		'   "marriages": [ '+
+		'   "relationships": [ '+
 		'       { '+ 
 		'           "regimen": null, '+
 		'           "marriageDate": null, '+
 		'           "compulsorySeparation": null, '+
-		'           "weddingCertificate": null, '+
+		'           "weddingCertificate": { "entryBook" : null }, '+
 		'           "prenuptialAgreementData": null,'+
 		'           "hasPrenuptialAgreement": null, '+
-		'           "maritalStatus": "MARRIAGE",'+
+		'           "type": "MARRIAGE",'+
 		'           "participant1Cpf": "04243545782",'+
-		'           "participant2Cpf": "09370233709" '+
+		'           "participant2Cpf": "09370233709",'+
+		'           "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa6" '+
 		'       }, '+
 		'       { '+ 
 		'           "regimen": null, '+
 		'           "marriageDate": null, '+
 		'           "compulsorySeparation": null, '+
-		'           "weddingCertificate": null, '+
 		'           "prenuptialAgreementData": null,'+
 		'           "hasPrenuptialAgreement": null, '+
-		'           "maritalStatus": "STABLE_UNION",'+
+		'           "type": "STABLE_UNION",'+
 		'           "participant1Cpf": "50043545782",'+
-		'           "participant2Cpf": "77743545782" '+
+		'           "participant2Cpf": "77743545782", '+
+		'           "id" : "3fa85f64-5717-4562-b3fc-2c963f66afa2" '+
 		'       } '+
 		'   ], '+
 		'   "lastUpdated": "2022-03-28T20:24:25",'+
@@ -306,4 +404,16 @@ export default class MinuatorContainer extends LightningElement {
 
         this.data = JSON.parse( payload);
     }
+
+	handleUpdatePersons( event ) {
+
+		let propertyName = event.detail.propertyName;
+		let property = event.detail.property;
+
+		this.data[propertyName] = property;
+
+		console.log( 'container -> ' +JSON.stringify( this.data ) );
+
+	}
+
 }

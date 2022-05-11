@@ -5,19 +5,27 @@ export default class ModalProposalComite extends LightningElement {
 
     modalHeader = 'Deseja enviar ao Comitê';
     modalBody = 'A proposta será enviada para análise do Comitê';
-    
-    contentConfirmation = true;
-    
-    handlerAgree() {
-      this.contentConfirmation = false;
-      this.handleClose()
+    showDescription = false;
+    options = [
+        { value: 'Comprovante de Residência', label: 'Comprovante de Residência' },
+        { value: 'Documentação de Consignação', label: 'Documentação de Consignação' },
+        { value: 'Renda', label: 'Renda' },
+        { value: 'Possível Fraudador', label: 'Possível Fraudador' },
+        { value: 'Adulteração de Documento', label: 'Adulteração de Documento' },
+        { value: 'Biometria Pendente', label: 'Biometria Pendente' },
+        { value: 'Outros', label: 'Outros' }
+    ];
+
+    handleChange(event){
+        const selectedOptionsList = event.detail.value;
+        if(selectedOptionsList.contains('Outros')){
+            this.showDescription = true;
+        } else {
+            this.showDescription = false;
+        }
+        console.dir(selectedOptionsList);
     }
 
-    handlerDisagrees() {
-        this.contentConfirmation = false;
-        this.handleClose()
-    }
-  
     handleClose() {
         const selectedEvent = new CustomEvent('closemodal', {
             bubbles    : true,
@@ -27,11 +35,7 @@ export default class ModalProposalComite extends LightningElement {
         });
         this.dispatchEvent(selectedEvent);
     }
-
-    handleSave() {
-        this.handlerClose();
-    }
-  
+ 
     showToast(title, message, variant) {
       const event = new ShowToastEvent({
           title: title,

@@ -1,0 +1,401 @@
+<template>
+  <div class="slds-grid slds-wrap" style="width:100%">
+    <div class="slds-col slds-size_12-of-12" style="padding-top: 20px">
+      Relacionamento {relationshipEdited.index}
+    </div>
+    <div class="slds-col slds-size_4-of-12">
+      <span>
+        <lightning-input name="person1Name" label="Pessoa" value={relationshipEdited.participant1Name} required="true"
+          style="margin-top:8px" disabled="true">
+        </lightning-input>
+      </span>
+    </div>
+    <span>
+      <lightning-icon class="slds-align_absolute-center" style="margin-top:32px; margin-left:5px; margin-right:5px"
+        icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
+    </span>
+    <div class="slds-col slds-size_3-of-12">
+      <span>
+        <lightning-input style="margin-top:8px" type="text" name="relationship" label="Relacionamento" disabled="true"
+          value={relationshipEdited.typeScreen}>
+        </lightning-input>
+      </span>
+    </div>
+    <span>
+      <lightning-icon class="slds-align_absolute-center" style="margin-top:32px; margin-left:5px; margin-right:5px"
+        icon-name="utility:macros" alternative-text="IconRelationship" title="IconRelationship"></lightning-icon>
+    </span>
+    <div class="slds-col slds-size_4-of-12">
+      <span>
+        <lightning-input style="margin-top:8px" type="text" name="person2Name" label="Pessoa" required="true"
+          disabled="true" value={relationshipEdited.participant2Name}>
+        </lightning-input>
+      </span>
+    </div>
+
+    <!-- Estado Civil Casado -->
+    <template if:true={relationshipEdited.maritalMarried}>
+      <div class="slds-col slds-size_3-of-12">
+        <div class="slds-form-element">
+          <div class="slds-form-element__control">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left"
+              role="none">
+              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"
+                date-style="short" name="datedAt" label="Data do casamento" required="true" value={relationshipEdited.marriageDate}
+                data-id="dataRegime" onchange={handleDateMarried}>
+              </lightning-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-col slds-size_9-of-12">
+        <span>
+          <lightning-combobox name="regime " data-id="regimen" label="Regime" value=""
+            options={regimeOptions} placeholder="Selecione..." required="true" onchange={handleRegimes}
+            disabled={disableRegimeMarried} style="margin-top:8px; margin-right:60px;">
+          </lightning-combobox>
+        </span>
+      </div>
+      <div if:true={showCertidaoToggle} class="slds-col slds-size_12-of-12">
+        <lightning-input data-id="certidaoToggleId" class="toggleCertidao" type="toggle" label="Dados da certidão"
+          name="input1" onchange={handleCertidao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:8px; margin-left:50px">
+        </lightning-input>
+      </div>
+
+      <!-- Mostrar dados da certidão -->
+      <div if:true={showCertidao} data-id="certidaoId" class="slds-col slds-size_12-of-12"
+        style="margin-top:8px; margin-left:50px">
+        <span>
+          Dados da certidão
+        </span>
+      </div>
+      <div if:true={showCertidao} class="slds-col slds-size_1-of-4">
+        <span>
+          <lightning-combobox name="type" label="Tipo" value="type" placeholder="Selecione..." options={typeOptions}
+            style="margin-top:8px; margin-right:16px; margin-left:50px" onchange={handleTypeCertidao}>
+          </lightning-combobox>
+        </span>
+      </div>
+      <div if:true={showCertidao} class="slds-col slds-size_1-of-4">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right:16px" type="text" data-id="bookId" name="bookNumber"
+            label="Livro n°" disabled={disableBook} placeholder="Digite..." value={relationshipEdited.weddingCertificate.entryBook} onchange={handleBookCertidao}>
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showCertidao} class="slds-col slds-size_1-of-4">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 16px" type="text" data-id="sheetId" name="sheetNumber"
+            label="Folha n°" disabled={disableBook} placeholder="Digite..." value={relationshipEdited.weddingCertificate.entrySheet} onchange={handleSheetCertidao}>
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showCertidao} class="slds-col slds-size_1-of-4">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" data-id="matriculaId" type="text"
+            name="matriculaNumber" label="Matrícula" disabled={disableMatricula} placeholder="Digite..." value={relationshipEdited.weddingCertificate.registrationNumber} onchange={handleRegistrationNumber}>
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showCertidao} class="slds-col slds-size_12-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:50px; margin-right: 60px" type="text" name="draftedAt"
+            label="Lavrado no" value={relationshipEdited.weddingCertificate.cartorioName} placeholder="Digite..." onchange={handleRegistrationAt}>
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcialToggle} class="slds-col slds-size_12-of-12">
+        <lightning-input data-id="pactoToggleId" type="toggle" label="Pacto antenupcial" name="input1"
+          onchange={handlePacto} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:8px; margin-left:50px">
+        </lightning-input>
+      </div>
+
+      <!-- Mostrar dados do Pacto Antenupcial -->
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px">
+        <span>
+          Dados do pacto antenupcial
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_1-of-3">
+        <div class="slds-form-element">
+          <div class="slds-form-element__control">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left"
+              role="none">
+              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"
+                date-style="short" name="datedAt" label="Data" required="true" value="">
+              </lightning-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber"
+            placeholder="Digite..." label="Livro n°" required="true" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber"
+            placeholder="Digite..." label="Folha n°" required="true" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_10-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt"
+            label="Lavrado no" required="true" value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+
+      <!-- Seção de registro -->
+      <div if:true={showPactoAntenupcial} class="slds-col slds-size_2-of-12">
+        <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={handleRegistroPacto}
+          message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:16px; margin-right: 60px; float:right">
+        </lightning-input>
+      </div>
+      <div if:true={showAlertPacto} class="slds-col slds-size_12-of-12">
+        <div style="background-color: gray; margin-left:50px; margin-top:16px; margin-right: 60px">
+          <lightning-icon class="colorIconMessage" variant="inverse" icon-name="utility:info" size="small"
+            style="margin-left: 5px"></lightning-icon>
+          <span style="color: white;"> Em caso de registro de pacto concomitante, certifique-se que a cidade do devedor
+            seja a mesma que a da garantia. </span>
+        </div>
+      </div>
+
+      <!-- Mostrar dados seção de registro -->
+      <div if:true={showRegistroPacto} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px">
+        <span>
+          Dados do registro
+        </span>
+      </div>
+      <div if:true={showRegistroPacto} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber"
+            label="Livro n°" placeholder="Digite..." value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroPacto} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber" label="Folha n°"
+            placeholder="Digite..." value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroPacto} class="slds-col slds-size_12-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px; margin-right: 60px" type="text" name="draftedAt"
+            label="Lavrado no" value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+
+      <!-- Separação obrigatória -->
+      <div if:true={showSeparacaoToggle} class="slds-col slds-size_12-of-12">
+        <lightning-input data-id="showSeparacaoToggle" type="toggle" label="Separação obrigatória" name="input1"
+          onchange={handleSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:8px; margin-left:50px">
+        </lightning-input>
+      </div>
+
+      <!-- Dados separação obrigatória -->
+      <div if:true={showSeparacao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-left:50px" type="text" name="draftedAt" label="Artigo" value=""
+            placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showSeparacao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-left:16px; margin-right: 60px" type="text" name="draftedAt" label="Inciso"
+            value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showSeparacaoPactoAntenupcialToggle} class="slds-col slds-size_12-of-12">
+        <lightning-input data-id="separacaoPactoToggleId" checked type="toggle" label="Pacto antenupcial" name="input1"
+          onchange={handlePactoSeparacao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:8px; margin-left:50px">
+        </lightning-input>
+      </div>
+
+      <!-- Mostrar dados do Pacto Antenupcial em Separação-->
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_12-of-12"
+        style="margin-top:8px; margin-left:50px">
+        <span>
+          Dados do pacto antenupcial
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3">
+        <div class="slds-form-element">
+          <div class="slds-form-element__control">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left"
+              role="none">
+              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"
+                date-style="short" name="datedAt" label="Data" required="true" value="">
+              </lightning-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right:16px" type="text" placeholder="Digite..."
+            name="bookNumber" label="Livro n°" required="true" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" type="text" placeholder="Digite..."
+            name="sheetNumber" label="Folha n°" required="true" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_10-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text" name="draftedAt"
+            label="Lavrado no" required="true" value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+
+      <!-- Seção de registro Pacto Antenupcial em Separação-->
+      <div if:true={showPactoAntenupcialSeparacao} class="slds-col slds-size_2-of-12">
+        <lightning-input type="toggle" label="Dados do registro" name="input1" onchange={handleRegistroPactoSeparacao}
+          message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:16px; margin-right: 60px; float:right">
+        </lightning-input>
+      </div>
+      <div if:true={showlertPactoSeparacao} class="slds-col slds-size_12-of-12">
+        <div style="background-color: gray; margin-left:50px; margin-top:16px; margin-right: 60px">
+          <lightning-icon class="colorIconMessage" variant="inverse" icon-name="utility:info" size="small"
+            style="margin-left: 5px"></lightning-icon>
+          <span style="color: white;"> Em caso de registro de pacto concomitante, certifique-se que a cidade do devedor
+            seja a mesma que a da garantia. </span>
+        </div>
+      </div>
+
+      <!-- Mostrar dados seção de registro Pacto Antenupcial em Separação -->
+      <div if:true={showRegistroPactoSeparacao} class="slds-col slds-size_12-of-12"
+        style="margin-top:8px; margin-left:100px">
+        <span>
+          Dados do registro
+        </span>
+      </div>
+      <div if:true={showRegistroPactoSeparacao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text"
+            placeholder="Digite..." name="bookNumber" label="Livro n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroPactoSeparacao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" type="text" placeholder="Digite..."
+            name="sheetNumber" label="Folha n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroPactoSeparacao} class="slds-col slds-size_12-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px; margin-right: 60px" type="text" name="draftedAt"
+            label="Lavrado no" value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+    </template>
+
+    <!-- União estável-->
+    <template if:true={relationshipEdited.maritalStable}>
+      <div class="slds-col slds-size_12-of-12">
+        <span>
+          <lightning-combobox name="regime  " label="Regime" value="regimeOptions" options={regimeOptions}
+            placeholder="Selecione..." required="true" disabled={disableRegimeStableUnion}
+            style="margin-top:8px; margin-left:50px; margin-right: 60px">
+          </lightning-combobox>
+        </span>
+      </div>
+      <div class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:50px">
+        <span>
+          Dados da escritura pública de declaração de união estável
+        </span>
+      </div>
+      <div class="slds-col slds-size_1-of-3">
+        <div class="slds-form-element">
+          <div class="slds-form-element__control">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left"
+              role="none">
+              <lightning-input style="margin-top:8px; margin-right:16px; margin-left:50px" type="date"
+                onchange={handleDateStableUnion} date-style="short" name="datedAt" label="Data" required="true"
+                value="">
+              </lightning-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right:16px" type="text" name="bookNumber"
+            placeholder="Digite..." label="Livro n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div class="slds-col slds-size_1-of-3">
+        <span>
+          <lightning-input style="margin-top:8px; margin-right: 60px" type="text" name="sheetNumber"
+            placeholder="Digite..." label="Folha n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div class="slds-col slds-size_10-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:50px; margin-right:16px" type="text"
+            placeholder="Digite..." name="draftedAt" label="Lavrado no" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div class="slds-col slds-size_2-of-12">
+        <lightning-input type="toggle" label="Dados do registro" data-id="registroUniaoToggleId" name="input1"
+          onchange={handleRegistroUniao} message-toggle-active="Mostrar" message-toggle-inactive="Ocultar"
+          style="margin-top:16px; margin-right: 60px; float:right">
+        </lightning-input>
+      </div>
+
+      <!-- Mostrar dados seção de registro -->
+      <div if:true={showRegistroUniao} class="slds-col slds-size_12-of-12" style="margin-top:8px; margin-left:100px">
+        <span>
+          Dados do registro
+        </span>
+      </div>
+      <div if:true={showRegistroUniao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px; margin-right:16px" type="text" name="bookNumber"
+            placeholder="Digite..." label="Livro n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroUniao} class="slds-col slds-size_1-of-2">
+        <span>
+          <lightning-input style="margin-top:8px" type="text" name="sheetNumber" placeholder="Digite..."
+            label="Folha n°" value="">
+          </lightning-input>
+        </span>
+      </div>
+      <div if:true={showRegistroUniao} class="slds-col slds-size_12-of-12">
+        <span>
+          <lightning-input style="margin-top:8px; margin-left:100px" type="text" name="draftedAt" label="Lavrado no"
+            value="" placeholder="Digite...">
+          </lightning-input>
+        </span>
+      </div>
+    </template>
+  </div>
+</template>

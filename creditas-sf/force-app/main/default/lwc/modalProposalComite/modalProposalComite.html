@@ -13,16 +13,27 @@
               </button>
           </div>
           <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-              <template if:true={contentConfirmation}>
-                  <p>{modalBody}</p>                    
-              </template> 
+              <div>
+                <lightning-dual-listbox name="Reasons"
+                label="Selecione os motivos"
+                source-label="Disponíveis"
+                selected-label="Selecionados"
+                field-level-help="Selecione os motivo(s) pelo(s) qual(is) deseja enviar a proposta para Comitê"
+                options={options}
+                onchange={handleChange}></lightning-dual-listbox>
+                <template if:true={showDescription}>
+                    <lightning-input required={showDescription} minlenght="2" message-when-too-short="Digite pelo menos 2 caracteres" type="text" label="Digite uma descrição para o motivo 'Outros'" maxlenght="200" message-when-too-long="O máximo de caracteres permitido é 200"></lightning-input>
+                </template>
+                <lightning-textarea name="Observation" label="Observação" max-length="2000" ></lightning-textarea>    
+                <p>Selected values are: {selected}</p>              
+              </div> 
               
           </div>
           <div class="slds-modal__footer">
-              <template if:true={contentConfirmation}>
-                  <button class="slds-button slds-button_neutral"  onclick={handlerDisagrees}>Não</button>
-                  <button class="slds-button slds-button_brand"  onclick={handlerAgree}>Sim</button>
-              </template>
+              
+                <button class="slds-button slds-button_neutral"  onclick={handlerDisagrees}>Não</button>
+                <button class="slds-button slds-button_brand"  onclick={handlerAgree}>Sim</button>
+            
           </div>
       </div>
   </section>

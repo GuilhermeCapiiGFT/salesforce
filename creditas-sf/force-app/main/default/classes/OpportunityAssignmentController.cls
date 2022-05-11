@@ -6,18 +6,17 @@ public with sharing class OpportunityAssignmentController {
   private static Set<String> stageNameSet = new Set<String>();
 
   public static void handleOpportunitiesAssignment(List<Opportunity> lstOpportunity){
-
     Boolean runAtWork = checkAtWorkAssignment(lstOpportunity);
     Boolean runAutoFin = checkAutoFinAssignment(lstOpportunity);
 
     if(runAtWork){
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(ATWORK));
-      stageNameSet.addAll(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização'});
+      stageNameSet.addAll(new List<String>{OpportunityAssignmentService.APPROVED_BY_HR,OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN});
     }
 
     if(runAutoFin){
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(AUTOFIN));
-      stageNameSet.addAll(new List<String>{'Aprovado por RH','Retorno de Pendência de Formalização','Aguardando Distribuição de Comitê'});
+      stageNameSet.addAll(new List<String>{OpportunityAssignmentService.AWAITING_FORMALIZATION_ASSIGNMENT,OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN,OpportunityAssignmentService.AWAITING_COMITEE_ASSIGNMENT});
     }
     
     if(runAtWork || runAutoFin){
@@ -27,14 +26,27 @@ public with sharing class OpportunityAssignmentController {
 
   private static Boolean checkAtWorkAssignment(List<Opportunity> lstOpportunity) {
     OpportunityAssignmentService.opportunityRecordTypeDevName = ATWORK;
-    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(new List<String>{'Contrato Assinado', 'Aprovado por RH', 'Pendenciado para Consultoria', 'Retorno de Pendência de Formalização', 'Em Análise de Formalização', ''});
+    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(
+                                                new List<String>{ OpportunityAssignmentService.NEW_OPP, 
+                                                                  OpportunityAssignmentService.APPROVED_BY_HR, 
+                                                                  OpportunityAssignmentService.CONSULTING_PENDENCY, 
+                                                                  OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN, 
+                                                                  OpportunityAssignmentService.UNDER_FORMALIZATION_ANALYSIS, 
+                                                                  ''  });
+
     return OpportunityAssignmentService.checkOpportunities(lstOpportunity);
     
   }
 
   private static Boolean checkAutoFinAssignment(List<Opportunity> lstOpportunity) {
     OpportunityAssignmentService.opportunityRecordTypeDevName = AUTOFIN;
-    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(new List<String>{'Novo','Aguardando Distribuição de Formalização','Pendência OPS','Retorno de Pendência de Formalização','Em Análise de Formalização','Em Análise de Comitê de Formalização'});
+    OpportunityAssignmentService.stageNameMap = OpportunityAssignmentService.createStageNameMap(
+                                                new List<String>{ OpportunityAssignmentService.NEW_OPP,
+                                                                  OpportunityAssignmentService.AWAITING_FORMALIZATION_ASSIGNMENT,
+                                                                  OpportunityAssignmentService.AWAITING_FORMALIZATION_ASSIGNMENT,
+                                                                  OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN,
+                                                                  OpportunityAssignmentService.UNDER_FORMALIZATION_ANALYSIS,
+                                                                  OpportunityAssignmentService.UNDER_COMMITEE_ANALYSIS  });
     return OpportunityAssignmentService.checkOpportunities(lstOpportunity);
   }
 
@@ -53,7 +65,7 @@ public with sharing class OpportunityAssignmentController {
     }
    
     if(opportunitiesToUpdate.isEmpty()){ return; }
-    
+    OpportunityAssignmentService.sendCustomNotification(opportunitiesToUpdate);
     Database.update(opportunitiesToUpdate, false);
   }
   

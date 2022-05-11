@@ -89,24 +89,24 @@
         </connector>
         <filterLogic>or</filterLogic>
         <filters>
-            <field>FormalizationStatus__c</field>
+            <field>StageName</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Aprovado</stringValue>
+                <stringValue>Pendenciado para Consultoria</stringValue>
             </value>
         </filters>
         <filters>
-            <field>FormalizationStatus__c</field>
+            <field>StageName</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Rejeitado</stringValue>
+                <stringValue>Rejeitado em Formalização</stringValue>
             </value>
         </filters>
         <filters>
-            <field>FormalizationStatus__c</field>
+            <field>StageName</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Pendenciado</stringValue>
+                <stringValue>Aprovado em Formalização</stringValue>
             </value>
         </filters>
         <object>Opportunity</object>

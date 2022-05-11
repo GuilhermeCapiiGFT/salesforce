@@ -1,6 +1,12 @@
 <template>
 	<div class="slds-card slds-p-horizontal_medium" style="overflow: hidden;" data-id="top-component">
-	  <template if:false={isAnalysisStarted}>
+	  <!-- <template if:false={isAnalysisStarted}>
+		  <div class="btn-container">
+			  <button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
+		  </div>
+	  </template> -->
+
+		<template if:true={isReadyForAnalysis}>
 		  <div class="btn-container">
 			  <button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
 		  </div>
@@ -19,12 +25,12 @@
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content">Geral</span>
+									  <span class="geral slds-accordion__summary-content header-section">Geral</span>
 								  </h2>
 							  </div>
 							  <!-- conteúdo aqui -->
@@ -43,7 +49,7 @@
 						  <section class="slds-accordion__section ">
 							  <div class="slds-accordion__summary">
 								<h2 class="slds-accordion__summary-heading">
-								  <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais" onclick={handleAccordionToggle} style="cursor: pointer;">
+								  <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais header-section" onclick={handleAccordionToggle}>
 									  Dados Pessoais
 								  </span>
 								</h2>
@@ -60,12 +66,12 @@
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={contactInfoValue} variant={contactInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 								<div class="slds-accordion__summary">
 									<h2 class="slds-accordion__summary-heading">
-										<span class="geral slds-accordion__summary-content">Dados de Contato</span>
+										<span class="geral slds-accordion__summary-content header-section">Dados de Contato</span>
 									</h2>
 								</div>
 								<div class="slds-accordion__content">
@@ -80,12 +86,12 @@
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={addressesInfoValue} variant={addressesInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content">Dados de Endereço</span>
+									  <span class="geral slds-accordion__summary-content header-section">Dados de Endereço</span>
 								  </h2>
 							  </div>
 								<div class="slds-accordion__content">
@@ -98,17 +104,19 @@
 
 			  <!-- 5th Accordion -->
 			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
+				  <lightning-progress-ring value={incomeInfoValue} variant={incomeInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content">Dados de Renda</span>
+									  <span class="geral slds-accordion__summary-content header-section">Dados de Renda</span>
 								  </h2>
 							  </div>
-							  <!-- conteúdo aqui -->
+								<div class="slds-accordion__content">
+									<c-proposal-income-data-component accountid={accountid} opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-income-data-component>
+								</div>
 						  </section>
 					  </li>
 				  </div>
@@ -118,12 +126,12 @@
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={warrantyInfoValue} variant={warrantyInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 							  	<div class="slds-accordion__summary">
 								  	<h2 class="slds-accordion__summary-heading">
-									  	<span class="geral slds-accordion__summary-content">Dados de Garantia</span>
+									  	<span class="geral slds-accordion__summary-content header-section">Dados de Garantia</span>
 								  	</h2>
 							  	</div>
 							  	<div class="slds-accordion__content">
@@ -139,17 +147,19 @@
 
 			  <!-- 7th Accordion -->
 			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
+				  <lightning-progress-ring value={operationInfoValue} variant={operationInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
 						  <section class="slds-accordion__section">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content">Operação</span>
+									  <span class="geral slds-accordion__summary-content header-section">Operação</span>
 								  </h2>
 							  </div>
-							  <!-- conteúdo aqui -->
+							  <div class="slds-accordion__content">
+								  <c-proposal-operation-component opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-operation-component>
+							  </div>
 						  </section>
 					  </li>
 				  </div>
@@ -157,39 +167,31 @@
 
 			  <!-- 8th Accordion -->
 			  <div class="slds-progress__item">
-				<lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
+				<lightning-progress-ring value={quickLinksInfoValue} variant={quickLinksInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem" style="cursor: pointer;">
+				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					<li class="slds-accordion__list-item">
 						<section class="slds-accordion__section">
 							<div class="slds-accordion__summary">
 								<h2 class="slds-accordion__summary-heading">
-									<span class="geral slds-accordion__summary-content">Links Rápidos</span>
+									<span class="geral slds-accordion__summary-content header-section">Links Rápidos</span>
 								</h2>
 							</div>
 							<div class="slds-accordion__content">
-								<lightning-layout multiple-rows="true" class="content-quick-links">
-									<template for:each={sectionQuickLinks} for:item="item">
-										<lightning-layout-item key={item.label} flexibility="auto" size="3" padding="around-small">
-											<a href={item.url} target="_blank">
-												<div class="custom-box slds-p-around_small slds-text-align_center">{item.label}</div>
-											</a>
-										</lightning-layout-item>
-									</template>
-								</lightning-layout>
+								<c-proposal-quick-links-component></c-proposal-quick-links-component>
 							</div>
 						</section>
 					</li>
 				</div>
 			</div>
-			
+
 		  </ol>
 	  </div>
 
 	  <div class="btn-container slds-m-vertical_medium">
-		  <button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
-		  <button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>
-		  <button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled> Aprovar </button>
+		  <button class="btn reprovado" data-id="reject-btn" onclick={sendAnalysis} disabled> Reprovar </button>
+		  <button class="btn pendenciado" data-id="pending-btn" onclick={sendAnalysis} disabled> Pendenciar </button>
+		  <button class="btn aprovado" data-id="approve-btn" onclick={sendAnalysis} disabled> Aprovar </button>
 	  </div>
 
 

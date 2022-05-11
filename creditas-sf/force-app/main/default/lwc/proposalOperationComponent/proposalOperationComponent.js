@@ -11,8 +11,10 @@ import QUOTE_OBJECT from '@salesforce/schema/Quote';
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import OPERATION_OBJECT from '@salesforce/schema/OperationSection__c';
 import FINANCIALRESOURCES_OBJECT from '@salesforce/schema/FinancialResources__c';
+import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
 
-import DESCRIPTION_FIELD from '@salesforce/schema/Quote.Description';
+import DESCRIPTION_FIELD from '@salesforce/schema/Opportunity.Description';
+
 import ADDITIONAL_COSTS_FIELD from '@salesforce/schema/Quote.ParameterAdditionalCosts__c';
 import TAC_FIELD from '@salesforce/schema/Quote.ParameterTac__c';
 import IOF_FIELD from '@salesforce/schema/Quote.ParameterIOF__c';
@@ -25,13 +27,13 @@ import SERVICE_LAST_DATE_FIELD from '@salesforce/schema/Quote.ServiceLastDate__c
 import NET_FIELD from '@salesforce/schema/Quote.NetValue__c';
 import UNIT_PRICE_FIELD from '@salesforce/schema/Quote.UnitPrice__c';
 import QUANTITY_FIELD from '@salesforce/schema/Quote.Quantity__c';
+import COLLATERAL_AMOUNT_FIELD from '@salesforce/schema/Quote.CollateralAmount__c';
 
 import BENEFICIARY_NAME_FIELD from '@salesforce/schema/Account.Name';
 import BENEFICIARY_CNPJ_FIELD from '@salesforce/schema/Account.CompanyCNPJ__c';
 import BANK_NAME_FIELD from '@salesforce/schema/Account.BankName__c';
 import AGENCY_FIELD from '@salesforce/schema/Account.Agency__c';
 import BANK_NUMBER_FIELD from '@salesforce/schema/Account.BankAccountNumber__c';
-import NET_WORTH_FIELD from '@salesforce/schema/Account.NetWorthLowerLimit__c';
 
 import MANUFACTURING_YEAR_FIELD from '@salesforce/schema/FinancialResources__c.ManufacturingYear__c';
 import AMOUNT_FIELD from '@salesforce/schema/FinancialResources__c.Amount__c';
@@ -41,9 +43,10 @@ import QUANTITYREJECTION from '@salesforce/schema/OperationSection__c.QuantityRe
 import QUANTITYDESC from '@salesforce/schema/OperationSection__c.QuantityObservation__c';
 
 const FIELDSVALIDATIONQUANTITY = [QUANTITYSTATUS, QUANTITYREJECTION, QUANTITYDESC];
-const FIELDSQUOTE = [DESCRIPTION_FIELD, ADDITIONAL_COSTS_FIELD, TAC_FIELD, IOF_FIELD, MONTHLY_CET_FIELD, YEARLY_CET_FIELD, MONTHLY_INTEREST_FIELD, YEARLY_INTEREST_FIELD, SERVICE_DATE_FIELD, SERVICE_LAST_DATE_FIELD, NET_FIELD, UNIT_PRICE_FIELD, QUANTITY_FIELD];
+const FIELDSQUOTE = [ADDITIONAL_COSTS_FIELD, TAC_FIELD, IOF_FIELD, MONTHLY_CET_FIELD, YEARLY_CET_FIELD, MONTHLY_INTEREST_FIELD, YEARLY_INTEREST_FIELD, SERVICE_DATE_FIELD, SERVICE_LAST_DATE_FIELD, NET_FIELD, UNIT_PRICE_FIELD, QUANTITY_FIELD, COLLATERAL_AMOUNT_FIELD];
 const FIELDSFINANCIAL = [AMOUNT_FIELD, MANUFACTURING_YEAR_FIELD];
-const FIELDSACCOUNT =  [BENEFICIARY_NAME_FIELD, BENEFICIARY_CNPJ_FIELD, BANK_NAME_FIELD, AGENCY_FIELD, BANK_NUMBER_FIELD, NET_WORTH_FIELD];
+const FIELDSACCOUNT =  [BANK_NAME_FIELD, AGENCY_FIELD, BANK_NUMBER_FIELD];
+const FIELDSOPPORTUNITY =  [DESCRIPTION_FIELD];
 
 const INPUT_OPERATION = new Map([
   ['inputFinalidadeOperacao' , DESCRIPTION_FIELD],
@@ -61,12 +64,10 @@ const INPUT_OPERATION = new Map([
   ['inputCreditoLiquido'     , NET_FIELD],
   ['inputParcela'            , UNIT_PRICE_FIELD],
   ['inputQtdParcelas'        , QUANTITY_FIELD],
-  ['inputNomeBeneficiario'   , BENEFICIARY_NAME_FIELD],
-  ['inputCNPJBeneficiario'   , BENEFICIARY_CNPJ_FIELD],
   ['inputBanco'              , BANK_NAME_FIELD],
   ['inputAgencia'            , AGENCY_FIELD],
   ['inputContaCorrente'      , BANK_NUMBER_FIELD],
-  ['inputPatrimonio'         , NET_WORTH_FIELD]
+  ['inputPatrimonio'         , COLLATERAL_AMOUNT_FIELD]
 ]);
 
 export default class ProposalOperationComponent extends LightningElement {
@@ -79,10 +80,18 @@ export default class ProposalOperationComponent extends LightningElement {
   fieldsQuote = FIELDSQUOTE;
   fieldsFinancial = FIELDSFINANCIAL;
   fieldsProponent = FIELDSACCOUNT;
-  // Controller btn save
-  disabledSaveButton = false;
-  topContainerSection = 'ContainerOperation';
+  fieldsOpportunity = FIELDSOPPORTUNITY;
+  error
   
+  // Controller Section
+  topContainerSection = 'ContainerOperation';
+  statusApprove = 'Aprovar';
+  statusReject = 'Rejeitar';
+  statusPending = 'Pendenciar';
+  completionPercentage = 0;
+  totalLinesValidation = 22;
+  disabledSaveButton = false;
+
   // Operation Data Info
   inputOperation = INPUT_OPERATION;
   
@@ -107,21 +116,18 @@ export default class ProposalOperationComponent extends LightningElement {
   @track valueCreditoLiquido   = {value: '', fieldReadOnly: true};
   @track valueParcela          = {value: '', fieldReadOnly: true};
   @track valueQtdParcelas      = {value: '', fieldReadOnly: true};
+  @track valueNumeroContrato   = {value: '', fieldReadOnly: true};
   
-  // Checkboxes Values
+  // Values
   value = [];
   preValue = [];
-  totalLinesValidation = 21;
   @track recordOperation = new Map();
-  statusApprove = 'Aprovar';
-  statusReject = 'Rejeitar';
-  statusPending = 'Pendenciar';
-  completionPercentage = 0;
+
   
-  // refresh apex 
+  // Refresh apex 
   refreshRecordOperation;
 
-  // object of validation Section OperationSection__c
+  // Object of validation Section OperationSection__c
   objValidationSection = {
     'sobjectType': 'OperationSection__c',
     'Opportunity__c': '',
@@ -168,6 +174,7 @@ export default class ProposalOperationComponent extends LightningElement {
       this.valueCreditoLiquido.fieldReadOnly   = !data?.fields?.NetValue__c.updateable;
       this.valueParcela.fieldReadOnly          = !data?.fields?.UnitPrice__c.updateable;
       this.valueQtdParcelas.fieldReadOnly      = !data?.fields?.Quantity__c.updateable;
+      this.valuePatrimonio.fieldReadOnly      = !data?.fields?.CollateralAmount__c.updateable;
     }
     else if(error){
       this.showError(error);
@@ -178,12 +185,9 @@ export default class ProposalOperationComponent extends LightningElement {
   @wire(getObjectInfo, { objectApiName: ACCOUNT_OBJECT  })
   recordTypeAccount({ error, data }) {
     if(data) {
-      this.valueNomeBeneficiario.fieldReadOnly  = !data?.fields?.Name.updateable;
-      this.valueCNPJBeneficiario.fieldReadOnly  = !data?.fields?.CompanyCNPJ__c.updateable;
       this.valueBanco.fieldReadOnly             = !data?.fields?.BankName__c.updateable;
       this.valueAgencia.fieldReadOnly           = !data?.fields?.Agency__c.updateable;
       this.valueContaCorrente.fieldReadOnly     = !data?.fields?.BankAccountNumber__c.updateable;
-      this.valuePatrimonio.fieldReadOnly        = !data?.fields?.NetWorthLowerLimit__c.updateable; //Validar
     }
     else if(error){
       this.showError(error);
@@ -201,34 +205,47 @@ export default class ProposalOperationComponent extends LightningElement {
       this.showError(error);
     }
   }
+  
+  // Get fields permission in OPPORTUNITY
+  @wire(getObjectInfo, { objectApiName: OPPORTUNITY_OBJECT  })
+  recordTypeOpp({ error, data }) {
+    if(data) {
+      this.valueFinalidadeOp.fieldReadOnly   = !data?.fields?.Description.updateable;
+    }
+    else if(error){
+      this.showError(error);
+    }
+  }
 
   @wire(getRecordOperationSection, {opportunityId: '$opportunityid'})
   recordOperationSection(result) {
     this.refreshRecordOperation = result;
     if(result.data) {
-        // this.recordOperation.set('Quote'    , {...Object.values(this.fieldsQuote.map((item) => item.fieldApiName))      , ...result.data.Quote });
-        this.recordOperation.set('Quote'    , {...this.getSObject(this.fieldsQuote)      , ...result.data.Quote });
-        this.recordOperation.set('Financial', {...this.getSObject(this.fieldsFinancial)  , ...result.data.Financial});
-        this.recordOperation.set('Proponent', {...this.getSObject(this.fieldsProponent)  , ...result.data.Proponent});
+        this.recordOperation.set('Quote'      , {...this.getSObject(this.fieldsQuote)        , ...result.data.Quote       });
+        this.recordOperation.set('Financial'  , {...this.getSObject(this.fieldsFinancial)    , ...result.data.Financial   });
+        this.recordOperation.set('Proponent'  , {...this.getSObject(this.fieldsProponent)    , ...result.data.Proponent   });
+        this.recordOperation.set('Opportunity', {...this.getSObject(this.fieldsOpportunity)  , ...result.data.Opportunity });
 
         let validationSection    = result.data.OperationSection;
         let quoteInfo            = result.data.Quote;
         let FinancialInfo        = result.data.Financial;
         let proponentInfo        = result.data.Proponent;
+        let opportunityInfo      = result.data.Opportunity;
 
         this.setOperationValidationSection(validationSection);
         this.setQuoteInfo(quoteInfo);
         this.setFinancialInfo(FinancialInfo);
         this.setProponentInfo(proponentInfo);
+        this.setOpportunityInfo(opportunityInfo);
     }else if(result.error){
-      this.showError(error);
+      this.showError(result.error);
     }
   }
 
   getSObject(object){
-    let SObject = {}; 
-    Object.values(object).forEach(key => {SObject[key.fieldApiName] = ''});
-    return SObject;
+    let sObject = {}; 
+    Object.values(object).forEach(key => {sObject[key.fieldApiName] = ''});
+    return sObject;
   }
 
   setFinancialInfo(FinancialInfo){
@@ -250,15 +267,17 @@ export default class ProposalOperationComponent extends LightningElement {
     this.valueCreditoLiquido.value    = quoteInfo.NetValue__c                 ? quoteInfo.NetValue__c                 : null;
     this.valueParcela.value           = quoteInfo.UnitPrice__c                ? quoteInfo.UnitPrice__c                : null;
     this.valueQtdParcelas.value       = quoteInfo.Quantity__c                 ? quoteInfo.Quantity__c                 : null;
+    this.valuePatrimonio.value        = quoteInfo.CollateralAmount__c         ? quoteInfo.CollateralAmount__c         : null;
   }
 
   setProponentInfo(proponentInfo){
-    this.valueNomeBeneficiario.value  = proponentInfo.Name                  ? proponentInfo.Name                  : null;
-    this.valueCNPJBeneficiario.value  = proponentInfo.CompanyCNPJ__c        ? proponentInfo.CompanyCNPJ__c        : null;
     this.valueBanco.value             = proponentInfo.BankName__c           ? proponentInfo.BankName__c           : null;
     this.valueAgencia.value           = proponentInfo.Agency__c             ? proponentInfo.Agency__c             : null;
     this.valueContaCorrente.value     = proponentInfo.BankAccountNumber__c  ? proponentInfo.BankAccountNumber__c  : null;
-    this.valuePatrimonio.value        = proponentInfo.NetWorthLowerLimit__c ? proponentInfo.NetWorthLowerLimit__c : null;
+  }
+
+  setOpportunityInfo(opportunityInfo){
+    this.valueFinalidadeOp.value  = opportunityInfo.Description  ? opportunityInfo.Description : null;
   }
 
   setOperationValidationSection(validationSection){
@@ -285,7 +304,8 @@ export default class ProposalOperationComponent extends LightningElement {
       "OperationSection": this.objValidationSection,
       "Quote": this.recordOperation.get('Quote'),
       "Financial": this.recordOperation.get('Financial'),
-      "Proponent": this.recordOperation.get('Proponent')
+      "Proponent": this.recordOperation.get('Proponent'),
+      "Opportunity": this.recordOperation.get('Opportunity')
     }
     })
     .then( result=>{
@@ -295,7 +315,7 @@ export default class ProposalOperationComponent extends LightningElement {
     })
     .catch(error =>{
       this.disabledSaveButton = false;
-      this.showError(error);
+      this.showToast('Ocorreu um erro ao salvar o registro!', error?.body?.message, 'error');
     })
   }
 

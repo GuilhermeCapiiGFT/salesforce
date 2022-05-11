@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>53.0</apiVersion>
+    <description>Criação de um Flow para concatenar os campos ( Canal + Tipo + Code) dentro do Objeto CommunicationContact</description>
+    <formulas>
+        <name>ConcatenarCanalTipoCode</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$Record.Channel__c}) &amp; &quot; - &quot; &amp; TEXT({!$Record.Type__c}) &amp; &quot; - &quot; &amp; {!$Record.Code__c}</expression>
+    </formulas>
+    <interviewLabel>ConcatenarCampoContactKey {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>ConcatenarCampoContactKey</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>ConcatenasDados</name>
+        <label>ConcatenasDados</label>
+        <locationX>182</locationX>
+        <locationY>311</locationY>
+        <inputAssignments>
+            <field>Contact_Key__c</field>
+            <value>
+                <elementReference>ConcatenarCanalTipoCode</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>50</locationY>
+        <connector>
+            <targetReference>ConcatenasDados</targetReference>
+        </connector>
+        <object>CommunicationContacts__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

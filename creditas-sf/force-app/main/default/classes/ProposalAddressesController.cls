@@ -23,10 +23,9 @@ public with sharing class ProposalAddressesController {
     }
 
     @AuraEnabled(Cacheable=false)
-    public static void saveAddress(List<SObject> listAddress){
+    public static void saveAddress(List<Addresses__c> addresses){
         try {
-            List<Addresses__c> records = (List<Addresses__c>) listAddress;
-            ProposalAddressesService.upsertAddress(records);
+            SObjectUtils.upsertRecords(addresses);
 
         } catch(Exception e) {
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
@@ -34,11 +33,9 @@ public with sharing class ProposalAddressesController {
     }
 
     @AuraEnabled(Cacheable=false)
-    public static void saveAddressSection(SObject recordAddressSection) 
-    {
+    public static void saveAddressSection(AddressDataSection__c addressSection){
         try {
-            AddressDataSection__c record = (AddressDataSection__c) recordAddressSection;
-            ProposalAddressesService.upsertAddressSection(record);
+            SObjectUtils.upsertRecord(addressSection);
 
         } catch(Exception e) {
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);

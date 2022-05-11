@@ -1,395 +1,334 @@
 <template>
-        <div class="slds-grid slds-wrap" style="width:100%"> 
-          <div class="slds-col slds-size_12-of-12" onclick={showPersonDataSection} data-name={personEdited.name} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px; "> {personEdited.name}                       
-              <span class="participacaoHidden" data-participacao={personEdited.id} > Proprietário </span>
-              <span class="participacao" data-participacao={personEdited.id} style="margin-left: 8px; margin-right: 8px"> Compõe renda </span> 
-              <span class="participacaoHidden" data-participacao={personEdited.id}> Anuente </span> 
-          </div> 
-          <template if:true={personEdited.showSection}>  
-            <div class="slds-col slds-size_6-of-12 slds-clearfix">
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">                                                                              
-                    <lightning-input type="text" 
-                                    name="fullName" 
-                                    label="Nome completo" 
-                                    disabled="true"                                                           
-                                    value={personEdited.name} 
-                                    style="margin-top: 16px; margin-right: 16px; width: 97.5%; color: #706e68">                                      
+  <div class="slds-grid slds-wrap" style="width:100%"> 
+        <div class="slds-size_12-of-12" onclick={showPersonDataSection} onchange={handleGetNameTab} data-name={personEdited.name} style="cursor: pointer; padding-bottom: 8px; padding-top: 8px;"> {formatedName}  
+            <span class="slds-grid_align-end participacao" if:true={personEdited.propertyOwner}> Proprietário </span>           
+            <span class="slds-grid_align-end participacao" if:true={personEdited.composeIncome} style="margin-left: 8px; margin-right: 8px"> Compõe renda </span>            
+            <span class="slds-grid_align-end participacao" if:true={personEdited.consentingParticipant}> Anuente </span>             
+        </div> 
+      <template if:true={personEdited.showSection}>  
+        <div class="slds-col slds-size_6-of-12 slds-clearfix">
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">                                                                              
+                <lightning-input type="text" 
+                                name="fullName" 
+                                label="Nome completo" 
+                                disabled="true"                                                           
+                                value={personEdited.name} 
+                                style="margin-top: 16px; margin-right: 16px; width: 97.5%; color: #706e68">                                      
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName} ></lightning-helptext>
+                  </span>
+                </div>     
+              </div>             
+            </div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">  
+                <lightning-input type="text" 
+                                name="cpf" 
+                                label="CPF" 
+                                disabled="true"     
+                                onchange={handleDocumentNumber}                        
+                                value={personEdited.mainDocument.number} 
+                                style="margin-right: 16px; margin-top: 16px; color: #706e68">
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div>     
+              </div>             
+            </div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12">    
+          <div class="slds-form-element">
+            <div class="slds-form-element__control">
+              <div class="slds-combobox_container">
+                <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
+                    <lightning-input data-id="focus" 
+                                    read-only="true" 
+                                    label="Participação" 
+                                    name="searchText" 
+                                    style="margin-top: 16px;"
+                                    onclick={signControlsExibitionList} 
+                                    value={labelOption}
+                                    required="true"> 
                     </lightning-input>
                     <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.nameId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                                        
-                        </lightning-icon>
+                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
+                          <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
+                              icon-name="utility:down" 
+                              size="x-small"
+                              alternative-text="icon" 
+                              style="margin-top: 14px;" > 
+                          </lightning-icon>
                       </span>
-                    </div>     
-                  </div>             
-                </div>
-              </div>
-            </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">  
-                    <lightning-input type="text" 
-                                    name="cpf" 
-                                    label="CPF" 
-                                    disabled="true" 
-                                    value={personEdited.mainDocument.number} 
-                                    style="margin-right: 16px; margin-top: 16px; color: #706e68">
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.cpfId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div>     
-                  </div>             
-                </div>
-              </div>
-            </div>
-            <div class="slds-col slds-size_3-of-12">    
-              <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                  <div class="slds-combobox_container">
-                    <div class={txtclassname} data-id="resultBox" aria-expanded="false" aria-haspopup="listbox" role="combobox">
-                      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none">
-                        <lightning-input data-id="focus" 
-                                        read-only="true" 
-                                        label="Participação" 
-                                        name="searchText" 
-                                        style="margin-top: 16px;"
-                                        onclick={signControlsExibitionList} 
-                                        value={labelOption}
-                                        required="true"> 
-                        </lightning-input>
-                        <div>
-                          <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right iconheight">
-                            <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                            icon-name="utility:down" 
-                                            size="x-small"
-                                            alternative-text="icon" 
-                                            style="margin-top: 18px;" > 
-                            </lightning-icon>
+                    </div>                                              
+                  </div>                                      
+                  <!-- EXIBITION LIST -->
+                  <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">                                                
+                      <li role="presentation" class="slds-listbox__item">
+                        <div data-id="option1" data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                          <span class="slds-media__body">
+                            <lightning-input type="checkbox" label="Proprietário" data-checkbox={personEdited.id} data-id={personEdited.id} onchange={handlePropertyOwner}></lightning-input>
+                            <lightning-input type="checkbox" label="Compõe renda" data-checkbox={personEdited.id} checked disabled></lightning-input>
+                            <lightning-input type="checkbox" label="Anuente" data-checkbox={personEdited.id} data-id={personEdited.id} onchange={handleConsentingParticipant}></lightning-input>
                           </span>
-                        </div>                                              
-                      </div>                                      
-                      <!-- EXIBITION LIST -->
-                      <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox"> 
-                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">                                                
-                          <li role="presentation" class="slds-listbox__item">
-                            <div data-id="option1" data-name="option1name" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option" onclick={onclickNaoAceitouHospitais}>
-                              <span class="slds-media__body">
-                                <lightning-input type="checkbox" label="Proprietário" data-checkbox={personEdited.id} data-id={personEdited.id} onchange={handleChangeOwner}></lightning-input>
-                                <lightning-input type="checkbox" label="Compõe renda" data-checkbox={personEdited.id} checked disabled></lightning-input>
-                                <lightning-input type="checkbox" label="Anuente" data-checkbox={personEdited.id} data-id={personEdited.id} onchange={handleChangeConsenting}></lightning-input>
-                              </span>
-                            </div>
-                          </li>                                               
-                        </ul>
-                      </div>
-                    </div>
+                        </div>
+                      </li>                                               
+                    </ul>
                   </div>
                 </div>
-              </div>                  
-            </div>
-            <div class="slds-col slds-size_3-of-12">
-              <span>
-                <lightning-combobox                                  
-                                  onchange={handleChangeGender}
-                                  name="gender"
-                                  label="Gênero"
-                                  value=""
-                                  placeholder="Selecione..."
-                                  options={genderOptions}
-                                  required="true"
-                                  style="margin-right: 16px; margin-top: 8px">
-                </lightning-combobox>                               
-              </span>
-            </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none"> 
-                    <lightning-input type="text"                                                           
-                                    name="nationality" 
-                                    label="Nacionalidade" 
-                                    disabled="true" 
-                                    value={personEdited.nationality} 
-                                    style="margin-top: 8px; width: 95%; color: #706e68"> 
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.nationalityId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div>     
-                  </div>             
-                </div>                                
-              </div> 
-            </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="date" 
-                                    date-style="short" 
-                                    name="birthDate" 
-                                    label="Data de nascimento" 
-                                    disabled="true" 
-                                    value={personEdited.birthdate} 
-                                    style="margin-top: 8px; width: 95%; color: #706e68">
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.birthdateId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div>
-                  </div>             
-                </div>
               </div>
             </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                    name="marital" 
-                                    label="Estado civil" 
-                                    disabled="true" 
-                                    value={personEdited.maritalPersonStatus} 
-                                    style="margin-top: 8px; color: #706e68"> 
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.maritalStatusId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                    name="mothersName" 
-                                    label="Nome da mãe" 
-                                    disabled="true" 
-                                    value={personEdited.motherName} 
-                                    style="margin-right: 16px; margin-top: 8px; color: #706e68">
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.motherNameId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                    name="fathersName" 
-                                    label="Nome do pai" 
-                                    disabled="true" 
-                                    value={personEdited.fatherName} 
-                                    style="margin-top: 8px; color: #706e68">
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.fatherNameId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                    name="profession" 
-                                    label="Profissão"
-                                    disabled="true" 
-                                    value={personEdited.profession} 
-                                    style="margin-right: 16px; margin-top: 8px; color: #706E6B"> 
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.professionId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_3-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                      name="Telefone" 
-                                      label="Telefone/WhatsApp" 
-                                      disabled="true" 
-                                      value={personEdited.cellPhone}
-                                      pattern="^\(\d{2}\)\d{5}\-\d{4}$"
-                                      max-length="15"
-                                      onchange={handleMaskTelefone} 
-                                      style="margin-right: 16px; margin-top: 8px; color: #706E6B" >                   
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.cellPhoneId"
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px;" > 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_6-of-12 slds-clearfix">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input type="text" 
-                                    name="mail" 
-                                    label="E-mail" 
-                                    disabled="true" 
-                                    value={personEdited.email} 
-                                    style="margin-top: 8px; color: #706E6B"> 
-                    </lightning-input>
-                    <div>
-                      <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
-                        <lightning-icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" 
-                                        data-id="personEdited.emailId"              
-                                        icon-name="utility:database" 
-                                        size="x-small"
-                                        alternative-text="icon" 
-                                        style="margin-top: 10px"> 
-                        </lightning-icon>
-                      </span>
-                    </div> 
-                  </div>      
-                </div>                                 
-              </div>
-            </div>
-            <div class="slds-col slds-size_3-of-12">
-              <span>
-                <lightning-combobox                                 
-                                  onchange={handleDocumentType}
-                                  name="documentType"
-                                  label="Tipo de documento"
-                                  value=""
-                                  placeholder="Selecione..."
-                                  options={documentTypeOptions}
-                                  required="true"
-                                  style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px">
-                </lightning-combobox>                     
-              </span>
-            </div>
-            <div class="slds-col slds-size_3-of-12">
-              <span>
-                <lightning-input 
-                                data-id="personEdited.issuingBodyInputId"
-                                onchange={handleDocumentIssuingBody}
-                                type="text" 
-                                name="issuing" 
-                                label="Órgão emissor / UF" 
-                                required="true" 
-                                placeholder="Digite..." 
-                                style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
-                </lightning-input>
-              </span>
-            </div>
-            <div class="slds-col slds-size_3-of-12">
-              <span>
-                <lightning-input
-                                data-id="personEdited.docNumberInputId"
-                                onchange={handleDocumentNumber}
-                                type="text" 
-                                name="documentNumber" 
-                                label="Nº do documento" 
-                                required="true" 
-                                placeholder="Digite..." 
-                                style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
-                </lightning-input>
-              </span>
-            </div>
-            <div class="slds-col slds-size_3-of-12">   
-              <div class="slds-form-element">        
-                <div class="slds-form-element__control"> 
-                  <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
-                    <lightning-input 
-                                      data-id="personEdited.expeditionDateInputId"
-                                      onchange={handleDocumentExpeditionDate}
-                                      type="date"
-                                      date-style="short" 
-                                      name="expeditionDate" 
-                                      label="Data de expedição" 
-                                      placeholder="00/00/0000" 
-                                      style="margin-top: 8px; margin-bottom: 8px"> 
-                    </lightning-input>                                                 
-                  </div>             
-                </div>
-              </div>
-            </div>
-          </template>                        
+          </div>                  
         </div>
-  </template>
+        <div class="slds-col slds-size_3-of-12">
+          <span>
+            <lightning-combobox                                  
+                              onchange={handleChangeGender}
+                              name="gender"
+                              label="Gênero"
+                              value=""
+                              placeholder="Selecione..."
+                              options={genderOptions}
+                              required="true"
+                              style="margin-right: 16px; margin-top: 8px">
+            </lightning-combobox>                               
+          </span>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left-right" role="none"> 
+                <lightning-input type="text"                                                           
+                                name="nationality" 
+                                label="Nacionalidade" 
+                                disabled="true" 
+                                value={personEdited.nationality} 
+                                style="margin-top: 8px; width: 95%; color: #706e68"> 
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div>     
+              </div>             
+            </div>                                
+          </div> 
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="date" 
+                                date-style="short" 
+                                name="birthDate" 
+                                label="Data de nascimento" 
+                                disabled="true" 
+                                value={personEdited.birthdate} 
+                                style="margin-top: 8px; width: 95%; color: #706e68">
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div>
+              </div>             
+            </div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="text" 
+                                name="marital" 
+                                label="Estado civil" 
+                                disabled="true" 
+                                value={maritalStatus} 
+                                style="margin-top: 8px; color: #706e68"> 
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="text" 
+                                name="mothersName" 
+                                label="Nome da mãe" 
+                                disabled="true" 
+                                value={personEdited.motherName} 
+                                style="margin-right: 16px; margin-top: 8px; color: #706e68">
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="text" 
+                                name="fathersName" 
+                                label="Nome do pai" 
+                                disabled="true" 
+                                value={personEdited.fatherName} 
+                                style="margin-top: 8px; color: #706e68">
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="text" 
+                                name="profession" 
+                                label="Profissão"
+                                disabled="true" 
+                                value={personEdited.profession} 
+                                style="margin-right: 16px; margin-top: 8px; color: #706E6B"> 
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="tel" 
+                                  name="Telefone" 
+                                  label="Telefone/WhatsApp" 
+                                  disabled="true" 
+                                  value={cellPhone}
+                                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                                  max-length="15"                                  
+                                  style="margin-right: 16px; margin-top: 8px; color: #706E6B" >                   
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_6-of-12 slds-clearfix">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input type="text" 
+                                name="mail" 
+                                label="E-mail" 
+                                disabled="true" 
+                                value={personEdited.email} 
+                                style="margin-top: 8px; color: #706E6B"> 
+                </lightning-input>
+                <div>
+                  <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left iconheight">
+                    <lightning-helptext icon-name="utility:database" content={personEdited.sources.fullName}></lightning-helptext>
+                  </span>
+                </div> 
+              </div>      
+            </div>                                 
+          </div>
+        </div>
+        <div class="slds-col slds-size_3-of-12">
+          <span>
+            <lightning-combobox                                 
+                              onchange={handleDocumentType}
+                              name="documentType"
+                              label="Tipo de documento"
+                              value=""
+                              placeholder="Selecione..."
+                              options={documentTypeOptions}
+                              required="true"
+                              style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px">
+            </lightning-combobox>                     
+          </span>
+        </div>
+        <div class="slds-col slds-size_3-of-12">
+          <span>
+            <lightning-input 
+                            data-id="personEdited.issuingBodyInputId"
+                            onchange={handleDocumentIssuingBody}
+                            type="text" 
+                            name="issuing" 
+                            label="Órgão emissor / UF" 
+                            required="true" 
+                            placeholder="Digite..." 
+                            style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+            </lightning-input>
+          </span>
+        </div>
+        <div class="slds-col slds-size_3-of-12">
+          <span>
+            <lightning-input
+                            data-id="personEdited.docNumberInputId"
+                            onchange={handleDocumentNumber}
+                            type="text" 
+                            name="documentNumber" 
+                            label="Nº do documento" 
+                            required="true" 
+                            placeholder="Digite..." 
+                            style="margin-right: 16px; margin-top: 8px; margin-bottom: 8px"> 
+            </lightning-input>
+          </span>
+        </div>
+        <div class="slds-col slds-size_3-of-12">   
+          <div class="slds-form-element">        
+            <div class="slds-form-element__control"> 
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon slds-input-has-icon_left" role="none">
+                <lightning-input 
+                                  data-id="personEdited.expeditionDateInputId"
+                                  onchange={handleDocumentExpeditionDate}
+                                  type="date"
+                                  date-style="short" 
+                                  name="expeditionDate" 
+                                  label="Data de expedição" 
+                                  placeholder="00/00/0000" 
+                                  style="margin-top: 8px; margin-bottom: 8px"> 
+                </lightning-input>                                                 
+              </div>             
+            </div>
+          </div>
+        </div>
+      </template>                        
+  </div>
+</template>

@@ -5,34 +5,34 @@ public with sharing class ProposalOperationService {
         
         List<OperationSection__c> recordsOperationSection = new List<OperationSection__c>();
         recordsOperationSection = [ SELECT  Id, 
-                                    QuantityRejectReason__c,
-                                    QuantityObservation__c,
-                                    BranchStatus__c,
-                                    AccountStatus__c,
-                                    ServiceDateStatus__c,
-                                    ServiceLastDateStatus__c,
-                                    OperationPurposeStatus__c,
-                                    UnitPriceStatus__c,
-                                    QuantityStatus__c,
-                                    YearlyInterestStatus__c,
-                                    MonthlyInterestStatus__c,
-                                    AdditionalCostsStatus__c,
-                                    ManufacturingYearStatus__c,
-                                    BankStatus__c,
-                                    YearlyCETstatus__c,
-                                    MonthlyCETstatus__c,
-                                    BeneficiarysCNPJstatus__c,
-                                    ParameterIOFstatus__c,
-                                    BeneficiarysNameStatus__c,
-                                    ContractNumberStatus__c,
-                                    ParameterTACstatus__c,
-                                    PatrimonyStatus__c,
-                                    CarValueStatus__c,
-                                    NetValueStatus__c,
-                                    Opportunity__c
-                                    FROM OperationSection__c
-                                    WHERE Opportunity__c =: opportunityId
-                                    LIMIT 1];
+                                            QuantityRejectReason__c,
+                                            QuantityObservation__c,
+                                            BranchStatus__c,
+                                            AccountStatus__c,
+                                            ServiceDateStatus__c,
+                                            ServiceLastDateStatus__c,
+                                            OperationPurposeStatus__c,
+                                            UnitPriceStatus__c,
+                                            QuantityStatus__c,
+                                            YearlyInterestStatus__c,
+                                            MonthlyInterestStatus__c,
+                                            AdditionalCostsStatus__c,
+                                            ManufacturingYearStatus__c,
+                                            BankStatus__c,
+                                            YearlyCETstatus__c,
+                                            MonthlyCETstatus__c,
+                                            BeneficiarysCNPJstatus__c,
+                                            ParameterIOFstatus__c,
+                                            BeneficiarysNameStatus__c,
+                                            ContractNumberStatus__c,
+                                            ParameterTACstatus__c,
+                                            PatrimonyStatus__c,
+                                            CarValueStatus__c,
+                                            NetValueStatus__c,
+                                            Opportunity__c
+                                            FROM OperationSection__c
+                                            WHERE Opportunity__c =: opportunityId
+                                            LIMIT 1];
         
         return recordsOperationSection.isEmpty() ? new OperationSection__c() : recordsOperationSection[0];
     }
@@ -41,8 +41,7 @@ public with sharing class ProposalOperationService {
     public static Quote getQuoteFromOpp(Id opportunityId){
         
         List<Quote> recordsQuote = new List<Quote>();
-        recordsQuote = [ SELECT Id, 
-                                Description,
+        recordsQuote = [ SELECT Id,
                                 ParameterAdditionalCosts__c,
                                 ParameterTac__c,
                                 ParameterIOF__c,
@@ -54,61 +53,67 @@ public with sharing class ProposalOperationService {
                                 ServiceLastDate__c,
                                 NetValue__c,
                                 UnitPrice__c,
-                                Quantity__c
+                                Quantity__c,
+                                CollateralAmount__c
                                 FROM Quote
                                 WHERE OpportunityId =: opportunityId
                                 LIMIT 1 ];
         
         return recordsQuote.isEmpty() ? new Quote() : recordsQuote[0];
     }
+
     @AuraEnabled
-    public static FinancialResources__c getFinancialFromOpp(String opportunityId){
-        String financialResourceAutoId = Util.getRecordTypeIdbyName('FinancialResources__c', 'Auto');
-        Set<Id> financialResourceIdSet = new Set<Id>();
-        for(Garantias__c garantia : [SELECT Recurso_Financeiro__c,Recurso_Financeiro__r.RecordTypeId FROM Garantias__c WHERE Opportunity__c = :opportunityId]){
-            if(financialResourceAutoId == garantia.Recurso_Financeiro__r.RecordTypeId){
-                financialResourceIdSet.add(garantia.Recurso_Financeiro__c);
-            }
-        }
+    public static FinancialResources__c getFinancialFromOpp(Id opportunityId){
+        Set<Id> financialResourceIdSet = getFinancialResourcesId(opportunityId);
         if(financialResourceIdSet.isEmpty()){
             return new FinancialResources__c();
         } else {
-            List<FinancialResources__c> resourceList = [SELECT Id, ManufacturingYear__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet ORDER BY ExternalUpdatedDate__c DESC];
-            return resourceList[0];
+            List<FinancialResources__c> finResources = [SELECT Id, ManufacturingYear__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet ORDER BY ExternalUpdatedDate__c DESC];
+            return finResources[0];
         }
     }
+
     @AuraEnabled
     public static Account getProponentFromOpp(Id opportunityId){
-
-        Set<Id> proponentIdSet = new Set<Id>();
-        for(OpportunityRole__c proponents : [SELECT Id, 
-                                                    Role__c, 
-                                                    ExternalPersonId__c 
-                                                    FROM OpportunityRole__c 
-                                                    WHERE Opportunity__c = :opportunityId]){
-            if(proponents.Role__c == 'PRINCIPAL'){
-                proponentIdSet.clear();
-                proponentIdSet.add(proponents.ExternalPersonId__c);
-                break;
-            }else{
-                proponentIdSet.add(proponents.ExternalPersonId__c);
-            }
-        }
+        Set<Id> proponentIdSet = getProponentsId(opportunityId);
         if(proponentIdSet.isEmpty()){
             return new Account();
         } else {
-            List<Account> resourceList = [SELECT    Id, 
-                                                    Name, 
-                                                    CompanyCNPJ__c, 
-                                                    BankName__c, 
-                                                    Agency__c, 
-                                                    BankAccountNumber__c, 
-                                                    NetWorthLowerLimit__c, 
-                                                    NetWorthUpperLimit__c
-                                                    FROM Account 
-                                                    WHERE Id IN :proponentIdSet 
-                                                    ORDER BY ExternalUpdatedDate__c DESC];
-            return resourceList[0];
+            List<Account> accounts = [  SELECT Id, BankName__c, Agency__c, BankAccountNumber__c
+                                            FROM Account 
+                                            WHERE Id IN :proponentIdSet 
+                                            ORDER BY ExternalUpdatedDate__c DESC ];
+            return accounts[0];
         }
+    }
+
+    @AuraEnabled
+    public static Opportunity getOpportunityInfo(Id opportunityId){
+        return [SELECT Id, Description FROM Opportunity WHERE Id = :opportunityId ];
+    }
+
+    private static Set<Id> getFinancialResourcesId(Id opportunityId){
+        String financialResourceAutoId = Util.getRecordTypeIdbyName('FinancialResources__c', 'Auto');
+        Set<Id> financialResourceIdSet = new Set<Id>();
+        for(Garantias__c garantia : [   SELECT Recurso_Financeiro__c, Recurso_Financeiro__r.RecordTypeId, Recurso_Financeiro__r.Type__c 
+                                        FROM Garantias__c 
+                                        WHERE Opportunity__c = :opportunityId]){
+
+            if(financialResourceAutoId == garantia.Recurso_Financeiro__r.RecordTypeId && garantia.Recurso_Financeiro__r.Type__c == 'CAR'){
+                financialResourceIdSet.add(garantia.Recurso_Financeiro__c);
+            }
+        }
+
+        return financialResourceIdSet;
+    }
+
+    private static Set<Id> getProponentsId(Id opportunityId){
+        Set<Id> proponentIdSet = new Set<Id>();
+        for(OpportunityRole__c proponents : [   SELECT Id, ExternalPersonId__c 
+                                                FROM OpportunityRole__c 
+                                                WHERE Opportunity__c = :opportunityId AND Role__c = 'PRINCIPAL']){
+            proponentIdSet.add(proponents.ExternalPersonId__c);
+        }
+        return proponentIdSet;
     }
 }

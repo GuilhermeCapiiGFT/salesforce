@@ -110,6 +110,9 @@ global with sharing class IntegrationAccountINTest {
             
             List<AccountRelationships__c> createdRelationships = [SELECT Id FROM AccountRelationships__c];
             System.assertEquals(1, createdRelationships.size(),'AccountRelationships successfully upserted.');
+
+            List<Filiation__c> createdFiliations = [SELECT Id FROM Filiation__c];
+            System.assertEquals(2, createdFiliations.size(),'Filiations where not successfully created.');
               
             system.assertEquals(res.statusCode, 200,'Account and related objects successfully upserted');   
             //------------------------------------------------------------------------------------------------------------------------------>
@@ -503,7 +506,154 @@ global with sharing class IntegrationAccountINTest {
         Test.stopTest();
         String reqResString = EncodingUtil.base64Decode(EncodingUtil.base64Encode(res.responseBody)).toString();
         System.assertEquals(reqResString, '{"status":500,"message":"Main Document cannot be null.","accountId":null}');
-    } 
+    }   
+
+   @IsTest
+   static void testUpdateFiliationSuccess(){
+
+       Account account = new Account(ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664');
+
+       insert new Filiation__c(FiliatedAccount__r = account, Name__c = 'Old Mother Name', Type__c = 'MOTHER');
+   
+       Test.startTest();
+   
+       RestRequest req = new RestRequest(); 
+       RestResponse res = new RestResponse();      
+       req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+       req.httpMethod = 'PUT';
+       req.requestBody = Blob.valueof(accountMock('success'));
+       RestContext.request = req;
+       RestContext.response= res;             
+  
+       IntegrationAccountIN.putMethod();
+
+       Test.stopTest();
+
+       List<Filiation__c> filiations = [SELECT Name__c, Type__c FROM Filiation__c];
+       Filiation__c mother;
+       Filiation__c father;
+
+       for (Filiation__c filiation : filiations) {
+           if (filiation.Type__c == 'MOTHER') {
+                mother = filiation;
+           } else if (filiation.Type__c == 'FATHER') {
+                father = filiation;
+           }
+       }
+       
+       System.assertEquals(2, filiations.size(),'Filiations where not successfully created.');
+       System.assertEquals('Lily Aldrin', mother.Name__c, 'Filiation (MOTHER) was not succesfully upserted');
+       System.assertEquals('Marshall Ericksen', father.Name__c, 'Filiation (FATHER) was not succesfully upserted');
+
+   }   
+
+   @IsTest
+   static void testNullFiliationSuccess(){
+   
+       Test.startTest();
+
+       RestRequest req = new RestRequest(); 
+       RestResponse res = new RestResponse();      
+       req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+       req.httpMethod = 'PUT';
+       req.requestBody = Blob.valueof(accountMock('nullFiliation'));
+       RestContext.request = req;
+       RestContext.response= res;             
+  
+       IntegrationAccountIN.putMethod();       
+   
+       Test.stopTest();
+
+       List<Filiation__c> filiations = [SELECT Id FROM Filiation__c];
+
+       System.assertEquals(200, res.statusCode, 'Request should\'ve been successfull');
+       System.assertEquals(0, filiations.size(), 'No Filiation should\'ve been created');
+   }
+
+   @IsTest
+   static void testDeleteFiliationSuccess(){
+
+       Account account = new Account(ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664');
+
+       List<Filiation__c> filiations = new List<Filiation__c>{
+        new Filiation__c(FiliatedAccount__r = account, Name__c = 'Lily Aldrin', Type__c = 'MOTHER'),
+        new Filiation__c(FiliatedAccount__r = account, Name__c = 'Marshall Ericksen', Type__c = 'FATHER')
+       };
+
+       insert filiations;
+   
+       Test.startTest();
+   
+       RestRequest req = new RestRequest(); 
+       RestResponse res = new RestResponse();      
+       req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+       req.httpMethod = 'PUT';
+       req.requestBody = Blob.valueof(accountMock('deleteFiliation'));
+       RestContext.request = req;
+       RestContext.response= res;             
+  
+       IntegrationAccountIN.putMethod();
+
+       Test.stopTest();
+
+       List<Filiation__c> selectedFiliations = [SELECT Name__c, Type__c FROM Filiation__c];
+       System.assertEquals(200, res.statusCode, 'Request should\'ve been successfull');
+       System.assertEquals(1, selectedFiliations.size(),'Filiation should\'ve been deleted');
+       System.assertEquals('Lily Aldrin', selectedFiliations[0].Name__c, 'Filiation should\'ve been deleted');
+
+   }
+
+   @IsTest
+   static void testDeleteAllFiliationSuccess(){
+   
+       Account account = new Account(ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664');
+
+       List<Filiation__c> filiations = new List<Filiation__c>{
+         new Filiation__c(FiliatedAccount__r = account, Name__c = 'Lily Aldrin', Type__c = 'MOTHER'),
+         new Filiation__c(FiliatedAccount__r = account, Name__c = 'Marshall Ericksen', Type__c = 'FATHER')
+       };
+
+       insert filiations;
+
+       Test.startTest();
+
+       RestRequest req = new RestRequest(); 
+       RestResponse res = new RestResponse();      
+       req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+       req.httpMethod = 'PUT';
+       req.requestBody = Blob.valueof(accountMock('nullFiliation'));
+       RestContext.request = req;
+       RestContext.response= res;             
+  
+       IntegrationAccountIN.putMethod();       
+   
+       Test.stopTest();
+
+       List<Filiation__c> selectedFiliations = [SELECT Id FROM Filiation__c];
+
+       System.assertEquals(200, res.statusCode, 'Request should\'ve been successfull');
+       System.assertEquals(0, selectedFiliations.size(), 'All Filiations should\'ve been deleted');
+   }   
+
+   @IsTest
+   static void testUpsertFiliationError(){
+   
+       Test.startTest();
+
+       RestRequest req = new RestRequest(); 
+       RestResponse res = new RestResponse();      
+       req.requestURI = '/services/apexrest/IntegrationAccountIN'; 
+       req.httpMethod = 'PUT';
+       req.requestBody = Blob.valueof(accountMock('filiationDmlError'));
+       RestContext.request = req;
+       RestContext.response= res;             
+  
+       IntegrationAccountIN.putMethod();        
+   
+       Test.stopTest();
+
+       System.assertEquals(500, res.statusCode, 'Request status code should have been 500');
+   }
       
     static String accountMock(String param){
         String version = param == 'parseError' ? '"version": "A"' : '"version": 27';
@@ -517,7 +667,7 @@ global with sharing class IntegrationAccountINTest {
         String currencyCodeProInfo = param == 'invalidCurrencyProfIncome' ? '"currencyCode": "ERRO",' : '"currencyCode": "BRL",';
         String addressType = param == 'addressDmlError' ? '"type": "ERRO",' : '"type": "BILLING",';
         String relationshipType = param == 'relationshipDmlError' ? '"type": "ERRO",' : '"type": "SPOUSE",';
-        String documentType = param == 'documentDmlError' ? '"type": "erro",' : '"type": "pis",';
+        String documentType = param == 'documentDmlError' ? '"type": "erro",' : '"type": "cpf",';
         String incomeType = param == 'incomeDmlError' ? '"type": "ERRO",' : '"type": "MONTHLY_INCOME",';
         String professionalCategory = param == 'professionalInfoDmlError' ? '"category": "ERRO",' : '"category": "ADMINISTRATIVE",';
         String professionalIncomeType = param == 'professionalIncomeDmlError' ? '"type": "ERRO",' : '"type": "MONTHLY_INCOME",';
@@ -677,6 +827,30 @@ global with sharing class IntegrationAccountINTest {
             '            ]'+
             '        }'+
             '    ],';
+
+        String filiationType = param == 'filiationDmlError' ? '"type": "ERROR",' : '"type": "MOTHER",';
+        String filiation;
+        if (param == 'nullFiliation') {
+            filiation = '"filiation": null,';
+        } else if (param == 'deleteFiliation') {
+            filiation = '"filiation": [' + 
+                '{' + 
+                    '"type": "MOTHER",' + 
+                    '"name": "Lily Aldrin"' + 
+                '}' + 
+            '],';
+        } else {
+            filiation = '"filiation": [' + 
+                '{' + 
+                    filiationType +
+                    '"name": "Lily Aldrin"' +
+                '},' +
+                '{' +
+                    '"type": "FATHER",' +
+                    '"name": "Marshall Ericksen"' +
+                '}' +
+            '],';
+        }
         
 		String json=		'{'+
 		externalAccountId+
@@ -712,12 +886,7 @@ global with sharing class IntegrationAccountINTest {
 		'    "education": {'+
 		'        "degree": "COLLEGE_DEGREE_COMPLETED"'+
 		'    },'+
-		'    "filiation": ['+
-		'        {'+
-		'            "type": "MOTHER",'+
-		'            "name": "Paola Virginia 4"'+
-		'        }'+
-		'    ],'+
+		filiation+
 		income+
 		professionalIncome+
 		relationships+

@@ -282,6 +282,21 @@ export default class MinuatorPerson extends LightningElement {
 		}
 	}
 
+	onChangePersonInput(event){
+
+        let splittedId =  event.currentTarget.dataset.id.split('_');
+
+        let actualPersonId = splittedId[0];
+
+        let actualFieldName = splittedId[1];
+
+        let actualPerson = this.persons.filter(person => { return person.id === actualPersonId })[0];
+
+        actualPerson[actualFieldName] = event.target.value;
+		console.log(actualFieldName)
+
+    }
+
 	onchangeBefore77(event){
 		if(this.certidaoToggle){
 		const elementCertidao = this.template.querySelector('[data-id="certidaoToggleId"]'); 
@@ -757,22 +772,46 @@ export default class MinuatorPerson extends LightningElement {
 			person.cpf = person.mainDocument.number;
 
 			//person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
-			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);
+			person.cpf = person.cpf.substring(0,3) + '.' + person.cpf.substring(3,6) + '.' + person.cpf.substring(6,9) + '-' + person.cpf.substring(9,11);			
 			//person.address.zipcode = person.address.zipcode.substring(0,5) + '-' + person.address.zipcode.substring(5,8);
 			person.cellPhone = '(' + person.cellPhone.substring(0,2) + ') ' + person.cellPhone.substring(2,3) + ' ' + person.cellPhone.substring(3,7) + '-' + person.cellPhone.substring(7,11);
 			
-			person.nameId = personId+"name";
-			person.cpfId = personId+"CPF";			
-			person.nationalityId = personId+"nationality";
-			person.birthdateId = personId+"birthdate";
-			person.maritalStatusId = personId+"maritalStatus";
-			person.motherNameId = personId+"motherName";
-			person.fatherNameId = personId+"fatherName";
-			person.professionId = personId+ "profession";
-			person.cellPhoneId = personId+"cellPhone";
-			person.emailId = personId+"email";
+			person.nameId = personId+"name";				
 
+			person.cpfId = person.mainDocument.number;
+			person.cpfId = personId+"number";					
+
+			person.nationalityId = personId+"nationality";		
+
+			person.birthdateId = personId+"birthdate";
 			
+			person.maritalStatusId = personId+"maritalStatus";
+			
+			person.motherNameId = personId+"motherName";
+			
+			person.fatherNameId = personId+"fatherName";
+			
+			person.professionId = personId+"profession";
+			
+			person.cellPhoneId = personId+"cellPhone";
+			
+			person.emailId = personId+"email";
+			
+			person.genderInputId = personId+'_gender';			
+			
+			person.docTypeInputId = person.identityDocument.type;
+			person.docTypeInputId = personId+'_type';	
+			
+			person.issuingBodyInputId = person.identityDocument.issuingBody;
+			person.issuingBodyInputId = personId+'_issuingBody';	
+			
+			person.docNumberInputId = person.identityDocument.number;
+			person.docNumberInputId = personId+'_number';
+						
+			person.expeditionDateInputId = person.identityDocument.expeditionDate;
+			person.expeditionDateInputId = personId+'_expeditionDate';
+			
+	
 			if(person.maritalStatus === "MARRIED"){
 				person.maritalPersonStatus = "Casado";
 			}else if(person.maritalStatus === "SINGLE"){

@@ -1,17 +1,34 @@
 public with sharing class OpportunityAssignmentService {
-
-    private static final String AWAITING_FORMALIZATION_ANALYSIS = 'Aguardando Análise de Formalização';
-    private static final String UNDER_FORMALIZATION_ANALYSIS = 'Em Análise de Formalização';
-    private static final String AWAITING_COMITEE = 'Aguardando Distribuição de Comitê';
-    private static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê';
-
+    
+    public static final String NEW_OPP = 'Novo';
+    public static final String APPROVED_BY_HR = 'Aprovado por RH';
+    public static final String AWAITING_FORMALIZATION_ASSIGNMENT = 'Aguardando Distribuição de Formalização';
+    public static final String AWAITING_FORMALIZATION_ANALYSIS = 'Aguardando Análise de Formalização';
+    public static final String UNDER_FORMALIZATION_ANALYSIS = 'Em Análise de Formalização';
+    public static final String AWAITING_COMITEE_ASSIGNMENT = 'Aguardando Distribuição de Comitê';
+    public static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê';
+    public static final String UNDER_COMMITEE_ANALYSIS = 'Em Análise de Comitê de Formalização';
+    public static final String FORMALIZATION_PENDENCY_RETURN = 'Retorno de Pendência de Formalização';
+    public static final String CONSULTING_PENDENCY = 'Pendenciado para Consultoria';
+  
     public static string opportunityRecordTypeDevName;
     public static Map<String,String> stageNameMap;
+    
+    private static Map<String, Set<String>> mapAssignedOppStages = new Map<String,Set<String>>{
+      'AtWork' =>  new Set<String>{AWAITING_FORMALIZATION_ANALYSIS, UNDER_FORMALIZATION_ANALYSIS },
+      'AutoFin' => new Set<String>{AWAITING_FORMALIZATION_ANALYSIS, UNDER_FORMALIZATION_ANALYSIS, AWAITING_COMITEE_ANALYSIS }
+    };
 
-    private static Map<String, Set<String>> mapAssignedOppStages;
-    private static Map<String,String> mapStagesToSet = new Map<String,String>();
+    private static Map<String,String> mapStagesToSet = new Map<String,String>{
+      APPROVED_BY_HR => AWAITING_FORMALIZATION_ANALYSIS,
+      FORMALIZATION_PENDENCY_RETURN => AWAITING_FORMALIZATION_ANALYSIS,
+      AWAITING_COMITEE_ASSIGNMENT => AWAITING_COMITEE_ANALYSIS,
+      AWAITING_FORMALIZATION_ASSIGNMENT => AWAITING_FORMALIZATION_ANALYSIS
+    };
 
-    public static Boolean saveToCache = false;
+    private static Map<String,Boolean> userAvaiableMap = new Map<String,Boolean>();
+    private static Set<Id> allRegisteredUsers = new Set<Id>();
+    private static Set<Id> assignedOpps = new Set<Id>();
 
     public static Map<String,String> createStageNameMap(List<String> stageNameList){
 
@@ -21,18 +38,6 @@ public with sharing class OpportunityAssignmentService {
                                                             'stageNameToPendency' => stageNameList.remove(0),
                                                             'stageNameUnderAnalysis' => stageNameList.remove(0),
                                                             'stageNameCommiteeAnalysis' => stageNameList.remove(0)};
-
-      mapAssignedOppStages = new Map<String,Set<String>>{
-        'AtWork' => new Set<String>{AWAITING_FORMALIZATION_ANALYSIS,UNDER_FORMALIZATION_ANALYSIS},
-        'AutoFin' => new Set<String>{AWAITING_FORMALIZATION_ANALYSIS,UNDER_FORMALIZATION_ANALYSIS,AWAITING_COMITEE_ANALYSIS}
-      };
-
-      mapStagesToSet = new Map<String,String>{
-        'Aprovado por RH' => AWAITING_FORMALIZATION_ANALYSIS,
-        'Retorno de Pendência de Formalização' => AWAITING_FORMALIZATION_ANALYSIS,
-        AWAITING_COMITEE => AWAITING_COMITEE_ANALYSIS
-      };
-
       return stageMap;
     }
     
@@ -58,71 +63,101 @@ public with sharing class OpportunityAssignmentService {
       return runAssignment;
     }
 
-    public static List<Opportunity> assignOpportunities(List<Opportunity> inputOppList, CustomSetup__c cSetup, String recordTypeDevName) {
+    public static List<Opportunity> assignOpportunities(List<Opportunity> inputOppList, CustomSetup__c cSetup, String recordTypeDevName){
+      List<Opportunity> oppsToAssign = new List<Opportunity>();
+      
+      if (cSetup.ProductAssignedUsers__r.isEmpty() || inputOppList.isEmpty()) { return oppsToAssign; }
+      
+      Map<Id, Set<String>> mapUser = createUserMap(cSetup.ProductAssignedUsers__r, recordTypeDevName);
 
-      List<Opportunity> lstOpptyToAssign = new List<Opportunity>();
-      
-      if (cSetup.ProductAssignedUsers__r.isEmpty() || inputOppList.isEmpty()) { return lstOpptyToAssign; }
+      //Initially this will be a fixed value, but later can be configured via the customSetup Record for each B.U, allowing multiple opps to be distributed to each analyst.
+      Integer numberOfOppsPerUser = 1;
 
-      Set<Id> setUnavailableUsers = getUnavailableUsers(getAssignedOpps(recordTypeDevName), cSetup.ProductAssignedUsers__r);
-      
-      Map<String, List<Id>> mapUsersByProductType = createMapUsersByProductType(cSetup.ProductAssignedUsers__r);
-      
       Map<String,String> accountUserIdMap = new Map<String,String>();
 
       if(OpportunityAssignmentController.ATWORK == recordTypeDevName || OpportunityAssignmentController.AUTOFIN == recordTypeDevName){
         accountUserIdMap = (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap') == null ? new Map<String,String>() : (Map<String,String>) Cache.Org.getPartition('local.atWorkAssignment').get(recordTypeDevName+'UserAccountIdMap');
-      } 
- 
-      for (Opportunity op : inputOppList) {
-        
-        if(!op.StageName.contains('Comitê') && accountUserIdMap.containsKey(op.AccountId)){
-          setOppFields(op, accountUserIdMap.get(op.AccountId));
-          lstOpptyToAssign.add(op);
-          setUnavailableUsers.add(accountUserIdMap.get(op.AccountId));
-          continue;
-        }
-        
-        if (mapUsersByProductType.isEmpty()) { break; }
+      }
 
-        List<Id> lstProductTypeUsers = mapUsersByProductType.get(op.ProductType__c);
-        
-        if (lstProductTypeUsers == null || lstProductTypeUsers.isEmpty()) {
-            mapUsersByProductType.remove(op.ProductType__c);
-            continue;
-        }
+      if(!accountUserIdMap.isEmpty()){
+        verifyRequestsBySameClient(oppsToAssign,inputOppList,accountUserIdMap);
+      }
 
-        Id selectedUserId;
+      for(Id userId : mapUser.keySet()){
+        List<Opportunity> avaiableOpps = filterAvaiableOppsForUser(inputOppList, mapUser.get(userId), numberOfOppsPerUser);
         
-        for (Integer i = 0; i < lstProductTypeUsers.size(); i++) {
-            Id userId = lstProductTypeUsers.get(i);
+        if(avaiableOpps.isEmpty() || !verifyUserAvaliability(userId)){ continue; }
 
-            if (setUnavailableUsers.contains(userId)) { continue; }
+        Integer leastAmount = numberOfOppsPerUser < avaiableOpps.size() ? numberOfOppsPerUser : avaiableOpps.size();
 
-            selectedUserId = userId;
-            mapUsersByProductType.get(op.ProductType__c).remove(i);
-            break;
-        }
-        
-        if (selectedUserId != null) {
-            setOppFields(op, selectedUserId);
-            lstOpptyToAssign.add(op);
-            setUnavailableUsers.add(selectedUserId);
-            if(!op.StageName.contains('Comitê')){
-              accountUserIdMap.put(op.AccountId, selectedUserId);
-            }
+        for(Integer i = 0; i <= leastAmount-1; i++){
+          Opportunity opp = avaiableOpps.get(i);
+          setOppFields(opp, userId);
+          oppsToAssign.add(opp);
+          assignedOpps.add(opp.Id);
+          if(!opp.StageName.contains('Comitê')){
+            accountUserIdMap.put(opp.AccountId, userId);
+          }
         }
       }
 
-      if(OpportunityAssignmentController.ATWORK == recordTypeDevName || OpportunityAssignmentController.AUTOFIN == recordTypeDevName){
+      if(!accountUserIdMap.isEmpty() && (OpportunityAssignmentController.ATWORK == recordTypeDevName || OpportunityAssignmentController.AUTOFIN == recordTypeDevName)){
         Cache.Org.put('local.atWorkAssignment.'+recordTypeDevName+'UserAccountIdMap', accountUserIdMap, 43200, Cache.Visibility.ALL, false);
-      }       
-      
-      if (lstOpptyToAssign.isEmpty()) { return lstOpptyToAssign; }
+      }
 
-      return lstOpptyToAssign;
+      return oppsToAssign;
     }
 
+    private static Boolean verifyUserAvaliability(String userId){
+      if(!userAvaiableMap.containsKey(userId)){
+        allRegisteredUsers.add(userId);
+        fillUserAvaiableMap();
+      }
+      return userAvaiableMap.get(userId);
+    }
+
+    private static void fillUserAvaiableMap(){
+      Set<Id> inactiveUsers = new Set<Id>();
+      for(User u : [SELECT Id,UserAvailable__c, isActive FROM User WHERE Id IN :allRegisteredUsers]){
+        if(!u.IsActive) {
+          inactiveUsers.add(u.Id); 
+        }
+        userAvaiableMap.put(u.Id, (u.UserAvailable__c && u.IsActive));
+      }
+      if(!inactiveUsers.isEmpty()){
+        deleteInactiveUsersFuture(inactiveUsers);
+      }
+    }
+
+    @future
+    private static void deleteInactiveUsersFuture(Set<Id> inactiveUsers){
+      List<ProductAssignedUser__c> recordsToDelete = [SELECT Id FROM ProductAssignedUser__c WHERE User__c IN : inactiveUsers];
+      Database.delete(recordsToDelete);
+    }
+
+    private static void verifyRequestsBySameClient(List<Opportunity> oppsToAssign, List<Opportunity> inputOppList, Map<String,String> accountUserIdMap){
+      for(Opportunity op: inputOppList){
+        if(!op.StageName.contains('Comitê') && accountUserIdMap.containsKey(op.AccountId) && verifyUserAvaliability(accountUserIdMap.get(op.AccountId))){
+          setOppFields(op, accountUserIdMap.get(op.AccountId));
+          oppsToAssign.add(op);
+          assignedOpps.add(op.Id);
+        }
+      }
+    }
+    
+    private static List<Opportunity> filterAvaiableOppsForUser(List<Opportunity> oppList, Set<String> avaiableQueueNames, Integer numberOfOpps){
+      List<Opportunity> filteredOpps = new List<Opportunity>();
+      
+      for(Opportunity opp : oppList){
+        if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')) )){
+          filteredOpps.add(opp);
+          if(filteredOpps.size() == numberOfOpps){ break; }
+        }
+      }
+      
+      return filteredOpps;
+    }
+    
     private static void setOppFields(Opportunity opportunity, Id ownerId){
         opportunity.OwnerId = ownerId;
         opportunity.StageName = mapStagesToSet.get(opportunity.StageName);
@@ -148,24 +183,21 @@ public with sharing class OpportunityAssignmentService {
         return setUnavailableUsers;
     }
     
-    private static Map<String, List<Id>> createMapUsersByProductType(List<ProductAssignedUser__c> lstProductUser) {
-        Map<String, Set<Id>> mapSetUsersByProductType = new Map<String, Set<Id>>();
+    private static Map<Id, Set<String>> createUserMap(List<ProductAssignedUser__c> lstProductUser, String recordTypeDevName){
 
-        for (ProductAssignedUser__c productUser : lstProductUser) {
-          if (mapSetUsersByProductType.containsKey(productUser.ProductType__c)) {
-            mapSetUsersByProductType.get(productUser.ProductType__c).add(productUser.User__c);
-          } else {
-            mapSetUsersByProductType.put(productUser.ProductType__c, new Set<Id>{ productUser.User__c });
-          }
+      Set<Id> setUnavailableUsers = getUnavailableUsers(getAssignedOpps(recordTypeDevName), lstProductUser);
+      Map<Id, Set<String>> userMap = new Map<Id, Set<String>>();
+
+      for (ProductAssignedUser__c productUser : lstProductUser) {
+        if(setUnavailableUsers.contains(productUser.User__c)) { continue; }
+        allRegisteredUsers.add(productUser.User__c);
+        if (userMap.containsKey(productUser.User__c)) {
+          userMap.get(productUser.User__c).add(productUser.QueueName__c);
+        } else {
+          userMap.put(productUser.User__c, new Set<String>{ productUser.QueueName__c });
         }
-
-        Map<String, List<Id>> mapListUsersByProductType = new Map<String, List<Id>>();
-
-        for (String prodType : mapSetUsersByProductType.keySet()) {
-            mapListUsersByProductType.put(prodType, new List<Id>(mapSetUsersByProductType.get(prodType)));
-        }
-
-        return mapListUsersByProductType;
+      }
+      return userMap;
     }
 
     private static List<Opportunity> getAssignedOpps(String recordTypeDevName) {
@@ -174,7 +206,7 @@ public with sharing class OpportunityAssignmentService {
       return [  SELECT OwnerId
                 FROM Opportunity
                 WHERE RecordTypeId = :opportunityRecordTypeId AND
-                CreatedDate = THIS_WEEK AND StageName IN :stageNameAssignedSet
+                CreatedDate = LAST_90_DAYS AND StageName IN :stageNameAssignedSet
                 WITH SECURITY_ENFORCED ];
       }
 
@@ -185,7 +217,7 @@ public with sharing class OpportunityAssignmentService {
       String autoFinRecordTypeId = getRecordTypeId(OpportunityAssignmentController.AUTOFIN);
       Map<String,List<Opportunity>> recordTypeOppMap = new Map<String,List<Opportunity>>{atWorkRecordTypeId => atWorkOpps, autoFinRecordTypeId => autoFinOpps};
 
-      for(Opportunity opportunity : [ SELECT Id, Name, AccountId, ProductType__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
+      for(Opportunity opportunity : [ SELECT Id, Name, AccountId, QueueName__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
                                       FROM Opportunity
                                       WHERE RecordTypeId IN :oppRecordTypeSet AND
                                       StageName IN :stageNameSet
@@ -226,6 +258,11 @@ public with sharing class OpportunityAssignmentService {
         }
   
         return lstOpportunitySorted;
+    }
+
+    public static void sendCustomNotification(List<Opportunity> oppToUpdateList){
+      Map<String,List<SObject>> mapTypeSObjectList = new Map<String,List<SObject>>{'Opportunity' => oppToUpdateList};
+      CustomNotificationController.createCustomNotification(mapTypeSObjectList);
     }
 
     public static String getRecordTypeId(String recordTypeDevName){

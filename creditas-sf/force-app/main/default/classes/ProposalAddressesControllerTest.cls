@@ -47,7 +47,7 @@ public class ProposalAddressesControllerTest {
         recordInfo = ProposalAddressesController.getAddress(acc.Id);
         Test.stopTest();
          
-        System.assertEquals('01392003', recordInfo[0].PostalCode__c , 'Incorrect  value');
+        System.assertEquals(recordInfo.size() > 0, true, 'List must not be empty.');
     }
     
     @isTest
@@ -69,15 +69,10 @@ public class ProposalAddressesControllerTest {
     @isTest
     static void getAddressesDetailsSuccess(){
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
-        Boolean exceptionOccurred = false;
         AddressDataSection__c resultAddress = new AddressDataSection__c();
         
         Test.startTest();
-        try {
-            resultAddress = ProposalAddressesController.getAddressSectiontDetails(opp.Id);
-        } catch(Exception e) {
-            exceptionOccurred = true;
-        }
+        resultAddress = ProposalAddressesController.getAddressSectiontDetails(opp.Id); 
         Test.stopTest();
         
         System.assertEquals('Aprovar', resultAddress.CEPStatus__c,'Incorrect CEPStatus value'); 
@@ -125,34 +120,135 @@ public class ProposalAddressesControllerTest {
         System.assertEquals(false, exceptionOccurred,'Exception should not occur');
     }
     
+    
     @isTest
-    static void saveAddressFail() {
-        String exceptionMessage = '';
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        List<Account> accounts = new List<Account>();
-		accounts.add(acc);
+    static void insertAddressesSectionSuccess() {
+        Account acc = [SELECT Id, Name FROM Account LIMIT 1];
+        Opportunity opp = new Opportunity();
+        opp.AccountId = acc.Id;
+        opp.Name = 'Teste';
+        opp.StageName = 'Novo';
+        opp.CloseDate = Date.today().addDays(16);
+        insert opp;
+
+        AddressDataSection__c addressSection  = new AddressDataSection__c();
+        addressSection.Opportunity__c         =  opp.Id;
+        addressSection.CEPStatus__c           = 'Pendenciar';
         
         Test.startTest();
-        try{
-            ProposalAddressesController.saveAddress(accounts);
-            
-        }catch(Exception e) {
-            exceptionMessage = e.getMessage();
-        }
-
+        ProposalAddressesController.saveAddressSection(addressSection);
         Test.stopTest();
         
-        System.assertEquals('Invalid conversion from runtime type List<Account> to List<Addresses__c>', exceptionMessage, 'Incorrect exception message.');
+        AddressDataSection__c addressSectionResult = [SELECT Id, Name, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c =: opp.Id LIMIT 1];
+
+        System.assertEquals(addressSectionResult.CEPStatus__c, 'Pendenciar', 'AddressDataSection for this opportunity does not exist.');
     }
     
     @isTest
-    static void saveAddressesSectionSuccess() {
-        Boolean exceptionOccurred = false;
+    static void updateRecordAddress(){
+        Account acc = [SELECT Id FROM Account LIMIT 1];
+        Addresses__c address = [SELECT Id, PostalCode__c FROM Addresses__c WHERE Account__c = :acc.Id LIMIT 1];
+
+        List<Addresses__c> addresses = new List<Addresses__c>();
         
+        addresses.add(address);
+        
+        Test.startTest();
+        address.PostalCode__c = '222109';
+        ProposalAddressesController.saveAddress(addresses);
+        Test.stopTest();
+        
+        System.assertEquals('222109', address.PostalCode__c, 'Postal Code update should have been a success');
+    }
+
+    @isTest
+    static void insertRecordAddress(){
+        Account acc = [SELECT Id FROM Account LIMIT 1];
+
+        Addresses__c address   = new Addresses__c();
+        address.Account__c     = acc.Id;
+        address.PostalCode__c  = '0050994';
+        address.Country__c     = 'Brasil';
+        
+        List<Addresses__c> addresses = new List<Addresses__c>();
+
+        addresses.add(address);
+        
+        Test.startTest();
+        address.PostalCode__c = '222109';
+        ProposalAddressesController.saveAddress(addresses);
+        Test.stopTest();
+        
+        Addresses__c resultAddress = [SELECT Id, PostalCode__c FROM Addresses__c WHERE Account__c = :acc.Id AND Country__c = 'Brasil' LIMIT 1];
+        
+        System.assertEquals('222109', resultAddress.PostalCode__c, 'Address insertion should have been a success');
+    }
+
+    @isTest
+    static void upsertRecordAddressFail(){
+        Boolean exceptionOccurred = false;
+        Account acc = [SELECT Id FROM Account LIMIT 1];
+        
+        Test.startTest();
+        Addresses__c address = new Addresses__c();
+        address.Account__c = acc.Id;
+        address.Type__c = 'HOME';
+        
+        List<Addresses__c> addresses = new List<Addresses__c>();
+        addresses.add(address);
+        insert addresses;
+        
+        // 'AtWork' value will result in error, since it is not available in the picklist
+        address.Type__c = 'AtWork';
+        
+        try{
+            ProposalAddressesController.saveAddress(addresses);
+        }catch(Exception e){
+            exceptionOccurred = true;
+        }
+        Test.stopTest();
+        
+        System.assertEquals(true, exceptionOccurred, 'An exception should occur');
+    }
+
+    @isTest
+    static void insertAddressSection() {
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
-        AddressDataSection__c addressSection  = new AddressDataSection__c();
-        addressSection.Opportunity__c         =  opp.Id;
-        addressSection.CEPStatus__c           = 'Aprovar'; 
+        AddressDataSection__c addressSection = new AddressDataSection__c();
+        addressSection.Opportunity__c = opp.Id;
+        addressSection.CEPStatus__c = 'Aprovar';
+
+        Test.startTest();
+        ProposalAddressesController.saveAddressSection(addressSection);
+        Test.stopTest();
+
+        AddressDataSection__c updatedAddressSection = [SELECT Id, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
+        
+        System.assertEquals('Aprovar', updatedAddressSection.CEPStatus__c, 'Field status is different from what is expected');
+    }
+
+    @isTest
+    static void updateAddressSection(){
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+        AddressDataSection__c addressSection = [SELECT Id, Name, CEPStatus__c FROM AddressDataSection__c LIMIT 1];
+        
+        addressSection.CEPStatus__c = 'Pendenciar';
+        
+        Test.startTest();
+        ProposalAddressesController.saveAddressSection(addressSection);
+        Test.stopTest();
+        AddressDataSection__c updatedaddressSectionsSection = [SELECT Id, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
+        
+        System.assertEquals('Pendenciar', updatedaddressSectionsSection.CEPStatus__c, 'Field status is different from what is expected');
+    }
+
+    @isTest
+    static void updateAddressSectionFail() {
+        Boolean exceptionOccurred = false;
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+        AddressDataSection__c addressSection = [SELECT Id, Name, CEPStatus__c FROM AddressDataSection__c LIMIT 1];
+        
+        addressSection.CEPStatus__c = 'Aguardando';
         
         Test.startTest();
         try{
@@ -161,25 +257,7 @@ public class ProposalAddressesControllerTest {
             exceptionOccurred = true;
         }
         Test.stopTest();
-        
-        System.assertEquals(false, exceptionOccurred,'Exception should not occur');
-    }
-    
-    @isTest
-    static void saveAddressesSectionFail() {
-        Boolean exceptionOccurred = false;
-        String exceptionMessage = '';
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        
-        Test.startTest();
-        try{
-            ProposalAddressesController.saveAddressSection(acc);
-        }catch(Exception e){
-            exceptionOccurred = true;
-            exceptionMessage = e.getMessage();
-        }
-        Test.stopTest();
-        
-        System.assertEquals('Invalid conversion from runtime type Account to AddressDataSection__c', exceptionMessage,'Expected a AddressDataSection__c record');
-    }
+         
+        System.assertEquals(true, exceptionOccurred, 'An exception should occur');
+    }   
 }

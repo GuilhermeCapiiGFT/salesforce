@@ -1,30 +1,30 @@
 import { LightningElement, track, api } from 'lwc';
 
+const PERSONS_PROPERTY = 'persons';
+const RELATIONSHIPS_PROPERTY = 'relationships';
 export default class MinuatorPersons extends LightningElement {
 
-    @track customers = [];
+    customers;	
     personSectionIcon = "utility:chevronright";
 	addressSectionIcon = "utility:chevronright";
     txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
     showPersonSectionVar = false;
     personSectionIcon = "utility:chevronright";
+    relationships;
+	selectedTab;
+	@track currentTab = [];
 
 	@api
 	get persons(){}
 	set persons( data ) {
 
-		if ( !data ) return;
-
-		this.setCustomers(data);
-	}
-
-	setCustomers( data ) {
-
-		if(!data) return;
-
+		if ( !data ) return;		
 		this.customers = JSON.parse(JSON.stringify(data.persons));
-
+		this.personEdited = JSON.parse(JSON.stringify(data));
+		this.relationships = JSON.parse(JSON.stringify(data.relationships));
+		
 	}
+	
     connectedCallback() {
 
     }
@@ -40,7 +40,7 @@ export default class MinuatorPersons extends LightningElement {
 		let customerSelected = event.detail.mainDocumentNumber;
 
 		this.customers = this.customers.map( customer => { customer.showSection = ( customerSelected == customer.mainDocument.number) ? true : false;
-													 return customer });
+													 	   return customer });
 		this.customers = JSON.parse(JSON.stringify(this.customers));												
 	}
 
@@ -52,6 +52,29 @@ export default class MinuatorPersons extends LightningElement {
 
 		this.customers[customerIndex] = customerEdited;
 
+		this.updateOnContainer(PERSONS_PROPERTY);
+	
 	}
 
+	handleUpdateRelationships( event ) {
+
+		this.relationships = event.detail.relationships;
+
+		this.updateOnContainer(RELATIONSHIPS_PROPERTY);
+	}
+
+	handleTabNameSelected( event ){
+
+		this.selectedTab = event.detail.namePersonTab;
+	}
+
+	updateOnContainer( property) {
+
+		let propertyName = ( property == RELATIONSHIPS_PROPERTY ) ? RELATIONSHIPS_PROPERTY : PERSONS_PROPERTY;
+
+		let propertyToUpdate = ( property == RELATIONSHIPS_PROPERTY ) ? this.relationships : this.customers;
+
+		this.dispatchEvent(new CustomEvent('updatepersons', { detail: { property : propertyToUpdate,
+																		propertyName : propertyName } } ) );
+	}
 }

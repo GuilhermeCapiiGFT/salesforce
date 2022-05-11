@@ -240,7 +240,7 @@
             </div>
         </div>
 
-        <!-- <div class="slds-grid container">
+        <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">Número do Contrato</label>
                 <lightning-input type="text" variant="label-hidden" value={valueNumeroContrato.value} data-id="inputNumeroContrato" onchange={handleInputChange} disabled={valueNumeroContrato.fieldReadOnly}></lightning-input>
@@ -265,7 +265,7 @@
                     <input id="checkboxNumeroContratoReprovado" class="disabled-input" disabled data-value={preValue} name="NumeroContrato" type="checkbox" value={statusReject}/> 
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
@@ -297,7 +297,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">TAC</label>
-                <lightning-input type="number" variant="label-hidden" step=".001" value={valueTAC.value} data-id="inputTAC" onchange={handleInputChange} disabled={valueTAC.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" variant="label-hidden" step=".01" value={valueTAC.value} data-id="inputTAC" onchange={handleInputChange} disabled={valueTAC.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>
@@ -323,7 +323,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">IOF</label>
-                <lightning-input type="number" step=".001" variant="label-hidden" value={valueIOF.value} data-id="inputIOF" onchange={handleInputChange} disabled={valueIOF.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" step=".01" variant="label-hidden" value={valueIOF.value} data-id="inputIOF" onchange={handleInputChange} disabled={valueIOF.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>
@@ -349,7 +349,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">CET / mês</label>
-                <lightning-input type="number" step=".001" variant="label-hidden" value={valueCETmes.value} data-id="inputCETmes" onchange={handleInputChange} disabled={valueCETmes.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" step=".000000000000000001" variant="label-hidden" value={valueCETmes.value} data-id="inputCETmes" onchange={handleInputChange} disabled={valueCETmes.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>
@@ -375,7 +375,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">CET / ano</label>
-                <lightning-input type="number" step=".001" variant="label-hidden" value={valueCETano.value} data-id="inputCETano" onchange={handleInputChange} disabled={valueCETano.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" step=".000000000000000001" variant="label-hidden" value={valueCETano.value} data-id="inputCETano" onchange={handleInputChange} disabled={valueCETano.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>
@@ -401,7 +401,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">Taxa de juros da operação / mês</label>
-                <lightning-input type="number" step=".001" variant="label-hidden" value={valueJurosMes.value} data-id="inputJurosMes" onchange={handleInputChange} disabled={valueJurosMes.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" step=".000000000000000001" variant="label-hidden" value={valueJurosMes.value} data-id="inputJurosMes" onchange={handleInputChange} disabled={valueJurosMes.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>
@@ -427,7 +427,7 @@
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
                 <label class="slds-p-bottom_xx-small">Taxa de juros da operação / ano</label>
-                <lightning-input type="number" step=".001" variant="label-hidden" value={valueJurosAno.value} data-id="inputJurosAno" onchange={handleInputChange} disabled={valueJurosAno.fieldReadOnly}></lightning-input>
+                <lightning-input type="number" step=".000000000000000001" variant="label-hidden" value={valueJurosAno.value} data-id="inputJurosAno" onchange={handleInputChange} disabled={valueJurosAno.fieldReadOnly}></lightning-input>
             </div>
         
             <div class="slds-size_2-of-12"></div>

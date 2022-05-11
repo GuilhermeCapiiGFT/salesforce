@@ -1,6 +1,7 @@
 <aura:component implements="lightning:isUrlAddressable" access="global" >
     <aura:attribute name="recordId" type="String"/>
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
-    <c:formalizationAnalysisComponent recordId="{!v.recordId}"/>
-    <c:proposalAnalysis/>
+    <!--<c:formalizationAnalysisComponent recordId="{!v.recordId}"/>-->
+    <c:proposalAnalysis recordId="{!v.recordId}"/>
+    <c:modalProposalComite/>
 </aura:component>

@@ -181,7 +181,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     if (data) {
       this.account = data
       this.error = undefined
-
+      console.log(this.account)
 
       let fields = this.account.fields
       this.name = fields.Name.value

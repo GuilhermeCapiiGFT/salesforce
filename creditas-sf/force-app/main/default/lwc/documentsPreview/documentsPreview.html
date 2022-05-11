@@ -1,0 +1,24 @@
+<template>
+    <div class="componentSize">
+        <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
+            active-section-name={activeSections}>
+            <lightning-accordion-section name="A" label="Visualizar documentos">
+                <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small">
+                    <lightning-carousel disable-auto-scroll>
+                        <template for:each={data.items} for:item="doc">
+                            <lightning-carousel-image key={doc.documentKey} src={doc.url}
+                                header={doc.metadata.content.name} description={doc.details.createdAt}
+                                alternative-text="Documento" onclick={previewDocument}>
+                            </lightning-carousel-image>
+                        </template>
+                    </lightning-carousel>
+                </div>
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </div>
+    <div>
+        <template if:true={showPreview}>
+            <c-modal-image sourceimg={urlPreview} imgsource={urlPreview} onclosemodal={closePreview}></c-modal-image>
+        </template>
+    </div>
+</template>

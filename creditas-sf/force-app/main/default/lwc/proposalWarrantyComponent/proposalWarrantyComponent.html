@@ -10,6 +10,7 @@
           value={renavan}
           data-id="inputRenavan"
           disabled={renavanDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -53,12 +54,14 @@
             >Reprovado
           </label>
           <input
-            class="disabled-input"
             data-id="checkboxRenavanReject"
+            data-field="RenavamRejectReason__c"
+            data-status="RenavamStatus__c"
+            data-value={preValue}            
             name="renavan"
             type="checkbox"
             value="Rejeitado"
-            disabled
+            onchange={handleCheckboxChange}
           />
         </div>
       </div>
@@ -74,6 +77,7 @@
           value={plate}
           data-id="inputPlate"
           disabled={plateDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -136,6 +140,7 @@
           value={manufacturingYear}
           data-id="inputManufacturingYear"
           disabled={manufacturingYearDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -207,6 +212,7 @@
           value={modelYear}
           data-id="inputModelYear"
           disabled={modelYearDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -271,6 +277,7 @@
           value={brand}
           data-id="inputBrand"
           disabled={brandDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -333,6 +340,7 @@
           value={model}
           data-id="inputModel"
           disabled={modelDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -397,6 +405,7 @@
           value={color}
           data-id="inputColor"
           disabled={colorDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -459,6 +468,7 @@
           value={state}
           data-id="inputState"
           disabled={stateDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
@@ -515,13 +525,15 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-var-p-bottom_xx-small">UF de licenciamento</label>
-        <lightning-input
-          type="text"
+        <lightning-combobox
           variant="label-hidden"
           value={licensingState}
+          placeholder="Selecione a UF"
+          options={licensingStateOptions}
           data-id="inputLicensingState"
           disabled={licensingStateDisabled}
-        ></lightning-input>
+          onchange={handleInputChange}
+        ></lightning-combobox>
       </div>
 
       <div class="slds-size_2-of-12"></div>
@@ -581,32 +593,33 @@
       </div>
     </div>
 
-    <!-- CHASSI -->
-    <!-- <div class="slds-grid container">
+    <!-- CHASSIS -->
+    <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-var-p-bottom_xx-small">Chassi</label>
         <lightning-input
           type="text"
           variant="label-hidden"
-          value={chassi}
-          data-id="inputChassi"
-          disabled={chassiDisabled}
+          value={chassis}
+          data-id="inputChassis"
+          disabled={chassisDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 
       <div class="slds-size_2-of-12"></div>
 
-      <div class="slds-grid slds-size_5-of-12 checkbox-options" data-id="chassiCheckboxContainer">
+      <div class="slds-grid slds-size_5-of-12 checkbox-options" data-id="chassisCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
-          <label for="checkboxChassiApproved" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
+          <label for="checkboxChassisApproved" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
             >&nbsp;
           </label>
           <input
-            data-id="checkboxChassiApproved"
-            data-field="ResourceKey__c"
+            data-id="checkboxChassisApproved"
+            data-field="ChassiStatus__c"
             data-status="ChassiStatus__c"
             data-value={preValue}
-            name="chassi"
+            name="chassis"
             type="checkbox"
             value="Aprovado"
             onchange={handleCheckboxChange}
@@ -614,38 +627,36 @@
         </div>
 
         <div class="slds-size_4-of-12 form-control pendenciado">
-          <label for="checkboxChassiPending" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
+          <label for="checkboxChassisPending" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
             >&nbsp;
           </label>
           <input
-            data-id="checkboxChassiPending"
-            data-field="ResourceKey__c"
-            data-status="ChassiStatus__c"
-            data-value={preValue}
-            name="chassi"
+            class="disabled-input"
+            data-id="checkboxChassisPending"
+            name="chassis"
             type="checkbox"
             value="Pendenciado"
-            onchange={handleCheckboxChange}
+            disabled
           />
         </div>
 
         <div class="slds-size_4-of-12 form-control reprovado">
-          <label for="checkboxChassiReject" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
+          <label for="checkboxChassisReject" class="slds-var-p-bottom_xx-small" style="overflow-wrap: break-word"
             >&nbsp;
           </label>
           <input
-            data-id="checkboxChassiReject"
+            data-id="checkboxChassisReject"
             data-field="ChassiRejectReason__c"
             data-status="ChassiStatus__c"
-            data-value={preValue}
-            name="chassi"
+            data-value={preValue}            
+            name="chassis"
             type="checkbox"
             value="Rejeitado"
             onchange={handleCheckboxChange}
           />
         </div>
       </div>
-    </div> -->
+    </div>    
 
     <!-- FIPE CODE -->
     <div class="slds-grid container">
@@ -657,6 +668,7 @@
           value={fipeCode}
           data-id="inputFipeCode"
           disabled={fipeCodeDisabled}
+          onchange={handleInputChange}
         ></lightning-input>
       </div>
 

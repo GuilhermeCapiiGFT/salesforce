@@ -1,8 +1,14 @@
 <template>
-    <lightning-card>
+    <c-minuator-person-page-header 
+        persons={data}>
+    </c-minuator-person-page-header>
+    
+    <article class="slds-card borderHeader">       
         <ol class="slds-setup-assistant">
-            <c-minuator-persons 
-            persons={data}></c-minuator-persons>
+            <c-minuator-persons               
+                persons={data}
+                onupdatepersons={handleUpdatePersons}>
+            </c-minuator-persons>
         </ol>
-    </lightning-card>
+    </article>
 </template>

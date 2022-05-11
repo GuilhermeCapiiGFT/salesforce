@@ -1,36 +1,11 @@
-.slds-progress_vertical .slds-progress__item{
-    align-items: baseline;
-}
-
-.slds-progress_vertical .slds-progress__item::after{
-    top: 14px;
-    bottom: 0%;
-}
-
-.slds-progress_vertical .slds-progress__item::before{
-    top: 0%;
-    bottom: 19px;
-}
-
 .slds-icon .slds-input__icon .slds-input__icon_left .slds-icon-text-default{
     position: absolute;
     z-index: 1;
     margin: 0.5% 0 0 92%;
 }
 
-.alignSpan{
-    align-items: right
-}
-
-.colorIconMessage{
-    fill:white
-}
-
-.colorIconMessage{    
-    padding: 8px;    
-}
 .participacao{
-    float: right; 
+    float: right !important; 
     padding-left: 5px;
     padding-right: 5px;
     padding-bottom: 2px; 
@@ -41,6 +16,15 @@
     font-weight: bold
 }
 
-.participacaoHidden{
-    visibility: hidden;
+.slds-input-has-icon .slds-input__icon:not(button){
+    pointer-events: all !important;
+    padding-top: 4px;
+}
+
+.slds-form-element__icon {
+    padding-top: 8px !important;
+}
+
+.borderHeader{
+--slds-c-card-radius-border: 0px 0px 4px 4px
 }

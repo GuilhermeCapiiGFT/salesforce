@@ -1,28 +1,26 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { updateRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-const quickLinks = [
-  {label : 'Crivo', url: 'https://creditas-crivo.crivo.com.br/Login.aspx?ReturnUrl=%2Fresultado.aspx%3Flogs%3D2682204&logs=2682204'},
-  {label : 'BrFlow', url: 'https://www.brflow.com.br/autenticacao/autenticacao/login'},
-  {label : 'Receita Federal', url: 'https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp'},
-  {label : 'Checktudo', url: 'https://www.checktudo.com.br/'},
-  {label : 'Emailage', url: 'https://app.emailage.com/query'},
-  {label : 'Data Trust', url: 'https://datatrust.clearsale.com.br/#/'},
-  {label : 'DENATRAM', url: 'https://portalservicos.senatran.serpro.gov.br/#/consultas/veiculo'},
-  {label : 'Zapay', url: 'https://usezapay.com.br/creditas'},
-  {label : 'OITI - Visualizar', url: 'https://www.certiface.com.br:8443/certifacepainel/#/dashboard'},
-  {label : 'OITI - Enviar', url: 'https://www.certiface.com.br/tokensms/certifacetoken/oiti'}
-]
+import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
+import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
+
+import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
+
+const fields = [STAGENAME_FIELD];
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
   @api opportunityid
 
+  isStageWaitingForUE = false
+  isStageInAnalysis = false
   isAnalysisStarted = false
   startDate = ''
 
   // Info sections
   mapInfoSection = new Map()
-  sectionQuickLinks = quickLinks;
 
   // Info about progress ring variants
   generalInfoVariant = ''
@@ -30,6 +28,8 @@ export default class ProposalAnalysis extends LightningElement {
   contactInfoVariant = ''
   addressesInfoVariant = ''
   warrantyInfoVariant = ''
+  incomeInfoVariant = ''
+  operationInfoVariant = ''
 
   // Info about progress ring value
   generalInfoValue = 0
@@ -37,6 +37,8 @@ export default class ProposalAnalysis extends LightningElement {
   contactInfoValue = 0
   addressesInfoValue = 0
   warrantyInfoValue = ''
+  operationInfoValue = 0
+  incomeInfoValue = 0
 
   // Info about Modal
   openModalReason = false;
@@ -59,11 +61,50 @@ export default class ProposalAnalysis extends LightningElement {
   isAnyPending = false
   isAnyRejected = false
 
+  statusAnalysis;
+
+  sectionComponentMap = new Map([
+    ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
+    ["PersonalDataSection__c", "c-proposal-personal-data-component"],
+    ["AddressDataSection__c", "c-proposal-addresses-component"],
+    ["WarrantyDataSection__c", "c-proposal-warranty-component"],
+    ["IncomeDataSection__c", "c-proposal-income-data-component"],
+    ["OperationSection__c", "c-proposal-operation-component"]
+  ])
+
   connectedCallback() {
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
     this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
     this.mapInfoSection.set('ContainerDadosEndereco', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosEndereco'})
     this.mapInfoSection.set('ContainerDadosGarantia', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosGarantia'})
+    this.mapInfoSection.set('ContainerOperation', {'variant': '', 'value': 0, 'returnedId': 'ContainerOperation'})
+    this.mapInfoSection.set('ContainerDadosRenda', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosRenda'})
+  }
+
+  @wire(getRecord, { recordId: '$opportunityid', fields })
+  getStageName({ error, data }) {
+    if (data) {
+      console.log(data?.fields?.StageName?.value)
+      let stageName = data?.fields?.StageName?.value
+
+      if (stageName === 'Aguardando Análise de Formalização') {
+        this.isStageWaitingForUE = true
+        this.isAnalysisStarted = false
+      }
+      
+      else if (stageName === 'Em Análise de Formalização') {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = true
+      }
+      
+      else {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = false
+      }
+      
+    } else if (error) {
+      console.log('error searching for stageName')
+    }
   }
 
   setInfoValueAndVariant(event) {
@@ -96,6 +137,16 @@ export default class ProposalAnalysis extends LightningElement {
     else if (infoSection.returnedId === 'ContainerDadosGarantia') {
       this.warrantyInfoVariant = infoSection.variant
       this.warrantyInfoValue = infoSection.value  
+    }
+    
+    else if (infoSection.returnedId === 'ContainerDadosRenda') {
+      this.incomeInfoVariant = infoSection.variant
+      this.incomeInfoValue = infoSection.value  
+    }
+      
+    else if (infoSection.returnedId === 'ContainerOperation') {
+      this.operationInfoVariant = infoSection.variant
+      this.operationInfoValue = infoSection.value  
     }
 
     if (infoSection.modal && Object.keys(infoSection.modal).length !== 0) {
@@ -142,6 +193,31 @@ export default class ProposalAnalysis extends LightningElement {
 
     let myDate = new Date()
     this.startDate = this.formatDate(myDate)
+
+    this.updateStage()
+  }
+
+  updateStage() {
+    const fields = {}
+
+    fields[OPP_ID_FIELD.fieldApiName]     = this.opportunityid;
+    fields[STAGENAME_FIELD.fieldApiName]  = 'Em Análise de Formalização';
+    
+    const recordInput = { fields }
+    updateRecord(recordInput)
+      .then(() => {
+        this.showToast('', 'Registro atualizado com sucesso!', 'success')
+      })
+      .catch(error => this.showToast('', 'Houve um erro ao atualizar o stage!', 'error'))
+  }
+
+  showToast(title, message, variant) {
+    const event = new ShowToastEvent({
+        title: title,
+        message: message,
+        variant: variant
+    });
+    this.dispatchEvent(event);
   }
 
   isCompleted() {
@@ -181,22 +257,27 @@ export default class ProposalAnalysis extends LightningElement {
     totalPercentage = (percentageSections) / this.mapInfoSection.size
 
     if (totalPercentage == '100') {
-
+      let result = '';
       if (isApproved) {
         approveBtn.disabled = false
         pendingBtn.disabled = true
         rejectBtn.disabled = true
+        result = 'approve';
       }
       if (isPending) {
         approveBtn.disabled = true
         pendingBtn.disabled = false
         rejectBtn.disabled = true
+        result = 'pendency';
       }
       if (isRejected) {
         approveBtn.disabled = true
         pendingBtn.disabled = true
         rejectBtn.disabled = false
+        result = 'reject';
       }
+
+      this.statusAnalysis = result;
     }
 
     else {
@@ -213,25 +294,13 @@ export default class ProposalAnalysis extends LightningElement {
   handleSaveSection() {
   }
 
-  handlerSelectedReason(event){
+  handlerSelectedReason(event) {
     let result = event.detail;
-    if(result){
+    if(result) {
       this.validationResult.set(result.field, JSON.parse(JSON.stringify(result)));
 
-      if(result.object =='ContactDetailsSection__c'){
-        this.template.querySelector('c-proposal-contact-data-component').getReasonSelected(JSON.stringify(result));
-      }
-
-      else if (result.object == 'PersonalDataSection__c') {
-        this.template.querySelector('c-proposal-personal-data-component').getReasonSelected(JSON.stringify(result));
-      }
-        
-      else if (result.object == 'AddressDataSection__c') {
-        this.template.querySelector('c-proposal-addresses-component').getReasonSelected(JSON.stringify(result));
-      }
-
-      else if (result.object == 'WarrantyDataSection__c') {
-        this.template.querySelector('c-proposal-warranty-component').getReasonSelected(JSON.stringify(result));
+      if (this.sectionComponentMap.has(result.object)) {
+        this.template.querySelector(this.sectionComponentMap.get(result.object)).getReasonSelected(JSON.stringify(result));
       }
 
     }
@@ -294,5 +363,25 @@ export default class ProposalAnalysis extends LightningElement {
     })
 
     pendingBtn.disabled = true
+  }
+
+  get isReadyForAnalysis() {
+    return !this.isAnalysisStarted && this.isStageWaitingForUE
+  }
+
+  sendAnalysis(){
+
+    finishAnalysis({
+      opportunityId : this.opportunityid,
+      status : this.statusAnalysis
+    })
+    .then( result =>{
+      console.log(result);
+      this.showToast('', 'Análise enviada com sucesso!', 'success');
+    })
+    .catch( error =>{
+      console.log(error);
+      this.showToast('', 'Ocorreu um erro ao enviar análise!', 'error');
+    })
   }
 }

@@ -93,6 +93,7 @@ public class TestSetup {
             userTest.LanguageLocaleKey = 'pt_BR';
             userTest.EmailEncodingKey = 'UTF-8';
             userTest.TimeZoneSidKey = 'America/Sao_Paulo';
+            userTest.IsActive = true;
             newUsers.add(userTest);
         }
         if(doInsert) {

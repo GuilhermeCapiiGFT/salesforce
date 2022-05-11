@@ -106,7 +106,7 @@ public with sharing class IntegrationAssetService
                 assetObject.CurrencyIsoCode = requestBodyObj.value.amount.currencyCode;
                 assetObject.Amount__c  = Decimal.valueOf(requestBodyObj.value.amount.amount);
             }
-            assetObject.AppraisalDate__c = Date.valueOf(requestBodyObj.value.appraisalDate);
+            assetObject.AppraisalDate__c = requestBodyObj.value.appraisalDate != null ? Date.valueOf(requestBodyObj.value.appraisalDate) : null;
         }
         if (requestBodyObj.alienation != null){
             assetObject.FinancialInstitution__c = requestBodyObj.alienation.financialInstitution;
@@ -114,8 +114,8 @@ public with sharing class IntegrationAssetService
         if (requestBodyObj.assetDetail != null){
             assetObject.State__c = requestBodyObj.assetDetail.state;
         }
-        assetObject.ExternalCreationDate__c = Date.valueOf(requestBodyObj.createdAt);
-        assetObject.ExternalUpdatedDate__c = Date.valueOf(requestBodyObj.updatedAt);
+        assetObject.ExternalCreationDate__c = requestBodyObj.createdAt != null ? Date.valueOf(requestBodyObj.createdAt) : null;
+        assetObject.ExternalUpdatedDate__c = requestBodyObj.updatedAt != null ? Date.valueOf(requestBodyObj.updatedAt) : null;
 
         try {
             upsert assetObject;  

@@ -1,11 +1,11 @@
 import { LightningElement, track, api } from 'lwc';
-import { participationOptions, genderOptions, documentTypeOptions } from './minuatorPersonCustomerOptions';
+import { participationOptions, genderOptions, documentTypeOptions, relationshipDic} from './minuatorPersonCustomerOptions';
 
 /**
  * @author Nathalia Rosa - GFT Brasil
  */
 export default class MinuatorPersonCustomer extends LightningElement {
-
+	@api tabName;
     @api index;
    	personEdited;
     @track txtclassname = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click';
@@ -20,7 +20,7 @@ export default class MinuatorPersonCustomer extends LightningElement {
 	@track checkProprietario = false;
 	@track checkCompoeRenda = true;	
 	@track singlePerson = [];
-
+	maritalStatus = '';
 	personString = '';	
 	value = ['Compõe renda'];
 	showPersonSectionVar = true;	
@@ -28,7 +28,6 @@ export default class MinuatorPersonCustomer extends LightningElement {
 	marriageRelationship = {};
 	personProgressRingPercent = 0;
 	personSectionIcon = "utility:chevronright";
-
 	participationOptions = participationOptions;
 	genderOptions = genderOptions;
 	documentTypeOptions = documentTypeOptions;
@@ -36,45 +35,16 @@ export default class MinuatorPersonCustomer extends LightningElement {
 	@api
 	get person() {}
 	set person( data ){
-		this.personEdited = JSON.parse( JSON.stringify( data ) );
+		this.personEdited = JSON.parse(JSON.stringify(data));
+		this.showParticipation()
+		this.masksFields();
+		this.personEdited.sources.fullName = 'Origem: ' + this.personEdited.sources.name;
 	}
 
-	handleChangeOwner(event) {		
-		let participacao = this.template.querySelectorAll('[data-participacao="' + event.currentTarget.dataset.id + '"]')
-		let consentingChecked = this.template.querySelectorAll('[data-checkbox="' + event.currentTarget.dataset.id + '"]')				
-
-		if(event.target.checked){
-			participacao[0].classList.add('participacao');
-			participacao[0].classList.remove('participacaoHidden');
-		}else{
-			participacao[0].classList.remove('participacao');
-			participacao[0].classList.add('participacaoHidden');
-		}
-
-		if(event.target.checked && consentingChecked[2].checked && this.incomeComposeValue){
+	showParticipation() {		
+		if(this.personEdited.consentingParticipant && this.personEdited.propertyOwner){
 			this.labelOption = '3 selecionados';
-		} else if(event.target.checked || consentingChecked[2].checked){
-				this.labelOption = '2 selecionados';
-		}else{
-			this.labelOption = 'Compõe renda';
-		}
-    }
-
-	handleChangeConsenting(event) {		
-		let participacao = this.template.querySelectorAll('[data-participacao="' + event.currentTarget.dataset.id + '"]')
-		let ownerChecked = this.template.querySelectorAll('[data-checkbox="' + event.currentTarget.dataset.id + '"]')
-		
-		if(event.target.checked){
-			participacao[2].classList.add('participacao');
-			participacao[2].classList.remove('participacaoHidden');
-		}else{
-			participacao[2].classList.remove('participacao');
-			participacao[2].classList.add('participacaoHidden');
-		}
-
-		if(event.target.checked && ownerChecked[0].checked && this.incomeComposeValue){
-			this.labelOption = '3 selecionados';
-		} else if(event.target.checked || ownerChecked[0].checked){
+		} else if(this.personEdited.propertyOwner || this.personEdited.consentingParticipant){
 				this.labelOption = '2 selecionados';
 		}else{
 			this.labelOption = 'Compõe renda';
@@ -102,7 +72,6 @@ export default class MinuatorPersonCustomer extends LightningElement {
 		let mainDocumentNumber = this.personEdited.mainDocument.number;		
 		this.dispatchEvent(new CustomEvent('showcustomer', { detail: { mainDocumentNumber : mainDocumentNumber } } ) );
 	}
-
 	
 	onChangePersonInput(event){
         let splittedId =  event.currentTarget.dataset.id.split('_');
@@ -112,32 +81,63 @@ export default class MinuatorPersonCustomer extends LightningElement {
         actualPerson[actualFieldName] = event.target.value;	
     }
 
+	updateCustomer(){
+		this.dispatchEvent(new CustomEvent('updatecustomer', { detail: { customer : this.personEdited } } ) );
+	}
+
 	handleChangeGender(event){
-        this.person.gender =  event.target.detail;
-        this.dispatchEvent(new CustomEvent('onupdatecustomer', { detail: { customer : this.person } } ) );
+        this.personEdited.gender = event.target.value;   
+		this.updateCustomer();    
     }	
 
 	handleDocumentType(event){
-        this.person.identityDocument.type =  event.target.detail;
-        this.dispatchEvent(new CustomEvent('onupdatetypedocument', { detail: { customer : this.person } } ) );
+        this.personEdited.identityDocument.type = event.target.value;
+        this.updateCustomer();
     }	
 
 	handleDocumentNumber(event){
-        this.person.identityDocument.number =  event.target.detail;
-        this.dispatchEvent(new CustomEvent('onupdatenumberdocument', { detail: { customer : this.person } } ) );
+        this.personEdited.identityDocument.number = event.target.value;
+        this.updateCustomer();
     }
 	
 	handleDocumentIssuingBody(event){
-        this.person.identityDocument.issuingBody =  event.target.detail;
-        this.dispatchEvent(new CustomEvent('onupdateissuingbody', { detail: { customer : this.person } } ) );
+        this.personEdited.identityDocument.issuingBody = event.target.value;
+		this.updateCustomer();
     }
+
 	handleDocumentExpeditionDate(event){
-        this.person.identityDocument.expeditionDate =  event.target.detail;
-        this.dispatchEvent(new CustomEvent('onupdatedocumentexpeditiondate', { detail: { customer : this.person } } ) );
+        this.personEdited.identityDocument.expeditionDate = event.target.value;
+        this.updateCustomer();
+    }		
+
+	handleConsentingParticipant(event){
+        this.personEdited.consentingParticipant = event.target.checked;
+		this.showParticipation();
+        this.updateCustomer();
+    }	
+
+	handlePropertyOwner(event){
+        this.personEdited.propertyOwner = event.target.checked;
+		this.showParticipation();
+        this.updateCustomer();
+    }	
+
+	masksFields(){
+		let cpf = this.personEdited.mainDocument.number;
+		let listName = this.personEdited.name.split(' ');
+		this.formatedName = listName[0] + ' ' + listName[listName.length-1]; 
+		this.cellPhone = '(' + this.personEdited.cellPhone.substring(0,2) + ') ' + this.personEdited.cellPhone.substring(2,3) + ' ' + this.personEdited.cellPhone.substring(3,7) + '-' + this.personEdited.cellPhone.substring(7,11);
+        this.cpf = cpf.substring(0,3) + '.' + cpf.substring(3,6) + '.' + cpf.substring(6,9) + '-' + cpf.substring(9,11);
+		this.maritalStatus = relationshipDic.get(this.personEdited.maritalStatus);
+		
+	}
+	handleGetNameTab(event){	
+		this.tabName = event.target.name;			
+		this.dispatchEvent(new CustomEvent('handlegetnametab', { detail: { namePersonTab : this.formatedName } } ) );	
+		
     }
 	
-
-   connectedCallback(){
+    connectedCallback(){
 
    }
 }

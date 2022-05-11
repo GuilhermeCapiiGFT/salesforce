@@ -1,15 +1,15 @@
 import { LightningElement, api } from 'lwc';
 
-const IMG_SIZE = 400;
-const IMG_MODIFY_SIZE = 80;
+const IMG_SIZE = 5;
+const IMG_MODIFY_SIZE = 30;
 
 export default class ModalImage extends LightningElement {
 
     rotate = 0;
-    zoom = 400;  
+    zoom = 20;  
     imgLoaded = false;
 
-    @api sourceImg;
+    @api imgsource;
 
     reset(){
         this.zoom = IMG_SIZE;
@@ -25,8 +25,8 @@ export default class ModalImage extends LightningElement {
     handleDecreaseImg(){ 
         let decreaseImg = ((this.zoom - IMG_MODIFY_SIZE) < IMG_SIZE )? IMG_SIZE : this.zoom - IMG_MODIFY_SIZE;
         let documentImg = this.template.querySelector('img'); 
-        documentImg.style.height = decreaseImg +'px'; 
-        documentImg.style.width = decreaseImg  +'px'; 
+        documentImg.style.height = decreaseImg +'%'; 
+        documentImg.style.width = decreaseImg  +'%'; 
         this.zoom = decreaseImg;
     }
 
@@ -37,8 +37,8 @@ export default class ModalImage extends LightningElement {
         let increaseImg = currentZoom + IMG_MODIFY_SIZE;
         if( !(increaseImg >= screenHeight || increaseImg >= screenWidth) ){
             let documentImg = this.template.querySelector('img'); 
-            documentImg.style.height = increaseImg  +'px'; 
-            documentImg.style.width = increaseImg  +'px'; 
+            documentImg.style.height = increaseImg  +'%'; 
+            documentImg.style.width = increaseImg  +'%'; 
             this.zoom = increaseImg;
         }
     }
@@ -60,7 +60,6 @@ export default class ModalImage extends LightningElement {
     }
 
     handleClose(){
-        // this.reset();
         document.body.style.overflow = 'visible';
         const selectedEvent = new CustomEvent('closemodal', {
             bubbles    : true,
@@ -69,5 +68,5 @@ export default class ModalImage extends LightningElement {
             detail: {}
         });
         this.dispatchEvent(selectedEvent);
-    }
+    };
 }

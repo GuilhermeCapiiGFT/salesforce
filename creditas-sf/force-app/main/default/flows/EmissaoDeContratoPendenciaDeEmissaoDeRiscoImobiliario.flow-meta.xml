@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <apiVersion>53.0</apiVersion>
+    <choices>
+        <name>Nao</name>
+        <choiceText>Não</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Não</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Sim</name>
+        <choiceText>Sim</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Sim</stringValue>
+        </value>
+    </choices>
+    <dynamicChoiceSets>
+        <name>TaskStatus</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Status</picklistField>
+        <picklistObject>Task</picklistObject>
+    </dynamicChoiceSets>
+    <interviewLabel>Emissão de Contrato - Pendência de Emissão de Risco Imobiliário {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Emissão de Contrato - Pendência de Emissão de Risco Imobiliário</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordUpdates>
+        <name>UpdateTask</name>
+        <label>Atualizar Tarefa</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>TaskId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>Screen_Comments</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <elementReference>TaskStatus</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <screens>
+        <name>PendenciaDeEmissaoDeRiscoImobiliario</name>
+        <label>Pendência de Emissão de Risco Imobiliário</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>UpdateTask</targetReference>
+        </connector>
+        <fields>
+            <name>Screen_TaskStatus</name>
+            <choiceReferences>TaskStatus</choiceReferences>
+            <dataType>String</dataType>
+            <defaultValue>
+                <stringValue>Open</stringValue>
+            </defaultValue>
+            <fieldText>Status da Tarefa</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Screen_Comments</name>
+            <fieldText>Comentários</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>PendenciaDeEmissaoDeRiscoImobiliario</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <description>Variável para receber o Id da Tarefa criada no Flow: Orc - Op - Emissão de Contrato - Validar Emissão de Minuta</description>
+        <name>TaskId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

@@ -9,8 +9,8 @@ export const participationOptions = [
 ];
 
 export const genderOptions = [
-    { label: 'Masculino', value: 'male' },
-    { label: 'Feminino', value: 'female' }
+    { label: 'Masculino', value: 'MALE' },
+    { label: 'Feminino', value: 'FEMALE' }
 ];
 
 export const documentTypeOptions = [
@@ -19,3 +19,11 @@ export const documentTypeOptions = [
     { label: 'RNE - Registro Nacional de Estrangeiros', value: 'RNE	' },
     { label: 'Documento de Classe', value: 'CLASSDOCUMENT' }
 ];
+
+export const relationshipDic = new Map([
+    ['MARRIED','Casado'],
+    ['SINGLE','Solteiro'],
+    ['DIVORCED','Divorciado'],
+    ['SEPARATED','Separado'],
+    ['WIDOWER','Viúvo']
+]);

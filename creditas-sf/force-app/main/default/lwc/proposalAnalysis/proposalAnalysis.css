@@ -1,14 +1,1 @@
 @import 'c/proposalStyleLibrary';
-
-.custom-box {
-    background-color: #f4f6f9;
-    border: 1px solid #e5e5e5;
-    border-radius: 0.25rem;
-}
-.custom-box:hover {
-    background-color: #eaebeef7;
-}
-
-.content-quick-links a{
-    text-decoration: none;
-}

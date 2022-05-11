@@ -11,7 +11,7 @@ public with sharing class ProposalWarrantyService {
         if(financialResourceIdSet.isEmpty()){
             return new FinancialResources__c();
         } else {
-            List<FinancialResources__c> resourceList = [SELECT ResourceKey__c,Plate__c,ModelYear__c,ManufacturingYear__c,Brand__c,Model__c,Color__c,LicensingState__c,State__c,ExternalCodeOrigin__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC];
+            List<FinancialResources__c> resourceList = [SELECT ResourceKey__c,Plate__c,ModelYear__c,ManufacturingYear__c,Brand__c,Model__c,Color__c,LicensingState__c,State__c,ExternalCodeOrigin__c, Chassis__c, RecordTypeId FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC];
             return resourceList[0];
         }
     }
@@ -21,7 +21,7 @@ public with sharing class ProposalWarrantyService {
     }
 
     public static WarrantyDataSection__c getWarrantyDataSection(String opportunityId){
-        List<WarrantyDataSection__c> warrantySection = [SELECT Id,UFplateStatus__c,RenavamStatus__c,RenavamPendingReason__c,RenavamRejectReason__c,RenavamObservation__c,PlateStatus__c,ModelYearStatus__c,ModelYearRejectReason__c,ModelYearObservation__c,ModelStatus__c,ModelRejectReason__c,ModelObservation__c,LicensingStateStatus__c,LicensingStateRejectReason__c,LicensingStateObservation__c,FIPEtableCodeStatus__c,ColorStatus__c,ChassiStatus__c,ChassiRejectReason__c,ChassiObservation__c,BrandStatus__c FROM WarrantyDataSection__c WHERE Opportunity__c = :opportunityId WITH SECURITY_ENFORCED];
+        List<WarrantyDataSection__c> warrantySection = [SELECT Id,UFplateStatus__c,RenavamStatus__c,RenavamPendingReason__c,RenavamRejectReason__c,RenavamObservation__c,PlateStatus__c,ModelYearStatus__c,ModelYearRejectReason__c,ModelYearObservation__c,ModelStatus__c,ModelRejectReason__c,ModelObservation__c,LicensingStateStatus__c,LicensingStateRejectReason__c,LicensingStateObservation__c,FIPEtableCodeStatus__c,ColorStatus__c,ChassiStatus__c,ChassiRejectReason__c,ChassiObservation__c,BrandStatus__c, ManufacturingYearStatus__c FROM WarrantyDataSection__c WHERE Opportunity__c = :opportunityId WITH SECURITY_ENFORCED];
 
         if(warrantySection.isEmpty()){
             return new WarrantyDataSection__c();

@@ -1,0 +1,7 @@
+.componentSize {
+    width: 100%;
+    background-color: white;
+}
+.slds-box {
+    border: none !important;
+}

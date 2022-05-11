@@ -57,23 +57,4 @@ public with sharing class ProposalAddressesService {
         return recordsAddressDataSection.isEmpty() ? new AddressDataSection__c() : recordsAddressDataSection[0];
     }
 
-    @AuraEnabled
-    public static void upsertAddress(List<Addresses__c> records){
-        try {
-            if(!records.isEmpty()){
-                upsert records;
-            }
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled
-    public static void upsertAddressSection(AddressDataSection__c record){
-        try {
-            upsert record;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
 }

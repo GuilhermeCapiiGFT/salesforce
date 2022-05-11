@@ -6,11 +6,11 @@
 	</types>
 	<types>
 		<members>*</members>
-		<name>ApexTrigger</name>
+		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
 		<members>*</members>
-		<name>AuraDefinitionBundle</name>
+		<name>Flow</name>
 	</types>
 	<types>
 		<members>*</members>

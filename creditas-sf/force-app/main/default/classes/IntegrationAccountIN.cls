@@ -12,7 +12,7 @@
                                                                 e ajustes de mensagens de erro     
 **********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAccountIN/*')
-global without sharing class IntegrationAccountIN { 
+global with sharing class IntegrationAccountIN { 
     public static Boolean hasError = false;
 
     @HttpPut
@@ -334,7 +334,7 @@ global without sharing class IntegrationAccountIN {
                 documentsSF.Id = documentsExternalIdsToSalesForceDocumentsMap.get(doc.id)?.Id;
                 documentsSF.ExternalId__c = doc.id;
                 documentsSF.DocumentType__c = doc.type;
-                documentsSF.recordTypeId = Util.getRecordTypeIdbyName('Documents__c', doc.type);
+                documentsSF.recordTypeId = Util.getRecordTypeIdbyName('Documents__c', doc.type.toUppercase());
                 documentsSF.DocumentNumber__c = doc.code;             
                 documentsSF.Issuer__c = doc.issuer;
                 documentsSF.IssuerState__c = doc.issuerState;
@@ -609,6 +609,59 @@ global without sharing class IntegrationAccountIN {
         return professionalInfoReturnMap; 
     } 
 
+    private static String upsertFiliation(AccountIntegrationModel requestBodyObj, Id accountId){
+        List<AccountIntegrationModel.filiationModel> incomingFiliations = requestBodyObj?.filiation;
+        List<Filiation__c> filiationsToUpsert = new List<Filiation__c>();
+        List<Filiation__c> filiationsToDelete = new List<Filiation__c>();
+        List<Filiation__c> currentFiliations = [
+          SELECT Id, Name__c, Type__c
+          FROM Filiation__c
+          WHERE FiliatedAccount__c = :accountId
+        ];
+        
+        if (incomingFiliations == null) {
+          filiationsToDelete.addAll(currentFiliations);
+        } else {
+          for (AccountIntegrationModel.filiationModel incomingFiliation : incomingFiliations) {
+            Filiation__c newFiliation = new Filiation__c(
+              FiliatedAccount__c = accountId,
+              Name__c = incomingFiliation.name,
+              Type__c = incomingFiliation.type
+            );
+        
+            for (Filiation__c currentFiliation : currentFiliations) {
+              if (currentFiliation.Type__c == newFiliation.Type__c) {
+                newFiliation.Id = currentFiliation.Id;
+              }
+            }
+        
+            filiationsToUpsert.add(newFiliation);
+          }
+        
+          for (Filiation__c currentFiliation : currentFiliations) {
+            Boolean found = false;
+            for (Filiation__c newFiliation : filiationsToUpsert) {
+              if (currentFiliation.Type__c == newFiliation.Type__c) {
+                found = true;
+              }
+            }
+            if (!found) {
+              filiationsToDelete.add(currentFiliation);
+            }
+          }
+        }
+        
+        try {
+          delete filiationsToDelete;
+          upsert filiationsToUpsert;
+        } catch (System.DmlException e) {
+          hasError = true;
+          return e.getDmlMessage(0);
+        }
+        
+        return 'Success';
+    }
+
     public static void setErrorResponse(Integer errorCode, String errorMessage){
         AccountResponseData resp = new AccountResponseData();
         resp.accountId = null;
@@ -641,7 +694,7 @@ global without sharing class IntegrationAccountIN {
 
     public static Map<String, String> commitTransactions(AccountIntegrationModel requestBodyObj){
         Boolean varSuccessAccount = false, varSuccessContacts = false, varSuccessAddresses = false, varSuccessDocs = false,
-        varSuccessIncome = false, varSuccessProfessionalInfo = false, varSuccessRelationships = false;
+        varSuccessIncome = false, varSuccessProfessionalInfo = false, varSuccessRelationships = false, successFiliation = false;
         Id accountId;
         Map<String, String> commitReturnMap = new Map<String, String>();
         Savepoint sp = Database.setSavepoint();
@@ -786,6 +839,26 @@ global without sharing class IntegrationAccountIN {
                     commitReturnMap.put('dmlErrorMessage', e.getMessage());
                     commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Relationship object.'); 
                     Database.rollback(sp); 
+                }
+            }
+            if(varSuccessRelationships)
+            {
+                try
+                {
+                    String filiationError = upsertFiliation(requestBodyObj, accountId);
+                    if (hasError){
+                        commitReturnMap.put('dmlErrorMessage', filiationError);
+                        commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Filiation object.'); 
+                        Database.rollback(sp); 
+                    } else {
+                        successFiliation = true;
+                    }
+                } catch(Exception e)
+                {
+                    hasError = true;
+                    commitReturnMap.put('dmlErrorMessage', e.getMessage());
+                    commitReturnMap.put('friendlyErrorMessage', 'An error has occurred upserting Filiation object.');
+                    Database.rollback(sp);
                 }
             }
         }
