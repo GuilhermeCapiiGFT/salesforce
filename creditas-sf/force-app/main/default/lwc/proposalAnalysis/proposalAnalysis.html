@@ -189,10 +189,13 @@
 	  </div>
 
 	  <div class="btn-container slds-m-vertical_medium">
+		  <template if:true={showCommiteeButton}>
+			  <button class="btn comite" data-id="committe-btn" onclick={handleComiteProposal} disabled={enableCommiteeButton}> Comitê </button>
+
+		  </template>
 		  <button class="btn reprovado" data-id="reject-btn" onclick={sendAnalysis} disabled> Reprovar </button>
 		  <button class="btn pendenciado" data-id="pending-btn" onclick={sendAnalysis} disabled> Pendenciar </button>
 		  <button class="btn aprovado" data-id="approve-btn" onclick={sendAnalysis} disabled> Aprovar </button>
-		  <button class="btn" data-id="committe-btn" onclick={handleComiteProposal}> Comitê </button>
 	  </div>
 
 

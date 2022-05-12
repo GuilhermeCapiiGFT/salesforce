@@ -63,6 +63,10 @@ export default class ProposalAnalysis extends LightningElement {
 
   statusAnalysis;
 
+  //Commitee
+  showCommiteeButton = false;
+  enableCommiteeButton = false;
+
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
     ["PersonalDataSection__c", "c-proposal-personal-data-component"],
@@ -90,16 +94,19 @@ export default class ProposalAnalysis extends LightningElement {
       if (stageName === 'Aguardando Análise de Formalização') {
         this.isStageWaitingForUE = true
         this.isAnalysisStarted = false
+        this.showCommiteeButton = true;
       }
       
       else if (stageName === 'Em Análise de Formalização') {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = true
+        this.showCommiteeButton = true;
       }
       
       else {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
+        this.showCommiteeButton = false;
       }
       
     } else if (error) {
@@ -263,21 +270,21 @@ export default class ProposalAnalysis extends LightningElement {
         approveBtn.disabled = false
         pendingBtn.disabled = true
         rejectBtn.disabled = true
-        //committeBtn.disabled = false;
+        committeBtn.disabled = false;
         result = 'approve';
       }
       if (isPending) {
         approveBtn.disabled = true
         pendingBtn.disabled = false
         rejectBtn.disabled = true
-        //committeBtn.disabled = false;
+        committeBtn.disabled = false;
         result = 'pendency';
       }
       if (isRejected) {
         approveBtn.disabled = true
         pendingBtn.disabled = true
         rejectBtn.disabled = false
-        //committeBtn.disabled = false;
+        committeBtn.disabled = false;
         result = 'reject';
       }
 
@@ -288,6 +295,7 @@ export default class ProposalAnalysis extends LightningElement {
       approveBtn.disabled = true
       pendingBtn.disabled = true
       rejectBtn.disabled = true
+      committeBtn.disabled = true;
     }
   }
 

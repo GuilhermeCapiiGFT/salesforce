@@ -22,7 +22,7 @@ export default class ModalProposalComite extends NavigationMixin(LightningElemen
       }).catch(error => {
           //console.log(JSON.stringify(error));
       }).finally( () => {
-        //this.loadingPicklist = false;
+        this.loadingPicklist = false;
       })
       
       getMyOpportunitiesListView().then( result => {
