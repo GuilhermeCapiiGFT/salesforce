@@ -53,7 +53,7 @@ export default class ProposalAnalysis extends LightningElement {
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
-  openModalComite = false
+  openModalCommitte = false
   isAnalysisComplete = false
   
   // Info about the buttons
@@ -225,6 +225,7 @@ export default class ProposalAnalysis extends LightningElement {
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
+    let committeBtn = this.template.querySelector('[data-id="committe-btn"]');
 
     let isApproved = false
     let isPending = false
@@ -262,18 +263,21 @@ export default class ProposalAnalysis extends LightningElement {
         approveBtn.disabled = false
         pendingBtn.disabled = true
         rejectBtn.disabled = true
+        //committeBtn.disabled = false;
         result = 'approve';
       }
       if (isPending) {
         approveBtn.disabled = true
         pendingBtn.disabled = false
         rejectBtn.disabled = true
+        //committeBtn.disabled = false;
         result = 'pendency';
       }
       if (isRejected) {
         approveBtn.disabled = true
         pendingBtn.disabled = true
         rejectBtn.disabled = false
+        //committeBtn.disabled = false;
         result = 'reject';
       }
 
@@ -308,11 +312,11 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handleComiteProposal() {
-    this.openModalComite = true
+    this.openModalCommitte = true
   }
 
   handlerCloseModalComite() {
-    this.openModalComite = false
+    this.openModalCommitte = false
   }
 
   handlerRejectProposal(){
@@ -369,18 +373,27 @@ export default class ProposalAnalysis extends LightningElement {
     return !this.isAnalysisStarted && this.isStageWaitingForUE
   }
 
-  sendAnalysis(){
-
+  sendAnalysis(event){
+    let dataId = event.currentTarget.getAttribute('data-id'); 
+    let button = this.template.querySelector("[data-id='"+ dataId +"']");
+    button.disabled = true;
     finishAnalysis({
       opportunityId : this.opportunityid,
       status : this.statusAnalysis
     })
     .then( result =>{
       console.log(result);
-      this.showToast('', 'Análise enviada com sucesso!', 'success');
+      if(result === 'Success'){
+        this.showToast('', 'Análise enviada com sucesso!', 'success');
+      }
+      else{
+        this.showToast('', 'Ocorreu um erro ao enviar análise!', 'error');
+        button.disabled = false;
+      }
     })
     .catch( error =>{
-      console.log(error);
+      console.log({error});
+      button.disabled = false;
       this.showToast('', 'Ocorreu um erro ao enviar análise!', 'error');
     })
   }

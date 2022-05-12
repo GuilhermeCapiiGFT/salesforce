@@ -1,9 +1,12 @@
-import { LightningElement,api } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
+import updateOpportunityCommitee from '@salesforce/apex/ModalProposalComiteController.updateOpportunityCommitee';
+import getMyOpportunitiesListView from '@salesforce/apex/ModalProposalComiteController.getMyOpportunitiesListView';
 
-export default class ModalProposalComite extends LightningElement {
-    @api recordId
+export default class ModalProposalComite extends NavigationMixin(LightningElement) {
+    @api recordId;
     modalHeader = 'Deseja enviar ao Comitê';
     showDescription = false;
     selected;
@@ -11,27 +14,24 @@ export default class ModalProposalComite extends LightningElement {
     observation;
     picklistValues;
     loadingPicklist = true;
+    myOppsListViewId;
     
     connectedCallback(){
       getMapPickList({objApiName: 'Opportunity', fieldApiName: 'CommiteeReason__c'}).then( result => {
         this.picklistValues = JSON.parse(result);
-    }).catch(error => {
-        console.log(JSON.stringify(error));
-    }).finally( () => {
-      this.loadingPicklist = false;
-    })
+      }).catch(error => {
+          //console.log(JSON.stringify(error));
+      }).finally( () => {
+        //this.loadingPicklist = false;
+      })
+      
+      getMyOpportunitiesListView().then( result => {
+        this.myOppsListViewId = result;
+      }).catch(error => {
+        
+      });
     }
-    /*
-    options = [
-        { value: 'PROOF_OF_ADDRESS_FRAUD', label: 'Possivel fraude do comprovante de residência' },
-        { value: 'CONSIGNATION_DOCUMENT', label: 'Documentação de Consignação' },
-        { value: 'INCOME_DIVERGENCY', label: 'Divergência de Renda' },
-        { value: 'FRAUDSTER', label: 'Possível Fraudador' },
-        { value: 'DOCUMENT_ADULTERATION', label: 'Suspeita de adulteração de documento' },
-        { value: 'BIOMETRY_PENDING', label: 'Biometria pendente' },
-        { value: 'OTHER', label: 'Outros' }
-    ];
-    */
+ 
     get options(){
       return this.picklistValues;
     }
@@ -46,27 +46,53 @@ export default class ModalProposalComite extends LightningElement {
     }
 
     handleCloseModal(event) {
-        const closeEvent = new CustomEvent('closemodal');
-        this.dispatchEvent(closeEvent);
+        this.closeModal();
+    }
+
+    closeModal(){
+      const closeEvent = new CustomEvent('closemodal');
+      this.dispatchEvent(closeEvent);
     }
 
     handleSendCommitee(event){
-        //let valid = this.checkRequiredFields();
-        //console.log(valid);
+        let valid = this.checkRequiredFields();
+        console.log(valid);
         console.log(this.selected);
-        if(this.selected === undefined || this.selected.size() === 0) {
+        if(this.selected === undefined || this.selected.length === 0) {
           this.showToast('Aviso','Por favor selecione pelo menos 1 motivo para prosseguir.','warning');
+        } else if(valid){
+          let opp = {
+            Id: this.recordId,
+            CommiteeReason__c: this.selected,
+            CommiteeOtherReason__c: this.otherReason,
+            CommiteeObservation__c: this.observation,
+            StageName: 'Aguardando Distribuição para Comitê de Formalização'
+          };
+  
+          
+          let updateOpp = updateOpportunityCommitee({newOpp: opp})
+          if(updateOpp){
+            this.showToast('Sucesso','Oportunidade enviada para comitê','success');
+            this.closeModal();
+            this.navigateToListView();
+          } else {
+            this.showToast('Error','Ocorreu um erro inesperado, tente novamente mais tarde','error');
+          }
         }
-        let opp = {
-          Id: recordId,
-          CommiteeReason__c: this.selected,
-          CommiteeOtherReason__c: this.otherReason,
-          CommiteeObservation__c: this.observation,
-          StageName: 'Aguardando Análise de Comitê'
-        };
-
-        console.dir(opp);
     }
+
+    navigateToListView() {
+      this[NavigationMixin.Navigate]({
+          type: 'standard__objectPage',
+          attributes: {
+              objectApiName: 'Opportunity',
+              actionName: 'list'
+          },
+          state: {
+              filterName: this.myOppsListViewId
+          }
+      });
+  }
 
     genericOnChange(event) {
       this[event.target.name] = event.target.value;
@@ -85,7 +111,13 @@ export default class ModalProposalComite extends LightningElement {
           inputField.reportValidity();
           return validSoFar && inputField.checkValidity();
         }, true);
-        return isInputsCorrect && isDualListBoxCorrect;
+        const isTextAreaCorrect = [
+          ...this.template.querySelectorAll("lightning-textarea")
+        ].reduce((validSoFar, inputField) => {
+          inputField.reportValidity();
+          return validSoFar && inputField.checkValidity();
+        }, true);
+        return isInputsCorrect && isDualListBoxCorrect && isTextAreaCorrect;
       }
 
     showToast(title, message, variant) {

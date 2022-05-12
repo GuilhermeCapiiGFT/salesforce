@@ -192,6 +192,7 @@
 		  <button class="btn reprovado" data-id="reject-btn" onclick={sendAnalysis} disabled> Reprovar </button>
 		  <button class="btn pendenciado" data-id="pending-btn" onclick={sendAnalysis} disabled> Pendenciar </button>
 		  <button class="btn aprovado" data-id="approve-btn" onclick={sendAnalysis} disabled> Aprovar </button>
+		  <button class="btn" data-id="committe-btn" onclick={handleComiteProposal}> Comitê </button>
 	  </div>
 
 
@@ -223,6 +224,13 @@
 			  onapprove={handlerAnaylisApprovement}>
 		  </c-modal-proposal-approve>
 	  </template>
+
+	  <template if:true={openModalCommitte}>
+		<c-modal-proposal-comite
+			record-id={opportunityid}
+			onclosemodal={handlerCloseModalComite}>
+		</c-modal-proposal-comite>
+	</template>
 
 	</div>
 </template>

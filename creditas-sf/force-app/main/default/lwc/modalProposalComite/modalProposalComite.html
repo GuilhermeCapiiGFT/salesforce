@@ -12,16 +12,18 @@
                   <span class="slds-assistive-text">Fechar</span>
               </button>
           </div>
+          <template if:true={loadingPicklist}>
+              <div class="spinnerHolder">
+                  <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+              </div>
+          </template>
           <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
               <div>
-                <template if:true={loadingPicklist}>
-                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
-                </template>
                 <lightning-dual-listbox name="Reasons"
                                         label="Selecione os motivos"
                                         source-label="Disponíveis"
                                         selected-label="Selecionados"
-                                        field-level-help="Selecione os motivo(s) pelo(s) qual(is) deseja enviar a proposta para Comitê"
+                                        field-level-help="Selecione os motivo(s) pelo(s) qual(is) deseja enviar a proposta para Comitê."
                                         options={options}
                                         onchange={handleChange}>
                     </lightning-dual-listbox>
@@ -30,15 +32,21 @@
                     <lightning-input    required={showDescription}
                                         name="otherReason"
                                         min-length="2" 
-                                        message-when-too-short="Digite pelo menos 2 caractéres"
-                                        message-when-value-missing="Por favor, digite um motivo"
+                                        message-when-too-short="Digite pelo menos 2 caractéres."
+                                        message-when-value-missing="Por favor, digite um motivo."
                                         type="text" 
                                         label="Digite uma descrição para o motivo 'Outros'" 
                                         onchange={genericOnChange}
                                         value={otherReason}>
                     </lightning-input>
                 </template>
-                <lightning-textarea required name="observation" label="Observação" max-length="2000" onchange={genericOnChange} value={observation} ></lightning-textarea>            
+                <lightning-textarea required 
+                                    name="observation" 
+                                    label="Observação" 
+                                    max-length="2000"
+                                    message-when-value-missing="Por favor, digite uma observação."
+                                    onchange={genericOnChange} 
+                                    value={observation} ></lightning-textarea>            
               </div> 
               
           </div>
