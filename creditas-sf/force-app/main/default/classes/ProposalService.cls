@@ -1,15 +1,20 @@
 public with sharing class ProposalService 
 {
-    Integer historyLimit;
+    private static final Integer CURRENT_RECORD = 1;
+    private static Integer historyLimit;
     
-    public ProposalService() 
+    private static Id opportunityId;
+    private static Id accountId;
+    
+    public static void start(Id accId, Id oppId) 
     {
-        this.historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
-    }
-
-    public static void start(Id accountId, Id opportunityId) 
-    {
+        historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
         List<SObject> sectionRecords = new List<SObject>();
+
+        opportunityId = oppId;
+        accountId = accId;
+
+        deleteOldestSections();
 
         PersonalDataSection__c personalDataSection = new PersonalDataSection__c(Opportunity__c = opportunityId);
         ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opportunityId);
@@ -18,12 +23,12 @@ public with sharing class ProposalService
         IncomeDataSection__c incomeDataSection = new IncomeDataSection__c(Opportunity__c = opportunityId);
         OperationSection__c operationDataSection = new OperationSection__c(Opportunity__c = opportunityId);
 
-        copyPersonalDataSection(accountId, opportunityId, personalDataSection);
-        copyContactDataSection(accountId, opportunityId, contactDataSection);
-        copyAddressDataSection(accountId, opportunityId, addressDataSection);
-        copyWarrantyDataSection(accountId, opportunityId, warrantyDataSection);
-        copyIncomeDataSection(accountId, opportunityId, incomeDataSection);
-        copyOperationDataSection(accountId, opportunityId, operationDataSection);
+        copyPersonalDataSection(personalDataSection);
+        copyContactDataSection(contactDataSection);
+        copyAddressDataSection(addressDataSection);
+        copyWarrantyDataSection(warrantyDataSection);
+        copyIncomeDataSection(incomeDataSection);
+        copyOperationDataSection(operationDataSection);
         
         sectionRecords.add(personalDataSection);
         sectionRecords.add(contactDataSection);
@@ -32,11 +37,59 @@ public with sharing class ProposalService
         sectionRecords.add(incomeDataSection);
         sectionRecords.add(operationDataSection);
 
-        System.debug(JSON.serializePretty(sectionRecords));
+        //System.debug(JSON.serializePretty(sectionRecords));
+
+        if(!sectionRecords.isEmpty())
+        {
+            System.debug('INSERT sectionRecords: ' + JSON.serializePretty(sectionRecords) + 
+            '\nRESULT: ' + Database.insert(sectionRecords));
+        }
+    }
+
+    public static void deleteOldestSections()
+    {
+        Map<String, List<SObject>> mapString = getSectionRecords();
+        List<SObject> recordsToDelete = new List<SObject>();
+
+        for(String currentSObject : mapString.keySet())
+        {
+            List<SObject> recordsSObject = mapString.get(currentSObject);
+
+            if(recordsSObject != null && recordsSObject.size() == (historyLimit + CURRENT_RECORD))
+            {
+                System.debug('ENTROU PARA ADICIONAR REGISTRO PARA DELETAR');
+                recordsToDelete.add(recordsSObject[0]);
+            }
+        
+        }
+
+        if(!recordsToDelete.isEmpty())
+        {
+            System.debug('DELETOU');
+            
+            System.debug('DELETE recordsToDelete: ' + JSON.serializePretty(recordsToDelete) + 
+            '\nRESULT: ' + Database.delete(recordsToDelete));
+        }
+        
+    }
+
+    private static Map<String, List<SObject>> getSectionRecords()
+    {
+        Map<String, List<SObject>> records = new Map<String, List<SObject>>();
+        records.put('PersonalDataSection'   , mountSectionStringQuery('PersonalDataSection__c'));
+        records.put('AddressDataSection'    , mountSectionStringQuery('AddressDataSection__c'));
+        records.put('ContactDetailsSection' , mountSectionStringQuery('ContactDetailsSection__c'));
+        records.put('WarrantyDataSection'   , mountSectionStringQuery('WarrantyDataSection__c'));
+        records.put('IncomeDataSection'     , mountSectionStringQuery('IncomeDataSection__c'));
+        records.put('OperationSection'      , mountSectionStringQuery('OperationSection__c'));
+
+        return records;
     }
     
     public static void syncObjectFields(SObject sourceObject, SObject sectionObject, String type)
     {
+        if(sourceObject == null) return;
+
         String sObjectSourceApiName  = sourceObject.getSObjectType().getDescribe().Name;
         String sObjectSectionApiName = sectionObject.getSObjectType().getDescribe().Name;
 
@@ -50,45 +103,45 @@ public with sharing class ProposalService
         }
     }
 
-    public static void copyPersonalDataSection(Id accountId, Id opportunityId, PersonalDataSection__c personalDataSection)
+    public static void copyPersonalDataSection(PersonalDataSection__c personalDataSection)
     {
         Account acc      = (Account) mountObjectStringQuery('Account', accountId);
-        Documents__c rg  = (Documents__c) mountDocumentsStringQuery('Documents__c', accountId, 'RG');
-        Documents__c cnh = (Documents__c) mountDocumentsStringQuery('Documents__c', accountId, 'CNH');
+        Documents__c rg  = (Documents__c) mountDocumentsStringQuery('Documents__c', 'RG');
+        Documents__c cnh = (Documents__c) mountDocumentsStringQuery('Documents__c', 'CNH');
         
         syncObjectFields(acc, personalDataSection, '');
         syncObjectFields(rg, personalDataSection, 'RG');
         syncObjectFields(cnh, personalDataSection, 'CNH');
     }
 
-    public static void copyContactDataSection(Id accountId, Id opportunityId, ContactDetailsSection__c contactDataSection)
+    public static void copyContactDataSection(ContactDetailsSection__c contactDataSection)
     {
-        CommunicationContacts__c email = (CommunicationContacts__c) mountContactStringQuery('CommunicationContacts__c', accountId, 'EMAIL');
-        CommunicationContacts__c sms   = (CommunicationContacts__c) mountContactStringQuery('CommunicationContacts__c', accountId, 'SMS');
+        CommunicationContacts__c email = (CommunicationContacts__c) mountContactStringQuery('CommunicationContacts__c', 'EMAIL');
+        CommunicationContacts__c sms   = (CommunicationContacts__c) mountContactStringQuery('CommunicationContacts__c', 'SMS');
         
         syncObjectFields(email, contactDataSection, 'EMAIL');
         syncObjectFields(sms, contactDataSection, 'SMS');
     }
 
-    public static void copyAddressDataSection(Id accountId, Id opportunityId, AddressDataSection__c addressDataSection)
+    public static void copyAddressDataSection(AddressDataSection__c addressDataSection)
     {
-        Addresses__c address = (Addresses__c) mountAccountRelatedObjectStringQuery('Addresses__c', accountId);
+        Addresses__c address = (Addresses__c) mountAccountRelatedObjectStringQuery('Addresses__c');
         
         syncObjectFields(address, addressDataSection, '');
     }
 
-    public static void copyWarrantyDataSection(Id accountId, Id opportunityId, WarrantyDataSection__c warrantyDataSection)
+    public static void copyWarrantyDataSection(WarrantyDataSection__c warrantyDataSection)
     {
-        FinancialResources__c warranty = (FinancialResources__c) mountWarrantyStringQuery(opportunityId, accountId);
+        FinancialResources__c warranty = (FinancialResources__c) mountWarrantyStringQuery();
         
         syncObjectFields(warranty, warrantyDataSection, 'AUTO');
     }
 
-    public static void copyIncomeDataSection(Id accountId, Id opportunityId, IncomeDataSection__c incomeDataSection)
+    public static void copyIncomeDataSection(IncomeDataSection__c incomeDataSection)
     {
-        Map<String, FinancialResources__c> financialResourcesById =  mountIncomeStringQuery(opportunityId, accountId);
+        Map<String, FinancialResources__c> financialResourcesById =  mountIncomeStringQuery();
         
-        ProfessionalInfo__c professionalInfo  = (ProfessionalInfo__c) mountAccountRelatedObjectStringQuery('ProfessionalInfo__c', accountId);
+        ProfessionalInfo__c professionalInfo  = (ProfessionalInfo__c) mountAccountRelatedObjectStringQuery('ProfessionalInfo__c');
         Opportunity opp                       = (Opportunity) mountObjectStringQuery('Opportunity', opportunityId);
         Account acc                           = (Account) mountObjectStringQuery('Account', accountId);
         FinancialResources__c presumedIncome  = financialResourcesById.get('PRESUMED_MONTHLY_INCOME');
@@ -100,16 +153,15 @@ public with sharing class ProposalService
         syncObjectFields(monthlyIncome, incomeDataSection, 'MONTHLY_INCOME');
         syncObjectFields(presumedIncome, incomeDataSection, 'PRESUMED_MONTHLY_INCOME');
         syncObjectFields(confirmedIncome, incomeDataSection, 'CONFIRMED_MONTHLY_INCOME');
-
         setNetworthValue(acc, incomeDataSection);
     }
 
-    public static void copyOperationDataSection(Id accountId, Id opportunityId, OperationSection__c operationDataSection)
+    public static void copyOperationDataSection(OperationSection__c operationDataSection)
     {
-        Quote quote = (Quote) mountOpportunityRelatedObjectStringQuery('Quote', opportunityId);
-        Opportunity opp = (Opportunity) mountObjectStringQuery('Opportunity', opportunityId);
-        FinancialResources__c financialResource = (FinancialResources__c) mountOperationStringQuery(opportunityId, accountId);
-        Account proponent = getProponentFromOpp(opportunityId);
+        Quote quote                             = (Quote) mountOpportunityRelatedObjectStringQuery('Quote');
+        Opportunity opp                         = (Opportunity) mountObjectStringQuery('Opportunity', opportunityId);
+        FinancialResources__c financialResource = (FinancialResources__c) mountOperationStringQuery();
+        Account proponent                       = getProponentFromOpp();
 
         syncObjectFields(quote, operationDataSection, '');
         syncObjectFields(opp, operationDataSection, '');
@@ -118,11 +170,28 @@ public with sharing class ProposalService
     }
 
     private static void setNetworthValue(Account acc, IncomeDataSection__c incomeSection)
-    {
-        System.debug('todo');
+    { 
+        List<Networth_Options__mdt> networthOptions = [SELECT QualifiedApiName, Text__c, Value__c, Position__c FROM Networth_Options__mdt WITH SECURITY_ENFORCED ORDER BY Position__c ASC];
+        String picklistValue = '';
+        
+        for(Networth_Options__mdt option : networthOptions)
+        {
+            if(Decimal.valueOf(option.Value__c.split('-')[0].replaceAll(',','.')) < acc.NetWorthUpperLimit__c || 
+              (option.Position__c == 0 && acc.NetWorthUpperLimit__c <= Decimal.valueOf(option.Value__c.split('-')[0].replaceAll(',','.') )))
+            {
+                picklistValue = option.QualifiedApiName;
+            }
+        }
+
+        if(String.isBlank(picklistValue))
+        {
+            picklistValue = networthOptions[networthOptions.size() - 1].QualifiedApiName;
+        }
+
+        incomeSection.put('NetWorth__c', picklistValue);
     }
 
-    public static SObject mountAccountRelatedObjectStringQuery(String objectName, Id accountId)
+    public static SObject mountAccountRelatedObjectStringQuery(String objectName)
     {
         List<String> sObjectFields = Util.selectAllFields(objectName);
 
@@ -130,7 +199,9 @@ public with sharing class ProposalService
                        ' FROM ' + objectName  + 
                        ' WHERE Account__c = :accountId';
         
-        return Database.query(query.escapeUnicode());
+        List<SObject> objects = Database.query(query.escapeUnicode());
+        
+        return !objects.isEmpty() ? objects[0] : null;
     }
 
     public static SObject mountObjectStringQuery(String objectName, Id identifier)
@@ -144,7 +215,7 @@ public with sharing class ProposalService
         return Database.query(query.escapeUnicode());
     }
 
-    public static SObject mountOpportunityRelatedObjectStringQuery(String objectName, Id opportunityId)
+    public static SObject mountOpportunityRelatedObjectStringQuery(String objectName)
     {
         List<String> sObjectFields = Util.selectAllFields(objectName);
 
@@ -152,10 +223,25 @@ public with sharing class ProposalService
                        ' FROM ' + objectName  + 
                        ' WHERE OpportunityId = :opportunityId ORDER BY CreatedDate DESC LIMIT 1';
         
-        return Database.query(query.escapeUnicode());
+        List<SObject> objects = Database.query(query.escapeUnicode());
+
+        return !objects.isEmpty() ? objects[0] : null;
     }
 
-    public static SObject mountDocumentsStringQuery(String objectName, Id accountId, String type)
+    public static List<SObject> mountSectionStringQuery(String objectName)
+    {
+        List<String> sObjectFields = Util.selectAllFields(objectName);
+
+        String query = 'SELECT ' + String.join(sObjectFields, ', ') + 
+                       ' FROM ' + objectName  + 
+                       ' WHERE Opportunity__c = :opportunityId ORDER BY CreatedDate ASC';
+        
+        List<SObject> objects = Database.query(query.escapeUnicode());
+
+        return !objects.isEmpty() ? objects : null;
+    }
+
+    public static SObject mountDocumentsStringQuery(String objectName, String type)
     {
         List<String> sObjectFields = Util.selectAllFields(objectName);
 
@@ -164,10 +250,12 @@ public with sharing class ProposalService
                        ' WHERE Account__c = :accountId ' +
                        ' AND DocumentType__c = :type WITH SECURITY_ENFORCED ORDER BY CreatedDate DESC LIMIT 1';
         
-        return Database.query(query.escapeUnicode());
+        List<SObject> objects = Database.query(query.escapeUnicode());
+
+        return !objects.isEmpty() ? objects[0] : null;
     }
 
-    public static SObject mountContactStringQuery(String objectName, Id accountId, String type)
+    public static SObject mountContactStringQuery(String objectName, String type)
     {
         List<String> sObjectFields = Util.selectAllFields(objectName);
 
@@ -176,12 +264,14 @@ public with sharing class ProposalService
                        ' WHERE Account__c = :accountId ' +
                        ' AND Channel__c = :type WITH SECURITY_ENFORCED ORDER BY CreatedDate DESC LIMIT 1';
         
-        return Database.query(query.escapeUnicode());
+        List<SObject> objects = Database.query(query.escapeUnicode());
+
+        return !objects.isEmpty() ? objects[0] : null;
     }
 
-    public static SObject mountWarrantyStringQuery(Id opportunityId, Id accountId) 
+    public static SObject mountWarrantyStringQuery() 
     {
-        Set<Id> financialResourceIdSet = getAutoFinancialResourcesId(opportunityId);
+        Set<Id> financialResourceIdSet = getAutoFinancialResourcesId();
 
         if(financialResourceIdSet.isEmpty()) {
             return new FinancialResources__c();
@@ -191,9 +281,9 @@ public with sharing class ProposalService
         }
     }
 
-    public static Map<String, FinancialResources__c> mountIncomeStringQuery(Id opportunityId, Id accountId)
+    public static Map<String, FinancialResources__c> mountIncomeStringQuery()
     {
-        Set<Id> financialResourceIdSet = getIncomeFinancialResourcesId(accountId);
+        Set<Id> financialResourceIdSet = getIncomeFinancialResourcesId();
 
         if(financialResourceIdSet.isEmpty()) {
             return new Map<String, FinancialResources__c>();
@@ -219,19 +309,19 @@ public with sharing class ProposalService
         }
     }
 
-    public static SObject mountOperationStringQuery(Id opportunityId, Id accountId)
+    public static SObject mountOperationStringQuery()
     {
-        Set<Id> financialResourceIdSet = getAutoFinancialResourcesId(opportunityId);
+        Set<Id> financialResourceIdSet = getAutoFinancialResourcesId();
 
         if(financialResourceIdSet.isEmpty()) {
             return new FinancialResources__c();
         } else {
-            List<FinancialResources__c> finResources = [SELECT Id, ManufacturingYear__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet ORDER BY ExternalUpdatedDate__c DESC];
+            List<FinancialResources__c> finResources = [SELECT Id, ManufacturingYear__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC ];
             return finResources[0];
         }
     }
 
-    private static Set<Id> getIncomeFinancialResourcesId(String accountId) 
+    private static Set<Id> getIncomeFinancialResourcesId() 
     {    
         String financialResourceOthersId = Util.getRecordTypeIdbyName('FinancialResources__c', 'Outros');
         Set<Id> financialResourceIdSet = new Set<Id>();
@@ -247,7 +337,7 @@ public with sharing class ProposalService
         return financialResourceIdSet;
     }
 
-    private static Set<Id> getAutoFinancialResourcesId(Id opportunityId)
+    private static Set<Id> getAutoFinancialResourcesId()
     {
         String financialResourceAutoId = Util.getRecordTypeIdbyName('FinancialResources__c', 'Auto');
         Set<Id> financialResourceIdSet = new Set<Id>();
@@ -270,9 +360,9 @@ public with sharing class ProposalService
         return financialResourceIdSet;
     }
 
-    public static Account getProponentFromOpp(Id opportunityId)
+    public static Account getProponentFromOpp()
     {
-        Set<Id> proponentIdSet = getProponentsId(opportunityId);
+        Set<Id> proponentIdSet = getProponentsId();
         if(proponentIdSet.isEmpty()) {
             return new Account();
         } else {
@@ -284,7 +374,7 @@ public with sharing class ProposalService
         }
     }
 
-    private static Set<Id> getProponentsId(Id opportunityId)
+    private static Set<Id> getProponentsId()
     {
         Set<Id> proponentIdSet = new Set<Id>();
         for(OpportunityRole__c proponents : [ SELECT Id, ExternalPersonId__c 

@@ -1,6 +1,6 @@
 public with sharing class ProposalContactDataService {
     
-    @AuraEnabled
+   @AuraEnabled
     public static Map<String,CommunicationContacts__c> getCommunicationContactFromAccount(Id accountId){
         
         Map<String,CommunicationContacts__c> recordInfo = new Map<String,CommunicationContacts__c>();
@@ -20,7 +20,9 @@ public with sharing class ProposalContactDataService {
     public static ContactDetailsSection__c getContactDetailsSectionFromOpp(Id opportunityId){
         
         List<ContactDetailsSection__c> recordsContactDetailsSection = new List<ContactDetailsSection__c>();
-        recordsContactDetailsSection = [SELECT Id, 
+        recordsContactDetailsSection = [SELECT Id,
+                                        Email__c,
+                                        Mobile__c,
                                         MobileStatus__c,
                                         MobileRejectReason__c,
                                         MobilePendingReason__c,

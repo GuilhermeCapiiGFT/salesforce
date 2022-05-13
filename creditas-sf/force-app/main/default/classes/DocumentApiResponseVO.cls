@@ -20,8 +20,6 @@ public class DocumentApiResponseVO {
     public String author;
     @AuraEnabled
     public DateTime createdAt;
-    @AuraEnabled
-    public String formattedCreatedAt;
   }
 
   public class Content {
@@ -100,6 +98,8 @@ public class DocumentApiResponseVO {
     public List<Validations> validations;
     @AuraEnabled
     public String url;
+    @AuraEnabled
+    public String formattedCreatedAt;    
 
     public Integer compareTo(Object compareTo) {
       Item compareToItem = (Item) compareTo;
@@ -132,7 +132,7 @@ public class DocumentApiResponseVO {
       if (result.items != null) {
         result.items.sort();
         for (Item item : result.items) {
-          item.details.formattedCreatedAt = item.details.createdAt.formatGmt('dd/MM/yyyy HH:mm');
+          item.formattedCreatedAt = item.details.createdAt.formatGmt('dd/MM/yyyy HH:mm');
         }
       }
       result.hasError = false;

@@ -189,8 +189,8 @@
 	  </div>
 
 	  <div class="btn-container slds-m-vertical_medium">
-		  <template if:true={showCommiteeButton}>
-			  <button class="btn comite" data-id="committe-btn" onclick={handleComiteProposal} disabled={enableCommiteeButton}> Comitê </button>
+		  <template if:true={showCommitteeButton}>
+			  <button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={enableCommiteeButton}> Comitê </button>
 
 		  </template>
 		  <button class="btn reprovado" data-id="reject-btn" onclick={sendAnalysis} disabled> Reprovar </button>
@@ -228,11 +228,11 @@
 		  </c-modal-proposal-approve>
 	  </template>
 
-	  <template if:true={openModalCommitte}>
-		<c-modal-proposal-comite
+	  <template if:true={openModalCommittee}>
+		<c-modal-proposal-committee
 			record-id={opportunityid}
-			onclosemodal={handlerCloseModalComite}>
-		</c-modal-proposal-comite>
+			onclosemodal={handlerCloseModalCommittee}>
+		</c-modal-proposal-committee>
 	</template>
 
 	</div>

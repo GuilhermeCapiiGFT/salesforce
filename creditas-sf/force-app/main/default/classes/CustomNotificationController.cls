@@ -7,7 +7,7 @@ public with sharing class CustomNotificationController {
                 for(Opportunity opp : (List<Opportunity>) typeObjectListMap.get('Opportunity')){
                     sObjectIdSet.add(opp.Id);
                 }
-                CustomNotificationService.sendCustomNotificationOpportunity(sObjectIdSet);
+                CustomNotificationService.sendCustomNotificationAssignedOpportunity(sObjectIdSet);
             }
         }
     }

@@ -1,9 +1,14 @@
 <template>
-    <div style="height: 300px;">
-        <lightning-datatable
-                key-field="id"
-                data={data}
-                columns={columns}>
-        </lightning-datatable>
-    </div>    
+    <template if:true={showTable}>
+        <div style="height: 300px;">
+            <lightning-datatable
+                    key-field="id"
+                    data={data}
+                    columns={columns}>
+            </lightning-datatable>
+        </div>   
+    </template>
+    <template if:false={showTable}>
+        <c-not-Found></c-not-Found>
+    </template>  
 </template>

@@ -3,23 +3,19 @@ public class ProposalIntegrationControllerTest {
     
     @TestSetup
     static void makeData(){
-        String accPessoaFisica = [SELECT ID FROM RECORDTYPE WHERE DeveloperName = 'Pessoa_Fisica' AND SobjectType = 'Account']?.Id;
         Account accCustomer = TestSetup.getAccount('Nivaele', true);
         
         Opportunity opp = OpportunitySetup.createOpportunity(accCustomer.Id, 'AutoFin');
         opp.Description = 'teste';
         insert opp;
-
         
         PersonalDataSection__c personalSection  = new PersonalDataSection__c();
         personalSection.Opportunity__c = opp.Id;
         personalSection.Name__c = 'Nivaele';
-        personalSection.NameStatus__c = 'Aprovar';
         insert personalSection;
 
         AddressDataSection__c addressSection   = new AddressDataSection__c();
         addressSection.Opportunity__c = opp.Id;
-        addressSection.CEPStatus__c = 'Aprovar';
         insert addressSection;
         
         ContactDetailsSection__c contactSection   = new ContactDetailsSection__c();
@@ -32,14 +28,12 @@ public class ProposalIntegrationControllerTest {
 
         IncomeDataSection__c incomeSection    = new IncomeDataSection__c();
         incomeSection.Opportunity__c = opp.Id;
-        incomeSection.ProfessionalSituationStatus__c = 'Pendenciar';
         incomeSection.ProfessionalSituationPendingReason__c = 'Outros';
         incomeSection.ProfessionalSituationObservation__c = 'Pendency Professional Situation';
         insert incomeSection;
 
         OperationSection__c operationSection = new OperationSection__c();
         operationSection.Opportunity__c = opp.Id;
-        operationSection.QuantityStatus__c = 'Rejeitar';
         operationSection.QuantityRejectReason__c = 'Outros';
         operationSection.QuantityObservation__c  = 'Reject Quantity';
         insert operationSection;
@@ -80,23 +74,15 @@ public class ProposalIntegrationControllerTest {
         Test.startTest();
         response = ProposalIntegrationController.finishAnalysis(opp.Id, 'pendency');
         Test.stopTest();
-        System.assertEquals('Bad request', response, 'Should have received a bad request message.');
+        System.assertEquals('Error', response, 'Should return Error.');
     }
     
     @isTest
-    static void finishAnalysisCatchTest(){
+    static void finishAnalysisCatchErrorTest(){
         Opportunity opp = new Opportunity(Name = 'teste1', StageName = 'Em Análise de Formalização', CloseDate = Date.today());
         insert opp;
         Exception testException;
-                
-        HttpMockFactory mock = new HttpMockFactory(
-            new List<Integer>{400},
-            new List<String>{'BAD_REQUEST'},
-            new List<String>{''},
-            new List<Map<String,String>>{new Map<String,String>()}
-        );
-
-        Test.setMock(HttpCalloutMock.class, mock);
+    
         Test.startTest();
         Try{
         	ProposalIntegrationController.finishAnalysis(opp.Id, 'pendency');
@@ -107,6 +93,4 @@ public class ProposalIntegrationControllerTest {
         Test.stopTest();
         System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'Should have sections record');
     }
-    
-    
 }

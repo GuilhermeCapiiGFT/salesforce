@@ -2,11 +2,8 @@ public with sharing class ProposalIntegrationController {
     @AuraEnabled
     public static String finishAnalysis(Id opportunityId, String status){
         try{
-            String payload = ProposalIntegrationService.getRequest(opportunityId, status);
-            String response = ProposalIntegrationService.sendAnalysis(payload);
-            System.debug('RESPONSE: '+response);
-
-            return response;
+            ProposalIntegrationVO payload = ProposalIntegrationService.getRequest(opportunityId, status);
+            return ProposalIntegrationService.sendAnalysis(JSON.serialize(payload));
         }catch(Exception e){
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
         }

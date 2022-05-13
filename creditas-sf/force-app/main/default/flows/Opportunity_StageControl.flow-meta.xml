@@ -4,8 +4,8 @@
     <assignments>
         <name>FirstAssignment</name>
         <label>FirstAssignment</label>
-        <locationX>917</locationX>
-        <locationY>169</locationY>
+        <locationX>880</locationX>
+        <locationY>315</locationY>
         <assignmentItems>
             <assignToReference>PendingCount</assignToReference>
             <operator>Add</operator>
@@ -14,15 +14,44 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>UpdateStagePendencyReturn</targetReference>
+            <targetReference>UpdateFieldPendingReturnCount</targetReference>
         </connector>
     </assignments>
+    <decisions>
+        <name>OwnerAvailable</name>
+        <label>OwnerAvailable</label>
+        <locationX>874</locationX>
+        <locationY>584</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Owner.UserAvailable__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Retorno de Pendência de Formalização</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>UpdateStageOpp</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <decisions>
         <description>Checks if the prior stage value was Pendencia OPS</description>
         <name>PendencyReturn</name>
         <label>Pendency Return?</label>
-        <locationX>670</locationX>
-        <locationY>166</locationY>
+        <locationX>671</locationX>
+        <locationY>168</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>True</name>
@@ -49,7 +78,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>FirstAssignment</targetReference>
+                <targetReference>UpdateStagePendencyReturn</targetReference>
             </connector>
             <label>True</label>
         </rules>
@@ -76,17 +105,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
-        <description>Update StageName to &quot;Retorno de Pendência de Formalização&quot;.</description>
-        <name>UpdateStagePendencyReturn</name>
-        <label>Retorno de Pendência de Formalização</label>
-        <locationX>1070</locationX>
-        <locationY>165</locationY>
+        <name>UpdateFieldPendingReturnCount</name>
+        <label>UpdateFieldPendingReturnCount</label>
+        <locationX>881</locationX>
+        <locationY>447</locationY>
+        <connector>
+            <targetReference>OwnerAvailable</targetReference>
+        </connector>
         <inputAssignments>
             <field>PendingReturnCount__c</field>
             <value>
                 <elementReference>PendingCount</elementReference>
             </value>
         </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>UpdateStageOpp</name>
+        <label>UpdateStageOpp</label>
+        <locationX>882</locationX>
+        <locationY>722</locationY>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>Aguardando Análise de Formalização</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Update StageName to &quot;Retorno de Pendência de Formalização&quot;.</description>
+        <name>UpdateStagePendencyReturn</name>
+        <label>Retorno de Pendência de Formalização</label>
+        <locationX>881</locationX>
+        <locationY>166</locationY>
+        <connector>
+            <targetReference>FirstAssignment</targetReference>
+        </connector>
         <inputAssignments>
             <field>StageName</field>
             <value>
@@ -96,8 +151,8 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>222</locationX>
-        <locationY>78</locationY>
+        <locationX>220</locationX>
+        <locationY>79</locationY>
         <connector>
             <targetReference>PendencyReturn</targetReference>
         </connector>

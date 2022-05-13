@@ -193,7 +193,9 @@ export default class ProposalIncomeDataComponent extends LightningElement {
       } 
     })
 
-    return picklistValue === '' ? this.netWorthOptions[this.netWorthOptions.size - 1] : picklistValue
+    console.log(this.netWorthOptions[this.netWorthOptions.length - 1])
+
+    return picklistValue === '' ? this.netWorthOptions[this.netWorthOptions.length - 1] : picklistValue
   }
 
   @wire(getObjectInfo, { objectApiName: PROFESSIONAL_INFO_OBJECT })
@@ -499,7 +501,7 @@ export default class ProposalIncomeDataComponent extends LightningElement {
 
   setMapReason(selectedReason){
 
-    let observation = selectedReason.description ? selectedReason.description : ''
+    let observation = selectedReason.observation ? selectedReason.observation : ''
     let objValidationSection = this.objValidationSection
 
     if( ['ProfessionalSituationPendingReason__c'].includes(selectedReason.field)){

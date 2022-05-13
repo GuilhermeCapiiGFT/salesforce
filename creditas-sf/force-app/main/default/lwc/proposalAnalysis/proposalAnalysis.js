@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord } from 'lightning/uiRecordApi';
 import { updateRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -9,6 +9,7 @@ import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 
 const fields = [STAGENAME_FIELD];
+
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
@@ -53,7 +54,7 @@ export default class ProposalAnalysis extends LightningElement {
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
-  openModalCommitte = false
+  openModalCommittee = false
   isAnalysisComplete = false
   
   // Info about the buttons
@@ -63,9 +64,8 @@ export default class ProposalAnalysis extends LightningElement {
 
   statusAnalysis;
 
-  //Commitee
-  showCommiteeButton = false;
-  enableCommiteeButton = false;
+  //Committee
+  showCommitteeButton = false;
 
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
@@ -94,19 +94,19 @@ export default class ProposalAnalysis extends LightningElement {
       if (stageName === 'Aguardando Análise de Formalização') {
         this.isStageWaitingForUE = true
         this.isAnalysisStarted = false
-        this.showCommiteeButton = true;
+        this.showCommitteeButton = true;
       }
       
       else if (stageName === 'Em Análise de Formalização') {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = true
-        this.showCommiteeButton = true;
+        this.showCommitteeButton = true;
       }
       
       else {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
-        this.showCommiteeButton = false;
+        this.showCommitteeButton = false;
       }
       
     } else if (error) {
@@ -232,7 +232,7 @@ export default class ProposalAnalysis extends LightningElement {
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
-    let committeBtn = this.template.querySelector('[data-id="committe-btn"]');
+    let committeBtn = this.template.querySelector('[data-id="committee-btn"]');
 
     let isApproved = false
     let isPending = false
@@ -303,9 +303,6 @@ export default class ProposalAnalysis extends LightningElement {
     this.openModalDocument = false;
   }
 
-  handleSaveSection() {
-  }
-
   handlerSelectedReason(event) {
     let result = event.detail;
     if(result) {
@@ -319,12 +316,12 @@ export default class ProposalAnalysis extends LightningElement {
     this.openModalReason = false;
   }
 
-  handleComiteProposal() {
-    this.openModalCommitte = true
+  handleCommitteeProposal() {
+    this.openModalCommittee = true
   }
 
-  handlerCloseModalComite() {
-    this.openModalCommitte = false
+  handlerCloseModalCommittee() {
+    this.openModalCommittee = false
   }
 
   handlerRejectProposal(){

@@ -5,9 +5,25 @@ export default class DocumentsPreview extends LightningElement {
     
     data;
     @track showPreview = false;
+    @track showComponent = false;
     @track urlPreview;
+    documents = [];
     
-    @wire(getDocuments, {opportunityExternalId: '', recordTypeName: 'AutoFin'}) documents;
+    @wire(getDocuments, { opportunityExternalId: '', recordTypeName: 'AutoFin' })
+    documents(data, error) {
+        if (data) {
+            if (data.data){
+                this.documents = data.data.items;
+                if(this.documents.length > 0){
+                    this.showComponent = true;
+                }
+            }
+        }
+        else if (error) {
+            console.error(error);
+            this.showComponent = false;
+        }
+    };
 
     connectedCallback() {
 
@@ -165,7 +181,6 @@ export default class DocumentsPreview extends LightningElement {
     previewDocument(event) {
         this.showPreview = true;
         this.urlPreview = event.target.src;
-        console.table('documentos:', this.documents);
     };
 
     closePreview(event){
