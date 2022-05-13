@@ -1,43 +1,38 @@
 <template>
 	<div class="slds-card slds-p-horizontal_medium" style="overflow: hidden;" data-id="top-component">
-	  <!-- <template if:false={isAnalysisStarted}>
-		  <div class="btn-container">
-			  <button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
-		  </div>
-	  </template> -->
+   
+	<template if:true={isReadyForAnalysis}>
+		<div class="btn-container">
+			<button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
+		</div>
+	</template>
 
-		<template if:true={isReadyForAnalysis}>
-		  <div class="btn-container">
-			  <button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
-		  </div>
-	  </template>
+	<template if:true={isAnalysisStarted}>
+		<div class="btn-container">
+			<p>Análise Iniciada em {startDate}</p>
+		</div>
+	</template>
 
-	  <template if:true={isAnalysisStarted}>
-		  <div class="btn-container">
-			  <p>Análise Iniciada em {startDate}</p>
-		  </div>
-	  </template>
+	<div class="slds-progress slds-progress_vertical">
+		<ol class="slds-accordion slds-progress__list">
 
-	  <div class="slds-progress slds-progress_vertical">
-		  <ol class="slds-accordion slds-progress__list">
+			<!-- 1th Accordion -->
+			<div class="slds-progress__item">
+				<lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
 
-			  <!-- 1th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
-							  <div class="slds-accordion__summary">
-								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content header-section">Geral</span>
-								  </h2>
-							  </div>
-							  <!-- conteúdo aqui -->
-						  </section>
-					  </li>
-				  </div>
-			  </div>
+				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
+					<li class="slds-accordion__list-item">
+						<section class="slds-accordion__section">
+							<div class="slds-accordion__summary">
+								<h2 class="slds-accordion__summary-heading">
+									<span class="geral slds-accordion__summary-content header-section">Geral</span>
+								</h2>
+							</div>
+							<!-- conteúdo aqui -->
+						</section>
+					</li>
+				</div>
+			</div>
 
 			  <!-- 2th Accordion -->
 			  <div class="slds-progress__item">
@@ -185,50 +180,51 @@
 				</div>
 			</div>
 
-		  </ol>
-	  </div>
+		</ol>
+	</div>
 
-	  <div class="btn-container slds-m-vertical_medium">
-		  <template if:true={showCommitteeButton}>
-			  <button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={enableCommiteeButton}> Comitê </button>
+	<div class="btn-container slds-m-vertical_medium">
+		<template if:true={showCommitteeButton}>
+			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled> Comitê </button>
 
-		  </template>
-		  <button class="btn reprovado" data-id="reject-btn" onclick={sendAnalysis} disabled> Reprovar </button>
-		  <button class="btn pendenciado" data-id="pending-btn" onclick={sendAnalysis} disabled> Pendenciar </button>
-		  <button class="btn aprovado" data-id="approve-btn" onclick={sendAnalysis} disabled> Aprovar </button>
-	  </div>
+		</template>
+		<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
+		<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>
+		<button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled> Aprovar </button>
+	</div>
 
 
-	  <template if:true={openModalReason}>
-		  <c-modal-reason
-			  onselectedreason={handlerSelectedReason}
-			  type-reason={modalReason}
-			  field-reason={modalReasonField}
-			  object-reason={modalReasonObject}>
-		  </c-modal-reason>
-	  </template>
+	<template if:true={openModalReason}>
+		<c-modal-reason
+			onselectedreason={handlerSelectedReason}
+			type-reason={modalReason}
+			field-reason={modalReasonField}
+			object-reason={modalReasonObject}>
+		</c-modal-reason>
+	</template>
 
-	  <template if:true={openModalRejection}>
-		  <c-modal-proposal-reject
-			  onclosemodal={handlerCloseModalRejection}>
-		  </c-modal-proposal-reject>
-	  </template>
+	<template if:true={openModalRejection}>
+		<c-modal-proposal-reject
+			onclosemodal={handlerCloseModalRejection}
+			onreject={handlerAnalysisReject}>
+		</c-modal-proposal-reject>
+	</template>
 
-	  <template if:true={openModalPendency}>
-		  <c-modal-proposal-pendency
-			  onclosemodal={handlerCloseModalPendency}
-			  onpending={handlerAnalysisPending}>
-		  </c-modal-proposal-pendency>
-	  </template>
+	<template if:true={openModalPendency}>
+		<c-modal-proposal-pendency
+			onclosemodal={handlerCloseModalPendency}
+			onpendency={handlerAnalysisPendency}>
+		</c-modal-proposal-pendency>
+	</template>
 
-	  <template if:true={openModalApprove}>
-		  <c-modal-proposal-approve
-			  onclosemodal={handlerCloseModalApprove}
-			  onapprove={handlerAnaylisApprovement}>
-		  </c-modal-proposal-approve>
-	  </template>
+	<template if:true={openModalApprove}>
+		<c-modal-proposal-approve
+			onclosemodal={handlerCloseModalApprove}
+			onapprove={handlerAnaylisApprovement}>
+		</c-modal-proposal-approve>
+	</template>
 
-	  <template if:true={openModalCommittee}>
+	<template if:true={openModalCommittee}>
 		<c-modal-proposal-committee
 			record-id={opportunityid}
 			onclosemodal={handlerCloseModalCommittee}>

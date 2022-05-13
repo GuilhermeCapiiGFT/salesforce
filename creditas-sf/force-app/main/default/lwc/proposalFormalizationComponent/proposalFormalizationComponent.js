@@ -17,9 +17,6 @@ export default class ProposalFormalizationComponent extends LightningElement {
       section.classList.remove('slds-is-open')
     })
 
-    console.log('open sections:')
-    console.log(openSections.length)
-
     this.showContract = true
   }
 

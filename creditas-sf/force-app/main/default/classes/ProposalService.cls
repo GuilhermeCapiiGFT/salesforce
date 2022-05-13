@@ -88,8 +88,6 @@ public with sharing class ProposalService
     
     public static void syncObjectFields(SObject sourceObject, SObject sectionObject, String type)
     {
-        if(sourceObject == null) return;
-
         String sObjectSourceApiName  = sourceObject.getSObjectType().getDescribe().Name;
         String sObjectSectionApiName = sectionObject.getSObjectType().getDescribe().Name;
 
@@ -109,9 +107,9 @@ public with sharing class ProposalService
         Documents__c rg  = (Documents__c) mountDocumentsStringQuery('Documents__c', 'RG');
         Documents__c cnh = (Documents__c) mountDocumentsStringQuery('Documents__c', 'CNH');
         
-        syncObjectFields(acc, personalDataSection, '');
-        syncObjectFields(rg, personalDataSection, 'RG');
-        syncObjectFields(cnh, personalDataSection, 'CNH');
+        if(acc != null) syncObjectFields(acc, personalDataSection, '');
+        if(rg != null)  syncObjectFields(rg, personalDataSection, 'RG');
+        if(cnh != null) syncObjectFields(cnh, personalDataSection, 'CNH');
     }
 
     public static void copyContactDataSection(ContactDetailsSection__c contactDataSection)
@@ -148,12 +146,12 @@ public with sharing class ProposalService
         FinancialResources__c monthlyIncome   = financialResourcesById.get('MONTHLY_INCOME');
         FinancialResources__c confirmedIncome = financialResourcesById.get('CONFIRMED_MONTHLY_INCOME');
     
-        syncObjectFields(professionalInfo, incomeDataSection, '');
-        syncObjectFields(opp, incomeDataSection, '');
-        syncObjectFields(monthlyIncome, incomeDataSection, 'MONTHLY_INCOME');
-        syncObjectFields(presumedIncome, incomeDataSection, 'PRESUMED_MONTHLY_INCOME');
-        syncObjectFields(confirmedIncome, incomeDataSection, 'CONFIRMED_MONTHLY_INCOME');
         setNetworthValue(acc, incomeDataSection);
+        syncObjectFields(opp, incomeDataSection, '');
+        if(professionalInfo != null) syncObjectFields(professionalInfo, incomeDataSection, '');
+        if(monthlyIncome != null)    syncObjectFields(monthlyIncome, incomeDataSection, 'MONTHLY_INCOME');
+        if(presumedIncome != null)   syncObjectFields(presumedIncome, incomeDataSection, 'PRESUMED_MONTHLY_INCOME');
+        if(confirmedIncome != null)  syncObjectFields(confirmedIncome, incomeDataSection, 'CONFIRMED_MONTHLY_INCOME');
     }
 
     public static void copyOperationDataSection(OperationSection__c operationDataSection)

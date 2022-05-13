@@ -1,6 +1,6 @@
 public with sharing class ProposalContactDataService {
     
-   @AuraEnabled
+     @AuraEnabled
     public static Map<String,CommunicationContacts__c> getCommunicationContactFromAccount(Id accountId){
         
         Map<String,CommunicationContacts__c> recordInfo = new Map<String,CommunicationContacts__c>();

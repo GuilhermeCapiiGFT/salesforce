@@ -2,10 +2,10 @@
 public with sharing class DocumentApiServiceTest {
   @IsTest
   static void testSuccess() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SUCCESS'));
 
     Test.startTest();
-    DocumentApiService documentApi = sendRequest('SUCCESS', 'AutoFin');
+    DocumentApiService documentApi = sendRequest('test', 'AutoFin');
     Test.stopTest();
 
     HttpResponse response = documentApi.getResponse();
@@ -19,10 +19,10 @@ public with sharing class DocumentApiServiceTest {
 
   @IsTest
   static void testBadRequest() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('BAD_REQUEST'));
 
     Test.startTest();
-    DocumentApiService documentApi = sendRequest('BAD_REQUEST', 'AutoFin');
+    DocumentApiService documentApi = sendRequest('test', 'AutoFin');
     Test.stopTest();
 
     HttpResponse response = documentApi.getResponse();
@@ -34,10 +34,25 @@ public with sharing class DocumentApiServiceTest {
 
   @IsTest
   static void testServerError() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SERVER_ERROR'));
 
     Test.startTest();
-    DocumentApiService documentApi = sendRequest('SERVER_ERROR', 'AutoFin');
+    DocumentApiService documentApi = sendRequest('test', 'AutoFin');
+    Test.stopTest();
+
+    HttpResponse response = documentApi.getResponse();
+    DocumentApiResponseVO responseObject = documentApi.getResponseObject();
+
+    assertResponse(response, 500);
+    assertResponseObjectError(responseObject, 'Server error');
+  }
+
+  @IsTest
+  static void testEmptyParams() {
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SERVER_ERROR'));
+
+    Test.startTest();
+    DocumentApiService documentApi = sendRequest('', '');
     Test.stopTest();
 
     HttpResponse response = documentApi.getResponse();
@@ -49,10 +64,10 @@ public with sharing class DocumentApiServiceTest {
 
   @IsTest
   static void testUnexpectedError() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('UNEXPECTED_ERROR'));
 
     Test.startTest();
-    DocumentApiService documentApi = sendRequest('UNEXPECTED_ERROR', 'AutoFin');
+    DocumentApiService documentApi = sendRequest('test', 'AutoFin');
     Test.stopTest();
 
     HttpResponse response = documentApi.getResponse();
@@ -63,18 +78,24 @@ public with sharing class DocumentApiServiceTest {
   }
 
   @IsTest
-  static void testEmptyParams() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+  static void testInvalidJson() {
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('INVALID_JSON'));
 
     Test.startTest();
-    DocumentApiService documentApi = sendRequest('', '');
+    DocumentApiService documentApi = sendRequest('test', 'AutoFin');
     Test.stopTest();
 
     HttpResponse response = documentApi.getResponse();
     DocumentApiResponseVO responseObject = documentApi.getResponseObject();
 
-    assertResponse(response, 404);
-    assertResponseObjectError(responseObject, 'Unexpected error');
+    assertResponse(response, 200);
+    System.assertNotEquals(null, responseObject, 'responseObject shouldn\'t be null');
+    System.assertEquals(true, responseObject.hasError, 'responseObject.hasError should be true'); 
+    System.assertEquals(
+      true,
+      responseObject.errorMessage.startsWith('Unexpected character'),
+      'result.errorMessage should start with \'Unexpected character\''
+    );
   }
 
   static DocumentApiService sendRequest(String mockConfig, String recordTypeName) {

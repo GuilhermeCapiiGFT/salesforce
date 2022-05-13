@@ -10,6 +10,18 @@ import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finis
 
 const fields = [STAGENAME_FIELD];
 
+const PROPOSAL_APPROVED = 'approved';
+const PROPOSAL_PENDENCY = 'pendency';
+const PROPOSAL_REJECTED = 'rejected';
+
+const ERROR_OCCURRED = 'Ocorreu um Erro';
+const ERROR_MESSAGE = 'Por favor entre em contato com um administrador.';
+const ERROR_VARIANT = 'error';
+
+const SUCCESS_OCCURRED = 'Sucesso';
+const SUCCESS_MESSAGE = 'Análise da proposata enviada com sucesso!';
+const SUCCESS_VARIANT = 'success';
+
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
@@ -54,17 +66,17 @@ export default class ProposalAnalysis extends LightningElement {
   openModalRejection = false;
   openModalPendency = false
   openModalApprove = false
-  openModalCommittee = false
   isAnalysisComplete = false
   
   // Info about the buttons
   isAllApproved = false
   isAnyPending = false
   isAnyRejected = false
-
+  
   statusAnalysis;
-
+  
   //Committee
+  openModalCommittee = false
   showCommitteeButton = false;
 
   sectionComponentMap = new Map([
@@ -88,7 +100,6 @@ export default class ProposalAnalysis extends LightningElement {
   @wire(getRecord, { recordId: '$opportunityid', fields })
   getStageName({ error, data }) {
     if (data) {
-      console.log(data?.fields?.StageName?.value)
       let stageName = data?.fields?.StageName?.value
 
       if (stageName === 'Aguardando Análise de Formalização') {
@@ -232,7 +243,7 @@ export default class ProposalAnalysis extends LightningElement {
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
-    let committeBtn = this.template.querySelector('[data-id="committee-btn"]');
+    let committeeBtn = this.template.querySelector('[data-id="committee-btn"]');
 
     let isApproved = false
     let isPending = false
@@ -270,22 +281,22 @@ export default class ProposalAnalysis extends LightningElement {
         approveBtn.disabled = false
         pendingBtn.disabled = true
         rejectBtn.disabled = true
-        committeBtn.disabled = false;
-        result = 'approve';
+        committeeBtn.disabled = false;
+        result = PROPOSAL_APPROVED;
       }
       if (isPending) {
         approveBtn.disabled = true
         pendingBtn.disabled = false
         rejectBtn.disabled = true
-        committeBtn.disabled = false;
-        result = 'pendency';
+        committeeBtn.disabled = false;
+        result = PROPOSAL_PENDENCY;
       }
       if (isRejected) {
         approveBtn.disabled = true
         pendingBtn.disabled = true
         rejectBtn.disabled = false
-        committeBtn.disabled = false;
-        result = 'reject';
+        committeeBtn.disabled = false;
+        result = PROPOSAL_REJECTED;
       }
 
       this.statusAnalysis = result;
@@ -295,7 +306,7 @@ export default class ProposalAnalysis extends LightningElement {
       approveBtn.disabled = true
       pendingBtn.disabled = true
       rejectBtn.disabled = true
-      committeBtn.disabled = true;
+      committeeBtn.disabled = true;
     }
   }
 
@@ -349,57 +360,53 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handlerAnaylisApprovement() {
-    this.isAnalysisComplete = true
-
-    let openSections = this.template.querySelectorAll("section")
-    let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
-
-    openSections.forEach(section => {
-      section.classList.remove('slds-is-open')
-    })
-
-    approveBtn.disabled = true
+    this.handlerCloseModalApprove();
+    this.sendAnalysis('approve-btn');
   }
 
-  handlerAnalysisPending() {
-    this.isAnalysisComplete = true
+  handlerAnalysisPendency() {
+    this.handlerCloseModalPendency();
+    this.sendAnalysis('pending-btn');
+  }
 
-    let openSections = this.template.querySelectorAll("section")
-    let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
+  handlerAnalysisReject() {
+    this.handlerCloseModalRejection();
+    this.sendAnalysis('reject-btn');
+  }
 
+  closeSections(){
+    let openSections = this.template.querySelectorAll("section");
     openSections.forEach(section => {
-      section.classList.remove('slds-is-open')
+      section.classList.remove('slds-is-open');
     })
-
-    pendingBtn.disabled = true
   }
 
   get isReadyForAnalysis() {
     return !this.isAnalysisStarted && this.isStageWaitingForUE
   }
 
-  sendAnalysis(event){
-    let dataId = event.currentTarget.getAttribute('data-id'); 
-    let button = this.template.querySelector("[data-id='"+ dataId +"']");
+  sendAnalysis(btn_action){
+    let button = this.template.querySelector("[data-id='"+ btn_action +"']");
     button.disabled = true;
     finishAnalysis({
       opportunityId : this.opportunityid,
       status : this.statusAnalysis
     })
     .then( result =>{
-      console.log(result);
       if(result === 'Success'){
-        this.showToast('', 'Análise enviada com sucesso!', 'success');
+        this.showToast(SUCCESS_OCCURRED, SUCCESS_MESSAGE, SUCCESS_VARIANT);
+        this.isAnalysisComplete = true;
+        this.closeSections();
       }
       else{
-        this.showToast('', 'Ocorreu um erro ao enviar análise!', 'error');
+        this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
         button.disabled = false;
       }
     })
     .catch( error =>{
       console.log({error});
       button.disabled = false;
-      this.showToast('', 'Ocorreu um erro ao enviar análise!', 'error');
+      this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
     })
   }
 }

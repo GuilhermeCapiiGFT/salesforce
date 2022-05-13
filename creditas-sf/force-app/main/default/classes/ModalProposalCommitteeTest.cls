@@ -15,7 +15,7 @@ private with sharing class ModalProposalCommitteeTest {
         opp.CommitteeReason__c = 'OTHER';
         opp.CommitteeOtherReason__c = 'Some other reason';
         Test.startTest();
-            Boolean updateSuccess = ModalProposalCommitteeController.updateOpportunityCommitee(opp);
+            Boolean updateSuccess = ModalProposalCommitteeController.updateOpportunityCommittee(opp);
         Test.stopTest();
         Opportunity oppAfterUpdate = [SELECT CommitteeObservation__c,CommitteeReason__c,CommitteeOtherReason__c FROM Opportunity];
         System.assertEquals('New Observation for Test', oppAfterUpdate.CommitteeObservation__c, 'CommitteeObservation__c was not updated');
@@ -32,7 +32,7 @@ private with sharing class ModalProposalCommitteeTest {
         opp.AccountId = null;
 
         Test.startTest();
-            Boolean updateSuccess = ModalProposalCommitteeController.updateOpportunityCommitee(opp);
+            Boolean updateSuccess = ModalProposalCommitteeController.updateOpportunityCommittee(opp);
         Test.stopTest();
         
         System.assert(!updateSuccess, 'Update should have faileld');

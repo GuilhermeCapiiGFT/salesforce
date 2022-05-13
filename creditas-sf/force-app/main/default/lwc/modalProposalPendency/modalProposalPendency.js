@@ -20,7 +20,7 @@ export default class ModalProposalPendency extends LightningElement {
     }
   
     handlerPendency(event) {
-      const selectedEvent = new CustomEvent('pending', {
+      const selectedEvent = new CustomEvent('pendency', {
         bubbles    : true,
         composed   : true,
         cancelable : true,

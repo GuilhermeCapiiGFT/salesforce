@@ -2,6 +2,8 @@
 public class DocumentApiResponseVOTest {
   @IsTest
   static void testExpectedJson() {
+    // The VO class is mocking the API response body until we have a correct return from the endpoint. Change to the commented line bellow when the method is removed.
+    // String successJson = DocumentApiCalloutMock.getSuccessResponse();
     String successJson = DocumentApiResponseVO.getSuccessResponse();
 
     Test.startTest();
@@ -38,7 +40,7 @@ public class DocumentApiResponseVOTest {
 
   @IsTest
   static void testInvalidJson() {
-    String invalidJson = '{ "key": ,}';
+    String invalidJson = '{ "error": ,}';
 
     Test.startTest();
     DocumentApiResponseVO responseObject = DocumentApiResponseVO.parse(invalidJson);
@@ -46,10 +48,10 @@ public class DocumentApiResponseVOTest {
 
     System.assertNotEquals(null, responseObject, 'responseObject shouldn\'t be null');
     System.assertEquals(true, responseObject.hasError, 'responseObject.hasError should be true');
-    System.assertNotEquals(
-      null,
-      responseObject.errorMessage,
-      'responseObject.errorMessage shouldn\'t be null'
+    System.assertEquals(
+      true,
+      responseObject.errorMessage.startsWith('Unexpected character'),
+      'result.errorMessage should start with \'Unexpected character\''
     );
   }
 }

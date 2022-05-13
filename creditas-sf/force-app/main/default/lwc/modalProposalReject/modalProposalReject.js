@@ -14,6 +14,7 @@ export default class ModalProposalReject extends LightningElement {
         this.contentConfirmation = false;
         this.contentReturn = false;  
         this.contentSave = true;
+        this.handlerReject();
     }
 
     handlerDisagrees(){
@@ -31,6 +32,16 @@ export default class ModalProposalReject extends LightningElement {
         });
         this.dispatchEvent(selectedEvent);
     }
+
+    handlerReject(event) {
+        const selectedEvent = new CustomEvent('reject', {
+          bubbles    : true,
+          composed   : true,
+          cancelable : true,
+          detail: {}
+        });
+        this.dispatchEvent(selectedEvent);
+      }
 
     handlerSave(){
         this.handlerClose();

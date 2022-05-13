@@ -15,14 +15,13 @@ public with sharing class ProposalIntegrationService {
         
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         List<ProposalIntegrationVO.Section> sections = getSections();
-
+        System.debug(status);
         payload.loanApplicationId = opportunity.ExternalId__c;
         payload.context           = opportunity.StageName;
         payload.contextResult     = status;
         payload.productType       = productTypes.containsKey(recordTypeName) ? productTypes.get(recordTypeName) : '';
         payload.sections          = sections;
 
-        System.debug(JSON.serializePretty(payload));
         return payload;
     }
 

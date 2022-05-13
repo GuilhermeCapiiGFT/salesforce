@@ -1,6 +1,4 @@
 import { LightningElement } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
 export default class ModalProposalApprove extends LightningElement {
 
     modalHeader = 'Deseja aprovar a proposta?';
@@ -11,7 +9,6 @@ export default class ModalProposalApprove extends LightningElement {
       this.contentConfirmation = false;
       this.handlerApprove()
       this.handlerClose();
-      this.showToast('Sucesso', 'Análise Concluída com sucesso!', 'success')
     }
 
     handlerDisagrees() {
@@ -42,13 +39,4 @@ export default class ModalProposalApprove extends LightningElement {
     handlerSave() {
         this.handlerClose();
     }
-  
-    showToast(title, message, variant) {
-      const event = new ShowToastEvent({
-          title: title,
-          message: message,
-          variant: variant
-      });
-      this.dispatchEvent(event);
-    }  
 }

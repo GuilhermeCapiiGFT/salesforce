@@ -2,13 +2,10 @@
 public class DocumentApiControllerTest {
   @IsTest
   static void testGetDocumentsSuccess() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SUCCESS'));
 
     Test.startTest();
-    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments(
-      'SUCCESS',
-      'AUTO_FIN'
-    );
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('test', 'AutoFin');
     Test.stopTest();
 
     System.assertNotEquals(null, responseObject, 'responseObject shouldn\'t be null');
@@ -18,13 +15,10 @@ public class DocumentApiControllerTest {
 
   @IsTest
   static void testGetDocumentsBadRequest() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('BAD_REQUEST'));
 
     Test.startTest();
-    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments(
-      'BAD_REQUEST',
-      'AUTO_FIN'
-    );
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('test', 'AutoFin');
     Test.stopTest();
 
     assertResponseObjectError(responseObject, 'Bad request');
@@ -32,13 +26,21 @@ public class DocumentApiControllerTest {
 
   @IsTest
   static void testGetDocumentsServerError() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SERVER_ERROR'));
 
     Test.startTest();
-    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments(
-      'SERVER_ERROR',
-      'AUTO_FIN'
-    );
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('test', 'AutoFin');
+    Test.stopTest();
+
+    assertResponseObjectError(responseObject, 'Server error');
+  }
+
+  @IsTest
+  static void testGetDocumentsEmptyParams() {
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('SERVER_ERROR'));
+
+    Test.startTest();
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('', '');
     Test.stopTest();
 
     assertResponseObjectError(responseObject, 'Server error');
@@ -46,52 +48,29 @@ public class DocumentApiControllerTest {
 
   @IsTest
   static void testGetDocumentsUnexpectedError() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('UNEXPECTED_ERROR'));
 
     Test.startTest();
-    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments(
-      'UNEXPECTED_ERROR',
-      'AUTO_FIN'
-    );
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('test', 'AutoFin');
     Test.stopTest();
 
     assertResponseObjectError(responseObject, 'Unexpected error');
   }
 
   @IsTest
-  static void testEmptyParams() {
-    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock());
+  static void testGetDocumentsInvalidJson() {
+    Test.setMock(HttpCalloutMock.class, new DocumentApiCalloutMock('INVALID_JSON'));
 
     Test.startTest();
-    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('', '');
+    DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('test', 'AutoFin');
     Test.stopTest();
 
-    assertResponseObjectError(responseObject, 'Unexpected error');
-  }
-
-  @IsTest
-  static void testException() {
-    Exception testException;
-    DocumentApiController.isExceptionTest = true;
-
-    Test.startTest();
-    try {
-      DocumentApiResponseVO responseObject = DocumentApiController.getDocuments('', '');
-    } catch (Exception e) {
-      testException = e;
-    }
-    Test.stopTest();
-
-    System.assertNotEquals(null, testException, 'An exception should\'ve been thrown');
+    System.assertNotEquals(null, responseObject, 'responseObject shouldn\'t be null');
+    System.assertEquals(true, responseObject.hasError, 'responseObject.hasError should be true');
     System.assertEquals(
-      'Test exception thrown',
-      testException.getMessage(),
-      'Expected exception message to be \'Test exception thrown\''
-    );
-    System.assertEquals(
-      'System.AuraHandledException',
-      testException.getTypeName(),
-      'Expected exception type to be \'System.AuraHandledException\''
+      true,
+      responseObject.errorMessage.startsWith('Unexpected character'),
+      'result.errorMessage should start with \'Unexpected character\''
     );
   }
 

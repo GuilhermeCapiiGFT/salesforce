@@ -56,7 +56,6 @@ public with sharing class DocumentApiService {
       responseObject.hasError = statusCode == 200 ? false : true;
       if (statusCode == 200) {
         responseObject = DocumentApiResponseVO.parse(response.getBody());
-        responseObject.items.sort();
       } else if (statusCode == 400) {
         responseObject.errorMessage = 'Bad request';
       } else if (statusCode == 500) {
