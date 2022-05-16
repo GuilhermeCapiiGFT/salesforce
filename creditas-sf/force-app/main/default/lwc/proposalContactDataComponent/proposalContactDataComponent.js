@@ -1,6 +1,8 @@
 import { LightningElement, wire, api } from 'lwc';
 
+
 import COMMUNICATIONCONTACT_OBJECT from '@salesforce/schema/CommunicationContacts__c';
+import CONTACTDETAILSSECTION_OBJECT from '@salesforce/schema/ContactDetailsSection__c';
 
 import MOBILESTATUS from '@salesforce/schema/ContactDetailsSection__c.MobileStatus__c';
 import MOBILEREJECTION from '@salesforce/schema/ContactDetailsSection__c.MobileRejectReason__c';

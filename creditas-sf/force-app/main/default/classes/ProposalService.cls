@@ -37,13 +37,19 @@ public with sharing class ProposalService
         sectionRecords.add(incomeDataSection);
         sectionRecords.add(operationDataSection);
 
-        //System.debug(JSON.serializePretty(sectionRecords));
-
         if(!sectionRecords.isEmpty())
         {
-            System.debug('INSERT sectionRecords: ' + JSON.serializePretty(sectionRecords) + 
-            '\nRESULT: ' + Database.insert(sectionRecords));
+            Database.insert(sectionRecords);
         }
+    }
+
+    public static void changeStageName(Id oppId)
+    {
+        Opportunity opp = new Opportunity(Id = oppId);
+
+        opp.StageName = 'Em Análise de Formalização';
+
+        Database.update(opp);
     }
 
     public static void deleteOldestSections()
@@ -57,20 +63,14 @@ public with sharing class ProposalService
 
             if(recordsSObject != null && recordsSObject.size() == (historyLimit + CURRENT_RECORD))
             {
-                System.debug('ENTROU PARA ADICIONAR REGISTRO PARA DELETAR');
                 recordsToDelete.add(recordsSObject[0]);
             }
-        
         }
 
         if(!recordsToDelete.isEmpty())
         {
-            System.debug('DELETOU');
-            
-            System.debug('DELETE recordsToDelete: ' + JSON.serializePretty(recordsToDelete) + 
-            '\nRESULT: ' + Database.delete(recordsToDelete));
+            Database.delete(recordsToDelete);
         }
-        
     }
 
     private static Map<String, List<SObject>> getSectionRecords()
@@ -88,16 +88,19 @@ public with sharing class ProposalService
     
     public static void syncObjectFields(SObject sourceObject, SObject sectionObject, String type)
     {
-        String sObjectSourceApiName  = sourceObject.getSObjectType().getDescribe().Name;
-        String sObjectSectionApiName = sectionObject.getSObjectType().getDescribe().Name;
-
-        for(Proposal_Copy_Sections__mdt record : [SELECT Source_Field__r.QualifiedApiName, Section_Field__r.QualifiedApiName FROM Proposal_Copy_Sections__mdt
-                                                  WHERE Source_Object__r.QualifiedApiName = :sObjectSourceApiName
-                                                  AND Section_Object__r.QualifiedApiName = :sObjectSectionApiName
-                                                  AND Type__c = :type
-                                                  WITH SECURITY_ENFORCED])
-        {   
-            sectionObject.put(record.Section_Field__r.QualifiedApiName, sourceObject.get(record.Source_Field__r.QualifiedApiName));
+        if(sourceObject != null)
+        {
+            String sObjectSourceApiName  = sourceObject.getSObjectType().getDescribe().Name;
+            String sObjectSectionApiName = sectionObject.getSObjectType().getDescribe().Name;
+    
+            for(Proposal_Copy_Sections__mdt record : [SELECT Source_Field__r.QualifiedApiName, Section_Field__r.QualifiedApiName FROM Proposal_Copy_Sections__mdt
+                                                      WHERE Source_Object__r.QualifiedApiName = :sObjectSourceApiName
+                                                      AND Section_Object__r.QualifiedApiName = :sObjectSectionApiName
+                                                      AND Type__c = :type
+                                                      WITH SECURITY_ENFORCED])
+            {   
+                sectionObject.put(record.Section_Field__r.QualifiedApiName, sourceObject.get(record.Source_Field__r.QualifiedApiName));
+            }
         }
     }
 
@@ -107,9 +110,9 @@ public with sharing class ProposalService
         Documents__c rg  = (Documents__c) mountDocumentsStringQuery('Documents__c', 'RG');
         Documents__c cnh = (Documents__c) mountDocumentsStringQuery('Documents__c', 'CNH');
         
-        if(acc != null) syncObjectFields(acc, personalDataSection, '');
-        if(rg != null)  syncObjectFields(rg, personalDataSection, 'RG');
-        if(cnh != null) syncObjectFields(cnh, personalDataSection, 'CNH');
+        syncObjectFields(acc, personalDataSection, '');
+        syncObjectFields(rg, personalDataSection, 'RG');
+        syncObjectFields(cnh, personalDataSection, 'CNH');
     }
 
     public static void copyContactDataSection(ContactDetailsSection__c contactDataSection)
@@ -148,10 +151,10 @@ public with sharing class ProposalService
     
         setNetworthValue(acc, incomeDataSection);
         syncObjectFields(opp, incomeDataSection, '');
-        if(professionalInfo != null) syncObjectFields(professionalInfo, incomeDataSection, '');
-        if(monthlyIncome != null)    syncObjectFields(monthlyIncome, incomeDataSection, 'MONTHLY_INCOME');
-        if(presumedIncome != null)   syncObjectFields(presumedIncome, incomeDataSection, 'PRESUMED_MONTHLY_INCOME');
-        if(confirmedIncome != null)  syncObjectFields(confirmedIncome, incomeDataSection, 'CONFIRMED_MONTHLY_INCOME');
+        syncObjectFields(professionalInfo, incomeDataSection, '');
+        syncObjectFields(monthlyIncome, incomeDataSection, 'MONTHLY_INCOME');
+        syncObjectFields(presumedIncome, incomeDataSection, 'PRESUMED_MONTHLY_INCOME');
+         syncObjectFields(confirmedIncome, incomeDataSection, 'CONFIRMED_MONTHLY_INCOME');
     }
 
     public static void copyOperationDataSection(OperationSection__c operationDataSection)

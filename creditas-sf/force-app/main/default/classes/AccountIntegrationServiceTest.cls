@@ -98,6 +98,81 @@ public class AccountIntegrationServiceTest {
     assertErrorResponse(responseBodyObject, 500, 'Main Document can\'t be null.');
   }
 
+  @IsTest
+  static void methodName() {
+    Account refAccount = new Account(ExternalId__c = 'test-acc-001');
+    Account mainAccount = new Account(Name = 'test', ExternalId__c = 'test-acc-001');
+    List<CommunicationContacts__c> contacts = new List<CommunicationContacts__c>{
+      new CommunicationContacts__c(ExternalId__c = 'test-cont-0001', Account__r = refAccount),
+      new CommunicationContacts__c(ExternalId__c = 'test-cont-0002', Account__r = refAccount)
+    };
+    List<Addresses__c> addresses = new List<Addresses__c>{
+      new Addresses__c(ExternalAddressId__c = 'test-add-001', Account__r = refAccount),
+      new Addresses__c(ExternalAddressId__c = 'test-add-002', Account__r = refAccount)
+    };
+
+    List<SObject> objects = new List<SObject>();
+    objects.add(mainAccount);
+    objects.addAll(contacts);
+    objects.addAll(addresses);
+
+    // test.startTest();
+    Database.UpsertResult[] results = Database.upsert(objects);
+    // test.stopTest();
+
+    mainAccount = [
+      SELECT
+        Id,
+        ExternalId__c,
+        (SELECT Id, ExternalId__c FROM CommunicationContacts__r),
+        (SELECT Id, ExternalAddressId__c FROM Enderecos__r)
+      FROM Account
+    ];
+
+    contacts = mainAccount.CommunicationContacts__r;
+    addresses = mainAccount.Enderecos__r;
+
+    mainAccount.BankName__c = 'NuBank';
+    contacts[0].Code__c = 'code0';
+    contacts[1].Code__c = 'code1';
+    addresses[0].AreaLevel1__c = 'add0';
+    addresses[1].AreaLevel1__c = 'add1';
+
+    objects.clear();
+    objects.add(mainAccount);
+    objects.addAll(contacts);
+    objects.addAll(addresses);
+
+    Test.startTest();
+    results = Database.upsert(objects);
+    Test.stopTest();
+
+    Account createdAccount = [
+      SELECT
+        BankName__c,
+        (SELECT Code__c FROM CommunicationContacts__r),
+        (SELECT AreaLevel1__c FROM Enderecos__r)
+      FROM Account
+    ];
+
+    System.assertNotEquals(null, createdAccount.Id, 'Expected an account Id to be created');
+    System.assertEquals(2, createdAccount.CommunicationContacts__r.size(), 'Expected to be 1');
+    System.assertEquals(2, createdAccount.Enderecos__r.size(), 'Expected to be 1');
+    System.assertEquals('NuBank', createdAccount.BankName__c, 'Name is wrong');
+    System.assertEquals(
+      'code0',
+      createdAccount.CommunicationContacts__r[0].Code__c,
+      'Name is wrong'
+    );
+    System.assertEquals(
+      'code1',
+      createdAccount.CommunicationContacts__r[1].Code__c,
+      'Name is wrong'
+    );
+    System.assertEquals('add0', createdAccount.Enderecos__r[0].AreaLevel1__c, 'Name is wrong');
+    System.assertEquals('add1', createdAccount.Enderecos__r[1].AreaLevel1__c, 'Name is wrong');
+  }
+
   static AccountIntegrationService runUpsert(String json) {
     AccountIntegrationService integration = new AccountIntegrationService();
     integration.setRequestBody(json);

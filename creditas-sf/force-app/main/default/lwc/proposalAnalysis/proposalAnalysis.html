@@ -1,15 +1,16 @@
 <template>
 	<div class="slds-card slds-p-horizontal_medium" style="overflow: hidden;" data-id="top-component">
-   
+  
+	<div class="spinner">
+		<template if:true={isLoading}>
+			<lightning-spinner alternative-text="Loading" variant="brand" size="large">
+			</lightning-spinner>
+		</template>
+	</div>	
+
 	<template if:true={isReadyForAnalysis}>
 		<div class="btn-container">
 			<button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>
-		</div>
-	</template>
-
-	<template if:true={isAnalysisStarted}>
-		<div class="btn-container">
-			<p>Análise Iniciada em {startDate}</p>
 		</div>
 	</template>
 
@@ -50,7 +51,9 @@
 								</h2>
 							  </div>
 							  <div class="slds-accordion__content" id="referenceId-38" >
-								  <c-proposal-personal-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-personal-data-component>
+									<template if:true={openSection}>
+										<c-proposal-personal-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-personal-data-component>
+									</template>
 							  </div>
 						  </section>
 					  </li>
@@ -70,7 +73,9 @@
 									</h2>
 								</div>
 								<div class="slds-accordion__content">
-									<c-proposal-contact-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-contact-data-component>
+									<template if:true={openSection}>
+										<c-proposal-contact-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-contact-data-component>
+									</template>
 								</div>
 						  </section>
 					  </li>
@@ -90,7 +95,9 @@
 								  </h2>
 							  </div>
 								<div class="slds-accordion__content">
-									<c-proposal-addresses-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-addresses-component>
+									<template if:true={openSection}>
+										<c-proposal-addresses-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-addresses-component>
+									</template>
 								</div>
 						  </section>
 					  </li>
@@ -110,7 +117,9 @@
 								  </h2>
 							  </div>
 								<div class="slds-accordion__content">
-									<c-proposal-income-data-component accountid={accountid} opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-income-data-component>
+									<template if:true={openSection}>
+										<c-proposal-income-data-component accountid={accountid} opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-income-data-component>
+									</template>
 								</div>
 						  </section>
 					  </li>
@@ -130,10 +139,12 @@
 								  	</h2>
 							  	</div>
 							  	<div class="slds-accordion__content">
-									<c-proposal-warranty-component 
-										opportunityid={opportunityid}
-										onsendinfo={setInfoValueAndVariant}>
-									</c-proposal-warranty-component>
+										<template if:true={openSection}>
+											<c-proposal-warranty-component 
+												opportunityid={opportunityid}
+												onsendinfo={setInfoValueAndVariant}>
+											</c-proposal-warranty-component>
+										</template>
 								</div>
 						  </section>
 					  </li>
@@ -153,7 +164,9 @@
 								  </h2>
 							  </div>
 							  <div class="slds-accordion__content">
-								  <c-proposal-operation-component opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-operation-component>
+									<template if:true={openSection}>
+										<c-proposal-operation-component opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-operation-component>
+									</template>
 							  </div>
 						  </section>
 					  </li>
@@ -173,7 +186,9 @@
 								</h2>
 							</div>
 							<div class="slds-accordion__content">
-								<c-proposal-quick-links-component></c-proposal-quick-links-component>
+								<template if:true={openSection}>
+									<c-proposal-quick-links-component></c-proposal-quick-links-component>
+								</template>
 							</div>
 						</section>
 					</li>
@@ -185,8 +200,7 @@
 
 	<div class="btn-container slds-m-vertical_medium">
 		<template if:true={showCommitteeButton}>
-			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled> Comitê </button>
-
+			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={enableCommiteeButton}> Comitê </button>
 		</template>
 		<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
 		<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>

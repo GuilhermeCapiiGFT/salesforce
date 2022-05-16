@@ -157,11 +157,14 @@ export default class ProposalOperationComponent extends LightningElement {
     'QuantityObservation__c': ''
   }
   
-  // Get fields permission in QUOTE
-  @wire(getObjectInfo, { objectApiName: QUOTE_OBJECT  })
-  recordTypeQuote({ error, data }) {
+  // Get fields permission in OPERATIONSECTION
+  @wire(getObjectInfo, { objectApiName: OPERATION_OBJECT  })
+  getOperationPermission({ error, data }) {
     if(data) {
-      this.valueFinalidadeOp.fieldReadOnly     = !data?.fields?.Description.updateable;
+      console.log('Operation Field Permission');
+      console.log(data);
+      console.log('Description: '+!data?.fields?.Description__c.updateable);
+      this.valueFinalidadeOp.fieldReadOnly     = !data?.fields?.Description__c.updateable;
       this.valueDespesasRegistro.fieldReadOnly = !data?.fields?.ParameterAdditionalCosts__c.updateable;
       this.valueTAC.fieldReadOnly              = !data?.fields?.ParameterTac__c.updateable;
       this.valueIOF.fieldReadOnly              = !data?.fields?.ParameterIOF__c.updateable;
@@ -174,43 +177,12 @@ export default class ProposalOperationComponent extends LightningElement {
       this.valueCreditoLiquido.fieldReadOnly   = !data?.fields?.NetValue__c.updateable;
       this.valueParcela.fieldReadOnly          = !data?.fields?.UnitPrice__c.updateable;
       this.valueQtdParcelas.fieldReadOnly      = !data?.fields?.Quantity__c.updateable;
-      this.valuePatrimonio.fieldReadOnly      = !data?.fields?.CollateralAmount__c.updateable;
-    }
-    else if(error){
-      this.showError(error);
-    }
-  }  
-
-  // Get fields permission in ACCOUNT
-  @wire(getObjectInfo, { objectApiName: ACCOUNT_OBJECT  })
-  recordTypeAccount({ error, data }) {
-    if(data) {
-      this.valueBanco.fieldReadOnly             = !data?.fields?.BankName__c.updateable;
-      this.valueAgencia.fieldReadOnly           = !data?.fields?.Agency__c.updateable;
-      this.valueContaCorrente.fieldReadOnly     = !data?.fields?.BankAccountNumber__c.updateable;
-    }
-    else if(error){
-      this.showError(error);
-    }
-  }
-  
-  // Get fields permission in FINANCIAL RESOURCES
-  @wire(getObjectInfo, { objectApiName: FINANCIALRESOURCES_OBJECT  })
-  recordTypeFinancial({ error, data }) {
-    if(data) {
-      this.valueValorCarro.fieldReadOnly   = !data?.fields?.Amount__c.updateable;
-      this.valueAnoCarro.fieldReadOnly     = !data?.fields?.ManufacturingYear__c.updateable;
-    }
-    else if(error){
-      this.showError(error);
-    }
-  }
-  
-  // Get fields permission in OPPORTUNITY
-  @wire(getObjectInfo, { objectApiName: OPPORTUNITY_OBJECT  })
-  recordTypeOpp({ error, data }) {
-    if(data) {
-      this.valueFinalidadeOp.fieldReadOnly   = !data?.fields?.Description.updateable;
+      this.valuePatrimonio.fieldReadOnly       = !data?.fields?.CollateralAmount__c.updateable;
+      this.valueBanco.fieldReadOnly            = !data?.fields?.BankName__c.updateable;
+      this.valueAgencia.fieldReadOnly          = !data?.fields?.Agency__c.updateable;
+      this.valueContaCorrente.fieldReadOnly    = !data?.fields?.BankAccountNumber__c.updateable;
+      this.valueValorCarro.fieldReadOnly       = !data?.fields?.Amount__c.updateable;
+      this.valueAnoCarro.fieldReadOnly         = !data?.fields?.ManufacturingYear__c.updateable;
     }
     else if(error){
       this.showError(error);
@@ -221,22 +193,9 @@ export default class ProposalOperationComponent extends LightningElement {
   recordOperationSection(result) {
     this.refreshRecordOperation = result;
     if(result.data) {
-        this.recordOperation.set('Quote'      , {...this.getSObject(this.fieldsQuote)        , ...result.data.Quote       });
-        this.recordOperation.set('Financial'  , {...this.getSObject(this.fieldsFinancial)    , ...result.data.Financial   });
-        this.recordOperation.set('Proponent'  , {...this.getSObject(this.fieldsProponent)    , ...result.data.Proponent   });
-        this.recordOperation.set('Opportunity', {...this.getSObject(this.fieldsOpportunity)  , ...result.data.Opportunity });
-
         let validationSection    = result.data.OperationSection;
-        let quoteInfo            = result.data.Quote;
-        let FinancialInfo        = result.data.Financial;
-        let proponentInfo        = result.data.Proponent;
-        let opportunityInfo      = result.data.Opportunity;
-
+        this.setOperationSection(validationSection);
         this.setOperationValidationSection(validationSection);
-        this.setQuoteInfo(quoteInfo);
-        this.setFinancialInfo(FinancialInfo);
-        this.setProponentInfo(proponentInfo);
-        this.setOpportunityInfo(opportunityInfo);
     }else if(result.error){
       this.showError(result.error);
     }
@@ -247,37 +206,28 @@ export default class ProposalOperationComponent extends LightningElement {
     Object.values(object).forEach(key => {sObject[key.fieldApiName] = ''});
     return sObject;
   }
-
-  setFinancialInfo(FinancialInfo){
-    this.valueValorCarro.value  = FinancialInfo.Amount__c ? FinancialInfo.Amount__c : null;
-    this.valueAnoCarro.value    = FinancialInfo.ManufacturingYear__c ? FinancialInfo.ManufacturingYear__c : null;
- }
-
-  setQuoteInfo(quoteInfo){
-    this.valueFinalidadeOp.value      = quoteInfo.Description                 ? quoteInfo.Description                 : null;
-    this.valueDespesasRegistro.value  = quoteInfo.ParameterAdditionalCosts__c ? quoteInfo.ParameterAdditionalCosts__c : null;
-    this.valueTAC.value               = quoteInfo.ParameterTac__c             ? quoteInfo.ParameterTac__c             : null;
-    this.valueIOF.value               = quoteInfo.ParameterIOF__c             ? quoteInfo.ParameterIOF__c             : null;
-    this.valueCETmes.value            = quoteInfo.MonthlyCet__c               ? quoteInfo.MonthlyCet__c               : null;
-    this.valueCETano.value            = quoteInfo.YearlyCet__c                ? quoteInfo.YearlyCet__c                : null;
-    this.valueJurosMes.value          = quoteInfo.MonthlyInterest__c          ? quoteInfo.MonthlyInterest__c          : null;
-    this.valueJurosAno.value          = quoteInfo.YearlyInterest__c           ? quoteInfo.YearlyInterest__c           : null;
-    this.valuePrimeiraParcela.value   = quoteInfo.ServiceDate__c              ? quoteInfo.ServiceDate__c              : null;
-    this.valueUltimaParcela.value     = quoteInfo.ServiceLastDate__c          ? quoteInfo.ServiceLastDate__c          : null;
-    this.valueCreditoLiquido.value    = quoteInfo.NetValue__c                 ? quoteInfo.NetValue__c                 : null;
-    this.valueParcela.value           = quoteInfo.UnitPrice__c                ? quoteInfo.UnitPrice__c                : null;
-    this.valueQtdParcelas.value       = quoteInfo.Quantity__c                 ? quoteInfo.Quantity__c                 : null;
-    this.valuePatrimonio.value        = quoteInfo.CollateralAmount__c         ? quoteInfo.CollateralAmount__c         : null;
-  }
-
-  setProponentInfo(proponentInfo){
-    this.valueBanco.value             = proponentInfo.BankName__c           ? proponentInfo.BankName__c           : null;
-    this.valueAgencia.value           = proponentInfo.Agency__c             ? proponentInfo.Agency__c             : null;
-    this.valueContaCorrente.value     = proponentInfo.BankAccountNumber__c  ? proponentInfo.BankAccountNumber__c  : null;
-  }
-
-  setOpportunityInfo(opportunityInfo){
-    this.valueFinalidadeOp.value  = opportunityInfo.Description  ? opportunityInfo.Description : null;
+  
+  setOperationSection(operationRecord){
+    this.valueValorCarro.value        = operationRecord.Amount__c                   ? operationRecord.Amount__c                   : null;
+    this.valueAnoCarro.value          = operationRecord.ManufacturingYear__c        ? operationRecord.ManufacturingYear__c        : null;
+    this.valueFinalidadeOp.value      = operationRecord.Description                 ? operationRecord.Description                 : null;
+    this.valueDespesasRegistro.value  = operationRecord.ParameterAdditionalCosts__c ? operationRecord.ParameterAdditionalCosts__c : null;
+    this.valueTAC.value               = operationRecord.ParameterTac__c             ? operationRecord.ParameterTac__c             : null;
+    this.valueIOF.value               = operationRecord.ParameterIOF__c             ? operationRecord.ParameterIOF__c             : null;
+    this.valueCETmes.value            = operationRecord.MonthlyCet__c               ? operationRecord.MonthlyCet__c               : null;
+    this.valueCETano.value            = operationRecord.YearlyCet__c                ? operationRecord.YearlyCet__c                : null;
+    this.valueJurosMes.value          = operationRecord.MonthlyInterest__c          ? operationRecord.MonthlyInterest__c          : null;
+    this.valueJurosAno.value          = operationRecord.YearlyInterest__c           ? operationRecord.YearlyInterest__c           : null;
+    this.valuePrimeiraParcela.value   = operationRecord.ServiceDate__c              ? operationRecord.ServiceDate__c              : null;
+    this.valueUltimaParcela.value     = operationRecord.ServiceLastDate__c          ? operationRecord.ServiceLastDate__c          : null;
+    this.valueCreditoLiquido.value    = operationRecord.NetValue__c                 ? operationRecord.NetValue__c                 : null;
+    this.valueParcela.value           = operationRecord.UnitPrice__c                ? operationRecord.UnitPrice__c                : null;
+    this.valueQtdParcelas.value       = operationRecord.Quantity__c                 ? operationRecord.Quantity__c                 : null;
+    this.valuePatrimonio.value        = operationRecord.CollateralAmount__c         ? operationRecord.CollateralAmount__c         : null;
+    this.valueBanco.value             = operationRecord.BankName__c                 ? operationRecord.BankName__c                 : null;
+    this.valueAgencia.value           = operationRecord.Agency__c                   ? operationRecord.Agency__c                   : null;
+    this.valueContaCorrente.value     = operationRecord.BankAccountNumber__c        ? operationRecord.BankAccountNumber__c        : null;
+    this.valueFinalidadeOp.value      = operationRecord.Description                 ? operationRecord.Description                 : null;
   }
 
   setOperationValidationSection(validationSection){

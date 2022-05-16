@@ -115,32 +115,23 @@ public with sharing class ProposalServiceTest {
         quote.Quantity__c   = 20;
         insert quote;
 
-        // OperationSection__c operation = new OperationSection__c();
-        // operation.Opportunity__c      = opportunity.Id;
-        // operation.BranchStatus__c     = 'Aprovar';
-        // insert operation;
+        List<SObject> sectionsObjects = new List<SObject>();
 
-        // IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
-        // incomeDataSection.Opportunity__c                    = opportunity.Id;
-        // incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        // incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        // incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        // incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        // incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        // incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        // incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
-        // insert incomeDataSection;
+        PersonalDataSection__c personalDataSection  = new PersonalDataSection__c(Opportunity__c = opportunity.Id);
+        ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opportunity.Id);
+        AddressDataSection__c addressDataSection    = new AddressDataSection__c(Opportunity__c = opportunity.Id);
+        WarrantyDataSection__c warrantyDataSection  = new WarrantyDataSection__c(Opportunity__c = opportunity.Id);
+        IncomeDataSection__c incomeDataSection      = new IncomeDataSection__c(Opportunity__c = opportunity.Id);
+        OperationSection__c operationDataSection    = new OperationSection__c(Opportunity__c = opportunity.Id);
 
-        // PersonalDataSection__c personalDataRecord            = new PersonalDataSection__c();
-        // personalDataRecord.Opportunity__c                    = opportunity.Id;
-        // personalDataRecord.NameStatus__c                     = 'Aprovar';
-        // personalDataRecord.CPFStatus__c                      = 'Rejeitar';
-        // personalDataRecord.BirthCityStatus__c                = 'Aprovar';
-        // personalDataRecord.BirthCountryStatus__c             = 'Aprovar';
-        // personalDataRecord.BirthDateStatus__c                = 'Pendenciar';
-        // personalDataRecord.NationalityStatus__c              = 'Pendenciar';
-        // personalDataRecord.PoliticallyExposedPersonStatus__c = 'Pendenciar';
-        // insert personalDataRecord;
+        sectionsObjects.add(personalDataSection);
+        sectionsObjects.add(contactDataSection);
+        sectionsObjects.add(addressDataSection);
+        sectionsObjects.add(warrantyDataSection);
+        sectionsObjects.add(incomeDataSection);
+        sectionsObjects.add(operationDataSection);
+
+        insert sectionsObjects;
     }
 
     @isTest
@@ -212,33 +203,74 @@ public with sharing class ProposalServiceTest {
         sections.add(operationDataSection);
         
         insert sections;
-        
-        List<PersonalDataSection__c> updatedPersonalDataSection  = [SELECT Id, Name__c, BirthCity__c,Mother__c, Father__c, RG__c, Issuer__c, IssuerState__c FROM  PersonalDataSection__c LIMIT 1];
-        List<ContactDetailsSection__c> updatedContactDataSection = [SELECT Id, Email__c FROM ContactDetailsSection__c];
-        List<AddressDataSection__c> updatedAddressDataSection    = [SELECT Id, StreetNumber__c, Country__c, AreaLevel2__c, Street__c  FROM AddressDataSection__c];
-        List<WarrantyDataSection__c> updatedWarrantyDataSection  = [SELECT Id FROM WarrantyDataSection__c];
-        List<IncomeDataSection__c> updatedIncomeDataSection      = [SELECT Id, JobTitle__c, Status__c, MonthlyIncome__c, PresumedMonthlyIncome__c, ConfirmedMonthlyIncome__c  FROM IncomeDataSection__c LIMIT 1];
-        List<OperationSection__c> updatedOperationDataSection    = [SELECT Id, Quantity__c  FROM OperationSection__c];
 
         Test.startTest();
         ProposalService.start(acc.Id, opp.Id);
         Test.stopTest();
         
-        System.debug(updatedPersonalDataSection.size());
-        System.debug(updatedContactDataSection.size());
-        System.debug(updatedAddressDataSection.size());
-        System.debug(updatedWarrantyDataSection.size());
-        System.debug(updatedIncomeDataSection.size());
-        System.debug(updatedOperationDataSection.size());
-        
-        
+        List<PersonalDataSection__c> updatedPersonalDataSection  = [SELECT Id, Name__c, BirthCity__c,Mother__c, Father__c, RG__c, Issuer__c, IssuerState__c FROM  PersonalDataSection__c];
+        List<ContactDetailsSection__c> updatedContactDataSection = [SELECT Id, Email__c FROM ContactDetailsSection__c];
+        List<AddressDataSection__c> updatedAddressDataSection    = [SELECT Id, StreetNumber__c, Country__c, AreaLevel2__c, Street__c  FROM AddressDataSection__c];
+        List<WarrantyDataSection__c> updatedWarrantyDataSection  = [SELECT Id FROM WarrantyDataSection__c];
+        List<IncomeDataSection__c> updatedIncomeDataSection      = [SELECT Id, JobTitle__c, Status__c, MonthlyIncome__c, PresumedMonthlyIncome__c, ConfirmedMonthlyIncome__c  FROM IncomeDataSection__c];
+        List<OperationSection__c> updatedOperationDataSection    = [SELECT Id, Quantity__c  FROM OperationSection__c];
+
         System.assertEquals(2, updatedPersonalDataSection.size(), 'Expected twice the records of sections.');
         System.assertEquals(2, updatedContactDataSection.size(), 'Expected twice the records of sections.');
         System.assertEquals(2, updatedAddressDataSection.size(), 'Expected twice the records of sections.');
         System.assertEquals(2, updatedWarrantyDataSection.size(), 'Expected twice the records of sections.');
         System.assertEquals(2, updatedIncomeDataSection.size(), 'Expected twice the records of sections.');
         System.assertEquals(2, updatedOperationDataSection.size(), 'Expected twice the records of sections.');
-        
     }
 
+    @isTest
+    public static void cloneFail()
+    {
+        Exception testException;
+        Account acc       = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account WHERE Name = 'Account_Role' LIMIT 1];
+        Opportunity opp   = [SELECT Id FROM Opportunity LIMIT 1];
+        
+        Test.startTest();
+        try {
+            ProposalService.start(opp.Id, acc.Id);
+        } catch(Exception e) {
+            testException = e;
+        }
+        Test.stopTest();
+
+        System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'Should not return results in the list.');
+    }
+
+    @isTest
+    public static void cloneStageSuccess()
+    {
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+
+        Test.startTest();
+        ProposalService.changeStageName(opp.Id);
+        Test.stopTest();
+
+        Opportunity updatedOpp = [SELECT Id, StageName FROM Opportunity LIMIT 1];
+
+        System.assertEquals('Em Análise de Formalização', updatedOpp.StageName, 'Incorrect value for Stage Name.');
+    }
+
+    @isTest
+    public static void cloneStageFail()
+    {
+        Exception testException;
+        Account acc = [SELECT Id FROM Account LIMIT 1];
+
+        Test.startTest();
+        try {
+            ProposalService.changeStageName(acc.Id);
+        } catch (Exception e) {
+            testException = e;
+        }
+        Test.stopTest();
+
+        Opportunity updatedOpp = [SELECT Id, StageName FROM Opportunity LIMIT 1];
+
+        System.assertEquals('Em Análise de Formalização', updatedOpp.StageName, 'Incorrect value for Stage Name.');
+    }
 }

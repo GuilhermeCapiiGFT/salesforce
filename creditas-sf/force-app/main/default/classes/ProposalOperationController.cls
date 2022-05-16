@@ -6,16 +6,16 @@ public with sharing class ProposalOperationController {
             Map<String, SObject> operationInfo  = new Map<String, SObject>();
 
             OperationSection__c validationInfo = ProposalOperationService.getOperationSectionFromOpp(opportunityId);
-            Quote quoteInfo = ProposalOperationService.getQuoteFromOpp(opportunityId);
-            FinancialResources__c FinancialInfo = ProposalOperationService.getFinancialFromOpp(opportunityId);
-            Account proponentInfo = ProposalOperationService.getProponentFromOpp(opportunityId);
-            Opportunity  oppInfo = ProposalOperationService.getOpportunityInfo(opportunityId);
+            // Quote quoteInfo = ProposalOperationService.getQuoteFromOpp(opportunityId);
+            // FinancialResources__c FinancialInfo = ProposalOperationService.getFinancialFromOpp(opportunityId);
+            // Account proponentInfo = ProposalOperationService.getProponentFromOpp(opportunityId);
+            // Opportunity  oppInfo = ProposalOperationService.getOpportunityInfo(opportunityId);
             
             operationInfo.put('OperationSection', validationInfo);
-            operationInfo.put('Quote', quoteInfo);
-            operationInfo.put('Financial', FinancialInfo);
-            operationInfo.put('Proponent', proponentInfo);
-            operationInfo.put('Opportunity', oppInfo);
+            // operationInfo.put('Quote', quoteInfo);
+            // operationInfo.put('Financial', FinancialInfo);
+            // operationInfo.put('Proponent', proponentInfo);
+            // operationInfo.put('Opportunity', oppInfo);
 
             return operationInfo;
         } catch(Exception e) {

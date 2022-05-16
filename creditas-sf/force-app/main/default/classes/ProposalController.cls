@@ -11,7 +11,8 @@ public with sharing class ProposalController {
         Savepoint sp = Database.setSavePoint();
         
         try {
-            ProposalService.start(accId, oppId);    
+            ProposalService.start(accId, oppId);
+            ProposalService.changeStageName(oppId);    
         } catch (Exception e) {
             Database.rollback(sp);
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);

@@ -31,7 +31,7 @@ public with sharing class ProposalContactDataController {
         } catch(Exception e) {
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
         }
-    }
+    } 
 
     @AuraEnabled(Cacheable=false)
     public static void saveContactDetailsSection(SObject recordContactDetails) 

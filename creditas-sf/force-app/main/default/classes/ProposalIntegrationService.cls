@@ -15,7 +15,7 @@ public with sharing class ProposalIntegrationService {
         
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         List<ProposalIntegrationVO.Section> sections = getSections();
-        System.debug(status);
+
         payload.loanApplicationId = opportunity.ExternalId__c;
         payload.context           = opportunity.StageName;
         payload.contextResult     = status;
@@ -74,7 +74,7 @@ public with sharing class ProposalIntegrationService {
         }else if(!String.isBlank(pendingField) && !String.isBlank((String)record.get(pendingField))){
             return (String) record.get(pendingField);
         }
-        return '';
+        return null;
     }
 
     private static Map<String, SObject> getSectionRecords(){

@@ -1,12 +1,14 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord } from 'lightning/uiRecordApi';
+import { getRecord, getRecordNotifyChange  } from 'lightning/uiRecordApi';
 import { updateRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
 
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
 import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
 
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
+import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
 
 const fields = [STAGENAME_FIELD];
 
@@ -26,12 +28,15 @@ export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
   @api opportunityid
+  
 
   isStageWaitingForUE = false
   isStageInAnalysis = false
   isAnalysisStarted = false
+  isLoading = false
+  
   startDate = ''
-
+  openSection = false;
   // Info sections
   mapInfoSection = new Map()
 
@@ -78,6 +83,7 @@ export default class ProposalAnalysis extends LightningElement {
   //Committee
   openModalCommittee = false
   showCommitteeButton = false;
+  enableCommiteeButton = false;
 
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
@@ -101,7 +107,7 @@ export default class ProposalAnalysis extends LightningElement {
   getStageName({ error, data }) {
     if (data) {
       let stageName = data?.fields?.StageName?.value
-
+      
       if (stageName === 'Aguardando Análise de Formalização') {
         this.isStageWaitingForUE = true
         this.isAnalysisStarted = false
@@ -112,6 +118,7 @@ export default class ProposalAnalysis extends LightningElement {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = true
         this.showCommitteeButton = true;
+        this.openSection = true;
       }
       
       else {
@@ -207,28 +214,33 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handleAnalysisStart() {
-    this.isAnalysisStarted = true
-
     let myDate = new Date()
     this.startDate = this.formatDate(myDate)
 
-    this.updateStage()
+    this.start()
   }
 
-  updateStage() {
-    const fields = {}
+  start() {
+    this.isLoading = true
 
-    fields[OPP_ID_FIELD.fieldApiName]     = this.opportunityid;
-    fields[STAGENAME_FIELD.fieldApiName]  = 'Em Análise de Formalização';
-    
-    const recordInput = { fields }
-    updateRecord(recordInput)
-      .then(() => {
-        this.showToast('', 'Registro atualizado com sucesso!', 'success')
-      })
-      .catch(error => this.showToast('', 'Houve um erro ao atualizar o stage!', 'error'))
+    startAnalysis({
+      accId : this.accountid,
+      oppId : this.opportunityid
+    })
+      .then(result => {
+      getRecordNotifyChange([{recordId: this.opportunityid}]);
+      this.showToast(SUCCESS_OCCURRED, 'Stage Alterado com sucesso!', SUCCESS_VARIANT);
+        this.isAnalysisStarted = true;
+        this.isLoading = false
+    })
+    .catch( error =>{
+      console.log({ error });
+      this.isAnalysisStarted = false;
+      this.showToast(ERROR_OCCURRED, 'Houve um erro na alteração do stage', ERROR_VARIANT);
+      this.isLoading = false
+    })
   }
-
+  
   showToast(title, message, variant) {
     const event = new ShowToastEvent({
         title: title,
@@ -239,11 +251,9 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   isCompleted() {
-    
     let approveBtn = this.template.querySelector('[data-id="approve-btn"]')
     let pendingBtn = this.template.querySelector('[data-id="pending-btn"]')
     let rejectBtn = this.template.querySelector('[data-id="reject-btn"]')
-    let committeeBtn = this.template.querySelector('[data-id="committee-btn"]');
 
     let isApproved = false
     let isPending = false
@@ -281,32 +291,29 @@ export default class ProposalAnalysis extends LightningElement {
         approveBtn.disabled = false
         pendingBtn.disabled = true
         rejectBtn.disabled = true
-        committeeBtn.disabled = false;
         result = PROPOSAL_APPROVED;
       }
       if (isPending) {
         approveBtn.disabled = true
         pendingBtn.disabled = false
         rejectBtn.disabled = true
-        committeeBtn.disabled = false;
         result = PROPOSAL_PENDENCY;
       }
       if (isRejected) {
         approveBtn.disabled = true
         pendingBtn.disabled = true
         rejectBtn.disabled = false
-        committeeBtn.disabled = false;
         result = PROPOSAL_REJECTED;
       }
-
+      
+      this.enableCommiteeButton = false;
       this.statusAnalysis = result;
     }
-
     else {
       approveBtn.disabled = true
       pendingBtn.disabled = true
       rejectBtn.disabled = true
-      committeeBtn.disabled = true;
+      this.enableCommiteeButton = true;
     }
   }
 

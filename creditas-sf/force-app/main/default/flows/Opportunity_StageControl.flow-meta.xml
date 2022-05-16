@@ -2,10 +2,62 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
     <assignments>
-        <name>FirstAssignment</name>
-        <label>FirstAssignment</label>
-        <locationX>880</locationX>
-        <locationY>315</locationY>
+        <name>assignOppStageNameAvaiable</name>
+        <label>assignOppStageNameAvaiable</label>
+        <locationX>50</locationX>
+        <locationY>671</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.StageName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Aguardando Análise de Formalização</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AssignVariablesOpp</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>AssignOppStageUnavaiable</name>
+        <label>AssignOppStageUnavaiable</label>
+        <locationX>314</locationX>
+        <locationY>911</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.StageName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Retorno de Pendência de Formalização</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getIntegrationUser.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AssignVariablesOpp</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>AssignVariablesOpp</name>
+        <label>AssignVariablesOpp</label>
+        <locationX>182</locationX>
+        <locationY>1127</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.PendingReturnCount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>PendingCount</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>sumPendencyReturn</name>
+        <label>sumPendencyReturn</label>
+        <locationX>182</locationX>
+        <locationY>431</locationY>
         <assignmentItems>
             <assignToReference>PendingCount</assignToReference>
             <operator>Add</operator>
@@ -14,15 +66,18 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>UpdateFieldPendingReturnCount</targetReference>
+            <targetReference>OwnerAvailable</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>OwnerAvailable</name>
         <label>OwnerAvailable</label>
-        <locationX>874</locationX>
-        <locationY>584</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <locationX>182</locationX>
+        <locationY>551</locationY>
+        <defaultConnector>
+            <targetReference>getIntegrationProfileId</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
@@ -33,15 +88,8 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.StageName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Retorno de Pendência de Formalização</stringValue>
-                </rightValue>
-            </conditions>
             <connector>
-                <targetReference>UpdateStageOpp</targetReference>
+                <targetReference>assignOppStageNameAvaiable</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -50,8 +98,8 @@
         <description>Checks if the prior stage value was Pendencia OPS</description>
         <name>PendencyReturn</name>
         <label>Pendency Return?</label>
-        <locationX>671</locationX>
-        <locationY>168</locationY>
+        <locationX>380</locationX>
+        <locationY>311</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>True</name>
@@ -78,7 +126,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>UpdateStagePendencyReturn</targetReference>
+                <targetReference>sumPendencyReturn</targetReference>
             </connector>
             <label>True</label>
         </rules>
@@ -94,7 +142,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -104,55 +152,53 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordUpdates>
-        <name>UpdateFieldPendingReturnCount</name>
-        <label>UpdateFieldPendingReturnCount</label>
-        <locationX>881</locationX>
-        <locationY>447</locationY>
+    <recordLookups>
+        <name>getIntegrationProfileId</name>
+        <label>getIntegrationProfileId</label>
+        <locationX>314</locationX>
+        <locationY>671</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>OwnerAvailable</targetReference>
+            <targetReference>getIntegrationUser</targetReference>
         </connector>
-        <inputAssignments>
-            <field>PendingReturnCount__c</field>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
             <value>
-                <elementReference>PendingCount</elementReference>
+                <stringValue>Integration User</stringValue>
             </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>UpdateStageOpp</name>
-        <label>UpdateStageOpp</label>
-        <locationX>882</locationX>
-        <locationY>722</locationY>
-        <inputAssignments>
-            <field>StageName</field>
-            <value>
-                <stringValue>Aguardando Análise de Formalização</stringValue>
-            </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <description>Update StageName to &quot;Retorno de Pendência de Formalização&quot;.</description>
-        <name>UpdateStagePendencyReturn</name>
-        <label>Retorno de Pendência de Formalização</label>
-        <locationX>881</locationX>
-        <locationY>166</locationY>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Profile</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getIntegrationUser</name>
+        <label>getIntegrationUser</label>
+        <locationX>314</locationX>
+        <locationY>791</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>FirstAssignment</targetReference>
+            <targetReference>AssignOppStageUnavaiable</targetReference>
         </connector>
-        <inputAssignments>
-            <field>StageName</field>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
             <value>
-                <stringValue>Retorno de Pendência de Formalização</stringValue>
+                <elementReference>getIntegrationProfileId.Id</elementReference>
             </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <sortField>Name</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
-        <locationX>220</locationX>
-        <locationY>79</locationY>
+        <locationX>254</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>PendencyReturn</targetReference>
         </connector>

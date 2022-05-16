@@ -48,13 +48,13 @@ public with sharing class ProposalContactDataService {
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
-    } 
+    }
     
     @AuraEnabled
     public static void upsertContactDetailsSection(ContactDetailsSection__c record){
         try {
-            upsert record;
-        } catch (Exception e) {
+            SObjectUtils.upsertRecord(record);
+         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
     }
