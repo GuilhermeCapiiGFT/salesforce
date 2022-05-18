@@ -4,6 +4,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
 import updateOpportunityCommitee from '@salesforce/apex/ModalProposalCommitteeController.updateOpportunityCommittee';
 import getMyOpportunitiesListView from '@salesforce/apex/ModalProposalCommitteeController.getMyOpportunitiesListView';
+import OWNER_NAME_FIELD from '@salesforce/schema/Account.Owner.Name';
 
 const ERROR_OCCURRED = 'Ocorreu um Erro';
 const ERROR_MESSAGE = 'Por favor entre em contato com um administrador.';
@@ -76,6 +77,8 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
             CommiteeReason__c: this.selected,
             CommiteeOtherReason__c: this.otherReason,
             CommiteeObservation__c: this.observation,
+            Owner_Task_Anterior__c: OWNER_NAME_FIELD,
+           
             StageName: 'Aguardando Distribuição para Comitê de Formalização'
           };
   

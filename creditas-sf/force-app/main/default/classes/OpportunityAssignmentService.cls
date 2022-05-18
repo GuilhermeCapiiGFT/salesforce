@@ -5,7 +5,7 @@ public with sharing class OpportunityAssignmentService {
     public static final String AWAITING_FORMALIZATION_ASSIGNMENT = 'Aguardando Distribuição de Formalização';
     public static final String AWAITING_FORMALIZATION_ANALYSIS = 'Aguardando Análise de Formalização';
     public static final String UNDER_FORMALIZATION_ANALYSIS = 'Em Análise de Formalização';
-    public static final String AWAITING_COMITEE_ASSIGNMENT = 'Aguardando Distribuição de Comitê';
+    public static final String AWAITING_COMITEE_ASSIGNMENT = 'Aguardando Distribuição para Comitê de Formalização';
     public static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê';
     public static final String UNDER_COMMITEE_ANALYSIS = 'Em Análise de Comitê de Formalização';
     public static final String FORMALIZATION_PENDENCY_RETURN = 'Retorno de Pendência de Formalização';
@@ -147,8 +147,12 @@ public with sharing class OpportunityAssignmentService {
     
     private static List<Opportunity> filterAvaiableOppsForUser(List<Opportunity> oppList, Set<String> avaiableQueueNames, Integer numberOfOpps){
       List<Opportunity> filteredOpps = new List<Opportunity>();
-      
+      System.debug('oppList -> ' + oppList);
+      System.debug('avaiableQueueNames -> ' + avaiableQueueNames);
+      System.debug('assignedOpps -> ' + assignedOpps);
       for(Opportunity opp : oppList){
+        System.debug('oppName -> ' + opp.Name + ' oppStageName -> ' + opp.StageName);
+        System.debug('Boolean -> ' + (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')));
         if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')) )){
           filteredOpps.add(opp);
           if(filteredOpps.size() == numberOfOpps){ break; }
