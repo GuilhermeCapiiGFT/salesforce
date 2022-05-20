@@ -5,51 +5,65 @@ public with sharing class ProposalService
     
     private static Id opportunityId;
     private static Id accountId;
+
+    private static String stageName;
     
     public static void start(Id accId, Id oppId) 
     {
-        historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
-        List<SObject> sectionRecords = new List<SObject>();
+        stageName = getStageName(oppId);
 
-        opportunityId = oppId;
-        accountId = accId;
-
-        deleteOldestSections();
-
-        PersonalDataSection__c personalDataSection = new PersonalDataSection__c(Opportunity__c = opportunityId);
-        ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opportunityId);
-        AddressDataSection__c addressDataSection = new AddressDataSection__c(Opportunity__c = opportunityId);
-        WarrantyDataSection__c warrantyDataSection = new WarrantyDataSection__c(Opportunity__c = opportunityId);
-        IncomeDataSection__c incomeDataSection = new IncomeDataSection__c(Opportunity__c = opportunityId);
-        OperationSection__c operationDataSection = new OperationSection__c(Opportunity__c = opportunityId);
-
-        copyPersonalDataSection(personalDataSection);
-        copyContactDataSection(contactDataSection);
-        copyAddressDataSection(addressDataSection);
-        copyWarrantyDataSection(warrantyDataSection);
-        copyIncomeDataSection(incomeDataSection);
-        copyOperationDataSection(operationDataSection);
-        
-        sectionRecords.add(personalDataSection);
-        sectionRecords.add(contactDataSection);
-        sectionRecords.add(addressDataSection);
-        sectionRecords.add(warrantyDataSection);
-        sectionRecords.add(incomeDataSection);
-        sectionRecords.add(operationDataSection);
-
-        if(!sectionRecords.isEmpty())
+        if(stageName.equals('Aguardando Análise de Formalização'))
         {
-            Database.insert(sectionRecords);
+            historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
+            List<SObject> sectionRecords = new List<SObject>();
+    
+            opportunityId = oppId;
+            accountId = accId;
+    
+            deleteOldestSections();
+    
+            PersonalDataSection__c personalDataSection = new PersonalDataSection__c(Opportunity__c = opportunityId);
+            ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opportunityId);
+            AddressDataSection__c addressDataSection = new AddressDataSection__c(Opportunity__c = opportunityId);
+            WarrantyDataSection__c warrantyDataSection = new WarrantyDataSection__c(Opportunity__c = opportunityId);
+            IncomeDataSection__c incomeDataSection = new IncomeDataSection__c(Opportunity__c = opportunityId);
+            OperationSection__c operationDataSection = new OperationSection__c(Opportunity__c = opportunityId);
+    
+            copyPersonalDataSection(personalDataSection);
+            copyContactDataSection(contactDataSection);
+            copyAddressDataSection(addressDataSection);
+            copyWarrantyDataSection(warrantyDataSection);
+            copyIncomeDataSection(incomeDataSection);
+            copyOperationDataSection(operationDataSection);
+            
+            sectionRecords.add(personalDataSection);
+            sectionRecords.add(contactDataSection);
+            sectionRecords.add(addressDataSection);
+            sectionRecords.add(warrantyDataSection);
+            sectionRecords.add(incomeDataSection);
+            sectionRecords.add(operationDataSection);
+    
+            if(!sectionRecords.isEmpty())
+            {
+                Database.insert(sectionRecords);
+            }
         }
     }
 
     public static void changeStageName(Id oppId)
     {
-        Opportunity opp = new Opportunity(Id = oppId);
+        if(stageName.equals('Aguardando Análise de Formalização'))
+        {
+            Opportunity opp = new Opportunity(Id = oppId);
+            opp.StageName = 'Em Análise de Formalização';
+    
+            Database.update(opp);   
+        }
+    }
 
-        opp.StageName = 'Em Análise de Formalização';
-
-        Database.update(opp);
+    public static String getStageName(Id oppId)
+    {
+        return [SELECT Id, StageName FROM Opportunity where Id =:oppId LIMIT 1].StageName;
     }
 
     public static void deleteOldestSections()

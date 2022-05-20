@@ -198,7 +198,7 @@ input.disabled-input {
 }
 
 .btn.comite {
-  background: lightblue;
+  background:#0176d3;
 }
 
 .btn:not(:disabled):hover {
@@ -222,4 +222,14 @@ input.disabled-input {
 .header-section{
   cursor: pointer;
 }
-/* Styling Section - END*/
+
+.committee-reasons {
+  background: #dbd4ff;
+  padding: 1em 2em;
+  margin: 1em;
+  border-radius: 5px;
+  color: rgb(77, 77, 77);
+  font-size: medium;
+}
+
+ /* Styling Section - END*/

@@ -1,6 +1,6 @@
 public with sharing class ProposalContactDataService {
     
-     @AuraEnabled
+     /*@AuraEnabled
     public static Map<String,CommunicationContacts__c> getCommunicationContactFromAccount(Id accountId){
         
         Map<String,CommunicationContacts__c> recordInfo = new Map<String,CommunicationContacts__c>();
@@ -14,7 +14,7 @@ public with sharing class ProposalContactDataService {
         
         return recordInfo;
         
-    }
+    }*/
 
     @AuraEnabled
     public static ContactDetailsSection__c getContactDetailsSectionFromOpp(Id opportunityId){
@@ -33,13 +33,14 @@ public with sharing class ProposalContactDataService {
                                         EmailObservation__c
                                         FROM ContactDetailsSection__c
                                         WHERE Opportunity__c =: opportunityId
+                                        ORDER BY CreatedDate  DESC
                                         LIMIT 1];
         
         return recordsContactDetailsSection.isEmpty() ? new ContactDetailsSection__c() : recordsContactDetailsSection[0];
         
     }
 
-    @AuraEnabled
+    /*@AuraEnabled
     public static void upsertCommunicationContacts(List<CommunicationContacts__c> records){
         try {
             if(!records.isEmpty()){
@@ -48,7 +49,7 @@ public with sharing class ProposalContactDataService {
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
-    }
+    }*/
     
     @AuraEnabled
     public static void upsertContactDetailsSection(ContactDetailsSection__c record){

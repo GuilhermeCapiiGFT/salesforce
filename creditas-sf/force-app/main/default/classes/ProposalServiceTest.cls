@@ -50,7 +50,7 @@ public with sharing class ProposalServiceTest {
         opportunity.AccountId                = accCustomer.Id;
         opportunity.MinimalRequiredIncome__c = 3000;
         opportunity.Name                     = 'Formalizacao Autofin';
-        opportunity.StageName                = 'Em Análise de Formalização';
+        opportunity.StageName                = 'Aguardando Análise de Formalização';
         opportunity.CloseDate                = Date.today().addDays(10);
         opportunity.ExternalTenant__c        = 'creditasbr';
         opportunity.ExternalVersion__c       = 1;      
@@ -114,24 +114,6 @@ public with sharing class ProposalServiceTest {
         quote.UnitPrice__c  = 100;
         quote.Quantity__c   = 20;
         insert quote;
-
-        List<SObject> sectionsObjects = new List<SObject>();
-
-        PersonalDataSection__c personalDataSection  = new PersonalDataSection__c(Opportunity__c = opportunity.Id);
-        ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opportunity.Id);
-        AddressDataSection__c addressDataSection    = new AddressDataSection__c(Opportunity__c = opportunity.Id);
-        WarrantyDataSection__c warrantyDataSection  = new WarrantyDataSection__c(Opportunity__c = opportunity.Id);
-        IncomeDataSection__c incomeDataSection      = new IncomeDataSection__c(Opportunity__c = opportunity.Id);
-        OperationSection__c operationDataSection    = new OperationSection__c(Opportunity__c = opportunity.Id);
-
-        sectionsObjects.add(personalDataSection);
-        sectionsObjects.add(contactDataSection);
-        sectionsObjects.add(addressDataSection);
-        sectionsObjects.add(warrantyDataSection);
-        sectionsObjects.add(incomeDataSection);
-        sectionsObjects.add(operationDataSection);
-
-        insert sectionsObjects;
     }
 
     @isTest
@@ -160,50 +142,69 @@ public with sharing class ProposalServiceTest {
         OperationSection__c operationDataSection    = [SELECT Id, Quantity__c  FROM OperationSection__c];
 
         System.assertEquals(acc.Name, personalDataSection.Name__c,'Field value should have been the same');
-        System.assertEquals(acc.Father__c, personalDataSection.Father__c,'Field value should have been the same');
-        System.assertEquals(acc.Mother__c, personalDataSection.Mother__c,'Field value should have been the same');
-        System.assertEquals(acc.BirthCity__c, personalDataSection.BirthCity__c,'Field value should have been the same');
-        
         System.assertEquals(email.Code__c, contactDataSection.Email__c, 'Field value should have been the same');
         
         System.assertEquals(address.StreetNumber__c, addressDataSection.StreetNumber__c, 'Field value should have been the same');
-        System.assertEquals(address.Country__c, addressDataSection.Country__c, 'Field value should have been the same');
-        System.assertEquals(address.AreaLevel2__c, addressDataSection.AreaLevel2__c, 'Field value should have been the same');
         System.assertEquals(address.Street__c, addressDataSection.Street__c, 'Field value should have been the same');
         
         System.assertEquals(professionalInfo.JobTitle__c, incomeDataSection.JobTitle__c, 'Field value should have been the same');
-        System.assertEquals(professionalInfo.Status__c, incomeDataSection.Status__c, 'Field value should have been the same');
-        System.assertEquals(monthlyIncome.Amount__c, incomeDataSection.MonthlyIncome__c, 'Field value should have been the same');
-        System.assertEquals(presumedIncome.Amount__c, incomeDataSection.PresumedMonthlyIncome__c, 'Field value should have been the same');
         System.assertEquals(confirmedIncome.Amount__c, incomeDataSection.ConfirmedMonthlyIncome__c, 'Field value should have been the same');
-        
-        System.assertEquals(quote.Quantity__c, operationDataSection.Quantity__c, 'Field value should have been the same');
     }
 
     @isTest
     public static void createSectionsSuccess() 
     {
-        Account acc       = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account WHERE Name = 'Nivaele' LIMIT 1];
-        Opportunity opp   = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
+        Integer historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
+        Account acc          = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account WHERE Name = 'Nivaele' LIMIT 1];
+        Opportunity opp      = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
 
         List<SObject> sections = new List<SObject>();
 
-        PersonalDataSection__c personalDataSection  = new PersonalDataSection__c(Opportunity__c = opp.Id);
-        ContactDetailsSection__c contactDataSection = new ContactDetailsSection__c(Opportunity__c = opp.Id);
-        AddressDataSection__c addressDataSection    = new AddressDataSection__c(Opportunity__c = opp.Id);
-        WarrantyDataSection__c warrantyDataSection  = new WarrantyDataSection__c(Opportunity__c = opp.Id);
-        IncomeDataSection__c incomeDataSection      = new IncomeDataSection__c(Opportunity__c = opp.Id);
-        OperationSection__c operationDataSection    = new OperationSection__c(Opportunity__c = opp.Id);
+        List<PersonalDataSection__c> personalSection   = new List<PersonalDataSection__c>();
+        List<ContactDetailsSection__c> contactSection    = new List<ContactDetailsSection__c>();
+        List<AddressDataSection__c> addressSection    = new List<AddressDataSection__c>();
+        List<WarrantyDataSection__c> warrantySection   = new List<WarrantyDataSection__c>();
+        List<IncomeDataSection__c> incomeSection     = new List<IncomeDataSection__c>();
+        List<OperationSection__c> operationSection  = new List<OperationSection__c>();
 
-        sections.add(personalDataSection);
-        sections.add(contactDataSection);
-        sections.add(addressDataSection);
-        sections.add(warrantyDataSection);
-        sections.add(incomeDataSection);
-        sections.add(operationDataSection);
+        PersonalDataSection__c personalDataSection1  = new PersonalDataSection__c(Opportunity__c = opp.Id);
+        ContactDetailsSection__c contactDataSection1 = new ContactDetailsSection__c(Opportunity__c = opp.Id);
+        AddressDataSection__c addressDataSection1    = new AddressDataSection__c(Opportunity__c = opp.Id);
+        WarrantyDataSection__c warrantyDataSection1  = new WarrantyDataSection__c(Opportunity__c = opp.Id);
+        IncomeDataSection__c incomeDataSection1      = new IncomeDataSection__c(Opportunity__c = opp.Id);
+        OperationSection__c operationDataSection1    = new OperationSection__c(Opportunity__c = opp.Id);
+
+        PersonalDataSection__c personalDataSection2  = new PersonalDataSection__c(Opportunity__c = opp.Id);
+        ContactDetailsSection__c contactDataSection2 = new ContactDetailsSection__c(Opportunity__c = opp.Id);
+        AddressDataSection__c addressDataSection2    = new AddressDataSection__c(Opportunity__c = opp.Id);
+        WarrantyDataSection__c warrantyDataSection2  = new WarrantyDataSection__c(Opportunity__c = opp.Id);
+        IncomeDataSection__c incomeDataSection2      = new IncomeDataSection__c(Opportunity__c = opp.Id);
+        OperationSection__c operationDataSection2    = new OperationSection__c(Opportunity__c = opp.Id);
         
-        insert sections;
+        personalSection.add(personalDataSection1);
+        personalSection.add(personalDataSection2);
+        insert personalSection;
 
+        contactSection.add(contactDataSection1);
+        contactSection.add(contactDataSection2);
+        insert contactSection;
+        
+        addressSection.add(addressDataSection1);
+        addressSection.add(addressDataSection2);
+        insert addressSection;
+
+        warrantySection.add(warrantyDataSection1);
+        warrantySection.add(warrantyDataSection2);
+        insert warrantySection;
+
+        incomeSection.add(incomeDataSection1);
+        incomeSection.add(incomeDataSection2);
+        insert incomeSection;
+
+        operationSection.add(operationDataSection1);
+        operationSection.add(operationDataSection2);
+        insert operationSection;
+        
         Test.startTest();
         ProposalService.start(acc.Id, opp.Id);
         Test.stopTest();
@@ -215,12 +216,12 @@ public with sharing class ProposalServiceTest {
         List<IncomeDataSection__c> updatedIncomeDataSection      = [SELECT Id, JobTitle__c, Status__c, MonthlyIncome__c, PresumedMonthlyIncome__c, ConfirmedMonthlyIncome__c  FROM IncomeDataSection__c];
         List<OperationSection__c> updatedOperationDataSection    = [SELECT Id, Quantity__c  FROM OperationSection__c];
 
-        System.assertEquals(2, updatedPersonalDataSection.size(), 'Expected twice the records of sections.');
-        System.assertEquals(2, updatedContactDataSection.size(), 'Expected twice the records of sections.');
-        System.assertEquals(2, updatedAddressDataSection.size(), 'Expected twice the records of sections.');
-        System.assertEquals(2, updatedWarrantyDataSection.size(), 'Expected twice the records of sections.');
-        System.assertEquals(2, updatedIncomeDataSection.size(), 'Expected twice the records of sections.');
-        System.assertEquals(2, updatedOperationDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedPersonalDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedContactDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedAddressDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedWarrantyDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedIncomeDataSection.size(), 'Expected twice the records of sections.');
+        System.assertEquals(historyLimit + 1, updatedOperationDataSection.size(), 'Expected twice the records of sections.');
     }
 
     @isTest

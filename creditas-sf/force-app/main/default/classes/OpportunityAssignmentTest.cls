@@ -312,7 +312,7 @@ private class OpportunityAssignmentTest {
   }
 
   @isTest
-  private static void testAutoFinOpps(){
+  private static void testAutoFinApprovedDistribution(){
     List<Opportunity> oppList = new List<Opportunity>();
     oppList.add(makeOpptyAuto(1,'AUTO_FIN',firstDttm,''));
     oppList.add(makeOpptyAuto(2,'AUTO_FIN',secondDttm,''));

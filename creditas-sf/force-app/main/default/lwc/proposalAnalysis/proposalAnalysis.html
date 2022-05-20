@@ -8,6 +8,32 @@
 		</template>
 	</div>	
 
+	<template if:true={isStageOnCommittee}>
+		<div class="committee-reasons">
+			<strong>Motivos de envio para o Comitê:</strong>
+			<template for:each={committeeReasons} for:item="reason" >
+				<li key={index}>
+					{reason}
+				</li>
+			</template>
+
+			<template if:true={committeeOtherReasons}>
+					<div class="slds-p-top_small">
+						<strong>Outros Motivos:</strong> <br/>
+						<p>{committeeOtherReasons}</p>
+				</div>
+			</template>
+
+			<template if:true={committeeObservation}>
+				<div class="slds-p-top_small">
+					<strong>Observação:</strong> <br/>
+					<span>{committeeObservation}</span>
+				</div>
+			</template>
+
+		</div>
+	</template>
+
 	<template if:true={isReadyForAnalysis}>
 		<div class="btn-container">
 			<button class="btn" onclick={handleAnalysisStart}> Iniciar Análise </button>

@@ -2,8 +2,8 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>54.0</apiVersion>
     <assignments>
-        <name>assToUpdateUser</name>
-        <label>assToUpdateUser</label>
+        <name>AssignUserFieldValues</name>
+        <label>AssignUserFieldValues</label>
         <locationX>176</locationX>
         <locationY>335</locationY>
         <assignmentItems>
@@ -24,7 +24,8 @@
             <targetReference>UpdateUser</targetReference>
         </connector>
     </assignments>
-    <description>Quando uma oportunidade entra no Status de formalização de &quot;Aprovado&quot;, &quot;Rejeitado&quot; ou &quot;Pendenciado&quot;, atualiza o campo &quot;Último atendimento do usuário.</description>
+    <description>Quando uma oportunidade sai da fase de &quot;Em Análise de Formalização&quot; ou da fase &quot;Em Análise de Comitê de Formalização&quot; roda o flow para atualizar a data/hora do ultimo atendimento do usuário</description>
+    <environments>Default</environments>
     <formulas>
         <name>forNow</name>
         <dataType>DateTime</dataType>
@@ -62,13 +63,16 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>assToUpdateUser</targetReference>
+            <targetReference>AssignUserFieldValues</targetReference>
         </connector>
+        <filterFormula>AND( 
+OR( {!$Record.RecordType.DeveloperName} = &apos;AtWork&apos;, {!$Record.RecordType.DeveloperName} = &apos;AutoFin&apos;),
+OR( ISPICKVAL({!$Record__Prior.StageName}, &apos;Em Análise de Formalização&apos;), ISPICKVAL({!$Record__Prior.StageName}, &apos;Em Análise de Comitê de Formalização&apos;)))</filterFormula>
         <object>Opportunity</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>sObjUser</name>
         <dataType>SObject</dataType>
@@ -76,15 +80,5 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>User</objectType>
-    </variables>
-    <variables>
-        <name>varRecordTypeName</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <stringValue>AtWork</stringValue>
-        </value>
     </variables>
 </Flow>

@@ -142,6 +142,7 @@
                 </value>
             </inputParameters>
             <label>Criar Tarefas de Adiantar Minuta e Confirmar Valores</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>Adiantar_Minuta</name>
@@ -174,6 +175,7 @@
                 </value>
             </inputParameters>
             <label>Adiantar Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -204,6 +206,7 @@
                 </value>
             </inputParameters>
             <label>Criar Tarefa de Avaliação de Crédito</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>AtualizarPropostaFinalDeCredito</name>
@@ -236,6 +239,7 @@
                 </value>
             </inputParameters>
             <label>Atualizar Proposta Final de Crédito</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -267,6 +271,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Criar Tarefas Condicionantes de Emissão</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>CondicionanteDeEmissaoDeFechamentoDaMinuta</name>
@@ -299,6 +304,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Condicionante de Emissão de Fechamento da Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>CondicionanteDeEmissaoDeFormalizacaoDaMinuta</name>
@@ -331,6 +337,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Condicionante de Emissão de Formalização da Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -366,6 +373,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Realizar Confirmação de Valores</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -392,6 +400,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Criar Tarefa de Emitir Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>EmitirMinuta</name>
@@ -424,6 +433,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Emitir Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -453,6 +463,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Criar tarefas de Pendências em Adiantamento</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciaDeEmissaoDeFechamento</name>
@@ -485,6 +496,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendência de Emissão de Fechamento</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciaDeEmissaoDeFormalizacao</name>
@@ -517,6 +529,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendências de Emissão de Formalização</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciaDeEmissaoDeOperacoesCartorarias</name>
@@ -549,6 +562,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendência de Emissão de Operações Cartorárias</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciadeEmissaodeJuridico</name>
@@ -581,6 +595,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendência de Emissão de Jurídico</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciadeEmissaoDeCredito</name>
@@ -613,6 +628,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendência de Emissão de Crédito</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>PendenciasDeEmissaoDeRiscoImobiliario</name>
@@ -645,6 +661,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Pendências de Emissão de Risco Imobiliário</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <orchestratedStages>
@@ -668,6 +685,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Criar Processo da Oportunidade e Tarefa de Validação de Emissão</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
         <stageSteps>
             <name>RealizarValidacaoEmissaoDeMinuta</name>
@@ -706,6 +724,7 @@ Orc - Op - Emissão de Contrato - Criar Tarefas Condicionantes de Emissão</desc
                 </value>
             </inputParameters>
             <label>Realizar Validação da Emissão de Minuta</label>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
         </stageSteps>
     </orchestratedStages>
     <processMetadataValues>

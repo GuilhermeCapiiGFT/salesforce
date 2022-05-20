@@ -131,6 +131,7 @@
             <label>True</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Opportunity_ {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Opportunity_StageControl</label>
     <processMetadataValues>

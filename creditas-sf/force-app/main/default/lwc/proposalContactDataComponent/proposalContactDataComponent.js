@@ -17,9 +17,9 @@ import EMAILDESC from '@salesforce/schema/ContactDetailsSection__c.EmailObservat
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import getRecordCommunicationContact from '@salesforce/apex/ProposalContactDataController.getCommunicationContact';
+//import getRecordCommunicationContact from '@salesforce/apex/ProposalContactDataController.getCommunicationContact';
 import getRecordContactDetailsSection from '@salesforce/apex/ProposalContactDataController.getContactDetails';
-import upsertCommunicationContacts from '@salesforce/apex/ProposalContactDataController.saveCommunicationContacts';
+//import upsertCommunicationContacts from '@salesforce/apex/ProposalContactDataController.saveCommunicationContacts';
 import upsertContactDetailsSection from '@salesforce/apex/ProposalContactDataController.saveContactDetailsSection';
 
 
@@ -54,6 +54,7 @@ export default class ProposalContactDataComponent extends LightningElement {
   preValue = [];
   
   communicationValue = new Map();
+ 
   
   // refresh apex 
   recordCommunication;
@@ -69,11 +70,14 @@ export default class ProposalContactDataComponent extends LightningElement {
     'EmailStatus__c': '',
     'EmailRejectReason__c': '',
     'EmailPendingReason__c': '',
-    'EmailObservation__c':''
+    'EmailObservation__c':'',
+    'Email__c':'',
+    'Mobile__c':'',
+    'Opportunity__c' : ''
   }
   
   //get record communication
-  @wire(getRecordCommunicationContact,{accountId: '$accountid'})
+ /* @wire(getRecordCommunicationContact,{accountId: '$accountid'})
   resultRecordCommunication(result) {
     this.resultRecordCommunication = result;
     if(result.data){
@@ -87,25 +91,41 @@ export default class ProposalContactDataComponent extends LightningElement {
     else if(result.error){
       console.log(result.error);
     }
-  }
+  }*/
 
+ 
   // Get fields permission in Contact Section
-  @wire(getObjectInfo, { objectApiName: COMMUNICATIONCONTACT_OBJECT  })
+
+ @wire(getObjectInfo, { objectApiName: CONTACTDETAILSSECTION_OBJECT  })
   recordTypeContact({ error, data }) {
     if(data) {
-        this.fieldReadOnly = !data?.fields?.Code__c?.updateable;
+        this.fieldReadOnly = !data?.fields?.Email__c?.updateable;
+        this.fieldReadOnly = !data?.fields?.Mobile__c?.updateable;
     }
     else if(error){
         console.log(error);
     }
   }
 
-  @wire(getRecordContactDetailsSection, {opportunityId: '$opportunityid'})
+ @wire(getRecordContactDetailsSection, {opportunityId: '$opportunityid'})
   recordCommunication(result) {
     this.recordCommunication = result;
     if(result.data) {
+      let data = result.data;
+
+      //this.communicationValue.set('EMAIL', Object.assign({},data.EMAIL));
+      //this.communicationValue.set('SMS', Object.assign({},data.SMS));
+     
+      //this.communicationValue.set(Email__c , null);
+      //this.communicationValue.set(Mobile__c , null);
+      //this.communicationValue.set('EMAIL', data.EMAIL ? Object.assign({},data.EMAIL) : {'sobjectType': 'ContactDetailsSection__c', Opportunity__c: this.opportunityid});
+      //this.communicationValue.set('SMS', data.SMS ? Object.assign({},data.SMS) : {'sobjectType': 'ContactDetailsSection__c', Opportunity__c: this.opportunityid});
+      this.valueSMS = data.Mobile__c;
+      this.valueEmail = data.Email__c;
+
       let resultValidationSection = {...this.objValidationSection, ...result.data};
       this.objValidationSection = resultValidationSection;
+      
       let listStatus = this.fieldsStatus;
       for(let index in listStatus){
         let status = listStatus[index];
@@ -124,10 +144,11 @@ export default class ProposalContactDataComponent extends LightningElement {
   }
 
   handleSaveSection() {
-    (this.fieldReadOnly == false)? this.saveFieldsCommunication() : this.saveFieldsValidation();
+    (this.fieldReadOnly == false)? this.saveFieldsValidation() : this.saveFieldsValidation();
   }
 
-  saveFieldsCommunication(){
+
+  /*saveFieldsCommunication(){
     this.disabledBtnSave = true;
     let payload = Array.from(this.communicationValue.values());
 
@@ -141,13 +162,14 @@ export default class ProposalContactDataComponent extends LightningElement {
       this.disabledBtnSave = false;
       this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
     })
-  }
+  }*/
   saveFieldsValidation() {
     this.objValidationSection.Opportunity__c = this.opportunityid;
     let payload = this.objValidationSection
     upsertContactDetailsSection({recordContactDetails : payload})
     .then( result=>{
       refreshApex(this.recordCommunication);
+      console.log({ result }) 
       this.showToast('', 'Registro atualizado com sucesso!', 'success')
       this.disabledBtnSave = false;
     })
@@ -313,8 +335,10 @@ export default class ProposalContactDataComponent extends LightningElement {
     let objCommunication = this.communicationValue;
     let key = event.target.getAttribute('data-id');
     let currentValue = event.target.value;
-    let updatedObj = Object.assign(objCommunication.get(key));
-    updatedObj.Code__c = currentValue;
-    objCommunication.set(key, updatedObj);
+    let objValidationSection = this.objValidationSection;
+    if(key == 'EMAIL'){ 
+      objValidationSection.Email__c = currentValue}
+      else if(key == 'SMS'){objValidationSection.Mobile__c = currentValue}
   }
+
 }

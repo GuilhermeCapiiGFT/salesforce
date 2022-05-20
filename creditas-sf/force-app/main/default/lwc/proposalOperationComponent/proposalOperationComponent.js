@@ -7,93 +7,43 @@ import { refreshApex } from '@salesforce/apex';
 import getRecordOperationSection from '@salesforce/apex/ProposalOperationController.getOperationDetails';
 import upsertOperationDetailsSection from '@salesforce/apex/ProposalOperationController.saveOperationDetails';
 
-import QUOTE_OBJECT from '@salesforce/schema/Quote';
-import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import OPERATION_OBJECT from '@salesforce/schema/OperationSection__c';
-import FINANCIALRESOURCES_OBJECT from '@salesforce/schema/FinancialResources__c';
-import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
-
-import DESCRIPTION_FIELD from '@salesforce/schema/Opportunity.Description';
-
-import ADDITIONAL_COSTS_FIELD from '@salesforce/schema/Quote.ParameterAdditionalCosts__c';
-import TAC_FIELD from '@salesforce/schema/Quote.ParameterTac__c';
-import IOF_FIELD from '@salesforce/schema/Quote.ParameterIOF__c';
-import MONTHLY_CET_FIELD from '@salesforce/schema/Quote.MonthlyCet__c';
-import YEARLY_CET_FIELD from '@salesforce/schema/Quote.YearlyCet__c';
-import MONTHLY_INTEREST_FIELD from '@salesforce/schema/Quote.MonthlyInterest__c';
-import YEARLY_INTEREST_FIELD from '@salesforce/schema/Quote.YearlyInterest__c';
-import SERVICE_DATE_FIELD from '@salesforce/schema/Quote.ServiceDate__c';
-import SERVICE_LAST_DATE_FIELD from '@salesforce/schema/Quote.ServiceLastDate__c';
-import NET_FIELD from '@salesforce/schema/Quote.NetValue__c';
-import UNIT_PRICE_FIELD from '@salesforce/schema/Quote.UnitPrice__c';
-import QUANTITY_FIELD from '@salesforce/schema/Quote.Quantity__c';
-import COLLATERAL_AMOUNT_FIELD from '@salesforce/schema/Quote.CollateralAmount__c';
-
-import BENEFICIARY_NAME_FIELD from '@salesforce/schema/Account.Name';
-import BENEFICIARY_CNPJ_FIELD from '@salesforce/schema/Account.CompanyCNPJ__c';
-import BANK_NAME_FIELD from '@salesforce/schema/Account.BankName__c';
-import AGENCY_FIELD from '@salesforce/schema/Account.Agency__c';
-import BANK_NUMBER_FIELD from '@salesforce/schema/Account.BankAccountNumber__c';
-
-import MANUFACTURING_YEAR_FIELD from '@salesforce/schema/FinancialResources__c.ManufacturingYear__c';
-import AMOUNT_FIELD from '@salesforce/schema/FinancialResources__c.Amount__c';
 
 import QUANTITYSTATUS from '@salesforce/schema/OperationSection__c.QuantityStatus__c';
 import QUANTITYREJECTION from '@salesforce/schema/OperationSection__c.QuantityRejectReason__c';
 import QUANTITYDESC from '@salesforce/schema/OperationSection__c.QuantityObservation__c';
 
 const FIELDSVALIDATIONQUANTITY = [QUANTITYSTATUS, QUANTITYREJECTION, QUANTITYDESC];
-const FIELDSQUOTE = [ADDITIONAL_COSTS_FIELD, TAC_FIELD, IOF_FIELD, MONTHLY_CET_FIELD, YEARLY_CET_FIELD, MONTHLY_INTEREST_FIELD, YEARLY_INTEREST_FIELD, SERVICE_DATE_FIELD, SERVICE_LAST_DATE_FIELD, NET_FIELD, UNIT_PRICE_FIELD, QUANTITY_FIELD, COLLATERAL_AMOUNT_FIELD];
-const FIELDSFINANCIAL = [AMOUNT_FIELD, MANUFACTURING_YEAR_FIELD];
-const FIELDSACCOUNT =  [BANK_NAME_FIELD, AGENCY_FIELD, BANK_NUMBER_FIELD];
-const FIELDSOPPORTUNITY =  [DESCRIPTION_FIELD];
+const ERROR_OCCURRED = 'Ocorreu um Erro';
+const ERROR_MESSAGE = 'Por favor entre em contato com um administrador.';
+const ERROR_VARIANT = 'error';
 
-const INPUT_OPERATION = new Map([
-  ['inputFinalidadeOperacao' , DESCRIPTION_FIELD],
-  ['inputValorCarro'         , AMOUNT_FIELD],
-  ['inputAnoCarro'           , MANUFACTURING_YEAR_FIELD],
-  ['inputDespesasRegistro'   , ADDITIONAL_COSTS_FIELD],
-  ['inputTAC'                , TAC_FIELD],
-  ['inputIOF'                , IOF_FIELD],
-  ['inputCETmes'             , MONTHLY_CET_FIELD],
-  ['inputCETano'             , YEARLY_CET_FIELD],
-  ['inputJurosMes'           , MONTHLY_INTEREST_FIELD],
-  ['inputJurosAno'           , YEARLY_INTEREST_FIELD],
-  ['inputPrimeiraParcela'    , SERVICE_DATE_FIELD],
-  ['inputUltimaParcela'      , SERVICE_LAST_DATE_FIELD],
-  ['inputCreditoLiquido'     , NET_FIELD],
-  ['inputParcela'            , UNIT_PRICE_FIELD],
-  ['inputQtdParcelas'        , QUANTITY_FIELD],
-  ['inputBanco'              , BANK_NAME_FIELD],
-  ['inputAgencia'            , AGENCY_FIELD],
-  ['inputContaCorrente'      , BANK_NUMBER_FIELD],
-  ['inputPatrimonio'         , COLLATERAL_AMOUNT_FIELD]
-]);
-
+const SUCCESS_OCCURRED = 'Sucesso';
+const SUCCESS_MESSAGE = 'Seção de Operação atualizada com sucesso!';
+const SUCCESS_VARIANT = 'success';
 export default class ProposalOperationComponent extends LightningElement {
 
   @api accountid;
   @api opportunityid;
 
+
   fieldsValidationQuantity = FIELDSVALIDATIONQUANTITY;
   fieldsStatus = ['BranchStatus__c', 'AccountStatus__c', 'ServiceDateStatus__c', 'ServiceLastDateStatus__c', 'OperationPurposeStatus__c', 'UnitPriceStatus__c', 'YearlyInterestStatus__c', 'MonthlyInterestStatus__c', 'AdditionalCostsStatus__c', 'ManufacturingYearStatus__c', 'BankStatus__c', 'YearlyCETstatus__c', 'MonthlyCETstatus__c', 'BeneficiarysCNPJstatus__c', 'ParameterIOFstatus__c', 'BeneficiarysNameStatus__c', 'ContractNumberStatus__c', 'ParameterTACstatus__c', 'CarValueStatus__c', 'NetValueStatus__c', 'PatrimonyStatus__c', 'QuantityStatus__c'];
-  fieldsQuote = FIELDSQUOTE;
-  fieldsFinancial = FIELDSFINANCIAL;
-  fieldsProponent = FIELDSACCOUNT;
-  fieldsOpportunity = FIELDSOPPORTUNITY;
-  error
+  error;
   
   // Controller Section
   topContainerSection = 'ContainerOperation';
   statusApprove = 'Aprovar';
   statusReject = 'Rejeitar';
   statusPending = 'Pendenciar';
+  statusReturnedPendency = 'Voltou de pendência';
   completionPercentage = 0;
   totalLinesValidation = 22;
   disabledSaveButton = false;
+  saveRecord = true;
 
   // Operation Data Info
-  inputOperation = INPUT_OPERATION;
+  recordOperationSection = {};
   
   @track valueFinalidadeOp     = {value: '', fieldReadOnly: true};
   @track valueNomeBeneficiario = {value: '', fieldReadOnly: true};
@@ -119,51 +69,15 @@ export default class ProposalOperationComponent extends LightningElement {
   @track valueNumeroContrato   = {value: '', fieldReadOnly: true};
   
   // Values
-  value = [];
   preValue = [];
-  @track recordOperation = new Map();
 
-  
   // Refresh apex 
   refreshRecordOperation;
 
-  // Object of validation Section OperationSection__c
-  objValidationSection = {
-    'sobjectType': 'OperationSection__c',
-    'Opportunity__c': '',
-    'BranchStatus__c': '',
-    'AccountStatus__c': '',
-    'ServiceDateStatus__c': '',
-    'ServiceLastDateStatus__c': '',
-    'OperationPurposeStatus__c': '',
-    'UnitPriceStatus__c': '',
-    'YearlyInterestStatus__c': '',
-    'MonthlyInterestStatus__c': '',
-    'AdditionalCostsStatus__c': '',
-    'ManufacturingYearStatus__c': '',
-    'BankStatus__c': '',
-    'YearlyCETstatus__c': '',
-    'MonthlyCETstatus__c': '',
-    'BeneficiarysCNPJstatus__c': '',
-    'ParameterIOFstatus__c': '',
-    'BeneficiarysNameStatus__c': '',
-    'ContractNumberStatus__c': '',
-    'ParameterTACstatus__c': '',
-    'CarValueStatus__c': '',
-    'NetValueStatus__c': '',
-    'PatrimonyStatus__c': '',
-    'QuantityStatus__c': '',
-    'QuantityRejectReason__c': '',
-    'QuantityObservation__c': ''
-  }
-  
   // Get fields permission in OPERATIONSECTION
   @wire(getObjectInfo, { objectApiName: OPERATION_OBJECT  })
   getOperationPermission({ error, data }) {
     if(data) {
-      console.log('Operation Field Permission');
-      console.log(data);
-      console.log('Description: '+!data?.fields?.Description__c.updateable);
       this.valueFinalidadeOp.fieldReadOnly     = !data?.fields?.Description__c.updateable;
       this.valueDespesasRegistro.fieldReadOnly = !data?.fields?.ParameterAdditionalCosts__c.updateable;
       this.valueTAC.fieldReadOnly              = !data?.fields?.ParameterTac__c.updateable;
@@ -183,6 +97,10 @@ export default class ProposalOperationComponent extends LightningElement {
       this.valueContaCorrente.fieldReadOnly    = !data?.fields?.BankAccountNumber__c.updateable;
       this.valueValorCarro.fieldReadOnly       = !data?.fields?.Amount__c.updateable;
       this.valueAnoCarro.fieldReadOnly         = !data?.fields?.ManufacturingYear__c.updateable;
+      this.valueNomeBeneficiario.fieldReadOnly = !data?.fields?.PartnerAccount__c.updateable;
+      this.valueCNPJBeneficiario.fieldReadOnly = !data?.fields?.DocumentNumber__c.updateable;
+
+      this.error = undefined;
     }
     else if(error){
       this.showError(error);
@@ -193,11 +111,13 @@ export default class ProposalOperationComponent extends LightningElement {
   recordOperationSection(result) {
     this.refreshRecordOperation = result;
     if(result.data) {
-        let validationSection    = result.data.OperationSection;
-        this.setOperationSection(validationSection);
-        this.setOperationValidationSection(validationSection);
+        this.recordOperationSection = {...result.data};
+        this.setOperationSection();
+        this.setOperationValidationSection();
+        this.error = undefined;
     }else if(result.error){
       this.showError(result.error);
+      console.log(result.error);
     }
   }
 
@@ -207,7 +127,8 @@ export default class ProposalOperationComponent extends LightningElement {
     return sObject;
   }
   
-  setOperationSection(operationRecord){
+  setOperationSection(){
+    let operationRecord =  this.recordOperationSection;
     this.valueValorCarro.value        = operationRecord.Amount__c                   ? operationRecord.Amount__c                   : null;
     this.valueAnoCarro.value          = operationRecord.ManufacturingYear__c        ? operationRecord.ManufacturingYear__c        : null;
     this.valueFinalidadeOp.value      = operationRecord.Description                 ? operationRecord.Description                 : null;
@@ -227,17 +148,28 @@ export default class ProposalOperationComponent extends LightningElement {
     this.valueBanco.value             = operationRecord.BankName__c                 ? operationRecord.BankName__c                 : null;
     this.valueAgencia.value           = operationRecord.Agency__c                   ? operationRecord.Agency__c                   : null;
     this.valueContaCorrente.value     = operationRecord.BankAccountNumber__c        ? operationRecord.BankAccountNumber__c        : null;
-    this.valueFinalidadeOp.value      = operationRecord.Description                 ? operationRecord.Description                 : null;
+    this.valueFinalidadeOp.value      = operationRecord.Description__c              ? operationRecord.Description__c              : null;
+    
+    // Nome Beneficiário + CNPJ Beneficiário + Numero do Contrato
+    this.valueNomeBeneficiario.value  = operationRecord.PartnerAccount__c           ? operationRecord.PartnerAccount__c           : null;
+    this.valueCNPJBeneficiario.value  = operationRecord.DocumentNumber__c           ? operationRecord.DocumentNumber__c           : null;
+    // this.valueFinalidadeOp.value      = operationRecord.Description__c              ? operationRecord.Description__c              : null;
   }
 
-  setOperationValidationSection(validationSection){
-    let resultValidationSection = {...this.objValidationSection, ...validationSection};
-    this.objValidationSection = resultValidationSection;
+  setOperationValidationSection(){
+    let resultValidationSection = this.recordOperationSection;
     let listStatus = this.fieldsStatus;
+    let returnedPendency = this.statusReturnedPendency;
     for(let index in listStatus){
         let status = listStatus[index];
         this.template.querySelectorAll("[data-status='"+status+"']").forEach(function(item) {
-        if (item.value === resultValidationSection[status]) {
+        item.classList.contains('show_icon_pendency') ? item.classList.remove('show_icon_pendency'):'';
+        
+        let dataValue = item.hasAttribute("data-value") ? item.getAttribute("data-value") : null;
+        if(dataValue === returnedPendency && dataValue === resultValidationSection[status]){
+          item.classList.add('show_icon_pendency');
+        }
+        else if (item.value === resultValidationSection[status]) {
             item.checked = true;
             item.setAttribute('data-value', item.value);
         }
@@ -248,28 +180,28 @@ export default class ProposalOperationComponent extends LightningElement {
 
   handleSaveSection() {
     this.disabledSaveButton = true;
-    this.objValidationSection.Opportunity__c = this.opportunityid;
 
-    upsertOperationDetailsSection({records: {
-      "OperationSection": this.objValidationSection,
-      "Quote": this.recordOperation.get('Quote'),
-      "Financial": this.recordOperation.get('Financial'),
-      "Proponent": this.recordOperation.get('Proponent'),
-      "Opportunity": this.recordOperation.get('Opportunity')
-    }
-    })
+    upsertOperationDetailsSection({record:  this.recordOperationSection})
     .then( result=>{
       refreshApex(this.refreshRecordOperation);
-      this.showToast('', 'Registro atualizado com sucesso!', 'success')
-      this.disabledSaveButton = false;
+      this.showToast(SUCCESS_OCCURRED, SUCCESS_MESSAGE, SUCCESS_VARIANT);
+      this.saveRecord = true;
+      this.sendInfo(this.getInfo());
+      this.error = undefined;
     })
     .catch(error =>{
+      console.log({error});
+      this.showToast(ERROR_OCCURRED,ERROR_MESSAGE, ERROR_VARIANT);
+      this.error = error;
+    })
+    .finally( ()=>{
       this.disabledSaveButton = false;
-      this.showToast('Ocorreu um erro ao salvar o registro!', error?.body?.message, 'error');
     })
   }
 
   handleChangeCheckbox(event) {
+    // this.sendSaveSection(false);
+    this.saveRecord = false;
     const currentCheckbox = event.target;
     const currentRowCheckboxes = this.template.querySelectorAll(
       `input[name=${currentCheckbox.name}]`
@@ -345,7 +277,8 @@ export default class ProposalOperationComponent extends LightningElement {
   updateCompletionPercentage(checkboxes) {
     const selected = checkboxes.length;
     const total = this.totalLinesValidation;
-    this.completionPercentage = (selected / total) * 100;
+    const currentPercent = (selected / total) * 100;
+    this.completionPercentage = (currentPercent == 100 && !this.saveRecord) ? 99 : currentPercent;
   }
 
   getModal(checkbox) {
@@ -377,15 +310,15 @@ export default class ProposalOperationComponent extends LightningElement {
     let fieldsValidationAPI = this.fieldsValidationQuantity.map((item) => item.fieldApiName);
     fieldsValidationAPI.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsValidationAPI):'';
        
-    this.objValidationSection[nameStatus] = valueStatus;
+    this.recordOperationSection[nameStatus] = valueStatus;
   }
 
   resetFieldsValidation(fieldsValidationAPI){
-    fieldsValidationAPI.map((item) => this.objValidationSection[item] = null);
+    fieldsValidationAPI.map((item) => this.recordOperationSection[item] = null);
   }
 
   get controllerSave(){
-    return (this.disabledSaveButton || (this.completionPercentage === 100 ? false : true));
+    return (this.disabledSaveButton || (this.completionPercentage < 99) || this.saveRecord) ? true : false;
   }
 
   showToast(title, message, variant) {
@@ -419,30 +352,22 @@ export default class ProposalOperationComponent extends LightningElement {
   }
 
   setMapReason(selectedReason){
-
     let description = selectedReason.description ? selectedReason.description : '';
-    let objValidationSection = this.objValidationSection;
+    let recordOperationSection = this.recordOperationSection;
 
     if(['QuantityRejectReason__c'].includes(selectedReason.field)){
-      objValidationSection[selectedReason.field] = selectedReason.reason;
-      objValidationSection.QuantityObservation__c = description;
+      recordOperationSection[selectedReason.field] = selectedReason.reason;
+      recordOperationSection.QuantityObservation__c = description;
     }
   }
 
   handleInputChange(event){
+    let field = event.target.dataset.id;
     const fieldType = event.target.type;
+    // this.sendSaveSection(false);
+    this.saveRecord = false;
     const value = (fieldType === 'number') ? parseFloat(event.target.value) : event.target.value;
-    const elementId = event.target.getAttribute('data-id');
-    const fieldDefinition = this.inputOperation.get(elementId);
-    const fieldApiName = fieldDefinition.fieldApiName;
-    let records = this.recordOperation;
-    for (let [key, item] of  records.entries()) {
-      if(item.hasOwnProperty(fieldApiName)){
-        this.recordOperation.set(
-          key,
-          {...this.recordOperation.get(key), [fieldApiName]: value},
-        );
-      }
-    }
+    this.recordOperationSection = { ...this.recordOperationSection, [field]: value };
+    this.sendInfo(this.getInfo());
   }
 }

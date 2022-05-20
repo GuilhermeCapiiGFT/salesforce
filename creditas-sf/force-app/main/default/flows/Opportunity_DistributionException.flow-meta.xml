@@ -89,6 +89,7 @@
         </outputAssignments>
         <valueField>Name</valueField>
     </dynamicChoiceSets>
+    <environments>Default</environments>
     <formulas>
         <name>ChecksExceptionReason</name>
         <dataType>String</dataType>

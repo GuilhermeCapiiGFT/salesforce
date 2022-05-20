@@ -1,18 +1,9 @@
 <template>
-  <div data-id="ContainerDadosPessoais">
-    <div class="slds-grid container slds-m-bottom_medium">
-      <label for="">
-        <span>Documento de Identificação</span>
-        <lightning-icon style="cursor: pointer;" data-id={cpf_document} onclick={handleDocumentModal}
-          class="slds-p-left_small" icon-name="utility:file" alternative-text="file" size="xx-small" title="file">
-        </lightning-icon>
-      </label>
-    </div>
-
+  <div data-id="ContainerDadosPessoais" if:true={showContainer}>
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={name} data-id="Name" onchange={handleInputChange}> </lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.Name__c} data-id="Name__c" onchange={handleInputChange}> </lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -45,7 +36,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome da Pai</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={father} data-id="Father__c" onchange={handleInputChange}> </lightning-input> 
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.Father__c} data-id="Father__c" onchange={handleInputChange}> </lightning-input> 
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -74,7 +65,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nome da Mãe</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={mother} data-field="MothersNameStatus__c" data-status="MothersNameStatus__c" data-id="Mother__c" onchange={handleInputChange} > </lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.Mother__c} data-field="MothersNameStatus__c" data-status="MothersNameStatus__c" data-id="Mother__c" onchange={handleInputChange} > </lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -103,7 +94,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Data de Nascimento</label>
-        <lightning-input variant="label-hidden" type="date" value={birthdate} data-id="BirthDate__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="date" value={personalDataSectionRecord.BirthDate__c} data-id="BirthDate__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -143,7 +134,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">CPF</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={documentNumber} data-id="DocumentNumber__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={personalDataSectionRecord.CPF__c} data-id="CPF__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -174,7 +165,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Cidade de nascimento</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={birthCity} data-id="BirthCity__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={personalDataSectionRecord.BirthCity__c} data-id="BirthCity__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -205,7 +196,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">País de nascimento</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={birthCountry} data-id="Birth_Country__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={personalDataSectionRecord.BirthCountry__c} data-id="BirthCountry__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -236,7 +227,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Nacionalidade</label>
-        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={nationality} data-id="Nationality__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={personalDataSectionRecord.Nationality__c} data-id="Nationality__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -269,7 +260,7 @@
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Politicamente Exposto?</label>
         
-        <lightning-combobox variant="label-hidden" data-id="PoliticallyExposed__c" options={politicallyExposedOptions} value={politicallyExposed} onchange={handleInputChange}></lightning-combobox>
+        <lightning-combobox variant="label-hidden" data-id="PoliticallyExposed__c" options={politicallyExposedOptions} value={personalDataSectionRecord.PoliticallyExposed__c} onchange={handleInputChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -298,7 +289,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">RG</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={rgDocumentNumber} data-id="RG_DocumentNumber__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.RG__c} data-id="RG__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -327,7 +318,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Órgão expedidor</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={rgIssuer} data-id="RG_Issuer__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.Issuer__c} data-id="Issuer__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -356,7 +347,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Data de expedição</label>
-        <lightning-input variant="label-hidden" type="date" value={rgIssueDate} data-id="RG_IssueDate__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="date" value={personalDataSectionRecord.IssueDate__c} data-id="IssueDate__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -385,7 +376,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">UF do órgão expedidor</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={rgIssuerState} data-id="RG_IssuerState__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.IssuerState__c} data-id="IssuerState__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -414,7 +405,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">CNH</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={cnhDocumentNumber} data-id="CNH_DocumentNumber__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.CNHnumber__c} data-id="CNHnumber__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>
@@ -443,7 +434,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Data de expedição da CNH</label>
-        <lightning-input variant="label-hidden" type="date" value={cnhIssueDate} data-id="CNH_IssueDate__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="date" value={personalDataSectionRecord.CNHIssueDate__c} data-id="CNHIssueDate__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon"></div>
@@ -472,7 +463,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Órgão expedidor da CNH</label>
-        <lightning-input variant="label-hidden" type="text" class="" value={cnhIssuer} data-id="CNH_Issuer__c" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.CNHIssuer__c} data-id="CNHIssuer__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12"></div>

@@ -7,10 +7,14 @@ import { refreshApex } from '@salesforce/apex';
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
 import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
 
+import OPP_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeReason__c';
+import OPP_OTHER_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeOtherReason__c';
+import OPP_OBSERVATION_FIELD from '@salesforce/schema/Opportunity.CommitteeObservation__c';
+
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
 
-const fields = [STAGENAME_FIELD];
+const fields = [STAGENAME_FIELD, OPP_REASON_FIELD, OPP_OTHER_REASON_FIELD, OPP_OBSERVATION_FIELD];
 
 const PROPOSAL_APPROVED = 'approved';
 const PROPOSAL_PENDENCY = 'pendency';
@@ -29,10 +33,11 @@ export default class ProposalAnalysis extends LightningElement {
   @api accountid
   @api opportunityid
   
-
   isStageWaitingForUE = false
   isStageInAnalysis = false
   isAnalysisStarted = false
+  isStageWaitingForCommittee = false
+  isStageOnCommittee = false
   isLoading = false
   
   startDate = ''
@@ -83,7 +88,10 @@ export default class ProposalAnalysis extends LightningElement {
   //Committee
   openModalCommittee = false
   showCommitteeButton = false;
-  enableCommiteeButton = false;
+  enableCommiteeButton = true;
+  committeeReasons = []
+  committeeOtherReasons = ''
+  committeeObservation = ''
 
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
@@ -104,14 +112,42 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   @wire(getRecord, { recordId: '$opportunityid', fields })
-  getStageName({ error, data }) {
+  getOpportunity({ error, data }) {
     if (data) {
-      let stageName = data?.fields?.StageName?.value
+      
+      this.getStageName(data)
+      this.getCommitteeReasons(data)
+
+    } else if (error) {
+      this.showToast(ERROR_OCCURRED, 'Houve um erro ao buscar a oportunidade.', ERROR_VARIANT);
+    }
+  }
+
+  getCommitteeReasons(data) {
+    console.log({data})
+    this.committeeReasons = data?.fields?.CommitteeReason__c?.displayValue.split(';')
+    this.committeeOtherReasons = data?.fields?.CommitteeOtherReason__c?.value
+    this.committeeObservation = data?.fields?.CommitteeObservation__c?.value
+
+    console.log(this.committeeOtherReasons)
+    console.log(this.committeeObservation)
+  }
+
+  getStageName(data) {
+    let stageName = data?.fields?.StageName?.value
       
       if (stageName === 'Aguardando Análise de Formalização') {
         this.isStageWaitingForUE = true
         this.isAnalysisStarted = false
-        this.showCommitteeButton = true;
+        this.showCommitteeButton = false;
+        this.isStageOnCommittee = false
+      }
+
+      else if (stageName === 'Aguardando Distribuição para Comitê de Formalização') {
+        this.isStageWaitingForUE = true
+        this.isAnalysisStarted = false
+        this.showCommitteeButton = false;
+        this.isStageOnCommittee = false
       }
       
       else if (stageName === 'Em Análise de Formalização') {
@@ -121,23 +157,36 @@ export default class ProposalAnalysis extends LightningElement {
         this.openSection = true;
       }
       
+      else if (stageName === 'Aguardando Análise de Comitê de Formalização') {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = false
+        this.showCommitteeButton = false;
+        this.openSection = false;
+        this.isStageWaitingForCommittee = true
+        this.isStageOnCommittee = false
+      }
+        
+      else if (stageName === 'Em Análise de Comitê de Formalização') {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = true
+        this.showCommitteeButton = false;
+        this.openSection = true;
+        this.isStageWaitingForCommittee = false
+        this.isStageOnCommittee = true;
+      }
+        
       else {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
       }
-      
-    } else if (error) {
-      console.log('error searching for stageName')
-    }
   }
-
+  
   setInfoValueAndVariant(event) {
 
     let infoSection = event.detail
 
     this.mapInfoSection.set(infoSection.returnedId, JSON.parse(JSON.stringify(infoSection)))
-
 
     if (infoSection.returnedId === 'ContainerDadosPessoais') {
       this.personalInfoVariant = infoSection.variant
@@ -217,7 +266,38 @@ export default class ProposalAnalysis extends LightningElement {
     let myDate = new Date()
     this.startDate = this.formatDate(myDate)
 
-    this.start()
+    if (this.isStageWaitingForCommittee) {
+      this.showCommitteeReasons()
+    } 
+
+    else if (this.isStageWaitingForUE) {
+      this.start()
+    }
+  }
+
+  showCommitteeReasons() {
+    const fields = {}
+    this.isLoading = true;
+
+    fields[OPP_ID_FIELD.fieldApiName]    = this.opportunityid;
+    fields[STAGENAME_FIELD.fieldApiName] = 'Em Análise de Comitê de Formalização';
+
+    const recordField = {fields}
+
+    updateRecord(recordField)
+      .then(() => {
+        this.showToast(SUCCESS_OCCURRED, 'Stage Alterado com sucesso!', SUCCESS_VARIANT)
+        this.isStageWaitingForCommittee = false
+        this.isStageOnCommittee = true
+        this.isLoading = false
+      })
+      .catch(error => {
+        this.showToast(ERROR_OCCURRED, 'Houve um erro na alteração do stage', ERROR_VARIANT)
+        this.isLoading = false
+        this.isStageWaitingForCommittee = true
+        this.isStageOnCommittee = false
+    })
+
   }
 
   start() {
@@ -389,7 +469,7 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   get isReadyForAnalysis() {
-    return !this.isAnalysisStarted && this.isStageWaitingForUE
+    return !this.isAnalysisStarted && (this.isStageWaitingForUE || this.isStageWaitingForCommittee)
   }
 
   sendAnalysis(btn_action){

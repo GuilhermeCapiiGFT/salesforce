@@ -182,6 +182,7 @@
                 <isRequired>false</isRequired>
             </fields>
             <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <fields>
             <name>Screen_ExistePendenciaEmAdiantamento</name>

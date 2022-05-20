@@ -44,8 +44,7 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
-import getRecordAddress from '@salesforce/apex/ProposalAddressesController.getAddress';
-import upsertAddress from '@salesforce/apex/ProposalAddressesController.saveAddress';
+//import upsertAddress from '@salesforce/apex/ProposalAddressesController.saveAddress';
 import getRecordAddressSection from '@salesforce/apex/ProposalAddressesController.getAddressSectiontDetails';
 import upsertAddressSection from '@salesforce/apex/ProposalAddressesController.saveAddressSection';
 
@@ -60,8 +59,8 @@ const FIELDSVALIDATIONCOUNTRY = [COUNTRYSTATUS]
 
 export default class ProposalAddressesComponent extends LightningElement {
 
-  @api accountid
-  @api opportunityid
+  //@api accountid
+  @api opportunityid;
   error
   
   address
@@ -95,20 +94,19 @@ export default class ProposalAddressesComponent extends LightningElement {
 
   // refresh apex
   recordAddress
-  resultRecordAddress
   
   // validation object for the address section
   objValidationSection = {
     'sobjectType': SECTION_OBJECT.objectApiName
   }
-  
-  @wire(getRecordAddress, { accountId: '$accountid' })
-  resultRecordAddress(result) {
-    this.resultRecordAddress = result
-    if (result.data) {
-      let data = result.data[0]
 
-      this.addressValue.push(data ? Object.assign({}, data) : {'sobjectType': ADDRESSES_OBJECT.objectApiName, Account__c: this.accountid})
+  resultRecordAddressFunction(result) {
+
+    if (result.data) {
+
+      let data = result.data;
+
+      this.addressValue.push(data ? Object.assign({}, data) : {'sobjectType': SECTION_OBJECT.objectApiName, Opportunity__c: this.opportunityid})
 
       this.cepNumber.value          = data?.PostalCode__c    ? data.PostalCode__c   : null
       this.street.value             = data?.Street__c        ? data.Street__c       : null
@@ -119,15 +117,13 @@ export default class ProposalAddressesComponent extends LightningElement {
       this.state.value              = data?.AreaLevel1__c    ? data.AreaLevel1__c   : null
       this.country.value            = data?.Country__c       ? data.Country__c      : null
             
-    }
-
-    else if (result.error) {
-      console.log(result.error)
+    }else if (result.error) {
+      console.log('Error getting Address values: '+ result.error);
     }
   }
 
-  // Get fields permission in Contact Section
-  @wire(getObjectInfo, { objectApiName: ADDRESSES_OBJECT  })
+  // Get fields permission in AddressDataSection object
+  @wire(getObjectInfo, { objectApiName: SECTION_OBJECT  })
   recordTypeAddress({ error, data }) {
     if(data) {
       this.cepNumber.fieldReadOnly     = !data?.fields?.PostalCode__c?.updateable     
@@ -146,8 +142,11 @@ export default class ProposalAddressesComponent extends LightningElement {
 
   @wire(getRecordAddressSection, { opportunityId: '$opportunityid' })
   recordAddressSection(result) {
+
     this.recordAddress = result
     
+    this.resultRecordAddressFunction(result);
+
     if (result.data) {
       let resultValidationSection = { ...this.objValidationSection, ...result.data }
       this.objValidationSection = resultValidationSection
@@ -173,42 +172,45 @@ export default class ProposalAddressesComponent extends LightningElement {
   }
 
   handleSaveSection() {
-    this.saveFields()
-  }
 
-  saveFields() {
     this.disabledBtnSave = true;
-    let payload = this.addressValue;
-
-    upsertAddress({addresses : payload})
-    .then(result => {
-      refreshApex(this.resultRecordCommunication);
-      console.log({ result }) 
-      this.saveFieldsValidation()
-    })
-    .catch(error =>{
-      console.log(error);
-      this.disabledBtnSave = false;
-      this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
-    })
+    this.saveFieldsValidation();
   }
+
+  // saveFields() {
+  //   this.disabledBtnSave = true;
+  //   let payload = this.addressValue;
+    
+  //   upsertAddress({addresses : payload})
+  //   .then(result => {
+  //     refreshApex(this.resultRecordCommunication);
+  //     console.log({ result }) 
+      
+  //   })
+  //   .catch(error =>{
+  //     console.log(error);
+  //     this.disabledBtnSave = false;
+  //     this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
+  //   })
+  // }
 
   saveFieldsValidation() {
+
     this.objValidationSection.Opportunity__c = this.opportunityid;
-    let payload = this.objValidationSection
-    
-    console.log({ payload })
+    let payload = this.objValidationSection;
+    console.log('Vai salvar: '+ JSON.stringify(payload));
+    console.log({ payload });
     
     upsertAddressSection({addressSection : payload})
     .then(result => {
       refreshApex(this.recordAddress);
-      this.showToast('', 'Registro atualizado com sucesso!', 'success')
+      this.showToast('', 'Registro atualizado com sucesso!', 'success');
       this.disabledBtnSave = false;
     })
     .catch(error =>{
       console.log(error);
       this.disabledBtnSave = false;
-      this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
+      this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error');
     })
   }
 
@@ -389,7 +391,13 @@ export default class ProposalAddressesComponent extends LightningElement {
     let objectAddress = this.addressValue[0]
     let field = event.target.getAttribute('data-id')
     let currentValue = event.target.value
-
+    console.log('objectAddress: '+ JSON.stringify(objectAddress));
+    console.log('field: '+ field);
+    console.log('currentValue: '+ currentValue);
     objectAddress[field] = currentValue
+
+    this.objValidationSection = objectAddress;
+    
+    console.log('objectAddress After: '+ JSON.stringify(objectAddress));
   }
 }

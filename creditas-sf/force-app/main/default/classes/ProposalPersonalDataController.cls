@@ -1,24 +1,30 @@
 public with sharing class ProposalPersonalDataController {
     
-    @AuraEnabled(cacheable=true)
-    public static Map<String, SObject> getInfoRecords(String recordId) 
-    {   
+    public static PersonalDataSectionRepository repository;
+
+    static {
+        repository = new PersonalDataSectionRepository();
+    }
+
+    @AuraEnabled
+    public static PersonalDataSection__c getLastPersonalDataSectionInstance( String oppId ) {
+
         try {
-            Id validatedOppId = recordId;
-            return ProposalPersonalDataService.getPersonalDataSectionRecord(validatedOppId);
+
+            List<PersonalDataSection__c> personalDataSection = repository.findLastPersonalDataSectionByOppId( oppId );
+
+            return ( personalDataSection.isEmpty() ) ? null : personalDataSection[0];
+
         } catch (Exception e) {
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
         }
     }
 
-    @AuraEnabled(cacheable=true)
-    public static Map<String, SObject> getDocuments(String recordId)
-    {
-        try {
-            Id validatedAccountId = recordId;
-            return ProposalPersonalDataService.getDocuments(validatedAccountId);
-        } catch (Exception e) {
-            throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
-        }
+    @AuraEnabled
+    public static string saveInstance( String personalDataSectionInstance ) {
+
+        PersonalDataSection__c record = ( PersonalDataSection__c ) System.JSON.deserialize( personalDataSectionInstance, PersonalDataSection__c.class);
+
+        return System.JSON.serialize(record );
     }
 }
