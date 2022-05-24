@@ -13,38 +13,31 @@ public class ProposalContactDataControllerTest {
         opportunity.ExternalVersion__c = 1;      
         insert opportunity;
         
-        CommunicationContacts__c communicationSMS = new CommunicationContacts__c(Account__c = varAccount.Id, Channel__c = 'SMS', Code__c = '11 911223344');
-        CommunicationContacts__c communicationEMAIL = new CommunicationContacts__c(Account__c = varAccount.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        List<CommunicationContacts__c> communications = new List<CommunicationContacts__c>();
-        communications.add(communicationSMS);
-        communications.add(communicationEMAIL);
+        ContactDetailsSection__c communications = new ContactDetailsSection__c( Email__c = 'test@test123.com', Mobile__c = '11 911223344', Opportunity__c = opportunity.id );
+
         insert communications;
-        
-        ContactDetailsSection__c contactDetail = new ContactDetailsSection__c(Opportunity__c = opportunity.Id, MobileStatus__c = 'Aprovar');
-        insert contactDetail;
     }
     
     @isTest
-    static void getCommunicationContactSuccess(){
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-  		Map<String,CommunicationContacts__c> mapResultCommunications = new Map<String,CommunicationContacts__c>();
-        
+    static void getContactDetailsSucess(){
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+  		
         Test.startTest();
-        mapResultCommunications = ProposalContactDataController.getCommunicationContact(acc.Id);
+        ProposalContactDataController.getContactDetails(opp.Id);
         Test.stopTest();
         
-        System.assertEquals('test@test.com', mapResultCommunications.get('EMAIL').Code__c ,'Incorrect email value');
-        
+       List<ContactDetailsSection__c> contactDetailSec = [SELECT Email__c, Mobile__c, Opportunity__c FROM ContactDetailsSection__c WHERE Opportunity__r.Name = 'Teste' ];
+       System.assert(!contactDetailSec.isEmpty(), 'ContactDetailsSection not found');
     }
     
     @isTest
     static void getCommunicationContactFail(){
         String exceptionMessage = '';
-        Map<String,CommunicationContacts__c> mapResultCommunications = new Map<String,CommunicationContacts__c>();
+        
         
         Test.startTest();
         try{
-            mapResultCommunications = ProposalContactDataController.getCommunicationContact('123456778');
+         ProposalContactDataController.getContactDetails('123456778');
         }catch(Exception e){
             exceptionMessage = e.getMessage();
         }
@@ -53,80 +46,6 @@ public class ProposalContactDataControllerTest {
         System.assertEquals('Invalid id: 123456778', exceptionMessage, 'Incorrect exception message.');
     }
  
-    @isTest
-    static void getContactDetailsSuccess(){
-        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
-        Boolean exceptionOccurred = false;
-        ContactDetailsSection__c mapResultCommunications = new ContactDetailsSection__c();
-        
-        Test.startTest();
-        try{
-            mapResultCommunications = ProposalContactDataController.getContactDetails(opp.Id);
-        }catch(Exception e){
-            exceptionOccurred = true;
-        }
-        Test.stopTest();
-        
-        System.assertEquals('Aprovar', mapResultCommunications.MobileStatus__c,'Incorrect MobileStatus value'); 
-    }
-    
-    @isTest
-    static void getContactDetailsFail(){
-        String exceptionMessage = '';
-        ContactDetailsSection__c mapResultCommunications = new ContactDetailsSection__c();
-        
-        Test.startTest();
-        try{
-            mapResultCommunications = ProposalContactDataController.getContactDetails('123456778');
-        }catch(Exception e){
-            exceptionMessage = e.getMessage();
-        }
-        Test.stopTest();
-        
-        System.assertEquals('Invalid id: 123456778', exceptionMessage, 'Incorrect exception message.'); 
-    }
-
-    
-    @isTest
-    static void saveCommunicationContactsSuccess(){
-        Boolean exceptionOccurred = false;
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        CommunicationContacts__c communicationSMS = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'SMS', Code__c = '11 911223344');
-        CommunicationContacts__c communicationEMAIL = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        List<CommunicationContacts__c> communications = new List<CommunicationContacts__c>();
-        communications.add(communicationSMS);
-        communications.add(communicationEMAIL);
-        Test.startTest();
-        try{
-            ProposalContactDataController.saveCommunicationContacts(communications);
-        }catch(Exception e){
-            exceptionOccurred = true;
-        }
-        Test.stopTest();
-        
-        System.assertEquals(false, exceptionOccurred,'Exception should not occur');
-    }
-    
-    @isTest
-    static void saveCommunicationContactsFail() {
-        String exceptionMessage = '';
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        List<Account> accounts = new List<Account>();
-		accounts.add(acc);
-        
-        Test.startTest();
-        try{
-            ProposalContactDataController.saveCommunicationContacts(accounts);
-            
-        }catch(Exception e) {
-            exceptionMessage = e.getMessage();
-        }
-
-        Test.stopTest();
-        
-        System.assertEquals('Invalid conversion from runtime type List<Account> to List<CommunicationContacts__c>', exceptionMessage, 'Incorrect exception message.');
-    }
-    
     @isTest
     static void saveContactDetailsSectionSuccess(){
         Boolean exceptionOccurred = false;

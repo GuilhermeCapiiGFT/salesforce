@@ -22,6 +22,7 @@ public with sharing class ProposalIntegrationService {
         payload.productType       = productTypes.containsKey(recordTypeName) ? productTypes.get(recordTypeName) : '';
         payload.sections          = sections;
 
+        System.debug(JSON.serializePretty(payload));
         return payload;
     }
 

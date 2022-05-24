@@ -1,7 +1,7 @@
 /**
  * @author Otávio Frank - GFT Brasil
  */
-public virtual class PersonalDataSectionRepository {
+public virtual class PersonalDataSectionRepository extends Repository {
 
     virtual 
     public List<PersonalDataSection__c> findLastPersonalDataSectionByOppId( String oppId ) {

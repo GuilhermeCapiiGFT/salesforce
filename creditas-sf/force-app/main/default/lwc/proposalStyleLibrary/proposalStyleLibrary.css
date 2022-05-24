@@ -141,6 +141,8 @@ input.disabled-input {
 
 .slds-progress_vertical .slds-progress__item:before, .slds-progress_vertical .slds-progress__item:after {
   left: 11px;
+  top: 14px;
+  bottom: 25px;
 }
 
 .slds-progress-ring_complete .slds-progress-ring__content  {
@@ -166,16 +168,40 @@ input.disabled-input {
   align-items: flex-start;
   position: revert;
 }
+.slds-m-vertical_medium {
+  margin-top: 0%;
+  margin-bottom: 0%;
+}
 
 /* Styling the Progress circle bar and vertical progress bar - END */
 
 /* Styling Buttons START*/
-
 .btn-container {
   display: flex;
   flex-direction: row-reverse;
-  padding-top: 2em;
   gap: 0.5em;
+}
+.btn-container button {
+  border: 0;
+  padding: 10px 20px;
+  color: white;
+  font-family: sans-serif;
+  border-radius: 5px;
+  transition: filter 0.2s;
+  cursor: pointer;
+  background: #4bca81;
+}
+.btn-container button:not(:disabled):hover {
+  filter: brightness(0.9);
+}
+.btn-container button:disabled {
+  cursor: no-drop;
+  background: #a9a9a9;
+}
+.btn-container button.outlined {
+  background: #fff;
+  border: 1px solid #4bca81;
+  color: #4bca81;
 }
 
 .btn {

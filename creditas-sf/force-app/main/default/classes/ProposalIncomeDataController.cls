@@ -1,40 +1,51 @@
+/**
+ * @author Otávio Frank - GFT Brasil
+ */
 public with sharing class ProposalIncomeDataController {
     
-    @AuraEnabled(Cacheable=true)
-    public static Map<String, SObject> getIncomeDetails(String accountId, String opportunityId)
-    {
+    public static IncomeDataSectionRepository repository;
+
+    static {
+        
+        repository = new IncomeDataSectionRepository();
+    }
+
+    @AuraEnabled
+    public static IncomeDataSection__c getLastIncomeDataSectionInstance( String oppId ) {
+
         try {
-            Map<String, SObject> incomeInfoByName = new Map<String, SObject>();
 
-            IncomeDataSection__c validationInfo   = ProposalIncomeDataService.getIncomeDataSection(opportunityId);
-            ProfessionalInfo__c professionalInfo  = ProposalIncomeDataService.getProfession(accountId);
-            Opportunity opportunityInfo           = ProposalIncomeDataService.getOpportunity(opportunityId);
-            Account accountInfo                   = ProposalIncomeDataService.getAccount(accountId);
-            Map<String, FinancialResources__c> financialResourceByName = ProposalIncomeDataService.getFinancialResource(accountId);
+            List<IncomeDataSection__c> lastIncomeDataSection = repository.findLastIncomeDataSectionByOppId( oppId );
 
-            incomeInfoByName.put('INCOME_SECTION', validationInfo);
-            incomeInfoByName.put('PROFESSIONAL_SECTION', professionalInfo);
-            incomeInfoByName.put('MINIMAL_INCOME', opportunityInfo);
-            incomeInfoByName.put('NETWORTH_INCOME', accountInfo);
-            if(financialResourceByName.get('MONTHLY_INCOME') != null)           incomeInfoByName.put('MONTHLY_INCOME', financialResourceByName.get('MONTHLY_INCOME'));
-            if(financialResourceByName.get('PRESUMED_MONTHLY_INCOME') != null)  incomeInfoByName.put('PRESUMED_MONTHLY_INCOME', financialResourceByName.get('PRESUMED_MONTHLY_INCOME'));
-            if(financialResourceByName.get('CONFIRMED_MONTHLY_INCOME') != null) incomeInfoByName.put('CONFIRMED_MONTHLY_INCOME', financialResourceByName.get('CONFIRMED_MONTHLY_INCOME'));
-            
-            return incomeInfoByName;
+            return ( lastIncomeDataSection.isEmpty() ) ? null : lastIncomeDataSection[0];
+
         } catch (Exception e) {
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
         }
     }
 
-    @AuraEnabled(Cacheable=false)
-    public static void saveIncomeDataSection(Map<String, SObject> records)
-    {
-        SavePoint sp = Database.setSavePoint();
+    @AuraEnabled
+    public static IncomeDataSection__c saveInstance( String serializedIncomeDataSection ) {
+
+        IncomeDataSection__c incomeDataSectionToSave;
+
         try {
-            ProposalIncomeDataService.saveIncomeSection(records);
-        } catch(Exception e) {
-            Database.rollback(sp);
+
+            incomeDataSectionToSave = ( IncomeDataSection__c ) System.JSON.deserialize( serializedIncomeDataSection, IncomeDataSection__c.class);
+
+            incomeDataSectionToSave.Id = null;
+
+            incomeDataSectionToSave = ( IncomeDataSection__c ) repository.save( incomeDataSectionToSave );
+
+        } catch (Exception e) {
+
             throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
         }
+
+        return incomeDataSectionToSave;
+    }
+
+    public static void setIncomeDataSectionRepository( IncomeDataSectionRepository repo ) {
+        repository = repo;
     }
 }

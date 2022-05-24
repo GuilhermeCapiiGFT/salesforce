@@ -1,7 +1,7 @@
 @IsTest
 public class AccountIntegrationServiceTest {
   @TestSetup
-  static void makeData() {
+  private static void makeData() {
     List<Account> relationshipAccounts = new List<Account>{
       AccountSetup.createAccount('test-001-account-002', 'Pessoa_Fisica'),
       AccountSetup.createAccount('test-001-account-003', 'Pessoa_Fisica'),
@@ -20,22 +20,22 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testInsertSuccess() {
+  private static void testInsertSuccess() {
     String json = AccountIntegrationMock.getPayloadMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
     List<Account> accounts = [SELECT Id FROM Account];
 
     assertResponseSuccess(statusCode, response);
-    System.assertEquals(6, accounts.size(), 'Number of existing accounts is incorrect');
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
+    System.assertEquals(6, accounts.size(), 'Number of existing accounts is incorrect');
     System.assertEquals(
       3,
       account.CommunicationContacts__r.size(),
@@ -62,22 +62,22 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testUpdateSuccess() {
+  private static void testUpdateSuccess() {
     String json = AccountIntegrationMock.getChangedDataMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
     List<Account> accounts = [SELECT Id FROM Account];
 
     assertResponseSuccess(statusCode, response);
-    System.assertEquals(5, accounts.size(), 'Number of existing accounts is incorrect');
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
+    System.assertEquals(5, accounts.size(), 'Number of existing accounts is incorrect');
     System.assertEquals('Itaú', account.BankName__c, 'Bank name not updated');
     System.assertEquals(
       '11999998883',
@@ -102,16 +102,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteContactSuccess() {
+  private static void testDeleteContactSuccess() {
     String json = AccountIntegrationMock.getDeleteContactMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -124,16 +124,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteAddressSuccess() {
+  private static void testDeleteAddressSuccess() {
     String json = AccountIntegrationMock.getDeleteAddressMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -142,16 +142,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteRelationshipSuccess() {
+  private static void testDeleteRelationshipSuccess() {
     String json = AccountIntegrationMock.getDeleteRelationshipMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -164,16 +164,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteDocumentSuccess() {
+  private static void testDeleteDocumentSuccess() {
     String json = AccountIntegrationMock.getDeleteDocumentMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -182,16 +182,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteProfessionalInfoSuccess() {
+  private static void testDeleteProfessionalInfoSuccess() {
     String json = AccountIntegrationMock.getDeleteProfessionalInfoMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -209,16 +209,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteIncomeSuccess() {
+  private static void testDeleteIncomeSuccess() {
     String json = AccountIntegrationMock.getDeleteIncomeMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -231,16 +231,16 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testDeleteFiliationSuccess() {
+  private static void testDeleteFiliationSuccess() {
     String json = AccountIntegrationMock.getDeleteFiliationMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
-    Blob responseBlob = integration.getResponseAsBlob();
-    Integer statusCode = integration.getStatusCode();
     AccountIntegrationResponseVO response = integration.getResponse();
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
     Account account = selectAccount(response.accountId);
 
     assertResponseSuccess(statusCode, response);
@@ -249,77 +249,113 @@ public class AccountIntegrationServiceTest {
   }
 
   @IsTest
-  static void testInvalidJson() {
+  private static void testInvalidJson() {
     String json = '(this is not json)';
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
+    Integer statusCode = integration.getStatusCode();
     Blob responseBlob = integration.getResponseAsBlob();
     AccountIntegrationResponseVO response = integration.getResponse();
 
     System.assertNotEquals(null, response, 'Response body shouldn\'t be null');
-    assertResponseError(response, 500, 'Invalid JSON format.');
+    assertResponseError(statusCode, response, 'Invalid JSON format.');
   }
 
   @IsTest
-  static void testProfessionalIncomeException() {
+  private static void testProfessionalIncomeException() {
     String json = AccountIntegrationMock.getProfessionalIncomeExceptionMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
+    Integer statusCode = integration.getStatusCode();
     Blob responseBlob = integration.getResponseAsBlob();
     AccountIntegrationResponseVO response = integration.getResponse();
 
     System.assertNotEquals(null, response, 'Response body shouldn\'t be null');
     assertResponseError(
+      statusCode,
       response,
-      500,
       'Each Professional Info must have only one professional income.'
     );
   }
 
   @IsTest
-  static void testMainDocumentNullException() {
+  private static void testMainDocumentNullException() {
     String json = AccountIntegrationMock.getMainDocumentNullExceptionMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
+    Integer statusCode = integration.getStatusCode();
     Blob responseBlob = integration.getResponseAsBlob();
     AccountIntegrationResponseVO response = integration.getResponse();
 
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
-    assertResponseError(response, 500, 'Main Document can\'t be null.');
+    assertResponseError(statusCode, response, 'Main Document can\'t be null.');
   }
 
   @IsTest
-  static void testInvalidCurrencyCodeException() {
-    String json = AccountIntegrationMock.getInvalidCurrencyCodeExceptionMock();
+  private static void testIncomeCurrencyCodeException() {
+    String json = AccountIntegrationMock.getIncomeCurrencyCodeExceptionMock();
 
     Test.startTest();
     AccountIntegrationService integration = runUpsert(json);
     Test.stopTest();
 
+    Integer statusCode = integration.getStatusCode();
     Blob responseBlob = integration.getResponseAsBlob();
     AccountIntegrationResponseVO response = integration.getResponse();
 
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
-    assertResponseError(response, 500, 'Invalid currency code');
+    assertResponseError(statusCode, response, 'Invalid currency code');
   }
 
-  static AccountIntegrationService runUpsert(String json) {
+  @IsTest
+  private static void testProfessionalIncomeCurrencyCodeException() {
+    String json = AccountIntegrationMock.getProfessionalIncomeCurrencyCodeExceptionMock();
+
+    Test.startTest();
+    AccountIntegrationService integration = runUpsert(json);
+    Test.stopTest();
+
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
+    AccountIntegrationResponseVO response = integration.getResponse();
+
+    System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
+    assertResponseError(statusCode, response, 'Invalid currency code');
+  }
+
+  @IsTest
+  private static void testInvalidFieldDataException() {
+    String json = AccountIntegrationMock.getInvalidFieldDataExceptionMock();
+
+    Test.startTest();
+    AccountIntegrationService integration = runUpsert(json);
+    Test.stopTest();
+
+    Integer statusCode = integration.getStatusCode();
+    Blob responseBlob = integration.getResponseAsBlob();
+    AccountIntegrationResponseVO response = integration.getResponse();
+
+    System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
+    assertResponseError(statusCode, response, 'An unexpected error has occurred');
+  }
+
+  private static AccountIntegrationService runUpsert(String json) {
     AccountIntegrationService integration = new AccountIntegrationService();
     integration.setRequestBody(json);
     integration.upsertData();
     return integration;
   }
 
-  static Account selectAccount(String accountId) {
+  private static Account selectAccount(String accountId) {
     List<Account> accounts = [
       SELECT
         Id,
@@ -345,36 +381,21 @@ public class AccountIntegrationServiceTest {
     return accounts.isEmpty() ? null : accounts[0];
   }
 
-  static void assertResponseSuccess(Integer statusCode, AccountIntegrationResponseVO response){
+  private static void assertResponseSuccess(Integer statusCode, AccountIntegrationResponseVO response) {
     System.assertEquals(200, statusCode, 'Status code is incorrect');
     System.assertEquals(statusCode, response.status, 'Response status is incorrect');
     System.assertNotEquals(null, response.accountId, 'Response accountId is incorrect');
     System.assertEquals('Account upserted.', response.message, 'Response message is incorrect');
   }
 
-  static void assertResponseError(
+  private static void assertResponseError(
+    Integer statusCode,
     AccountIntegrationResponseVO response,
-    Integer status,
     String message
   ) {
-    System.assertEquals(
-      null,
-      response.accountId,
-      'Response body field \'accountId\' should be null'
-    );
-    System.assertEquals(
-      status,
-      response.status,
-      'Response body field \'status\' should be \'' +
-      status +
-      '\''
-    );
-    System.assertEquals(
-      true,
-      response.message.startsWith(message),
-      'Response body field \'message\' should start with \'' +
-      message +
-      '\''
-    );
+    System.assertEquals(500, statusCode, 'Status code is incorrect');
+    System.assertEquals(statusCode, response.status, 'Response status is incorrect');
+    System.assertEquals(null, response.accountId, 'Response accountId should be null');
+    System.assertEquals(true, response.message.contains(message), 'Response message is incorrect');
   }
 }

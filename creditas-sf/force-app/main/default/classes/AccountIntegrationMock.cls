@@ -14,9 +14,15 @@ public class AccountIntegrationMock {
     return System.JSON.serialize(request);
   }
 
-  public static String getInvalidCurrencyCodeExceptionMock() {
+  public static String getIncomeCurrencyCodeExceptionMock() {
     AccountIntegrationRequestVO request = AccountIntegrationRequestVO.parse(getPayloadMock());
     request.income[0].amount.currencyCode = '';
+    return System.JSON.serialize(request);
+  }
+
+  public static String getProfessionalIncomeCurrencyCodeExceptionMock() {
+    AccountIntegrationRequestVO request = AccountIntegrationRequestVO.parse(getPayloadMock());
+    request.professionalInfo[0].professionalIncome[0].amount.currencyCode = '';
     return System.JSON.serialize(request);
   }
 
@@ -86,6 +92,16 @@ public class AccountIntegrationMock {
     String json = getPayloadMock()
       .replace('test-001', 'test-002')
       .replace('50450177050', '04210259055');
+    return json;
+  }
+
+  public static String getInvalidFieldDataExceptionMock() {
+    String json = getPayloadMock().replace('"birthDate":"1996-05-13"', '"birthDate":"13"');
+    return json;
+  }
+
+  public static String getUniqueValueExceptionMock() {
+    String json = getPayloadMock().replace('50450177050', '04210259055');
     return json;
   }
 

@@ -18,7 +18,7 @@
             <div class="slds-size_4-of-12 form-control pendenciado">
               <label for="checkboxEmailPendenciado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Pendenciado</label>
               <input data-id="checkboxEmailPendenciado" data-field="EmailPendingReason__c" data-status="EmailStatus__c" data-value={preValue} name="Email" type="checkbox" value="Pendenciar"
-                onchange={handleChangeCheckbox} /> 
+                onchange={handleChangeCheckbox} class="disabled-input" disabled /> 
             </div>
       
             <div class="slds-size_4-of-12 form-control reprovado">
@@ -47,7 +47,7 @@
             <div class="slds-size_4-of-12 form-control pendenciado">
               <label for="checkboxSMSPendenciado" class="">&nbsp;</label>
               <input id="checkboxSMSPendenciado" data-field="MobilePendingReason__c" data-value={preValue} data-status="MobileStatus__c" name="SMS" type="checkbox"
-                value="Pendenciar" onchange={handleChangeCheckbox} /> 
+                value="Pendenciar" onchange={handleChangeCheckbox} class="disabled-input" disabled  /> 
             </div>
       
             <div class="slds-size_4-of-12 form-control reprovado">
@@ -59,7 +59,7 @@
         </div>  
         
         <div class="btn-container">
-          <button class="btn" disabled={disabledBtnSave} onclick={handleSaveSection} >Salvar</button>
+          <button class="btn" disabled={controllerSaveBtn} onclick={handleSaveSection} >Salvar</button>
         </div>
       </div>
 </template>

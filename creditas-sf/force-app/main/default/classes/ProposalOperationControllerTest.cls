@@ -39,7 +39,7 @@ public class ProposalOperationControllerTest {
             testException = e;
         }
         Test.stopTest();
-        System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'An opportunity id should be passed.');
+        System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'Opportunity must have a related section record');
     }
 
     @isTest
@@ -66,7 +66,7 @@ public class ProposalOperationControllerTest {
         
         Test.startTest();
         try{
-        	ProposalOperationController.saveOperationDetails(proponent);
+            ProposalOperationController.saveOperationDetails(proponent);
         }catch(Exception e){
             testException = e;
         }
@@ -75,6 +75,5 @@ public class ProposalOperationControllerTest {
         System.assertEquals('System.AuraHandledException', testException.getTypeName(), 'Wrong exception was thrown');
         System.assertEquals('Invalid conversion from runtime type Account to OperationSection__c', testException.getMessage(),'Incorrect Exception message');
         System.assertEquals('Nivaele', resultProponent.Name,'Incorrect Account Name value');
-
     }
 }

@@ -1,6 +1,5 @@
 import { LightningElement, api, wire, track } from 'lwc';
 
-import ADDRESSES_OBJECT from '@salesforce/schema/Addresses__c';
 import SECTION_OBJECT from '@salesforce/schema/AddressDataSection__c';
 
 import CEPSTATUS from '@salesforce/schema/AddressDataSection__c.CEPStatus__c';
@@ -44,7 +43,6 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
-//import upsertAddress from '@salesforce/apex/ProposalAddressesController.saveAddress';
 import getRecordAddressSection from '@salesforce/apex/ProposalAddressesController.getAddressSectiontDetails';
 import upsertAddressSection from '@salesforce/apex/ProposalAddressesController.saveAddressSection';
 
@@ -59,7 +57,6 @@ const FIELDSVALIDATIONCOUNTRY = [COUNTRYSTATUS]
 
 export default class ProposalAddressesComponent extends LightningElement {
 
-  //@api accountid
   @api opportunityid;
   error
   
@@ -70,7 +67,10 @@ export default class ProposalAddressesComponent extends LightningElement {
   fieldsStatus = ['CEPStatus__c', 'StreetAddressStatus__c', 'AddressNumberStatus__c', 'AddOnStatus__c', 'NeighborhoodStatus__c', 'CityStatus__c', 'StateStatus__c', 'CountryStatus__c']
   
   // Controller save button
-  disabledBtnSave = true
+  disabledBtnSave = false;
+  completionPercentage = 0;
+  saveRecord = true;
+  statusReturnedPendency = 'Voltou de pendência';
 
   recordAddressId = ''
   addressData
@@ -154,18 +154,30 @@ export default class ProposalAddressesComponent extends LightningElement {
       console.log(this.objValidationSection)
 
       let listStatus = this.fieldsStatus
+      let returnedPendency = this.statusReturnedPendency;
 
       for (let index in listStatus) {
-        let status = listStatus[index]
+        
+        let status = listStatus[index];
+
         this.template.querySelectorAll("[data-status='" + status + "']").forEach(function (item) {
-          if (item.value === resultValidationSection[status]) {
-            item.checked = true
+
+        item.classList.contains('show_icon_pendency') ? item.classList.remove('show_icon_pendency'):'';
+      
+        let dataValue = item.hasAttribute("data-value") ? item.getAttribute("data-value") : null;
+        
+        if(dataValue === returnedPendency && dataValue === resultValidationSection[status]){
+          item.classList.add('show_icon_pendency');
+        }
+        else if (item.value === resultValidationSection[status]) {
+          item.checked = true
             item.setAttribute('data-value', item.value)
           }
         })
       }
-      let info = this.getPercentage()
-      this.sendInfo(info)
+      let info = this.getPercentage();
+      this.sendInfo(info);
+      
     } else if (result.error) {
       console.log('Error on getting checkboxes values')
     }
@@ -177,46 +189,32 @@ export default class ProposalAddressesComponent extends LightningElement {
     this.saveFieldsValidation();
   }
 
-  // saveFields() {
-  //   this.disabledBtnSave = true;
-  //   let payload = this.addressValue;
-    
-  //   upsertAddress({addresses : payload})
-  //   .then(result => {
-  //     refreshApex(this.resultRecordCommunication);
-  //     console.log({ result }) 
-      
-  //   })
-  //   .catch(error =>{
-  //     console.log(error);
-  //     this.disabledBtnSave = false;
-  //     this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
-  //   })
-  // }
-
   saveFieldsValidation() {
 
     this.objValidationSection.Opportunity__c = this.opportunityid;
     let payload = this.objValidationSection;
-    console.log('Vai salvar: '+ JSON.stringify(payload));
-    console.log({ payload });
     
     upsertAddressSection({addressSection : payload})
     .then(result => {
       refreshApex(this.recordAddress);
       this.showToast('', 'Registro atualizado com sucesso!', 'success');
-      this.disabledBtnSave = false;
+      this.saveRecord = true;
+      this.sendInfo(this.getPercentage());
     })
     .catch(error =>{
       console.log(error);
-      this.disabledBtnSave = false;
       this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error');
+    })
+    .finally( ()=>{
+      this.disabledBtnSave = false;
     })
   }
 
   handleChangeCheckbox(event) {
+    this.saveRecord = false;
     this.checksOnlyOne(event)
     this.saveObjectValues(event)
+    this.sendInfo(this.getPercentage());
   }
 
   saveObjectValues(event) {
@@ -311,18 +309,19 @@ export default class ProposalAddressesComponent extends LightningElement {
     
     infoValue = (countSelectedCheckbox / totalLines) * 100
     selectedCheckboxes = 0;
-    
+
+    this.completionPercentage = (infoValue == 100 && !this.saveRecord) ? 99 : infoValue;
+
     info.variant = infoVariant
-    info.value = infoValue
+    info.value = this.completionPercentage
     info.returnedId = returnedId
   
-    this.controllerSave(info.value)
-
-    return info
+    return info;
   }
 
-  controllerSave(percentageSection){
-    this.disabledBtnSave = (percentageSection != 100) ? true : false
+
+  get controllerSaveBtn(){
+    return (this.disabledBtnSave || (this.completionPercentage < 99) || this.saveRecord) ? true : false;
   }
 
   showToast(title, message, variant) {
@@ -388,16 +387,14 @@ export default class ProposalAddressesComponent extends LightningElement {
   }
 
   handleInputChange(event) {
+
+    this.saveRecord = false;
     let objectAddress = this.addressValue[0]
     let field = event.target.getAttribute('data-id')
     let currentValue = event.target.value
-    console.log('objectAddress: '+ JSON.stringify(objectAddress));
-    console.log('field: '+ field);
-    console.log('currentValue: '+ currentValue);
-    objectAddress[field] = currentValue
 
+    objectAddress[field] = currentValue;
     this.objValidationSection = objectAddress;
-    
-    console.log('objectAddress After: '+ JSON.stringify(objectAddress));
+    this.sendInfo(this.getPercentage());
   }
 }

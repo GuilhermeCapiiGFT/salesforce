@@ -2,6 +2,8 @@ public with sharing class ProposalService
 {
     private static final Integer CURRENT_RECORD = 1;
     private static Integer historyLimit;
+    private static final String STAGE_WAITING_UE = 'Aguardando Análise de Formalização';
+    private static final String STAGE_IN_ANALYSIS_UE = 'Em Análise de Formalização';
     
     private static Id opportunityId;
     private static Id accountId;
@@ -12,7 +14,7 @@ public with sharing class ProposalService
     {
         stageName = getStageName(oppId);
 
-        if(stageName.equals('Aguardando Análise de Formalização'))
+        if(stageName.equals(STAGE_WAITING_UE))
         {
             historyLimit = (Integer) Object_Section_History_Limit__mdt.getInstance('History_Limit').Value__c;
             List<SObject> sectionRecords = new List<SObject>();
@@ -52,10 +54,10 @@ public with sharing class ProposalService
 
     public static void changeStageName(Id oppId)
     {
-        if(stageName.equals('Aguardando Análise de Formalização'))
+        if(stageName.equals(STAGE_WAITING_UE))
         {
             Opportunity opp = new Opportunity(Id = oppId);
-            opp.StageName = 'Em Análise de Formalização';
+            opp.StageName = STAGE_IN_ANALYSIS_UE;
     
             Database.update(opp);   
         }
@@ -63,7 +65,7 @@ public with sharing class ProposalService
 
     public static String getStageName(Id oppId)
     {
-        return [SELECT Id, StageName FROM Opportunity where Id =:oppId LIMIT 1].StageName;
+        return [SELECT Id, StageName FROM Opportunity WHERE Id =:oppId LIMIT 1]?.StageName;
     }
 
     public static void deleteOldestSections()

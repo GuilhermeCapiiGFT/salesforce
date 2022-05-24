@@ -14,7 +14,7 @@ public class ProposalControllerTest {
         Opportunity opportunity              = new Opportunity();
         opportunity.AccountId                = accCustomer.Id;
         opportunity.Name                     = 'Formalizacao Autofin';
-        opportunity.StageName                = 'Em Análise de Formalização';
+        opportunity.StageName                = 'Aguardando Análise de Formalização';
         opportunity.CloseDate                = Date.today().addDays(10);
         opportunity.ExternalTenant__c        = 'creditasbr';
         opportunity.ExternalVersion__c       = 1;      
@@ -93,7 +93,7 @@ public class ProposalControllerTest {
         }
         Test.stopTest();
 
-        System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'Wrong exception Thrown.');
+        System.assertEquals('Attempt to de-reference a null object', testException.getMessage(), 'Wrong exception Thrown.');
     }
 
     

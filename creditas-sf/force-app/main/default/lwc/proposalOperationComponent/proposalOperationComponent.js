@@ -99,6 +99,7 @@ export default class ProposalOperationComponent extends LightningElement {
       this.valueAnoCarro.fieldReadOnly         = !data?.fields?.ManufacturingYear__c.updateable;
       this.valueNomeBeneficiario.fieldReadOnly = !data?.fields?.PartnerAccount__c.updateable;
       this.valueCNPJBeneficiario.fieldReadOnly = !data?.fields?.DocumentNumber__c.updateable;
+      this.valueNumeroContrato.fieldReadOnly   = !data?.fields?.CCBnumber__c.updateable;
 
       this.error = undefined;
     }
@@ -115,8 +116,9 @@ export default class ProposalOperationComponent extends LightningElement {
         this.setOperationSection();
         this.setOperationValidationSection();
         this.error = undefined;
-    }else if(result.error){
-      this.showError(result.error);
+      }else if(result.error){
+      this.error = result.error;
+      this.showToast(ERROR_OCCURRED,ERROR_MESSAGE, ERROR_VARIANT);
       console.log(result.error);
     }
   }
@@ -131,7 +133,6 @@ export default class ProposalOperationComponent extends LightningElement {
     let operationRecord =  this.recordOperationSection;
     this.valueValorCarro.value        = operationRecord.Amount__c                   ? operationRecord.Amount__c                   : null;
     this.valueAnoCarro.value          = operationRecord.ManufacturingYear__c        ? operationRecord.ManufacturingYear__c        : null;
-    this.valueFinalidadeOp.value      = operationRecord.Description                 ? operationRecord.Description                 : null;
     this.valueDespesasRegistro.value  = operationRecord.ParameterAdditionalCosts__c ? operationRecord.ParameterAdditionalCosts__c : null;
     this.valueTAC.value               = operationRecord.ParameterTac__c             ? operationRecord.ParameterTac__c             : null;
     this.valueIOF.value               = operationRecord.ParameterIOF__c             ? operationRecord.ParameterIOF__c             : null;
@@ -149,27 +150,18 @@ export default class ProposalOperationComponent extends LightningElement {
     this.valueAgencia.value           = operationRecord.Agency__c                   ? operationRecord.Agency__c                   : null;
     this.valueContaCorrente.value     = operationRecord.BankAccountNumber__c        ? operationRecord.BankAccountNumber__c        : null;
     this.valueFinalidadeOp.value      = operationRecord.Description__c              ? operationRecord.Description__c              : null;
-    
-    // Nome Beneficiário + CNPJ Beneficiário + Numero do Contrato
     this.valueNomeBeneficiario.value  = operationRecord.PartnerAccount__c           ? operationRecord.PartnerAccount__c           : null;
     this.valueCNPJBeneficiario.value  = operationRecord.DocumentNumber__c           ? operationRecord.DocumentNumber__c           : null;
-    // this.valueFinalidadeOp.value      = operationRecord.Description__c              ? operationRecord.Description__c              : null;
+    this.valueNumeroContrato.value    = operationRecord.CCBnumber__c                ? operationRecord.CCBnumber__c                : null;
   }
 
   setOperationValidationSection(){
     let resultValidationSection = this.recordOperationSection;
     let listStatus = this.fieldsStatus;
-    let returnedPendency = this.statusReturnedPendency;
     for(let index in listStatus){
         let status = listStatus[index];
         this.template.querySelectorAll("[data-status='"+status+"']").forEach(function(item) {
-        item.classList.contains('show_icon_pendency') ? item.classList.remove('show_icon_pendency'):'';
-        
-        let dataValue = item.hasAttribute("data-value") ? item.getAttribute("data-value") : null;
-        if(dataValue === returnedPendency && dataValue === resultValidationSection[status]){
-          item.classList.add('show_icon_pendency');
-        }
-        else if (item.value === resultValidationSection[status]) {
+        if (item.value === resultValidationSection[status]) {
             item.checked = true;
             item.setAttribute('data-value', item.value);
         }
@@ -200,7 +192,6 @@ export default class ProposalOperationComponent extends LightningElement {
   }
 
   handleChangeCheckbox(event) {
-    // this.sendSaveSection(false);
     this.saveRecord = false;
     const currentCheckbox = event.target;
     const currentRowCheckboxes = this.template.querySelectorAll(

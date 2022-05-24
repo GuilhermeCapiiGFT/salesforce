@@ -1,7 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
 
-
-import COMMUNICATIONCONTACT_OBJECT from '@salesforce/schema/CommunicationContacts__c';
 import CONTACTDETAILSSECTION_OBJECT from '@salesforce/schema/ContactDetailsSection__c';
 
 import MOBILESTATUS from '@salesforce/schema/ContactDetailsSection__c.MobileStatus__c';
@@ -17,9 +15,8 @@ import EMAILDESC from '@salesforce/schema/ContactDetailsSection__c.EmailObservat
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-//import getRecordCommunicationContact from '@salesforce/apex/ProposalContactDataController.getCommunicationContact';
+
 import getRecordContactDetailsSection from '@salesforce/apex/ProposalContactDataController.getContactDetails';
-//import upsertCommunicationContacts from '@salesforce/apex/ProposalContactDataController.saveCommunicationContacts';
 import upsertContactDetailsSection from '@salesforce/apex/ProposalContactDataController.saveContactDetailsSection';
 
 
@@ -27,8 +24,7 @@ const FIELDSVALIDATIONEMAIL = [EMAILSTATUS, EMAILREJECTION, EMAILPENDING, EMAILD
 const FIELDSVALIDATIONSMS = [MOBILESTATUS, MOBILEREJECTION, MOBILEPENDING, MOBILEDESC];
 export default class ProposalContactDataComponent extends LightningElement {
 
-  // Account Info
-  @api accountid;
+
   @api opportunityid;
 
   account;
@@ -40,8 +36,11 @@ export default class ProposalContactDataComponent extends LightningElement {
   fieldsValidationSMS = FIELDSVALIDATIONSMS;
   fieldsStatus = ['EmailStatus__c','MobileStatus__c'];
   // Controller btn save
-  disabledBtnSave = true;
-  
+  disabledBtnSave = false;
+  completionPercentage = 0;
+  saveRecord = true;
+  statusReturnedPendency = 'Voltou de pendência';
+
   // Contact Data Info
   recordContactDataId = '';
   contactData;
@@ -52,10 +51,7 @@ export default class ProposalContactDataComponent extends LightningElement {
   // Checkboxes Values
   value = [];
   preValue = [];
-  
-  communicationValue = new Map();
- 
-  
+
   // refresh apex 
   recordCommunication;
   resultRecordCommunication;
@@ -76,25 +72,7 @@ export default class ProposalContactDataComponent extends LightningElement {
     'Opportunity__c' : ''
   }
   
-  //get record communication
- /* @wire(getRecordCommunicationContact,{accountId: '$accountid'})
-  resultRecordCommunication(result) {
-    this.resultRecordCommunication = result;
-    if(result.data){
-      let data = result.data;
-      this.communicationValue.set('EMAIL', data.EMAIL ? Object.assign({},data.EMAIL) : {'sobjectType': 'CommunicationContacts__c', Account__c: this.accountid, Channel__c: "EMAIL", Code__c: null});
-      this.communicationValue.set('SMS', data.SMS ? Object.assign({},data.SMS) : {'sobjectType': 'CommunicationContacts__c', Account__c: this.accountid, Channel__c: "SMS", Code__c: null});
-
-      this.valueSMS = data.SMS ? data.SMS.Code__c : null;
-      this.valueEmail = data.EMAIL? data.EMAIL.Code__c : null;
-    }
-    else if(result.error){
-      console.log(result.error);
-    }
-  }*/
-
- 
-  // Get fields permission in Contact Section
+  
 
  @wire(getObjectInfo, { objectApiName: CONTACTDETAILSSECTION_OBJECT  })
   recordTypeContact({ error, data }) {
@@ -113,13 +91,6 @@ export default class ProposalContactDataComponent extends LightningElement {
     if(result.data) {
       let data = result.data;
 
-      //this.communicationValue.set('EMAIL', Object.assign({},data.EMAIL));
-      //this.communicationValue.set('SMS', Object.assign({},data.SMS));
-     
-      //this.communicationValue.set(Email__c , null);
-      //this.communicationValue.set(Mobile__c , null);
-      //this.communicationValue.set('EMAIL', data.EMAIL ? Object.assign({},data.EMAIL) : {'sobjectType': 'ContactDetailsSection__c', Opportunity__c: this.opportunityid});
-      //this.communicationValue.set('SMS', data.SMS ? Object.assign({},data.SMS) : {'sobjectType': 'ContactDetailsSection__c', Opportunity__c: this.opportunityid});
       this.valueSMS = data.Mobile__c;
       this.valueEmail = data.Email__c;
 
@@ -134,7 +105,7 @@ export default class ProposalContactDataComponent extends LightningElement {
             item.checked = true;
             item.setAttribute('data-value', item.value);
           }
-        });
+        })
       }
       let info = this.getPercentage();
       this.sendInfo(info);
@@ -144,45 +115,37 @@ export default class ProposalContactDataComponent extends LightningElement {
   }
 
   handleSaveSection() {
-    (this.fieldReadOnly == false)? this.saveFieldsValidation() : this.saveFieldsValidation();
+    this.disabledBtnSave = true;
+    this.saveFieldsValidation();
+
   }
 
-
-  /*saveFieldsCommunication(){
-    this.disabledBtnSave = true;
-    let payload = Array.from(this.communicationValue.values());
-
-    upsertCommunicationContacts({listCommunication : payload})
-    .then( result=>{
-      refreshApex(this.resultRecordCommunication);
-      this.saveFieldsValidation();
-    })
-    .catch(error =>{
-      console.log(error);
-      this.disabledBtnSave = false;
-      this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
-    })
-  }*/
   saveFieldsValidation() {
     this.objValidationSection.Opportunity__c = this.opportunityid;
     let payload = this.objValidationSection
     upsertContactDetailsSection({recordContactDetails : payload})
     .then( result=>{
       refreshApex(this.recordCommunication);
-      console.log({ result }) 
+      
       this.showToast('', 'Registro atualizado com sucesso!', 'success')
-      this.disabledBtnSave = false;
+      this.saveRecord = true;
+      this.sendInfo(this.getPercentage());
+  
     })
     .catch(error =>{
       console.log(error);
-      this.disabledBtnSave = false;
       this.showToast('', 'Ocorreu um erro ao salvar o registro!', 'error')
+    })
+    .finally( ()=>{
+      this.disabledBtnSave = false;
     })
   }
 
   handleChangeCheckbox(event) {
+    this.saveRecord = false;
     this.checksOnlyOne(event);
     this.saveObjectValues(event);
+    this.sendInfo(this.getPercentage());
   }
 
   saveObjectValues(event) {
@@ -252,18 +215,18 @@ export default class ProposalContactDataComponent extends LightningElement {
     let selectedCheckboxes = topContainer.querySelectorAll('input[type="checkbox"]:checked')
     let totalLines = 2;
 
-    let isPending = false;
-    let isRejected = false;
+    let isPending = false
+    let isRejected = false
 
-    let infoVariant = '';
-    let infoValue = '';
+    let infoVariant = ''
+    let infoValue = ''
 
-    let info = {};
+    let info = {}
     
     let countSelectedCheckbox = 0;
 
     selectedCheckboxes.forEach(element => {
-      countSelectedCheckbox++;
+      countSelectedCheckbox++
 
       if (element.value === 'Aprovar')         infoVariant = 'base-autocomplete'
       else if (element.value === 'Pendenciar') isPending = true
@@ -275,18 +238,19 @@ export default class ProposalContactDataComponent extends LightningElement {
     
     infoValue = (countSelectedCheckbox / totalLines) * 100;
     selectedCheckboxes = 0;
+
+    this.completionPercentage = (infoValue == 100 && !this.saveRecord) ? 99 : infoValue;
+    
     
     info.variant = infoVariant;
-    info.value = infoValue;
+    info.value = this.completionPercentage;
     info.returnedId = returnedId;
-  
-    this.controllerSave(info.value);
 
-    return info
+    return info;
   }
+  get controllerSaveBtn(){
 
-  controllerSave(percentageSection){
-    this.disabledBtnSave = (percentageSection != 100) ? true : false;
+    return (this.disabledBtnSave || (this.completionPercentage < 99) || this.saveRecord) ? true : false;
   }
 
   showToast(title, message, variant) {
@@ -312,8 +276,8 @@ export default class ProposalContactDataComponent extends LightningElement {
     let field = this.template.querySelector('[data-field="'+reason+'"]');
     field.checked = false;
     field.setAttribute('data-value', '');
-    let info = this.getPercentage();
-    this.sendInfo(info);
+    let info = this.getPercentage()
+    this.sendInfo(info)
   }
 
   setMapReason(selectedReason){
@@ -332,13 +296,14 @@ export default class ProposalContactDataComponent extends LightningElement {
   }
 
   handleInputChange(event){
-    let objCommunication = this.communicationValue;
     let key = event.target.getAttribute('data-id');
     let currentValue = event.target.value;
     let objValidationSection = this.objValidationSection;
     if(key == 'EMAIL'){ 
       objValidationSection.Email__c = currentValue}
       else if(key == 'SMS'){objValidationSection.Mobile__c = currentValue}
+      this.saveRecord = false;
+      this.sendInfo(this.getPercentage());
   }
 
 }

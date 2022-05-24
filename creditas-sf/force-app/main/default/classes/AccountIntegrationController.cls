@@ -1,4 +1,4 @@
-@RestResource(urlMapping='/IntegrationAccountIN/v2/*')
+@RestResource(urlMapping='/IntegrationAccountIN/*')
 global with sharing class AccountIntegrationController {
   @HttpPut
   global static void putMethod() {

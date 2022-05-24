@@ -1,10 +1,10 @@
 <template>
-  <div data-id="ContainerDadosRenda">
+  <div data-id="ContainerDadosRenda" if:true={showContainer}>
 
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Situação Profissional</label>
-        <lightning-combobox variant="label-hidden" options={professionalStateOptions} type="text" value={status.value} disabled={status.fieldReadOnly} data-id="inputState" onchange={handleInputChange}></lightning-combobox>
+        <lightning-combobox variant="label-hidden" options={professionalStateOptions} type="text" value={incomeDataSectionRecord.Status__c} disabled={disabledFields.status} data-id="Status__c" onchange={handleInputChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -13,19 +13,19 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="professionalInfoStatusCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxProfessionalStatusAprovado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Aprovado</label>
-          <input data-id="checkboxProfessionalStatusAprovado"  data-field="ProfessionalSituationStatus__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Aprovar"
+          <input data-id="checkboxProfessionalStatusAprovado" data-field="ProfessionalSituationStatus__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxProfessionalStatusPendenciado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Pendenciado</label>
-          <input data-id="checkboxProfessionalStatusPendenciado"  data-field="ProfessionalSituationPendingReason__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxProfessionalStatusPendenciado" class="disabled-input" disabled data-field="ProfessionalSituationPendingReason__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxProfessionalStatusReprovado" class="slds-p-bottom_xx-small" style="overflow-wrap: break-word; ">Reprovado</label>
-          <input data-id="checkboxProfessionalStatusReprovado" class="disabled-input" disabled data-field="CEPRejectReason__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxProfessionalStatusReprovado"  data-field="ProfessionalSituationRejectReason__c" data-value={preValue} data-status="ProfessionalSituationStatus__c" name="ProfessionalInfoStatus" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -34,7 +34,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Profissão</label>
-        <lightning-input variant="label-hidden"  type="text" value={jobTitle.value} disabled={jobTitle.fieldReadOnly} data-id="inputJobTitle" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="text" value={incomeDataSectionRecord.JobTitle__c} disabled={disabledFields.jobTitle} data-id="JobTitle__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -49,13 +49,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxJobTitlePendenciado">&nbsp;</label>
-          <input data-id="checkboxJobTitlePendenciado"  data-field="ProfessionPendingReason__c" data-value={preValue} data-status="ProfessionStatus__c" name="ProfessionalInfoJobTitle" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxJobTitlePendenciado" class="disabled-input" disabled data-field="ProfessionPendingReason__c" data-value={preValue} data-status="ProfessionStatus__c" name="ProfessionalInfoJobTitle" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxJobTitleReprovado">&nbsp;</label>
-          <input data-id="checkboxJobTitleReprovado" class="disabled-input" disabled data-field="ProfessionStatus__c" data-value={preValue} data-status="ProfessionStatus__c" name="ProfessionalInfoJobTitle" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxJobTitleReprovado" data-field="ProfessionRejectReason__c" data-value={preValue} data-status="ProfessionStatus__c" name="ProfessionalInfoJobTitle" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -64,7 +64,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Patrimônio</label>
-        <lightning-combobox variant="label-hidden"  type="text" options={netWorthOptions} value={networth.value} disabled={networth.fieldReadOnly} data-id="Networth__c" onchange={handleNetworthChange}></lightning-combobox>
+        <lightning-combobox variant="label-hidden"  type="text" options={netWorthOptions} value={incomeDataSectionRecord.NetWorth__c} disabled={disabledFields.networth} data-id="NetWorth__c" onchange={handleInputChange}></lightning-combobox>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -73,19 +73,19 @@
       <div class="slds-grid slds-size_5-of-12 checkbox-options slds-p-top_x-small" data-id="networthCheckboxContainer">
         <div class="slds-size_4-of-12 form-control aprovado">
           <label for="checkboxNetworthAprovado">&nbsp;</label>
-          <input data-id="checkboxNetworthAprovado"  data-field="NetWorthStatus__c" data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Aprovar"
+          <input data-id="checkboxNetworthAprovado" data-field="NetWorthStatus__c" data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Aprovar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxNetworthPendenciado">&nbsp;</label>
-          <input data-id="checkboxNetworthPendenciado" class="disabled-input" disabled  data-field="NetWorthStatus__c" data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxNetworthPendenciado" class="disabled-input" disabled data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxNetworthReprovado">&nbsp;</label>
-          <input data-id="checkboxNetworthReprovado" class="disabled-input" disabled   data-field="NetWorthStatus__c" data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxNetworthReprovado" class="disabled-input" disabled data-value={preValue} data-status="NetWorthStatus__c" name="ProfessionalInfoNetworth" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -94,7 +94,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Informada</label>
-        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={monthlyIncome.value} disabled={monthlyIncome.fieldReadOnly} data-id="inputMonthlyIncome" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={incomeDataSectionRecord.MonthlyIncome__c} disabled={disabledFields.monthlyIncome} data-id="MonthlyIncome__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -109,13 +109,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxMonthlyIncomePendenciado">&nbsp;</label>
-          <input data-id="checkboxMonthlyIncomePendenciado"  data-field="ReportedIncomePendingReason__c" data-value={preValue} data-status="MonthlyIncomeStatus__c" name="ProfessionalInfoMonthlyIncome" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxMonthlyIncomePendenciado" class="disabled-input" disabled data-field="ReportedIncomePendingReason__c" data-value={preValue} data-status="MonthlyIncomeStatus__c" name="ProfessionalInfoMonthlyIncome" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxMonthlyIncomeReprovado">&nbsp;</label>
-          <input data-id="checkboxMonthlyIncomeReprovado" class="disabled-input" disabled data-field="MonthlyIncomeStatus__c" data-value={preValue} data-status="MonthlyIncomeStatus__c" name="ProfessionalInfoMonthlyIncome" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxMonthlyIncomeReprovado" data-field="ReportedIncomeRejectReason__c" data-value={preValue} data-status="MonthlyIncomeStatus__c" name="ProfessionalInfoMonthlyIncome" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -124,7 +124,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Mínima</label>
-        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={minimalRequiredIncome.value} disabled={minimalRequiredIncome.fieldReadOnly} data-id="inputMinimalMonthlyIncome" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={incomeDataSectionRecord.MinimalRequiredIncome__c} disabled={disabledFields.minimalRequiredIncome} data-id="MinimalRequiredIncome__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -139,7 +139,7 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxMinimalIncomePendenciado">&nbsp;</label>
-          <input data-id="checkboxMinimalIncomePendenciado"  class="disabled-input" disabled data-field="MinimalRequiredIncomeStatus__c" data-value={preValue} data-status="MinimalRequiredIncomeStatus__c" name="ProfessionalInfoMinimalIncome" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxMinimalIncomePendenciado"  class="disabled-input" disabled data-value={preValue} data-status="MinimalRequiredIncomeStatus__c" name="ProfessionalInfoMinimalIncome" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
@@ -154,7 +154,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Considerada</label>
-        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={presumedMonthlyIncome.value} disabled={presumedMonthlyIncome.fieldReadOnly} data-id="inputPresumedMonthlyIncome" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={incomeDataSectionRecord.PresumedMonthlyIncome__c} disabled={disabledFields.presumedMonthlyIncome} data-id="PresumedMonthlyIncome__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -169,13 +169,13 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxPresumedMonthlyIncomePendenciado">&nbsp;</label>
-          <input data-id="checkboxPresumedMonthlyIncomePendenciado" class="disabled-input" disabled data-field="PresumedMonthlyIncomeStatus__c" data-value={preValue} data-status="PresumedMonthlyIncomeStatus__c" name="ProfessionalInfoPresumedMonthlyIncome" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxPresumedMonthlyIncomePendenciado" class="disabled-input" disabled data-value={preValue} data-status="PresumedMonthlyIncomeStatus__c" name="ProfessionalInfoPresumedMonthlyIncome" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxPresumedMonthlyIncomeReprovado">&nbsp;</label>
-          <input data-id="checkboxPresumedMonthlyIncomeReprovado" class="disabled-input" disabled data-field="PresumedMonthlyIncomeStatus__c" data-value={preValue} data-status="PresumedMonthlyIncomeStatus__c" name="ProfessionalInfoPresumedMonthlyIncome" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxPresumedMonthlyIncomeReprovado" class="disabled-input" disabled data-value={preValue} data-status="PresumedMonthlyIncomeStatus__c" name="ProfessionalInfoPresumedMonthlyIncome" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
@@ -184,7 +184,7 @@
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
         <label class="slds-p-bottom_xx-small">Renda Confirmada</label>
-        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={confirmedMonthlyIncome.value} disabled={confirmedMonthlyIncome.fieldReadOnly} data-id="inputConfirmedMonthlyIncome" onchange={handleInputChange}></lightning-input>
+        <lightning-input variant="label-hidden"  type="number" formatter="currency" step=".01" value={incomeDataSectionRecord.ConfirmedMonthlyIncome__c} disabled={disabledFields.confirmedMonthlyIncome} data-id="ConfirmedMonthlyIncome__c" onchange={handleInputChange}></lightning-input>
       </div>
   
       <div class="slds-size_2-of-12 file-icon">
@@ -199,20 +199,20 @@
   
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxConfirmedMonthlyIncomePendenciado">&nbsp;</label>
-          <input data-id="checkboxConfirmedMonthlyIncomePendenciado" class="disabled-input" disabled data-field="ConfirmedMonthlyIncomeStatus__c" data-value={preValue} data-status="ConfirmedMonthlyIncomeStatus__c" name="ProfessionalInfoConfirmedMonthlyIncome" type="checkbox" value="Pendenciar"
+          <input data-id="checkboxConfirmedMonthlyIncomePendenciado" class="disabled-input" disabled data-value={preValue} data-status="ConfirmedMonthlyIncomeStatus__c" name="ProfessionalInfoConfirmedMonthlyIncome" type="checkbox" value="Pendenciar"
             onchange={handleChangeCheckbox} />
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxConfirmedMonthlyIncomeReprovado">&nbsp;</label>
-          <input data-id="checkboxConfirmedMonthlyIncomeReprovado" class="disabled-input" disabled data-field="ConfirmedMonthlyIncomeStatus__c" data-value={preValue} data-status="ConfirmedMonthlyIncomeStatus__c" name="ProfessionalInfoConfirmedMonthlyIncome" type="checkbox" value="Rejeitar"
+          <input data-id="checkboxConfirmedMonthlyIncomeReprovado" class="disabled-input" disabled data-value={preValue} data-status="ConfirmedMonthlyIncomeStatus__c" name="ProfessionalInfoConfirmedMonthlyIncome" type="checkbox" value="Rejeitar"
             onchange={handleChangeCheckbox} />
         </div>
       </div>
     </div>
 
     <div class="btn-container">
-      <button class="btn" disabled={controllerSave} onclick={handleSaveSection} >Salvar</button>
+      <button class="btn" disabled={disabledBtnSave} onclick={handleSaveSection} >Salvar</button>
     </div>
 
   </div>

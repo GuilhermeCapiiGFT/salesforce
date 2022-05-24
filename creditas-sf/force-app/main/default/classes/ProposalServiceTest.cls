@@ -239,15 +239,17 @@ public with sharing class ProposalServiceTest {
         }
         Test.stopTest();
 
-        System.assertEquals('List has no rows for assignment to SObject', testException.getMessage(), 'Should not return results in the list.');
+        System.assertEquals('Attempt to de-reference a null object', testException.getMessage(), 'Should not anything in the list.');
     }
 
     @isTest
     public static void cloneStageSuccess()
     {
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
-
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Nivaele' LIMIT 1];
+        
         Test.startTest();
+        ProposalService.start(acc.Id, opp.Id);
         ProposalService.changeStageName(opp.Id);
         Test.stopTest();
 
@@ -260,10 +262,12 @@ public with sharing class ProposalServiceTest {
     public static void cloneStageFail()
     {
         Exception testException;
-        Account acc = [SELECT Id FROM Account LIMIT 1];
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Nivaele' LIMIT 1];
 
         Test.startTest();
         try {
+            ProposalService.start(acc.Id, opp.Id);
             ProposalService.changeStageName(acc.Id);
         } catch (Exception e) {
             testException = e;
@@ -272,6 +276,6 @@ public with sharing class ProposalServiceTest {
 
         Opportunity updatedOpp = [SELECT Id, StageName FROM Opportunity LIMIT 1];
 
-        System.assertEquals('Em Análise de Formalização', updatedOpp.StageName, 'Incorrect value for Stage Name.');
+        System.assertEquals('Aguardando Análise de Formalização', updatedOpp.StageName, 'Incorrect value for Stage Name.');
     }
 }

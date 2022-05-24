@@ -3,7 +3,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
 import { getSObjectValue, refreshApex } from '@salesforce/apex';
-import getFinancialResource from '@salesforce/apex/ProposalWarrantyController.getFinancialResource';
+
 import getWarrantyDataSection from '@salesforce/apex/ProposalWarrantyController.getWarrantyDataSection';
 import saveMethod from '@salesforce/apex/ProposalWarrantyController.saveMethod';
 
@@ -32,18 +32,17 @@ import CHASSIS_REJECT from '@salesforce/schema/WarrantyDataSection__c.ChassiReje
 import CHASSIS_OBS from '@salesforce/schema/WarrantyDataSection__c.ChassiObservation__c';
 import FIPE_CODE_STATUS from '@salesforce/schema/WarrantyDataSection__c.FIPEtableCodeStatus__c';
 
-import FINANCIAL_RESOURCE_OBJECT from '@salesforce/schema/FinancialResources__c';
-import RENAVAN_FIELD from '@salesforce/schema/FinancialResources__c.ResourceKey__c';
-import PLATE_FIELD from '@salesforce/schema/FinancialResources__c.Plate__c';
-import MANUFACTURING_YEAR_FIELD from '@salesforce/schema/FinancialResources__c.ManufacturingYear__c';
-import MODEL_YEAR_FIELD from '@salesforce/schema/FinancialResources__c.ModelYear__c';
-import BRAND_FIELD from '@salesforce/schema/FinancialResources__c.Brand__c';
-import MODEL_FIELD from '@salesforce/schema/FinancialResources__c.Model__c';
-import COLOR_FIELD from '@salesforce/schema/FinancialResources__c.Color__c';
-import STATE_FIELD from '@salesforce/schema/FinancialResources__c.State__c';
-import LICENSING_STATE_FIELD from '@salesforce/schema/FinancialResources__c.LicensingState__c';
-import CHASSIS_FIELD from '@salesforce/schema/FinancialResources__c.Chassis__c';
-import FIPE_CODE_FIELD from '@salesforce/schema/FinancialResources__c.ExternalCodeOrigin__c';
+import RENAVAN_FIELD from '@salesforce/schema/WarrantyDataSection__c.ResourceKey__c';
+import PLATE_FIELD from '@salesforce/schema/WarrantyDataSection__c.Plate__c';
+import MANUFACTURING_YEAR_FIELD from '@salesforce/schema/WarrantyDataSection__c.ManufacturingYear__c';
+import MODEL_YEAR_FIELD from '@salesforce/schema/WarrantyDataSection__c.ModelYear__c';
+import BRAND_FIELD from '@salesforce/schema/WarrantyDataSection__c.Brand__c';
+import MODEL_FIELD from '@salesforce/schema/WarrantyDataSection__c.Model__c';
+import COLOR_FIELD from '@salesforce/schema/WarrantyDataSection__c.Color__c';
+import STATE_FIELD from '@salesforce/schema/WarrantyDataSection__c.State__c';
+import LICENSING_STATE_FIELD from '@salesforce/schema/WarrantyDataSection__c.LicensingState__c';
+import CHASSIS_FIELD from '@salesforce/schema/WarrantyDataSection__c.Chassi__c';
+import FIPE_CODE_FIELD from '@salesforce/schema/WarrantyDataSection__c.ExternalCodeOrigin__c';
 
 const RECORD_FIELDS = new Map([
   ['inputRenavan', RENAVAN_FIELD],
@@ -94,6 +93,10 @@ export default class ProposalWarrantyComponent extends LightningElement {
   statusFields = STATUS_FIELDS;
   sectionFields = SECTION_FIELDS;
 
+  statusApprove = 'Aprovar';
+  statusReject = 'Rejeitar';
+  statusPending = 'Pendenciar';
+
   financialResource;
   financialResourceTransaction;
   @track financialResourceInfo;
@@ -103,20 +106,11 @@ export default class ProposalWarrantyComponent extends LightningElement {
   warrantyDataSection;
   warrantyDataSectionTransaction;
 
+  statusReturnedPendency = 'Voltou de pendência';
+
   completionPercentage = 0;
-
+  saveRecord = true;
   disabledSaveButton = false;
-
-  @wire(getFinancialResource, { opportunityId: '$opportunityid' })
-  setFinancialResource({ data, error }) {
-    if (data) {
-      this.financialResource = data;
-      this.financialResourceTransaction = { ...this.financialResource };
-      refreshApex(this.financialResource);
-    } else if (error) {
-      this.showError(error);
-    }
-  }
 
   @wire(getWarrantyDataSection, { opportunityId: '$opportunityid' })
   setWarrantyDataSection({ data, error }) {
@@ -133,7 +127,7 @@ export default class ProposalWarrantyComponent extends LightningElement {
     }
   }
 
-  @wire(getObjectInfo, { objectApiName: FINANCIAL_RESOURCE_OBJECT })
+  @wire(getObjectInfo, { objectApiName: WARRANTY_SECTION_OBJECT })
   setFinancialResourceInfo({ data, error }) {
     if (data) {
       this.financialResourceInfo = data;
@@ -143,7 +137,7 @@ export default class ProposalWarrantyComponent extends LightningElement {
   }
 
   @wire(getPicklistValues, {
-    recordTypeId: '$financialResource.RecordTypeId',
+    recordTypeId: '$financialResourceInfo.defaultRecordTypeId',
     fieldApiName: LICENSING_STATE_FIELD
   })
   setLicensingStatePicklistValues({ data, error }) {
@@ -165,11 +159,25 @@ export default class ProposalWarrantyComponent extends LightningElement {
   }
 
   setFieldsInitialState() {
+
+    let returnedPendency = this.statusReturnedPendency;
+
     for (const fieldDefinition of this.statusFields) {
+      
       const fieldApiName = fieldDefinition.fieldApiName;
+      
       const elements = this.template.querySelectorAll([`[data-status=${fieldApiName}]`]);
+      
       elements.forEach(element => {
-        if (element.value === this.warrantyDataSection[fieldApiName]) {
+
+        element.classList.contains('show_icon_pendency') ? element.classList.remove('show_icon_pendency'):'';
+
+        let dataValue = element.hasAttribute("data-value") ? element.getAttribute("data-value") : null;
+
+        if(dataValue === returnedPendency && dataValue === this.warrantyDataSection[fieldApiName]){
+          element.classList.add('show_icon_pendency');
+        }
+        else if (element.value === this.warrantyDataSection[fieldApiName]) {
           element.checked = true;
           element.setAttribute('data-value', element.value);
         }
@@ -215,6 +223,9 @@ export default class ProposalWarrantyComponent extends LightningElement {
   }
 
   handleCheckboxChange(event) {
+
+    this.saveRecord = false;
+
     const currentCheckbox = event.target;
     const currentRowCheckboxes = this.template.querySelectorAll(
       `input[name=${currentCheckbox.name}]`
@@ -290,8 +301,8 @@ export default class ProposalWarrantyComponent extends LightningElement {
   getModal(checkbox) {
     const modal = {};
 
-    if (checkbox.checked && (checkbox.value == 'Rejeitado' || checkbox.value == 'Pendenciado')) {
-      modal['modalReason'] = checkbox.value == 'Rejeitado' ? 'reject' : 'pendency';
+    if (checkbox.checked && (checkbox.value == this.statusReject || checkbox.value == this.statusPending)) {
+      modal['modalReason'] = checkbox.value == this.statusReject ? 'reject' : 'pendency';
       modal['openModalReason'] = true;
       modal['fieldReason'] = checkbox.getAttribute('data-field');
       modal['objectReason'] = WARRANTY_SECTION_OBJECT.objectApiName;
@@ -303,7 +314,8 @@ export default class ProposalWarrantyComponent extends LightningElement {
   updateCompletionPercentage(checkboxes) {
     const selected = checkboxes.length;
     const total = this.recordFields.size;
-    this.completionPercentage = (selected / total) * 100;
+    const currentPercent = (selected / total) * 100;
+    this.completionPercentage = (currentPercent == 100 && !this.saveRecord) ? 99 : currentPercent;
   }
 
   getVariant(selectedCheckboxes) {
@@ -313,11 +325,11 @@ export default class ProposalWarrantyComponent extends LightningElement {
     let variant = '';
 
     selectedCheckboxes.forEach(element => {
-      if (element.value === 'Aprovado') {
+      if (element.value === this.statusApprove) {
         isApproved = true;
-      } else if (element.value === 'Pendenciado') {
+      } else if (element.value === this.statusPending) {
         isPending = true;
-      } else if (element.value === 'Rejeitado') {
+      } else if (element.value === this.statusReject) {
         isRejected = true;
       }
     });
@@ -338,30 +350,34 @@ export default class ProposalWarrantyComponent extends LightningElement {
     const elementId = event.target.getAttribute('data-id');
     const fieldDefinition = this.recordFields.get(elementId);
     const fieldApiName = fieldDefinition.fieldApiName;
-    this.financialResourceTransaction[fieldApiName] = value;
+    this.warrantyDataSectionTransaction[fieldApiName] = value;
+    this.saveRecord = false;
   }
 
   async handleSaveSection() {
+
     this.disabledSaveButton = true;
 
     const records = {
-      warrantyObject: this.warrantyDataSectionTransaction,
-      financialResource: this.financialResourceTransaction
+      warrantyObject: this.warrantyDataSectionTransaction
     };
 
     try {
       await saveMethod(records);
       getRecordNotifyChange([
-        { recordId: this.financialResource.Id },
         { recordId: this.warrantyDataSection.Id }
       ]);
       this.showToast('Registro atualizado com sucesso!', '', 'success');
-      this.disabledSaveButton = false;
+      this.saveRecord = true;
+      this.sendInfo(this.getInfo());
     } catch (error) {
       const message = error?.body?.message ? error.body.message : '';
       this.showToast('Erro ao atualizar registro!', message, 'error');
+      
+    } finally{
       this.disabledSaveButton = false;
     }
+    
   }
 
   showError(error) {
@@ -481,11 +497,11 @@ export default class ProposalWarrantyComponent extends LightningElement {
   }
 
   get saveButtonDisabled() {
-    return this.disabledSaveButton || (this.completionPercentage === 100 ? false : true);
+    return (this.disabledSaveButton || (this.completionPercentage < 99) || this.saveRecord) ? true : false;
   }
 
   getFinancialResourceValue(fieldDefinition) {
-    return this.financialResource ? getSObjectValue(this.financialResource, fieldDefinition) : '';
+    return this.warrantyDataSection ? getSObjectValue(this.warrantyDataSection, fieldDefinition) : '';
   }
 
   isFieldDisabled(fieldDefinition) {

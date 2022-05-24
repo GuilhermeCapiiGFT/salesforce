@@ -1,8 +1,12 @@
+/**
+ * @author Otávio Frank - GFT Brasil
+ */
 public with sharing class ProposalPersonalDataController {
     
     public static PersonalDataSectionRepository repository;
 
     static {
+
         repository = new PersonalDataSectionRepository();
     }
 
@@ -21,10 +25,27 @@ public with sharing class ProposalPersonalDataController {
     }
 
     @AuraEnabled
-    public static string saveInstance( String personalDataSectionInstance ) {
+    public static PersonalDataSection__c saveInstance( String serializedPersonalDataSection ) {
 
-        PersonalDataSection__c record = ( PersonalDataSection__c ) System.JSON.deserialize( personalDataSectionInstance, PersonalDataSection__c.class);
+        PersonalDataSection__c personalDataSection;
 
-        return System.JSON.serialize(record );
+        try {
+
+            personalDataSection = ( PersonalDataSection__c ) System.JSON.deserialize( serializedPersonalDataSection, PersonalDataSection__c.class);
+
+            personalDataSection.Id = null;
+
+            personalDataSection = ( PersonalDataSection__c ) repository.save( personalDataSection );
+
+        } catch (Exception e) {
+
+            throw AuraHandledExceptionHelper.auraExceptionBuilder(e);
+        }
+
+        return personalDataSection;
+    }
+
+    public static void setPersonalDataSectionRepository( PersonalDataSectionRepository repo ) {
+        repository = repo;
     }
 }

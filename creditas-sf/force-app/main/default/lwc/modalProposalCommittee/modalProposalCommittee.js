@@ -1,9 +1,13 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
+import { getRecord } from 'lightning/uiRecordApi';
 import getMapPickList from '@salesforce/apex/FormalizationAnalysisController.getMapPickList';
 import updateOpportunityCommittee from '@salesforce/apex/ModalProposalCommitteeController.updateOpportunityCommittee';
 import getMyOpportunitiesListView from '@salesforce/apex/ModalProposalCommitteeController.getMyOpportunitiesListView';
+import OWNER_ID_FIELD from '@salesforce/schema/Opportunity.OwnerId';
+
+const fields = [OWNER_ID_FIELD];
 
 const ERROR_OCCURRED = 'Ocorreu um Erro';
 const ERROR_MESSAGE = 'Por favor entre em contato com um administrador.';
@@ -25,7 +29,7 @@ const OPP_STAGENAME = 'Aguardando Distribuição para Comitê de Formalização'
 
 export default class ModalProposalCommittee extends NavigationMixin(LightningElement) {
     @api recordId;
-    @api lastAnalysId;
+    lastAnalystId;
     modalHeader = 'Deseja enviar ao Comitê';
     showDescription = false;
     selected;
@@ -58,6 +62,15 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
       return this.picklistValues;
     }
 
+    @wire(getRecord, { recordId: '$recordId', fields })
+    getOwnerId({ error, data }) {
+      if (data) {
+        this.lastAnalystId = data?.fields?.OwnerId?.value;
+      } else if (error) {
+        this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
+      }
+    }
+
     handleChange(event){
         if(event.detail.value.includes('OTHER')){
             this.showDescription = true;
@@ -84,11 +97,13 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
           let opp = {
             Id: this.recordId,
             CommitteeReason__c: this.selected,
-            CommitteeOtherReason__c: this.otherReason,
+            CommitteeOtherReason__c: this.otherReason === undefined ? null : this.otherReason,
             CommitteeObservation__c: this.observation,
-            LastAnalyst__c: this.lastAnalysId,
+            LastAnalyst__c: this.lastAnalystId,
             StageName: OPP_STAGENAME
           };
+
+          console.log({opp})
 
           updateOpportunityCommittee({newOpp: opp}).then( result => {
             if(result){

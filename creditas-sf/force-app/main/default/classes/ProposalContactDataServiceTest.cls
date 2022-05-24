@@ -14,31 +14,23 @@ public class ProposalContactDataServiceTest {
         opportunity.ExternalVersion__c = 1;      
         insert opportunity;
     }
-
-    @isTest
-    static void resultCommunicationContactBlank(){
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        Map<String,CommunicationContacts__c> resultCommunications = new Map<String,CommunicationContacts__c>();
-            
-        Test.startTest();
-        resultCommunications = ProposalContactDataService.getCommunicationContactFromAccount(acc.Id);
-        Test.stopTest();
-        
-        System.assertEquals(true, resultCommunications.isEmpty(),'Map result should be blank');    
-    }
     
-    @isTest
-    static void resultCommunicationContactNotBlank(){
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        Map<String,CommunicationContacts__c> resultCommunications = new Map<String,CommunicationContacts__c>();
-        CommunicationContacts__c communicationEmail = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        insert communicationEmail;
-
+  @isTest
+    static void getContactDetailsSucess(){
+        Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
+        
+  		ContactDetailsSection__c communications = new ContactDetailsSection__c( Email__c = 'test@test123.com', Mobile__c = '11 911223344', Opportunity__c = opp.id );
+        insert communications;
+        
         Test.startTest();
-        resultCommunications = ProposalContactDataService.getCommunicationContactFromAccount(acc.Id);
+        ProposalContactDataController.getContactDetails(opp.Id);
         Test.stopTest();
         
-        System.assertEquals(communicationEmail.Code__c, resultCommunications.get('EMAIL').Code__c,'Incorrect returned Email');
+        List<ContactDetailsSection__c> contactDetailSec = [SELECT Email__c, Mobile__c, Opportunity__c FROM ContactDetailsSection__c WHERE Opportunity__r.Name = 'Teste'];
+       System.assert(!contactDetailSec.isEmpty(), 'ContactDetailsSection not found');
+        
+       System.assertEquals(contactDetailSec[0].Email__c,'test@test123.com', 'Incorrect Email value');
+       System.assertEquals(contactDetailSec[0].Mobile__c, '11 911223344', 'Incorrect Email value');      
     }
     
     @isTest
@@ -67,75 +59,6 @@ public class ProposalContactDataServiceTest {
         System.assertEquals(contactDetail.Id, resultContactDetails.Id,'Incorrect returned Id');
     }
     
-    @isTest
-    static void insertRecordCommunicationContacts(){
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        CommunicationContacts__c communicationEmail = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        CommunicationContacts__c communicationSMS = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'SMS', Code__c = '11 911223344');
-        List<CommunicationContacts__c> communications = new List<CommunicationContacts__c>();
-        communications.add(communicationEmail);
-        communications.add(communicationSMS);
-        
-        Test.startTest();
-        ProposalContactDataService.upsertCommunicationContacts(communications);
-        Test.stopTest();
-        
-        CommunicationContacts__c contactSMS   = [SELECT Id, Code__c FROM CommunicationContacts__c WHERE Account__c = :acc.Id AND Channel__c = 'SMS' LIMIT 1];
-        CommunicationContacts__c contactEMAIL = [SELECT Id, Code__c FROM CommunicationContacts__c WHERE Account__c = :acc.Id AND Channel__c = 'EMAIL' LIMIT 1];
-        
-        System.assertEquals('11 911223344', contactSMS.Code__c, 'SMS insert should be a success');
-        System.assertEquals('test@test.com', contactEMAIL.Code__c, 'EMAIL insert should be a success');
-    }
-    
-    @isTest
-    static void updateRecordCommunicationContacts(){
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        
-        Test.startTest();
-        CommunicationContacts__c communicationSMS = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'SMS', Code__c = '11 911223344');
-        CommunicationContacts__c communicationEMAIL = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        List<CommunicationContacts__c> communications = new List<CommunicationContacts__c>();
-        communications.add(communicationSMS);
-        communications.add(communicationEMAIL);
-        insert communications;
-        
-        communicationSMS.Code__c = '11 911112222';
-        
-        ProposalContactDataService.upsertCommunicationContacts(communications);
-        Test.stopTest();
-        
-        CommunicationContacts__c contactSMS   = [SELECT Id, Code__c FROM CommunicationContacts__c WHERE Account__c = :acc.Id AND Channel__c = 'SMS' LIMIT 1];
-        CommunicationContacts__c contactEMAIL = [SELECT Id, Code__c FROM CommunicationContacts__c WHERE Account__c = :acc.Id AND Channel__c = 'EMAIL' LIMIT 1];
-        
-        System.assertEquals('11 911112222', contactSMS.Code__c, 'SMS update should be a success');
-        System.assertEquals('test@test.com', contactEMAIL.Code__c, 'Email update should be a success');
-    }
-    
-    @isTest
-    static void upsertRecordCommunicationContactsFail(){
-        Boolean exceptionOccurred = false;
-        Account acc = [SELECT Id FROM Account LIMIT 1];
-        
-        Test.startTest();
-        CommunicationContacts__c communicationSMS = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'SMS', Code__c = '11 911223344');
-        CommunicationContacts__c communicationEMAIL = new CommunicationContacts__c(Account__c = acc.Id, Channel__c = 'EMAIL', Code__c = 'test@test.com');
-        List<CommunicationContacts__c> communications = new List<CommunicationContacts__c>();
-        communications.add(communicationSMS);
-        communications.add(communicationEMAIL);
-        insert communications;
-        
-        // Channel__c is expecting only two values: 'SMS' or 'EMAIL', therefore, any other value will result in error
-        communicationEMAIL.Channel__c = 'teste';
-        
-        try{
-            ProposalContactDataService.upsertCommunicationContacts(communications);
-        }catch(Exception e){
-            exceptionOccurred = true;
-        }
-        Test.stopTest();
-        
-        System.assertEquals(true, exceptionOccurred, 'An exception should occur');
-    }
     
     @isTest
     static void insertCommunicationContacts(){

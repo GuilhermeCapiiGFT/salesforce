@@ -52,8 +52,14 @@
 						<section class="slds-accordion__section">
 							<div class="slds-accordion__summary">
 								<h2 class="slds-accordion__summary-heading">
-									<span class="geral slds-accordion__summary-content header-section">Geral</span>
+									<span class="geral slds-accordion__summary-content header-section">
+										Geral &nbsp;
+										<lightning-button-icon icon-name="utility:scan"  alternative-text="Validar biometria" title="Validar biometria"></lightning-button-icon>
+									</span>
 								</h2>
+							</div>
+							<div class="btn-container slds-m-vertical_medium">
+								<button title="Validar biometria">Validar biometria</button>
 							</div>
 							<!-- conteúdo aqui -->
 						</section>
@@ -200,7 +206,7 @@
 			  </div>
 
 			  <!-- 8th Accordion -->
-			  <div class="slds-progress__item">
+			<div class="slds-progress__item">
 				<lightning-progress-ring value={quickLinksInfoValue} variant={quickLinksInfoVariant} class="progressCircle"></lightning-progress-ring>
 
 				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
@@ -220,7 +226,7 @@
 					</li>
 				</div>
 			</div>
-
+			
 		</ol>
 	</div>
 
@@ -228,9 +234,22 @@
 		<template if:true={showCommitteeButton}>
 			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={enableCommiteeButton}> Comitê </button>
 		</template>
-		<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
-		<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>
-		<button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled> Aprovar </button>
+		<template if:true={showApproveButtons}>
+			<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
+			<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>
+			<button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled> Aprovar </button>
+		</template> 
+	</div>
+	
+	<div class="slds-card slds-p-around_medium">                
+		<template if:true={showContractButton}>
+			<div class="btn-container slds-m-vertical_medium">
+				<button title="Enviar Contrato" disabled={disableBtnSendContract} onclick={handleSendContract}>Enviar</button>
+				<button title="Visualizar Contrato" disabled={disableBtnViewContract} onclick={handleViewContract}>Visualizar</button>                    
+				<button title="Gerar Contrato" disabled={disableBtnGenerateContract} onclick={handleGenerateContract}>Gerar Contrato</button>
+				<button title="Corrigir Contrato" disabled={disableBtnCorrectContract} onclick={handleCorrectContract}>Corrigir Contrato</button>
+			</div>
+		</template>
 	</div>
 
 

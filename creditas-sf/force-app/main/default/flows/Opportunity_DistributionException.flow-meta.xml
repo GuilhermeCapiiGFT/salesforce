@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <apiVersion>54.0</apiVersion>
+    <choices>
+        <name>Prioridade</name>
+        <choiceText>Prioridade</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Prioridade</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Tratativa</name>
+        <choiceText>Tratativa</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tratativa</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Checa_motivo_selecionado</name>
         <label>Checa motivo selecionado</label>
         <locationX>182</locationX>
-        <locationY>878</locationY>
+        <locationY>998</locationY>
         <defaultConnector>
-            <targetReference>UpdateOpportunity</targetReference>
+            <targetReference>DistributionOrPriority</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Sim</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>ChecksExceptionReason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Outros</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>ChecksPriorityReason</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Outros</stringValue>
@@ -27,11 +50,39 @@
         </rules>
     </decisions>
     <decisions>
+        <name>DistributionOrPriority</name>
+        <label>Tratativa ou Prioridade</label>
+        <locationX>182</locationX>
+        <locationY>1334</locationY>
+        <defaultConnector>
+            <targetReference>OppUpdatePriority</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Prioridade</defaultConnectorLabel>
+        <rules>
+            <name>Distribution</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>ExceptionType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Tratativa</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>UpdateOpportunityDistribution</targetReference>
+            </connector>
+            <label>Tratativa</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>isManualOrException</name>
-        <label>Tratativa de Exceção</label>
-        <locationX>336</locationX>
-        <locationY>398</locationY>
-        <defaultConnectorLabel>Não atende aos critérios</defaultConnectorLabel>
+        <label>Alteração manual ou exceção</label>
+        <locationX>380</locationX>
+        <locationY>638</locationY>
+        <defaultConnector>
+            <targetReference>DistributionException_2</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Alteração manual</defaultConnectorLabel>
         <rules>
             <name>ExceptionDistribution</name>
             <conditionLogic>and</conditionLogic>
@@ -43,9 +94,9 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>getUserProfiles1</targetReference>
+                <targetReference>DistributionExceptionScreen</targetReference>
             </connector>
-            <label>Tratativa de exceção</label>
+            <label>Exceção na distribuição</label>
         </rules>
     </decisions>
     <dynamicChoiceSets>
@@ -72,14 +123,14 @@
             <field>ProfileId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>getUserProfiles2.Id</elementReference>
+                <elementReference>getUserProfiles1_0.Id</elementReference>
             </value>
         </filters>
         <filters>
             <field>ProfileId</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>getUserProfiles1.Id</elementReference>
+                <elementReference>getUserProfiles2_0.Id</elementReference>
             </value>
         </filters>
         <object>User</object>
@@ -89,11 +140,24 @@
         </outputAssignments>
         <valueField>Name</valueField>
     </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>PriorityReasonPicklist</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>PriorityExceptionReason__c</picklistField>
+        <picklistObject>Opportunity</picklistObject>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>ChecksExceptionReason</name>
         <dataType>String</dataType>
         <expression>TEXT({!ExceptionReasonPicklist})</expression>
+    </formulas>
+    <formulas>
+        <name>ChecksPriorityReason</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!PriorityReasonPicklist})</expression>
     </formulas>
     <interviewLabel>[Opportunity] Distribution Exception {!$Flow.CurrentDateTime}</interviewLabel>
     <label>[Opportunity] Distribution Exception</label>
@@ -120,7 +184,7 @@
         <description>Busca os dados da Oportunidade que tenha o mesmo ID</description>
         <name>GetOpportunity</name>
         <label>GetOpportunity</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -139,16 +203,17 @@
         <queriedFields>Id</queriedFields>
         <queriedFields>Name</queriedFields>
         <queriedFields>OwnerId</queriedFields>
+        <queriedFields>PartnerAccount__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
         <name>GetUser</name>
         <label>GetUser</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>278</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>isManualOrException</targetReference>
+            <targetReference>getUserProfiles1_0</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -165,13 +230,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>getUserProfiles1</name>
+        <name>getUserProfiles1_0</name>
         <label>Perfil F Analista l</label>
-        <locationX>182</locationX>
-        <locationY>518</locationY>
+        <locationX>380</locationX>
+        <locationY>398</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>getUserProfiles2</targetReference>
+            <targetReference>getUserProfiles2_0</targetReference>
         </connector>
         <filterLogic>or</filterLogic>
         <filters>
@@ -187,13 +252,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>getUserProfiles2</name>
+        <name>getUserProfiles2_0</name>
         <label>Perfil F Analista l</label>
-        <locationX>182</locationX>
-        <locationY>638</locationY>
+        <locationX>380</locationX>
+        <locationY>518</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>DistributionException</targetReference>
+            <targetReference>isManualOrException</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -209,10 +274,76 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>UpdateOpportunity</name>
+        <name>OppUpdatePriority</name>
         <label>Atualiza Oportunidade</label>
-        <locationX>182</locationX>
-        <locationY>1214</locationY>
+        <locationX>314</locationX>
+        <locationY>1454</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>selectedUserId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PriorityExceptionDescription__c</field>
+            <value>
+                <elementReference>PriorityDescription</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PriorityExceptionReason__c</field>
+            <value>
+                <elementReference>PriorityReasonPicklist</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>PriorityException__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>Aguardando Análise de Formalização</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>UpdateOpportunity_0</name>
+        <label>Atualiza Oportunidade</label>
+        <locationX>578</locationX>
+        <locationY>878</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>selectedUserId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>UpdateOpportunityDistribution</name>
+        <label>Atualiza Oportunidade</label>
+        <locationX>50</locationX>
+        <locationY>1454</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -236,13 +367,19 @@
         <inputAssignments>
             <field>ExceptionReasonDescription__c</field>
             <value>
-                <elementReference>Description</elementReference>
+                <elementReference>ExceptionDescription</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>OwnerId</field>
             <value>
                 <elementReference>selectedUserId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>Aguardando Análise de Formalização</stringValue>
             </value>
         </inputAssignments>
         <object>Opportunity</object>
@@ -252,12 +389,12 @@
         <name>DescriptionReason</name>
         <label>Descrição</label>
         <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationY>1118</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>UpdateOpportunity</targetReference>
+            <targetReference>DistributionOrPriority</targetReference>
         </connector>
         <fields>
             <name>DisplayDescription</name>
@@ -265,11 +402,38 @@
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
-            <name>Description</name>
+            <name>ExceptionDescription</name>
             <dataType>String</dataType>
             <fieldText>Descrição</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ExceptionType</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Tratativa</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>PriorityDescription</name>
+            <dataType>String</dataType>
+            <fieldText>Descrição</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ExceptionType</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Prioridade</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <helpText>&lt;p&gt;Descreva o motivo da exceção.&lt;/p&gt;</helpText>
         <showFooter>true</showFooter>
@@ -277,9 +441,9 @@
     </screens>
     <screens>
         <name>DistributionException</name>
-        <label>Exceção de Tratativa</label>
+        <label>Exceção de Tratativa ou Prioridade</label>
         <locationX>182</locationX>
-        <locationY>758</locationY>
+        <locationY>878</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -287,15 +451,15 @@
             <targetReference>Checa_motivo_selecionado</targetReference>
         </connector>
         <fields>
-            <name>DisplayChangeOwner</name>
-            <fieldText>&lt;p&gt;Selecione o novo proprietário e o motivo da alteração:&lt;/p&gt;</fieldText>
+            <name>PartnerAccountDisplay</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;Loja:&lt;/strong&gt;&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt; {!varPartnerAccount}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>pickListUser</name>
             <choiceReferences>getUsersFromLookup</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Proprietário da oportunidade</fieldText>
+            <fieldText>Proprietário da oportunidade:</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
@@ -303,15 +467,99 @@
             <name>ExceptionReason</name>
             <choiceReferences>ExceptionReasonPicklist</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Motivo da exceção de tratativa</fieldText>
+            <fieldText>Motivo da exceção de tratativa:</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ExceptionType</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Tratativa</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>Motivo_da_exce_o_de_prioridade</name>
+            <choiceReferences>PriorityReasonPicklist</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Motivo da exceção de prioridade:</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ExceptionType</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Prioridade</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <description>Alterar o proprietário da oportunidade depois que foi distribuída.</description>
+        <name>DistributionException_2</name>
+        <label>Exceção após distribuição</label>
+        <locationX>578</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>UpdateOpportunity_0</targetReference>
+        </connector>
+        <fields>
+            <name>DisplayChangeOwner_0</name>
+            <fieldText>&lt;p&gt;Selecione o novo proprietário:&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>pickListUser_0</name>
+            <choiceReferences>getUsersFromLookup</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Proprietário da oportunidade</fieldText>
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
+    <screens>
+        <name>DistributionExceptionScreen</name>
+        <label>Exceção na distribuição</label>
+        <locationX>182</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>DistributionException</targetReference>
+        </connector>
+        <fields>
+            <name>ExceptionTypeDisplay</name>
+            <fieldText>&lt;p&gt;Selecione o tipo de exceção:&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>ExceptionType</name>
+            <choiceReferences>Tratativa</choiceReferences>
+            <choiceReferences>Prioridade</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Tipo de exceção</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <start>
-        <locationX>210</locationX>
+        <locationX>254</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>GetOpportunity</targetReference>
@@ -331,5 +579,15 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varPartnerAccount</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <elementReference>GetOpportunity.PartnerAccount__r.Name</elementReference>
+        </value>
     </variables>
 </Flow>

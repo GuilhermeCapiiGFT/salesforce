@@ -1,10 +1,19 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { getRecord, updateRecord } from 'lightning/uiRecordApi';
-import { createRecord } from 'lightning/uiRecordApi';
-import { getPicklistValues, getObjectInfo  } from 'lightning/uiObjectInfoApi';
 import getLastPersonalDataSectionInstance from '@salesforce/apex/ProposalPersonalDataController.getLastPersonalDataSectionInstance';
 import saveInstance from '@salesforce/apex/ProposalPersonalDataController.saveInstance';
+import { politicallyExposedOptions, observationByStatus, disabledFields } from './personalData';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import PERSONAL_DATA_SECTION_OBJECT from '@salesforce/schema/PersonalDataSection__c';
+
+const SUCCESS_SAVED = 'Dados Pessoais atualizado com sucesso!';
+const PENDENCY_STATUS = 'Pendenciar';
+const REJECTION_STATUS = 'Rejeitar';
+const APPROVED_STATUS = 'Aprovar';
+const RETURNED_PENDENCY_STATUS = 'Voltou de pendência';
+const VALIDATION_ROWS = 16;
+const COMPONENT_ID = 'ContainerDadosPessoais';
+
 export default class ProposalPersonalDataComponent extends LightningElement {
 
   @api accountid
@@ -21,13 +30,18 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   }
 
   oppId;
-  disabledBtnSave = true
+  disabledBtnSave = true;
   showContainer = false;
   initialRender = false;
   personalDataSectionRecord;
- 
+  recordSaved = true;
+  disabledFields = disabledFields;
+  statusReturnedPendency = RETURNED_PENDENCY_STATUS;
+  completionPercentage = 0;
+  lastCheckBoxName;
+  
   // Picklist options
-  politicallyExposedOptions = [{ label: 'Sim', value: true }, { label: 'Não', value: false }]
+  politicallyExposedOptions = politicallyExposedOptions;
   
   // Checkboxes Values
   value = [];
@@ -50,124 +64,147 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     
   }
 
-
   handleInputChange(event) {
-    
-    this.personalDataSectionRecord[event.target.dataset.id] = event.target.value;
 
+    this.recordSaved = false;
+    this.personalDataSectionRecord[event.target.dataset.id] = event.target.value;
+    this.sendInfo(this.getInfo());
   }
 
   handleSaveSection() {
-    // this.disabledBtnSave = true
-    let recordToSend = JSON.stringify(this.personalDataSectionRecord);
-    saveInstance({personalDataSectionInstance : recordToSend}).then( result => { console.log(result)});
-
-   
-  }
-
-  saveCheckboxes() {
-    const fields = {...this.mapSection}
     
-    if (this.recordPersonalSectionId == '')
-    {
-      fields[OPPORTUNITY_ID_FIELD.fieldApiName] = this.opportunityid
-      
-      const recordInput = { apiName: PERSONAL_DATA_OBJECT.objectApiName, fields }
-      
-      createRecord(recordInput)
-        .then(record => {
-          this.recordPersonalSectionId = record.id
-          this.disabledBtnSave = false
-          this.showToast('Sucesso', 'Dados Pessoais atualizado com sucesso!', 'success')
-        })
-        .catch(error => {
-          this.showError(error)
-        })
-    }
+    this.disabledBtnSave = true;
 
-    else {
-      fields[PERSONAL_DATA_ID_FIELD.fieldApiName] = this.recordPersonalSectionId
+    let recordToSend = JSON.stringify(this.personalDataSectionRecord);
 
-      const recordInput = { fields }
+    saveInstance({ serializedPersonalDataSection : recordToSend}).
+      then( result => { 
 
-      updateRecord(recordInput)
-        .then(recordInput => {
-          this.disabledBtnSave = false
-          this.showToast('Sucesso', 'Dados Pessoais atualizado com sucesso!', 'success')
-        })
-        .catch(error => {
-          this.disabledBtnSave = false
-          this.showError(error)
-        })
-    }
+        this.recordSaved = true;
+        this.showToast('Sucesso', SUCCESS_SAVED, 'success');
+        this.sendInfo(this.getInfo());
+      })
+      .catch(error => {
+        this.disabledBtnSave = false;
+        this.showError(error);
+      });
+
   }
 
   handleChangeCheckbox(event) {
-    this.checksOnlyOne(event)
-    this.saveObjectValues(event)
+
+    this.recordSaved = false;
+    this.lastCheckBoxName = event.target.dataset.status;
+
+    let currentCheckboxValue = event.currentTarget.value;
+    let currentCheckBoxField = event.target.dataset.status;
+    let lastValueOnCheckbox = this.personalDataSectionRecord[currentCheckBoxField];
+
+    this.personalDataSectionRecord[currentCheckBoxField] = ( lastValueOnCheckbox != currentCheckboxValue ) ? currentCheckboxValue : null;
+
+    const currentCheckbox = event.target;
+    const currentRowCheckboxes = this.template.querySelectorAll(
+      `input[name=${currentCheckbox.name}]`
+    );
+
+    this.checkOnlyOne(event, currentRowCheckboxes);
+
+    const info = this.getInfo();
+    const modal = this.getModal(currentCheckbox);
+
+    this.sendInfo({ ...info, modal });
+
   }
 
-  saveObjectValues(event) {
-    let nameStatus = event.target.getAttribute('data-status')
-    let valueStatus = event.target.checked ? event.target.value : null
+  getModal(checkbox) {
+    const modal = {};
 
-    let fieldsCPF             = this.fieldsValidationCPF.map((item) => item.fieldApiName);
-    let fieldsPEP             = this.fieldsValidationPEP.map((item) => item.fieldApiName);
-    let fieldsRG              = this.fieldsValidationRG.map((item) => item.fieldApiName);
-    let fieldsDispatchDateRG  = this.fieldsValidationDispatchDateRG.map((item) => item.fieldApiName);
-    let fieldsCNH             = this.fieldsValidationCNH.map((item) => item.fieldApiName);
-    let fieldsDispatchDateCNH = this.fieldsValidationDispatchDateCNH.map((item) => item.fieldApiName);
-    let fieldsIssuerCNH       = this.fieldsValidationIssuerCNH.map((item) => item.fieldApiName);
+    if (checkbox.checked && ( checkbox.value == REJECTION_STATUS || checkbox.value == PENDENCY_STATUS ) ) {
 
-    fieldsCPF.indexOf(nameStatus) > -1 ?             this.resetFieldsValidation(fieldsCPF):'';
-    fieldsPEP.indexOf(nameStatus) > -1 ?             this.resetFieldsValidation(fieldsPEP):'';
-    fieldsRG.indexOf(nameStatus) > -1 ?              this.resetFieldsValidation(fieldsRG):'';
-    fieldsDispatchDateRG.indexOf(nameStatus) > -1 ?  this.resetFieldsValidation(fieldsDispatchDateRG):'';
-    fieldsCNH.indexOf(nameStatus) > -1 ?             this.resetFieldsValidation(fieldsCNH):'';
-    fieldsDispatchDateCNH.indexOf(nameStatus) > -1 ? this.resetFieldsValidation(fieldsDispatchDateCNH):'';
-    fieldsIssuerCNH.indexOf(nameStatus) > -1 ?       this.resetFieldsValidation(fieldsIssuerCNH):'';
+      modal['modalReason'] = checkbox.value == REJECTION_STATUS ? 'reject' : 'pendency';
+      modal['openModalReason'] = true;
+      modal['fieldReason'] = checkbox.getAttribute('data-field');
+      modal['objectReason'] = PERSONAL_DATA_SECTION_OBJECT.objectApiName;
+
+    }
+
+    return modal;
+  }
+
+  checkOnlyOne(currentCheckbox, rowCheckboxes) {
     
-    this.mapSection[nameStatus] = valueStatus
-  }
+    let currentCheckboxValue = this.personalDataSectionRecord[ currentCheckbox.target.dataset.status ];
 
-  resetFieldsValidation(fieldsValidationAPI) {
-    fieldsValidationAPI.map((item) => this.mapSection[item] = null);
-  }
+    
+    rowCheckboxes.forEach(checkbox => {
 
-  checksOnlyOne(event) {
-    let currentCheckbox = event.currentTarget.name
-    let currentCheckboxValue = event.currentTarget.value
-    let modal = {}
-
-    this.template.querySelectorAll('input[name='+currentCheckbox+']').forEach(elem => {
-      let oldValue = elem.getAttribute('data-value')
-      let newValue = currentCheckboxValue
-
-      if(oldValue !== null && elem.value === oldValue) {
-        elem.checked = false
-        newValue = ''
+      if ( checkbox.value == currentCheckboxValue ) {
         
-      } else if(elem.value === currentCheckboxValue) {
-        newValue = currentCheckboxValue
-        elem.checked = true
+        checkbox.checked = true;
+
+      } else {
+
+        
+        checkbox.checked = false;
+        let fieldToClear = checkbox.getAttribute('data-field');
+
+        if ( !fieldToClear ) return;
+
+        this.personalDataSectionRecord[fieldToClear] = ( checkbox.value != APPROVED_STATUS ) ? null : this.personalDataSectionRecord[fieldToClear];
+
       }
-      elem.setAttribute('data-value', newValue)
+    });
+  }
 
-      if (event.target.checked && (currentCheckboxValue == 'Rejeitar' || currentCheckboxValue == 'Pendenciar'))
-      {
-        let modalReason = (currentCheckboxValue == 'Rejeitar') ? 'reject' : 'pendency';
+  getInfo() {
+    const selectedCheckboxes = this.template.querySelectorAll(`input[type='checkbox']:checked`);
+    this.updateCompletionPercentage(selectedCheckboxes);
 
-        modal['modalReason'] = modalReason
-        modal['openModalReason'] = true
-        modal['fieldReason'] = event.target.getAttribute('data-field')
-        modal['objectReason'] = 'PersonalDataSection__c'
+    const variant = this.getVariant(selectedCheckboxes);
+    return {
+      variant,
+      value: this.completionPercentage,
+      returnedId: COMPONENT_ID
+    };
+  }
+
+  getVariant(selectedCheckboxes) {
+    let isApproved = false;
+    let isPending = false;
+    let isRejected = false;
+    let variant = '';
+
+    selectedCheckboxes.forEach(element => {
+
+      if (element.value ===  APPROVED_STATUS) {
+        isApproved = true;
+      } else if (element.value === PENDENCY_STATUS ) {
+        isPending = true;
+      } else if (element.value === REJECTION_STATUS ) {
+        isRejected = true;
       }
-    })
+    });
 
-    let info = this.getPercentage()
-    info = {...info, modal}
+    if (isRejected) {
+      variant = 'expired';
+    } else if (isPending) {
+      variant = 'warning';
+    } else if (isApproved) {
+      variant = 'base-autocomplete';
+    }
 
-    this.sendInfo(info)
+    return variant;
+  }
+
+  updateCompletionPercentage(checkboxes) {
+
+    const selected = checkboxes.length;
+    const total = VALIDATION_ROWS;
+    this.completionPercentage = (selected / total) * 100;
+    
+    this.completionPercentage = ( this.completionPercentage == 100 && !this.recordSaved ) ? 99 : this.completionPercentage;
+    this.controllerSave(this.completionPercentage);
+
   }
 
   sendInfo(info) {
@@ -180,48 +217,8 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     this.dispatchEvent(selectedEvent);
   }
 
-  getPercentage() {
-    let returnedId = this.template.querySelector("div[data-id='ContainerDadosPessoais']").getAttribute("data-id")
-    let topContainer = this.template.querySelector('div[data-id="' + returnedId + '"]')
-    
-    let selectedCheckboxes = topContainer.querySelectorAll('input[type="checkbox"]:checked')
-    let totalLines = 16
-
-    let isPending = false
-    let isRejected = false
-
-    let infoVariant = ''
-    let infoValue = ''
-
-    let info = {}
-    
-    let countSelectedCheckbox = 0
-
-    selectedCheckboxes.forEach(element => {
-      countSelectedCheckbox++
-
-      if (element.value === 'Aprovar')         infoVariant = 'base-autocomplete'
-      else if (element.value === 'Pendenciar') isPending = true
-      else if (element.value === 'Rejeitar')   isRejected = true
-    })
-    
-    if (isPending && !isRejected) infoVariant = 'warning'
-    if (isRejected) infoVariant = 'expired'
-    
-    infoValue = (countSelectedCheckbox / totalLines) * 100
-    selectedCheckboxes = 0
-    
-    info.variant = infoVariant
-    info.value = infoValue
-    info.returnedId = returnedId
-
-    this.controllerSave(info.value);
-  
-    return info
-  }
-
-  controllerSave(percentageSection){
-    this.disabledBtnSave = (percentageSection != 100) ? true : false;
+  controllerSave(percentageSection) {
+    this.disabledBtnSave = ( percentageSection == 99 && !this.recordSaved ) ? false : true;
   }
 
   showToast(title, message, variant) {
@@ -243,66 +240,41 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   }
 
   get isRed() {
-    return (this.idade > 60 || this.idade < 25) ? true : false
+    return (this.idade > 60 || this.idade < 25) ? true : false;
   }
 
   @api
   getReasonSelected(result) {
+
     let validationReason = JSON.parse(result);
-    if(validationReason.reason == null) {
-      this.uncheckReason(validationReason.field);
-    }
-    else {
-      this.setMapReason(validationReason);
-    }
+
+    ( validationReason.reason == null ) ? this.uncheckReason(validationReason) : this.saveReasonOnRecord(validationReason);
+  
   }
 
-  uncheckReason(reason){
-    let field = this.template.querySelector('[data-field="' + reason + '"]');
+  uncheckReason(validationReason){
+
+    this.recordSaved = false;
+    let field = this.template.querySelector('[data-field="' + validationReason.field + '"]');
     field.checked = false;
     field.setAttribute('data-value', '');
-    let info = this.getPercentage();
-    this.sendInfo(info);
+
+    this.personalDataSectionRecord[validationReason.field] = null;
+    let observationField = observationByStatus.get(this.lastCheckBoxName);
+    this.personalDataSectionRecord[observationField] = null;
+
+    this.sendInfo(this.getInfo());
   }
 
-  setMapReason(selectedReason) {
-    let description = selectedReason.description ? selectedReason.description : '';
-    let mapSection = this.mapSection;
+  saveReasonOnRecord(validationReason) {
 
-    if( ['RGPendingReason__c','RGRejectReason__c'].includes(selectedReason.field)) {
-      mapSection[selectedReason.field] = selectedReason.reason ? selectedReason.reason : '';
-      mapSection.RGobservation__c = description;
-    }
+    this.recordSaved = false;
+    this.personalDataSectionRecord[validationReason.field] = validationReason.reason;
+    let observationField = observationByStatus.get(this.lastCheckBoxName);
 
-    else if(['CPFPendingReason__c', 'CPFRejectReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]      = selectedReason.reason;
-      mapSection.CPFObservation__c          = description;
-    }
-
-    else if(['PersonExposedRejectReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]      = selectedReason.reason;
-      mapSection.PoliticallyExposedPersonObservation__c = description;
-    }
+    this.personalDataSectionRecord[observationField] = ( validationReason.description != null ) ? validationReason.description : null;
     
-    else if(['DateDispatchPendingReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]      = selectedReason.reason;
-      mapSection.DispatchDateObservation__c = description;
-    }
-      
-    else if(['CNHnumberPendingReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]   = selectedReason.reason;
-      mapSection.CNHnumberObservation__c = description;
-    }
-
-    else if(['CNHdispatchDatePendingReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]         = selectedReason.reason;
-      mapSection.CNHdispatchDateObservation__c = description;
-    }
-
-    else if(['CNHissuingAgencyPendingReason__c'].includes(selectedReason.field)){
-      mapSection[selectedReason.field]          = selectedReason.reason;
-      mapSection.CNHissuingAgencyObservation__c = description;
-    }
+    this.sendInfo(this.getInfo());
   }
 
   showError(error) {
@@ -312,13 +284,10 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
   buildDataSection() {
 
-    this.politicallyExposed = ( this.personalDataSectionRecord.PoliticallyExposed__c ) ? 'Sim' : 'Não';
+    this.personalDataSectionRecord.PoliticallyExposed__c= ( this.personalDataSectionRecord.PoliticallyExposed__c ) ? 'true' : 'false';
     this.idade = this.getAge(this.personalDataSectionRecord.BirthDate__c);
     this.showContainer = true;
     
-   
-    // let info = this.getPercentage()
-    // this.sendInfo(info)
   }
 
   renderedCallback() {
@@ -335,13 +304,52 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
       this.template.querySelectorAll("[data-status='"+indexField+"']").forEach( item => {
 
+        let dataValue = item.hasAttribute("data-value") ? item.getAttribute("data-value") : null;
+
+        if ( dataValue == this.personalDataSectionRecord[indexField]
+            && dataValue == RETURNED_PENDENCY_STATUS ) {
+         
+            item.classList.add('show_icon_pendency');
+        }
+
         if (item.value === this.personalDataSectionRecord[indexField]) {
           item.checked = true;
           item.setAttribute('data-value', item.value);
         }
 
         this.initialRender = true;
+
       });
+    }
+
+    this.sendInfo(this.getInfo());
+  }
+
+  @wire(getObjectInfo, { objectApiName: PERSONAL_DATA_SECTION_OBJECT  })
+  getOperationPermission({ error, data }) {
+    
+    if (data) {
+    
+      this.disabledFields.name = !data.fields.Name__c.updateable;
+      this.disabledFields.father = !data.fields.Father__c.updateable;
+      this.disabledFields.mother = !data.fields.Mother__c.updateable;
+      this.disabledFields.birthdate = !data.fields.BirthDate__c.updateable;
+      this.disabledFields.cpf = !data.fields.CPF__c.updateable;
+      this.disabledFields.birthCity = !data.fields.BirthCity__c.updateable;
+      this.disabledFields.birthCountry = !data.fields.BirthCountry__c.updateable;
+      this.disabledFields.nationality = !data.fields.Nationality__c.updateable;
+      this.disabledFields.politicallyExposed = !data.fields.PoliticallyExposed__c.updateable;
+      this.disabledFields.rg = !data.fields.RG__c.updateable;
+      this.disabledFields.issuer = !data.fields.Issuer__c.updateable;
+      this.disabledFields.issueDate = !data.fields.IssueDate__c.updateable;
+      this.disabledFields.issuerState = !data.fields.IssuerState__c.updateable;
+      this.disabledFields.cnhNumber = !data.fields.CNHnumber__c.updateable;
+      this.disabledFields.cnhIssueDate = !data.fields.CNHIssueDate__c.updateable;
+      this.disabledFields.cnhIssuer = !data.fields.CNHIssuer__c.updateable;
+
+    }
+    else if(error){
+      this.showError(error);
     }
   }
 }

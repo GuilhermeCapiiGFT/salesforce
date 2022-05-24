@@ -3,7 +3,11 @@
 
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
-        <label class="slds-p-bottom_xx-small">CEP</label>
+        <label class="slds-p-bottom_xx-small">CEP
+          <span style="position:relative; top:-3px;">
+            <lightning-helptext content="Voltou de pendência" icon-name="utility:announcement" icon-variant='warning' data-status="CEPStatus__c" class="slds-m-left_xx-small" style="display:none;" data-value={statusReturnedPendency}></lightning-helptext>
+          </span>
+        </label>
         <lightning-input variant="label-hidden" style="width: 100%;" type="text" value={cepNumber.value} disabled={cepNumber.fieldReadOnly} data-id="PostalCode__c" onchange={handleInputChange}></lightning-input>
       </div>
   
@@ -50,13 +54,13 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxStreetPendenciado">&nbsp;</label>
           <input data-id="checkboxStreetPendenciado"  data-field="StreetAddressPendingReason__c" data-value={preValue} data-status="StreetAddressStatus__c" name="AddressesStreet" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxStreetReprovado">&nbsp;</label>
           <input data-id="checkboxStreetReprovado"  data-field="StreetAddressRejectReason__c" data-value={preValue} data-status="StreetAddressStatus__c" name="AddressesStreet" type="checkbox" value="Rejeitar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
       </div>
     </div>
@@ -80,13 +84,13 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxStreetNumberPendenciado">&nbsp;</label>
           <input data-id="checkboxStreetNumberPendenciado"  data-field="AddressNumberPendingReason__c" data-value={preValue} data-status="AddressNumberStatus__c" name="AddressesStreetNumber" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxStreetNumberReprovado">&nbsp;</label>
           <input data-id="checkboxStreetNumberReprovado"  data-field="AddressNumberRejectReason__c" data-value={preValue} data-status="AddressNumberStatus__c" name="AddressesStreetNumber" type="checkbox" value="Rejeitar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
       </div>
     </div>
@@ -110,7 +114,7 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxComplementPendenciado">&nbsp;</label>
           <input data-id="checkboxComplementPendenciado"  data-field="AddOnPendingReason__c" data-value={preValue} data-status="AddOnStatus__c" name="AddressesAddOn" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
@@ -140,13 +144,13 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxNeighborhoodPendenciado">&nbsp;</label>
           <input data-id="checkboxNeighborhoodPendenciado"  data-field="NeighborhoodPendingReason__c" data-value={preValue} data-status="NeighborhoodStatus__c" name="AddressesNeighborhood" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxNeighborhoodReprovado">&nbsp;</label>
           <input data-id="checkboxNeighborhoodReprovado"  data-field="NeighborhoodRejectReason__c" data-value={preValue} data-status="NeighborhoodStatus__c" name="AddressesNeighborhood" type="checkbox" value="Rejeitar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
       </div>
     </div>
@@ -170,13 +174,13 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxCityPendenciado">&nbsp;</label>
           <input data-id="checkboxCityPendenciado"  data-field="CityPendingReason__c" data-value={preValue} data-status="CityStatus__c" name="AddressesCity" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxCityReprovado">&nbsp;</label>
           <input data-id="checkboxCityReprovado"  data-field="CityRejectReason__c" data-value={preValue} data-status="CityStatus__c" name="AddressesCity" type="checkbox" value="Rejeitar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
       </div>
     </div>
@@ -200,13 +204,13 @@
         <div class="slds-size_4-of-12 form-control pendenciado">
           <label for="checkboxStatePendenciado">&nbsp;</label>
           <input data-id="checkboxStatePendenciado"  data-field="StatePendingReason__c" data-value={preValue} data-status="StateStatus__c" name="AddressesState" type="checkbox" value="Pendenciar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
   
         <div class="slds-size_4-of-12 form-control reprovado">
           <label for="checkboxStateReprovado">&nbsp;</label>
           <input data-id="checkboxStateReprovado"  data-field="StateRejectReason__c" data-value={preValue} data-status="StateStatus__c" name="AddressesState" type="checkbox" value="Rejeitar"
-            onchange={handleChangeCheckbox} />
+            onchange={handleChangeCheckbox} class="disabled-input" disabled/>
         </div>
       </div>
     </div>
@@ -242,7 +246,7 @@
     </div>
 
     <div class="btn-container">
-      <button class="btn" disabled={disabledBtnSave} onclick={handleSaveSection} >Salvar</button>
+      <button class="btn" disabled={controllerSaveBtn} onclick={handleSaveSection} >Salvar</button>
     </div>
 
   </div>

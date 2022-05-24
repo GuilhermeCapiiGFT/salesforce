@@ -1,11 +1,14 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getRecordNotifyChange  } from 'lightning/uiRecordApi';
 import { updateRecord } from 'lightning/uiRecordApi';
+
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { refreshApex } from '@salesforce/apex';
 
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
 import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
+import OWNER_ID_FIELD from '@salesforce/schema/Opportunity.OwnerId';
+
+import CONTRACT_NUMBER_FIELD from '@salesforce/schema/Opportunity.CCBnumber__c';
 
 import OPP_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeReason__c';
 import OPP_OTHER_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeOtherReason__c';
@@ -14,25 +17,45 @@ import OPP_OBSERVATION_FIELD from '@salesforce/schema/Opportunity.CommitteeObser
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
 
-const fields = [STAGENAME_FIELD, OPP_REASON_FIELD, OPP_OTHER_REASON_FIELD, OPP_OBSERVATION_FIELD];
+import {NavigationMixin} from 'lightning/navigation';
+import getContract from '@salesforce/apex/ProposalContractController.getRelatedFilesByRecordId';
+
+const fields = [STAGENAME_FIELD, OWNER_ID_FIELD, OPP_REASON_FIELD, OPP_OTHER_REASON_FIELD, OPP_OBSERVATION_FIELD];
 
 const PROPOSAL_APPROVED = 'approved';
 const PROPOSAL_PENDENCY = 'pendency';
 const PROPOSAL_REJECTED = 'rejected';
 
 const ERROR_OCCURRED = 'Ocorreu um Erro';
-const ERROR_MESSAGE = 'Por favor entre em contato com um administrador.';
-const ERROR_VARIANT = 'error';
+const ERROR_MESSAGE  = 'Por favor entre em contato com um administrador.';
+const ERROR_VARIANT  = 'error';
 
 const SUCCESS_OCCURRED = 'Sucesso';
-const SUCCESS_MESSAGE = 'Análise da proposata enviada com sucesso!';
+const SUCCESS_MESSAGE  = 'Análise da proposta enviada com sucesso!';
+const SUCCESS_STAGE_MESSAGE  = 'Stage alterado com sucesso!';
 const SUCCESS_VARIANT = 'success';
+
+const STATUS_WAITING_UE = 'Aguardando Análise de Formalização';
+const STATUS_WAITING_DISTRIBUTION = 'Aguardando Distribuição para Comitê de Formalização';
+const STATUS_IN_ANALYSIS_UE = 'Em Análise de Formalização';
+const STATUS_WAITING_COMMITTEE = 'Aguardando Análise de Comitê de Formalização';
+const STATUS_IN_ANALYSIS_COMMITTEE = 'Em Análise de Comitê de Formalização';
+
+const STATUS_WAITING_CONTRACT = 'Aguardando emissão de contrato';
+const STATUS_EMITED_CONTRACT = 'Contrato emitido';
 
 export default class ProposalAnalysis extends LightningElement {
 
   @api accountid
   @api opportunityid
-  
+
+  disableBtnGenerateContract = false;
+  disableBtnViewContract = true;
+  disableBtnSendContract = true;
+  disableBtnCorrectContract = false;
+  dateContract = '';
+  showContractGenerated = false;
+
   isStageWaitingForUE = false
   isStageInAnalysis = false
   isAnalysisStarted = false
@@ -93,6 +116,13 @@ export default class ProposalAnalysis extends LightningElement {
   committeeOtherReasons = ''
   committeeObservation = ''
 
+  ccbNumber = ''
+
+  //Contract
+  showContractButton = false;
+  showApproveButtons = false;
+  enableContractButton = true;
+
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
     ["PersonalDataSection__c", "c-proposal-personal-data-component"],
@@ -114,76 +144,123 @@ export default class ProposalAnalysis extends LightningElement {
   @wire(getRecord, { recordId: '$opportunityid', fields })
   getOpportunity({ error, data }) {
     if (data) {
-      
       this.getStageName(data)
       this.getCommitteeReasons(data)
-
     } else if (error) {
-      this.showToast(ERROR_OCCURRED, 'Houve um erro ao buscar a oportunidade.', ERROR_VARIANT);
+      this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
     }
   }
 
   getCommitteeReasons(data) {
-    console.log({data})
     this.committeeReasons = data?.fields?.CommitteeReason__c?.displayValue.split(';')
     this.committeeOtherReasons = data?.fields?.CommitteeOtherReason__c?.value
     this.committeeObservation = data?.fields?.CommitteeObservation__c?.value
-
-    console.log(this.committeeOtherReasons)
-    console.log(this.committeeObservation)
   }
 
   getStageName(data) {
     let stageName = data?.fields?.StageName?.value
       
-      if (stageName === 'Aguardando Análise de Formalização') {
+      if (stageName === STATUS_WAITING_UE) {
         this.isStageWaitingForUE = true
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
+        this.isStageOnCommittee = false
+
+        this.showContractButton = false
+        this.showApproveButtons = true
+
         this.isStageOnCommittee = false
       }
 
-      else if (stageName === 'Aguardando Distribuição para Comitê de Formalização') {
-        this.isStageWaitingForUE = true
+      else if (stageName === STATUS_WAITING_DISTRIBUTION) {
+        this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
+        this.isStageWaitingForCommittee = false;
         this.isStageOnCommittee = false
+
+        this.showContractButton = false
+        this.showApproveButtons = true
       }
       
-      else if (stageName === 'Em Análise de Formalização') {
+      else if (stageName === STATUS_IN_ANALYSIS_UE) {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = true
         this.showCommitteeButton = true;
+
+        this.showContractButton = false
+        this.showApproveButtons = true
+
         this.openSection = true;
       }
       
-      else if (stageName === 'Aguardando Análise de Comitê de Formalização') {
+      else if (stageName === STATUS_WAITING_COMMITTEE) {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
-        this.openSection = false;
         this.isStageWaitingForCommittee = true
         this.isStageOnCommittee = false
+
+        this.showContractButton = false
+        this.showApproveButtons = true
+
+        this.openSection = false;
       }
         
-      else if (stageName === 'Em Análise de Comitê de Formalização') {
+      else if (stageName === STATUS_IN_ANALYSIS_COMMITTEE) {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = true
         this.showCommitteeButton = false;
-        this.openSection = true;
         this.isStageWaitingForCommittee = false
         this.isStageOnCommittee = true;
+
+        this.showApproveButtons = true
+        this.showContractButton = false
+
+        this.openSection = true;
+      }
+
+      else if (stageName === STATUS_WAITING_CONTRACT) {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = false
+        this.showCommitteeButton = false;
+
+        this.showApproveButtons = false
+        this.showContractButton = true
+
+        this.isStageWaitingForCommittee = false
+        this.isStageOnCommittee = false     
+
+        this.openSection = false;
+      }
+
+      else if (stageName === STATUS_EMITED_CONTRACT) {
+        this.isStageWaitingForUE = false
+        this.isAnalysisStarted = false
+        this.showCommitteeButton = false;
+
+        this.showApproveButtons = false
+        this.showContractButton = true        
+
+        this.isStageWaitingForCommittee = false
+        this.isStageOnCommittee = false     
+
+        this.openSection = false;
       }
         
       else {
         this.isStageWaitingForUE = false
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
+        this.isStageWaitingForCommittee = false
+        this.isStageOnCommittee = false;
+        this.showApproveButtons = true
+        this.showContractButton = false
       }
+      
   }
   
   setInfoValueAndVariant(event) {
-
     let infoSection = event.detail
 
     this.mapInfoSection.set(infoSection.returnedId, JSON.parse(JSON.stringify(infoSection)))
@@ -228,7 +305,6 @@ export default class ProposalAnalysis extends LightningElement {
       this.openModalReason = infoSection.modal.openModalReason
       this.modalReasonField = infoSection.modal.fieldReason
       this.modalReasonObject = infoSection.modal.objectReason
-
     }
 
     this.isCompleted()
@@ -280,19 +356,19 @@ export default class ProposalAnalysis extends LightningElement {
     this.isLoading = true;
 
     fields[OPP_ID_FIELD.fieldApiName]    = this.opportunityid;
-    fields[STAGENAME_FIELD.fieldApiName] = 'Em Análise de Comitê de Formalização';
+    fields[STAGENAME_FIELD.fieldApiName] = STATUS_IN_ANALYSIS_COMMITTEE;
 
     const recordField = {fields}
 
     updateRecord(recordField)
       .then(() => {
-        this.showToast(SUCCESS_OCCURRED, 'Stage Alterado com sucesso!', SUCCESS_VARIANT)
+        this.showToast(SUCCESS_OCCURRED, SUCCESS_STAGE_MESSAGE, SUCCESS_VARIANT)
         this.isStageWaitingForCommittee = false
         this.isStageOnCommittee = true
         this.isLoading = false
       })
       .catch(error => {
-        this.showToast(ERROR_OCCURRED, 'Houve um erro na alteração do stage', ERROR_VARIANT)
+        this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT)
         this.isLoading = false
         this.isStageWaitingForCommittee = true
         this.isStageOnCommittee = false
@@ -309,14 +385,14 @@ export default class ProposalAnalysis extends LightningElement {
     })
       .then(result => {
       getRecordNotifyChange([{recordId: this.opportunityid}]);
-      this.showToast(SUCCESS_OCCURRED, 'Stage Alterado com sucesso!', SUCCESS_VARIANT);
+      this.showToast(SUCCESS_OCCURRED, SUCCESS_STAGE_MESSAGE, SUCCESS_VARIANT);
         this.isAnalysisStarted = true;
         this.isLoading = false
     })
     .catch( error =>{
       console.log({ error });
       this.isAnalysisStarted = false;
-      this.showToast(ERROR_OCCURRED, 'Houve um erro na alteração do stage', ERROR_VARIANT);
+      this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
       this.isLoading = false
     })
   }
@@ -430,8 +506,8 @@ export default class ProposalAnalysis extends LightningElement {
     this.openModalRejection = false;
   }
 
-  handlerApproveProposal() {
-    this.openModalApprove = true
+  handlerApproveProposal() {    
+    this.openModalApprove = true    
   }
 
   handlerCloseModalApprove(){
@@ -459,6 +535,72 @@ export default class ProposalAnalysis extends LightningElement {
   handlerAnalysisReject() {
     this.handlerCloseModalRejection();
     this.sendAnalysis('reject-btn');
+  }
+
+  handleViewContract(){
+        
+    console.log('opportunityId: '+this.opportunityid);
+    getContract({ recordId : this.opportunityid})
+    .then( result =>{
+        console.log({result});
+
+        (result != '') ? this.previewHandler(result): this.dispatchShowToast('Warning','Contrato não localizado!','warning');;
+    }).catch(error =>{
+        console.log('Erro: '+error);
+    });
+  }
+
+  handleSendContract(){
+      
+      this.dispatchShowToast('Success','Contrato enviado com sucesso!','success');
+  }
+  handleGenerateContract(){
+      this.disableBtnGenerateContract = true;
+      this.disableBtnViewContract = false;
+      this.disableBtnSendContract = false;
+      this.disableBtnCorrectContract = false;
+
+      let dateNow = new Date();
+      let splitDate = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short'}).format(dateNow);
+      let splitHours = new Intl.DateTimeFormat('pt-BR', { timeStyle: 'short' }).format(dateNow);
+      this.dateContract = splitDate +' às '+splitHours;
+
+    
+      this.showContractGenerated = true;
+      this.dispatchShowToast('Success','Contrato gerado com sucesso!','success');
+  }
+  handleCorrectContract(){     
+    
+      this.showApproveButtons = true
+      this.showContractButton = false
+      this.openSection = true;
+
+      this.isAnalysisStarted = true
+      this.showCommitteeButton = true;
+
+  }
+
+  dispatchShowToast(title, message, variant){
+      this.dispatchEvent(
+          new ShowToastEvent({
+              title: title,
+              message: message,
+              variant: variant,
+          }),
+      );
+  }
+
+  previewHandler(doccumentId){
+      console.log(doccumentId)
+      this[NavigationMixin.Navigate]({ 
+          type:'standard__namedPage',
+          attributes:{ 
+              pageName:'filePreview'
+          },
+          state:{ 
+              selectedRecordId: doccumentId
+          }
+      })
   }
 
   closeSections(){

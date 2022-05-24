@@ -1,5 +1,5 @@
 public with sharing class AccountIntegrationService {
-  class AccountIntegrationServiceException extends Exception {
+  private class AccountIntegrationServiceException extends Exception {
     String detailedMessage;
 
     public String getDetailedMessage() {
@@ -11,7 +11,7 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  static AccountIntegrationServiceException createAISException(
+  private static AccountIntegrationServiceException createAISException(
     String message,
     String detailedMessage
   ) {
@@ -22,21 +22,29 @@ public with sharing class AccountIntegrationService {
     return aisException;
   }
 
-  static AccountIntegrationServiceException createAISException(String message) {
+  private static AccountIntegrationServiceException createAISException(String message) {
     return createAISException(message, message);
   }
 
-  String requestBodyString;
-  String upsertedAccountId;
-  AccountIntegrationRequestVO requestBodyObject;
-  AccountIntegrationResponseVO responseBodyObject;
+  private String requestBodyString;
+  private String upsertedAccountId;
+  private AccountIntegrationRequestVO requestBodyObject;
+  private AccountIntegrationResponseVO responseBodyObject;
+  private Set<String> newContactsExternalId;
+  private Set<String> newAdressesExternalId;
+  private Set<String> newRelatioshipsExternalId;
+  private Set<String> newDocumentsExternalId;
+  private Set<String> newProfessionalInfosExternalId;
+  private Set<String> newIncomesExternalId;
+  private Set<String> newProfessionalIncomesExternalId;
+  private Set<String> newFiliationsType;
 
-  Boolean isValidRequest {
+  private Boolean isValidRequest {
     get {
-      if (this.requestBodyObject == null) {
+      if (this.requestBodyObject == null || this.requestBodyObject.hasError) {
         return false;
       } else {
-        return this.requestBodyObject.hasError ? false : true;
+        return true;
       }
     }
   }
@@ -49,7 +57,7 @@ public with sharing class AccountIntegrationService {
     return Blob.valueOf(JSON.serialize(this.responseBodyObject));
   }
 
-  public Integer getStatusCode(){
+  public Integer getStatusCode() {
     return this.responseBodyObject.status;
   }
 
@@ -82,14 +90,14 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  void parseRequestBody() {
+  private void parseRequestBody() {
     this.requestBodyObject = AccountIntegrationRequestVO.parse(this.requestBodyString);
     if (this.requestBodyObject.hasError) {
       throw createAISException('Invalid JSON format.', this.requestBodyObject.errorMessage);
     }
   }
 
-  void validateRequestData() {
+  private void validateRequestData() {
     if (this.requestBodyObject.professionalInfo != null) {
       for (
         AccountIntegrationRequestVO.ProfessionalInfo professionalInfo : this.requestBodyObject.professionalInfo
@@ -113,23 +121,23 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  void doDMLTransactions() {
+  private void doDMLTransactions() {
     Account currentAccount = this.selectAccount(this.requestBodyObject.id);
-    List<SObject> objectsToDelete = this.getObjectsToDelete(currentAccount);
     List<SObject> objectsToUpsert = this.getObjectsToUpsert(currentAccount);
+    List<SObject> objectsToDelete = this.getObjectsToDelete(currentAccount);
 
     Savepoint savePoint = Database.setSavePoint();
 
     try {
-      this.doDelete(objectsToDelete);
       this.doUpsert(objectsToUpsert);
+      this.doDelete(objectsToDelete);
     } catch (AccountIntegrationServiceException e) {
       Database.rollback(savePoint);
       throw e;
     }
   }
 
-  Account selectAccount(String externalId) {
+  private Account selectAccount(String externalId) {
     List<Account> accounts = [
       SELECT
         Id,
@@ -150,13 +158,12 @@ public with sharing class AccountIntegrationService {
         (SELECT Id, Type__c FROM Filiation__r)
       FROM Account
       WHERE ExternalId__c = :externalId
-      LIMIT 1
     ];
 
     return accounts.isEmpty() ? null : accounts[0];
   }
 
-  void doDelete(List<SObject> objects) {
+  private void doDelete(List<SObject> objects) {
     Database.DeleteResult[] results = Database.delete(objects, false);
     for (Database.DeleteResult result : results) {
       if (!result.isSuccess()) {
@@ -167,7 +174,7 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  void doUpsert(List<SObject> objects) {
+  private void doUpsert(List<SObject> objects) {
     Database.UpsertResult[] results = Database.upsert(objects, false);
     for (Database.UpsertResult result : results) {
       if (result.isSuccess()) {
@@ -183,7 +190,7 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  List<SObject> getObjectsToDelete(Account currentAccount) {
+  private List<SObject> getObjectsToDelete(Account currentAccount) {
     List<CommunicationContacts__c> contacts = this.getContactsToDelete(
       currentAccount?.CommunicationContacts__r
     );
@@ -217,7 +224,16 @@ public with sharing class AccountIntegrationService {
     return objects;
   }
 
-  List<SObject> getObjectsToUpsert(Account currentAccount) {
+  private List<SObject> getObjectsToUpsert(Account currentAccount) {
+    this.newContactsExternalId = new Set<String>();
+    this.newAdressesExternalId = new Set<String>();
+    this.newRelatioshipsExternalId = new Set<String>();
+    this.newDocumentsExternalId = new Set<String>();
+    this.newProfessionalInfosExternalId = new Set<String>();
+    this.newIncomesExternalId = new Set<String>();
+    this.newProfessionalIncomesExternalId = new Set<String>();
+    this.newFiliationsType = new Set<String>();
+
     Account parentAccount = new Account(ExternalId__c = this.requestBodyObject.id);
     Account account = this.getAccountToUpsert(currentAccount?.Id);
     List<CommunicationContacts__c> contacts = this.getContactsToUpsert(
@@ -274,7 +290,7 @@ public with sharing class AccountIntegrationService {
     return objects;
   }
 
-  Account getAccountToUpsert(Id accountId) {
+  private Account getAccountToUpsert(Id accountId) {
     Account account = new Account();
     account.Id = accountId;
     account.ExternalId__c = this.requestBodyObject.id;
@@ -347,7 +363,7 @@ public with sharing class AccountIntegrationService {
     return account;
   }
 
-  List<CommunicationContacts__c> getContactsToUpsert(
+  private List<CommunicationContacts__c> getContactsToUpsert(
     Account parentAccount,
     List<CommunicationContacts__c> currentContacts
   ) {
@@ -373,12 +389,14 @@ public with sharing class AccountIntegrationService {
       newContact.Code__c = contact.code;
       newContact.Type__c = contact.type;
       contacts.add(newContact);
+
+      this.newContactsExternalId.add(contact.id);
     }
 
     return contacts;
   }
 
-  List<Addresses__c> getAddressesToUpsert(
+  private List<Addresses__c> getAddressesToUpsert(
     Account parentAccount,
     List<Addresses__c> currentAddresses
   ) {
@@ -413,12 +431,14 @@ public with sharing class AccountIntegrationService {
       newAddress.AreaLevel4__c = address.administrativeAreaLevel4;
       newAddress.AreaLevel5__c = address.administrativeAreaLevel5;
       addresses.add(newAddress);
+
+      this.newAdressesExternalId.add(address.id);
     }
 
     return addresses;
   }
 
-  List<AccountRelationships__c> getRelationshipsToUpsert(
+  private List<AccountRelationships__c> getRelationshipsToUpsert(
     Account parentAccount,
     List<AccountRelationships__c> currentRelationships
   ) {
@@ -465,12 +485,14 @@ public with sharing class AccountIntegrationService {
       newRelationship.PrimaryRelationship__r = parentAccount;
       newRelationship.SecondaryRelationship__c = secondaryAccountId;
       relationships.add(newRelationship);
+
+      this.newRelatioshipsExternalId.add(relationship.id);
     }
 
     return relationships;
   }
 
-  List<Documents__c> getDocumentsToUpsert(
+  private List<Documents__c> getDocumentsToUpsert(
     Account parentAccount,
     List<Documents__c> currentDocuments
   ) {
@@ -504,12 +526,14 @@ public with sharing class AccountIntegrationService {
         newDocument.IssueDate__c = Date.valueOf(document.issueDate);
       }
       documents.add(newDocument);
+
+      this.newDocumentsExternalId.add(document.id);
     }
 
     return documents;
   }
 
-  List<ProfessionalInfo__c> getProfessionalInfosToUpsert(
+  private List<ProfessionalInfo__c> getProfessionalInfosToUpsert(
     Account parentAccount,
     List<ProfessionalInfo__c> currentInfos
   ) {
@@ -550,11 +574,14 @@ public with sharing class AccountIntegrationService {
         }
       }
       professionalInfos.add(professionalInfo);
+
+      this.newProfessionalInfosExternalId.add(info.id);
     }
+
     return professionalInfos;
   }
 
-  List<FinancialResources__c> getIncomesToUpsert(
+  private List<FinancialResources__c> getIncomesToUpsert(
     List<AccountFinancialRelationship__c> currentRelationships
   ) {
     List<FinancialResources__c> incomes = new List<FinancialResources__c>();
@@ -592,12 +619,14 @@ public with sharing class AccountIntegrationService {
       newIncome.ExternalCreationDate__c = Date.valueOf(income.createdAt);
       newIncome.ExternalUpdatedDate__c = Date.valueOf(income.updatedAt);
       incomes.add(newIncome);
+
+      this.newIncomesExternalId.add(income.id);
     }
 
     return incomes;
   }
 
-  List<FinancialResources__c> getProfessionalIncomesToUpsert(
+  private List<FinancialResources__c> getProfessionalIncomesToUpsert(
     List<AccountFinancialRelationship__c> currentRelationships
   ) {
     List<FinancialResources__c> incomes = new List<FinancialResources__c>();
@@ -640,12 +669,14 @@ public with sharing class AccountIntegrationService {
       newIncome.Amount__c = Decimal.valueOf(income.amount.amount);
       newIncome.ProfessionalInfo__r = new ProfessionalInfo__c(ExternalId__c = info.id);
       incomes.add(newIncome);
+
+      this.newProfessionalIncomesExternalId.add(info.id);
     }
 
     return incomes;
   }
 
-  List<AccountFinancialRelationship__c> getFinancialRelationshipsToUpsert(
+  private List<AccountFinancialRelationship__c> getFinancialRelationshipsToUpsert(
     Account parentAccount,
     List<FinancialResources__c> incomes,
     List<AccountFinancialRelationship__c> currentRelationships
@@ -676,10 +707,11 @@ public with sharing class AccountIntegrationService {
       );
       relationships.add(newRelationship);
     }
+
     return relationships;
   }
 
-  List<Filiation__c> getFiliationsToUpsert(
+  private List<Filiation__c> getFiliationsToUpsert(
     Account parentAccount,
     List<Filiation__c> currentFiliations
   ) {
@@ -705,12 +737,14 @@ public with sharing class AccountIntegrationService {
           Type__c = filiation.type
         )
       );
+
+      this.newFiliationsType.add(filiation.type);
     }
 
     return filiations;
   }
 
-  List<CommunicationContacts__c> getContactsToDelete(
+  private List<CommunicationContacts__c> getContactsToDelete(
     List<CommunicationContacts__c> currentContacts
   ) {
     List<CommunicationContacts__c> contactsToDelete = new List<CommunicationContacts__c>();
@@ -719,45 +753,32 @@ public with sharing class AccountIntegrationService {
       return contactsToDelete;
     }
 
-    Set<String> newContactExternalIds = new Set<String>();
-    for (AccountIntegrationRequestVO.Contacts contact : this.requestBodyObject.contacts) {
-      newContactExternalIds.add(contact.id);
-    }
-
     for (CommunicationContacts__c currentContact : currentContacts) {
-      if (newContactExternalIds.contains(currentContact.ExternalId__c)) {
-        continue;
+      if (!this.newContactsExternalId.contains(currentContact.ExternalId__c)) {
+        contactsToDelete.add(currentContact);
       }
-
-      contactsToDelete.add(currentContact);
     }
 
     return contactsToDelete;
   }
 
-  List<Addresses__c> getAddressesToDelete(List<Addresses__c> currentAddresses) {
+  private List<Addresses__c> getAddressesToDelete(List<Addresses__c> currentAddresses) {
     List<Addresses__c> addressesToDelete = new List<Addresses__c>();
 
     if (currentAddresses == null || this.requestBodyObject.addresses == null) {
       return addressesToDelete;
     }
 
-    Set<String> newAddressesExternalIds = new Set<String>();
-    for (AccountIntegrationRequestVO.Adresses address : this.requestBodyObject.addresses) {
-      newAddressesExternalIds.add(address.id);
-    }
-
     for (Addresses__c currentAddress : currentAddresses) {
-      if (newAddressesExternalIds.contains(currentAddress.ExternalAddressId__c)) {
-        continue;
+      if (!this.newAdressesExternalId.contains(currentAddress.ExternalAddressId__c)) {
+        addressesToDelete.add(currentAddress);
       }
-      addressesToDelete.add(currentAddress);
     }
 
     return addressesToDelete;
   }
 
-  List<AccountRelationships__c> getRelationshipsToDelete(
+  private List<AccountRelationships__c> getRelationshipsToDelete(
     List<AccountRelationships__c> currentRelatioships
   ) {
     List<AccountRelationships__c> relationshipsToDelete = new List<AccountRelationships__c>();
@@ -766,61 +787,40 @@ public with sharing class AccountIntegrationService {
       return relationshipsToDelete;
     }
 
-    Set<String> newRelationshipsExternalId = new Set<String>();
-    for (
-      AccountIntegrationRequestVO.Relationships relationship : this.requestBodyObject.relationships
-    ) {
-      newRelationshipsExternalId.add(relationship.id);
-    }
-
     for (AccountRelationships__c currentRelationship : currentRelatioships) {
-      if (newRelationshipsExternalId.contains(currentRelationship.ExternalId__c)) {
-        continue;
+      if (!this.newRelatioshipsExternalId.contains(currentRelationship.ExternalId__c)) {
+        relationshipsToDelete.add(currentRelationship);
       }
-      relationshipsToDelete.add(currentRelationship);
     }
 
     return relationshipsToDelete;
   }
 
-  List<Documents__c> getDocumentsToDelete(List<Documents__c> currentDocuments) {
+  private List<Documents__c> getDocumentsToDelete(List<Documents__c> currentDocuments) {
     List<Documents__c> documentsToDelete = new List<Documents__c>();
 
     if (currentDocuments == null || this.requestBodyObject.documents == null) {
       return documentsToDelete;
     }
 
-    Set<String> newDocumentsExternalId = new Set<String>();
-    for (AccountIntegrationRequestVO.Documents document : this.requestBodyObject.documents) {
-      newDocumentsExternalId.add(document.id);
-    }
-
     for (Documents__c currentDocument : currentDocuments) {
-      if (newDocumentsExternalId.contains(currentDocument.ExternalId__c)) {
-        continue;
+      if (!this.newDocumentsExternalId.contains(currentDocument.ExternalId__c)) {
+        documentsToDelete.add(currentDocument);
       }
-      documentsToDelete.add(currentDocument);
     }
 
     return documentsToDelete;
   }
 
-  List<ProfessionalInfo__c> getProfessionalInfosToDelete(List<ProfessionalInfo__c> currentInfos) {
+  private List<ProfessionalInfo__c> getProfessionalInfosToDelete(List<ProfessionalInfo__c> currentInfos) {
     List<ProfessionalInfo__c> infosToDelete = new List<ProfessionalInfo__c>();
 
     if (currentInfos == null || this.requestBodyObject.professionalInfo == null) {
       return infosToDelete;
     }
 
-    Set<String> newInfosExternalIds = new Set<String>();
-    for (
-      AccountIntegrationRequestVO.ProfessionalInfo info : this.requestBodyObject.professionalInfo
-    ) {
-      newInfosExternalIds.add(info.id);
-    }
-
     for (ProfessionalInfo__c currentInfo : currentInfos) {
-      if (!newInfosExternalIds.contains(currentInfo.ExternalId__c)) {
+      if (!this.newProfessionalInfosExternalId.contains(currentInfo.ExternalId__c)) {
         infosToDelete.add(currentInfo);
       }
     }
@@ -828,7 +828,7 @@ public with sharing class AccountIntegrationService {
     return infosToDelete;
   }
 
-  List<FinancialResources__c> getIncomesToDelete(
+  private List<FinancialResources__c> getIncomesToDelete(
     List<AccountFinancialRelationship__c> currentIncomes
   ) {
     List<FinancialResources__c> incomesToDelete = new List<FinancialResources__c>();
@@ -839,30 +839,26 @@ public with sharing class AccountIntegrationService {
       return incomesToDelete;
     }
 
-    Set<String> newIncomesExternalIds = new Set<String>();
-    if (newIncomes != null) {
-      for (AccountIntegrationRequestVO.Income income : newIncomes) {
-        newIncomesExternalIds.add(income.id);
-      }
-    }
-    if (newProfessionalInfos != null) {
-      for (AccountIntegrationRequestVO.ProfessionalInfo info : newProfessionalInfos) {
-        if (info.professionalIncome != null && !info.professionalIncome.isEmpty()) {
-          newIncomesExternalIds.add(info.id);
-        }
-      }
-    }
-
     for (AccountFinancialRelationship__c income : currentIncomes) {
-      if (!newIncomesExternalIds.contains(income.Recurso_Financeiro__r.ExternalId__c)) {
-        incomesToDelete.add(income.Recurso_Financeiro__r);
+      String incomeExternalId = income.Recurso_Financeiro__r.ExternalId__c;
+      if (income.Recurso_Financeiro__r.ProfessionalInfo__c == null) {
+        if (newIncomes != null && !this.newIncomesExternalId.contains(incomeExternalId)) {
+          incomesToDelete.add(income.Recurso_Financeiro__r);
+        }
+      } else {
+        if (
+          newProfessionalInfos != null &&
+          !this.newProfessionalIncomesExternalId.contains(incomeExternalId)
+        ) {
+          incomesToDelete.add(income.Recurso_Financeiro__r);
+        }
       }
     }
 
     return incomesToDelete;
   }
 
-  List<AccountFinancialRelationship__c> getFinancialRelationshipsToDelete(
+  private List<AccountFinancialRelationship__c> getFinancialRelationshipsToDelete(
     List<FinancialResources__c> incomesToDelete,
     List<AccountFinancialRelationship__c> currentRelationships
   ) {
@@ -886,29 +882,23 @@ public with sharing class AccountIntegrationService {
     return relationshipsToDelete;
   }
 
-  List<Filiation__c> getFiliationsToDelete(List<Filiation__c> currentFiliations) {
+  private List<Filiation__c> getFiliationsToDelete(List<Filiation__c> currentFiliations) {
     List<Filiation__c> filiationsToDelete = new List<Filiation__c>();
 
     if (currentFiliations == null || this.requestBodyObject.filiation == null) {
       return filiationsToDelete;
     }
 
-    Set<String> newFiliationsTypes = new Set<String>();
-    for (AccountIntegrationRequestVO.Filiation filiation : this.requestBodyObject.filiation) {
-      newFiliationsTypes.add(filiation.type);
-    }
-
     for (Filiation__c filiation : currentFiliations) {
-      if (newFiliationsTypes.contains(filiation.Type__c)) {
-        continue;
+      if (!this.newFiliationsType.contains(filiation.Type__c)) {
+        filiationsToDelete.add(filiation);
       }
-      filiationsToDelete.add(filiation);
     }
 
     return filiationsToDelete;
   }
 
-  Set<String> getValidCurrencies() {
+  private Set<String> getValidCurrencies() {
     Set<String> validCurrencies = new Set<String>();
     Schema.DescribeFieldResult currencyCodes = Pricebook2.CurrencyIsoCode.getDescribe();
     for (Schema.PicklistEntry entry : currencyCodes.getPicklistValues()) {
@@ -917,12 +907,12 @@ public with sharing class AccountIntegrationService {
     return validCurrencies;
   }
 
-  void handleAISException(AccountIntegrationServiceException aisException) {
+  private void handleAISException(AccountIntegrationServiceException aisException) {
     this.setResponse(500, aisException.getMessage());
     this.insertErrorLog(500, aisException.getDetailedMessage());
   }
 
-  void handleException(Exception e) {
+  private void handleException(Exception e) {
     this.setResponse(
       500,
       'An unexpected error has occurred. Please, contact a Salesforce administrator.'
@@ -930,7 +920,7 @@ public with sharing class AccountIntegrationService {
     this.insertErrorLog(500, e.getMessage());
   }
 
-  void insertErrorLog(Integer statusCode, String message) {
+  private void insertErrorLog(Integer statusCode, String message) {
     API_Transaction_Errors__b ate = new API_Transaction_Errors__b();
     ate.Endpoint__c = '/services/apexrest/IntegrationAccountIN';
     ate.RequestBody__c = this.requestBodyString;
@@ -943,7 +933,7 @@ public with sharing class AccountIntegrationService {
     }
   }
 
-  void setResponse(Integer statusCode, String message) {
+  private void setResponse(Integer statusCode, String message) {
     this.responseBodyObject = new AccountIntegrationResponseVO();
     this.responseBodyObject.accountId = this.upsertedAccountId;
     this.responseBodyObject.message = message;

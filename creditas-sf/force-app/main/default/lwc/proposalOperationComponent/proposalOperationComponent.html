@@ -2,11 +2,7 @@
     <div data-id="ContainerOperation">
         <div class="slds-grid container">
             <div class="slds-size_5-of-12 field">
-                <label class="slds-p-bottom_xx-small">Finalidade da Operação
-                    <!-- <lightning-icon icon-name='utility:info' data-status="OperationPurposeStatus__c" style="display:none" data-value={statusReturnedPendency} alternative-text='Voltou de pendência' variant='warning' size='x-small' title='Voltou de pendência'></lightning-icon> -->
-                    <!-- <lightning-badge class="slds-theme_warning" label="Voltou de pendência" variant="warnning" icon-alternative-text="Voltou de pendência"></lightning-badge> -->
-                    <lightning-helptext content="Voltou de pendência" icon-name="utility:info" style="display:none" icon-variant='warning' data-status="OperationPurposeStatus__c" class="slds-m-left_xx-small" data-value={statusReturnedPendency}></lightning-helptext>
-                </label>
+                <label class="slds-p-bottom_xx-small">Finalidade da Operação</label>
                 <lightning-textarea variant="label-hidden" value={valueFinalidadeOp.value} data-id="Description__c" onchange={handleInputChange} disabled={valueFinalidadeOp.fieldReadOnly}></lightning-textarea>
             </div>
       

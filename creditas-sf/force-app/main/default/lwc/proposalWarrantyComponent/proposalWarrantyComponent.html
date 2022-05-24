@@ -3,7 +3,7 @@
     <!-- RENAVAN -->
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
-        <label class="slds-var-p-bottom_xx-small">Renavan</label>
+        <label class="slds-var-p-bottom_xx-small">Renavam</label>
         <lightning-input
           type="text"
           variant="label-hidden"
@@ -28,7 +28,7 @@
             data-value={preValue}
             name="renavan"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -44,8 +44,10 @@
             data-value={preValue}
             name="renavan"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             onchange={handleCheckboxChange}
+            class="disabled-input"
+            disabled
           />
         </div>
 
@@ -60,8 +62,10 @@
             data-value={preValue}            
             name="renavan"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             onchange={handleCheckboxChange}
+            class="disabled-input"
+            disabled
           />
         </div>
       </div>
@@ -95,7 +99,7 @@
             data-value={preValue}
             name="plate"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -109,7 +113,7 @@
             data-id="checkboxPlatePending"
             name="plate"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -123,7 +127,7 @@
             data-id="checkboxPlateReject"
             name="plate"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
@@ -161,7 +165,7 @@
             data-value={preValue}
             name="manufacturingYear"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -178,7 +182,7 @@
             data-id="checkboxManufacturingYearPending"
             name="manufacturingYear"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -195,7 +199,7 @@
             data-id="checkboxManufacturingYearReject"
             name="manufacturingYear"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
@@ -230,7 +234,7 @@
             data-value={preValue}
             name="modelYear"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -244,7 +248,7 @@
             data-id="checkboxModelYearPending"
             name="modelYear"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -260,7 +264,7 @@
             data-value={preValue}
             name="modelYear"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -295,7 +299,7 @@
             data-value={preValue}
             name="brand"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -309,7 +313,7 @@
             data-id="checkboxBrandPending"
             name="brand"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -323,7 +327,7 @@
             data-id="checkboxBrandReject"
             name="brand"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
@@ -333,7 +337,11 @@
     <!-- MODEL -->
     <div class="slds-grid container">
       <div class="slds-size_5-of-12 field">
-        <label class="slds-var-p-bottom_xx-small">Modelo</label>
+        <label class="slds-var-p-bottom_xx-small">Modelo
+          <span style="position:relative; top:-3px;">
+            <lightning-helptext content="Voltou de pendência" icon-name="utility:announcement" icon-variant='warning' data-status="ModelStatus__c" class="slds-m-left_xx-small" style="display:none;" data-value={statusReturnedPendency}></lightning-helptext>
+          </span>
+        </label>
         <lightning-input
           type="text"
           variant="label-hidden"
@@ -358,7 +366,7 @@
             data-value={preValue}
             name="model"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -368,12 +376,14 @@
             >&nbsp;
           </label>
           <input
-            class="disabled-input"
             data-id="checkboxModelPending"
             name="model"
             type="checkbox"
-            value="Pendenciado"
-            disabled
+            value={statusPending}  
+            data-field="ModelPendingReason__c"
+            data-status="ModelStatus__c"
+            data-value={preValue}
+            onchange={handleCheckboxChange}
           />
         </div>
 
@@ -388,7 +398,7 @@
             data-value={preValue}
             name="model"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -423,7 +433,7 @@
             data-value={preValue}
             name="color"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -437,7 +447,7 @@
             data-id="checkboxColorPending"
             name="color"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -451,7 +461,7 @@
             data-id="checkboxColorReject"
             name="color"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
@@ -486,7 +496,7 @@
             data-value={preValue}
             name="state"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -500,7 +510,7 @@
             data-id="checkboxStatePending"
             name="state"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -514,7 +524,7 @@
             data-id="checkboxStateReject"
             name="state"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
@@ -553,7 +563,7 @@
             data-value={preValue}
             name="licensingState"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -570,7 +580,7 @@
             data-id="checkboxLicensingStatePending"
             name="licensingState"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -586,7 +596,7 @@
             data-value={preValue}
             name="licensingState"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -621,7 +631,7 @@
             data-value={preValue}
             name="chassis"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -635,7 +645,7 @@
             data-id="checkboxChassisPending"
             name="chassis"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -651,7 +661,7 @@
             data-value={preValue}            
             name="chassis"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -686,7 +696,7 @@
             data-value={preValue}
             name="externalCode"
             type="checkbox"
-            value="Aprovado"
+            value={statusApprove}
             onchange={handleCheckboxChange}
           />
         </div>
@@ -700,7 +710,7 @@
             data-id="checkboxFipeCodePending"
             name="externalCode"
             type="checkbox"
-            value="Pendenciado"
+            value={statusPending}
             disabled
           />
         </div>
@@ -714,7 +724,7 @@
             data-id="checkboxFipeCodeReject"
             name="externalCode"
             type="checkbox"
-            value="Rejeitado"
+            value={statusReject}
             disabled
           />
         </div>
