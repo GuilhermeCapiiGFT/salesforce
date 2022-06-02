@@ -29,8 +29,11 @@
 
                         <template if:true={showDescription}>
                             <lightning-input required={showDescription} name="otherReason" min-length="2"
-                                message-when-too-short="Digite pelo menos 2 caractéres."
-                                message-when-value-missing="Por favor, digite um motivo." type="text"
+                                pattern={regexPattern}
+                                message-when-too-short="Digite pelo menos 2 caracteres."
+                                message-when-value-missing="Por favor, digite um motivo."
+                                message-when-pattern-mismatch="O motivo digitado não é válido."
+                                type="text"
                                 label="Digite uma descrição para o motivo 'Outros'" onchange={genericOnChange}
                                 value={otherReason}>
                             </lightning-input>

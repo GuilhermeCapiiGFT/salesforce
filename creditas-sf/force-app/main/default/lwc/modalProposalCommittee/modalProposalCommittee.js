@@ -38,6 +38,7 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
     picklistValues;
     loadingPicklist = true;
     myOppsListViewId;
+    regexPattern = "^(?!\\s*$).+";
 
     otherReasonMaxLength = 100;
     observationMaxLength = 2000;
