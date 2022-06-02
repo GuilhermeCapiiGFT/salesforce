@@ -149,7 +149,7 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
       let queryField = this.template.querySelector(fieldDataId);
       let fieldMaxLength = this[`${event.target.name}MaxLength`];
       if(event.target.value.length > fieldMaxLength){
-        queryField.setCustomValidity(`${TEXT_FIELD_MESSAGE} ${fieldMaxLength} caractéres.`);
+        queryField.setCustomValidity(`${TEXT_FIELD_MESSAGE} ${fieldMaxLength} caracteres.`);
         this.showToast(WARNING_OCCURED,TEXT_FIELD_WARNING,WARNING_VARIANT);
       } else {
         queryField.setCustomValidity('');
