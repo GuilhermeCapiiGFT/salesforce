@@ -1,14 +1,28 @@
 public with sharing class ProposalIntegrationService {
+    
     static final String NAMED_CREDENTIAL = 'callout:proposalIntegration';
     private static Id opportunityId;
     private static String recordTypeName;
-    private static Map<String,String> productTypes = new Map<String,String>
-    {
-        'AutoFin' => 'AUTO_FIN',
-        'AtWork'  => 'PAYROLL'
-    };
+    private static Map<String,String> productTypes;
+    private static Map<String,String> resultBySection;
+    private static Map<String, List<String>> reasonsBySection;
+    private static final string PROPOSAL_APPROVED = 'approved';
+    private static final string PROPOSAL_PENDENCY = 'pendency';
+    private static final string PROPOSAL_REJECTED = 'rejected';
+    private static final string STATUS_PENDENCY = 'Pendenciar';
+    private static final string STATUS_REJECTED = 'Rejeitar';
+    private static final string STATUS_APPROVED = 'Aprovar';
 
-    public static ProposalIntegrationVO getRequest(Id oppId, String status){
+    static {
+
+      productTypes  = new Map<String,String>{ 'AutoFin' => 'AUTO_FIN','AtWork'  => 'PAYROLL' };
+      resultBySection = new Map<String,String>();
+      reasonsBySection = new Map<String,List<String>>();
+
+    }
+
+    public static ProposalIntegrationVO getRequest(Id oppId, String status) {
+
         opportunityId = oppId;
         Opportunity opportunity = getRecordTypeOpp();
         recordTypeName = opportunity.RecordType.DeveloperName;
@@ -22,7 +36,6 @@ public with sharing class ProposalIntegrationService {
         payload.productType       = productTypes.containsKey(recordTypeName) ? productTypes.get(recordTypeName) : '';
         payload.sections          = sections;
 
-        System.debug(JSON.serializePretty(payload));
         return payload;
     }
 
@@ -32,21 +45,28 @@ public with sharing class ProposalIntegrationService {
         Map<String, SObject> sectionRecords = getSectionRecords();
 
         for(String currentSection : sectionFields.KeySet()){
+    
+            reasonsBySection.put( currentSection , new List<String>() );
+            resultBySection.put( currentSection, PROPOSAL_APPROVED );
+
             ProposalIntegrationVO.Section section = new ProposalIntegrationVO.Section();
             section.sectionId           = sectionRecords.get(currentSection)?.Id;
             section.sectionName         = currentSection;
-            section.sectionResult       = null;
-            section.sectionReasons      = null;
-            section.sectionObservations = null;
             section.analyzedItems       = getItems(sectionFields.get(currentSection), sectionRecords.get(currentSection));
+            section.sectionResult       = resultBySection.get(currentSection);
+            section.sectionReasons      = reasonsBySection.get(currentSection);
+            section.sectionObservations = null;
             sections.add(section);
         }
         return sections;
     }
 
-    private static List<ProposalIntegrationVO.AnalyzedItem> getItems(List<ProposalAnalysisFields__mdt> sectionFields, SObject record){
+    private static List<ProposalIntegrationVO.AnalyzedItem> getItems(List<ProposalAnalysisFields__mdt> sectionFields, SObject record) {
+
         List<ProposalIntegrationVO.AnalyzedItem> itens = new List<ProposalIntegrationVO.AnalyzedItem>();
-        for(ProposalAnalysisFields__mdt currentField : sectionFields){
+
+        for(ProposalAnalysisFields__mdt currentField : sectionFields) {
+
             ProposalIntegrationVO.AnalyzedItem item = new ProposalIntegrationVO.AnalyzedItem();
             String result           = currentField.Status__r.QualifiedApiName;
             String reason           = getReasons(currentField, record);
@@ -56,23 +76,46 @@ public with sharing class ProposalIntegrationService {
             item.type               = currentField.Item_Type__c;
             item.fieldName          = currentField.Value__r.DeveloperName;
             item.itemId             = null;
-            item.result             = String.isBlank(result)      ? null  : (String) record.get(result);
             item.value              = String.isBlank(value)       ? null  : (String) String.valueOf(record.get(value));
-            item.reasons            = String.isBlank(reason)      ? null  : reason;
             item.fieldObservations  = String.isBlank(observation) ? null  : (String) record.get(observation);
+            item.result             = String.isBlank(result)      ? null  : (String) record.get(result);
+            item.reasons            = String.isBlank(reason)      ? null  : reason;
+            
+            if ( String.isNotBlank(reason) ) {
+
+                item.reasons = reason;
+                reasonsBySection.get(currentField.Object_Section__r.DeveloperName).add(reason);
+            }
+
+            if ( String.isNotBlank(result) ) {
+
+                item.result = (String) record.get(result);
+                updateResultSection(item.result, currentField.Object_Section__r.DeveloperName);
+            }
 
             itens.add(item);
         }
         return itens;
     }
 
+    private static void updateResultSection(String itemResult, String sectionName) {
+
+        String currentSectionResult = resultBySection.get(sectionName);
+
+        if ( itemResult == STATUS_APPROVED || currentSectionResult == PROPOSAL_REJECTED ) return;
+        
+        String sectionResultToStorage = ( itemResult == STATUS_PENDENCY ) ? PROPOSAL_PENDENCY : PROPOSAL_REJECTED;
+        resultBySection.put(sectionName, sectionResultToStorage);
+
+    }
+
     private static String getReasons(ProposalAnalysisFields__mdt reason, SObject record){
         String rejectField  = reason.Reject_Reason__r.QualifiedApiName;
         String pendingField = reason.Pending_Reason__r.QualifiedApiName;
 
-        if(!String.isBlank(rejectField) && !String.isBlank((String)record.get(rejectField))){
+        if( String.isNotBlank(rejectField) && String.isNotBlank((String)record.get(rejectField))){
             return (String) record.get(rejectField);
-        }else if(!String.isBlank(pendingField) && !String.isBlank((String)record.get(pendingField))){
+        }else if( String.isNotBlank(pendingField) && String.isNotBlank((String)record.get(pendingField))){
             return (String) record.get(pendingField);
         }
         return null;

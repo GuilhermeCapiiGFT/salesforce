@@ -4,6 +4,8 @@ public with sharing class ProposalServiceTest {
     @TestSetup
     static void makeData()
     {
+        List<Account> accounts = new List<Account>();
+        
         Account accCustomer               = TestSetup.getAccount('Nivaele', false);
         accCustomer.Birth_City__c         = 'Monte Caramelo';
         accCustomer.Mother__c             = 'Juzimara da Silva';
@@ -15,7 +17,7 @@ public with sharing class ProposalServiceTest {
         accCustomer.Agency__c             = '00001'; 
         accCustomer.BankAccountNumber__c  = '01020304';
         accCustomer.RecordTypeId          = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-        insert accCustomer;
+        accounts.add(accCustomer);
 
         Account accRole              = TestSetup.getAccount('Account_Role', false);
         accRole.DocumentNumber__c    = '12047477000101';
@@ -23,8 +25,13 @@ public with sharing class ProposalServiceTest {
         accRole.Agency__c            = '12345'; 
         accRole.BankAccountNumber__c = '0123456'; 
         accRole.RecordTypeId         = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-        insert accRole;
+        accounts.add(accRole);
 
+        Account accPartner = AccountSetup.createAccount('Partner Account', 'Parceiro');
+        accPartner.ExternalId__c = '21b0f42e-f27d-4696-9cfe-2f4258e31164';
+        accounts.add(accPartner);
+        insert accounts;
+        
         Documents__c rg = new Documents__c();
         rg.Account__c = accCustomer.Id;
         rg.DocumentNumber__c = '4242344';
@@ -55,6 +62,7 @@ public with sharing class ProposalServiceTest {
         opportunity.ExternalTenant__c        = 'creditasbr';
         opportunity.ExternalVersion__c       = 1;      
         opportunity.RecordTypeId             = Util.getRecordTypeIdbyName('Opportunity', 'AutoFin');
+        opportunity.PartnerAccount__c        = accPartner.Id;
         insert opportunity;
 
         ProfessionalInfo__c professionalInfo = new ProfessionalInfo__c();
@@ -113,6 +121,7 @@ public with sharing class ProposalServiceTest {
         quote.OpportunityId = opportunity.Id;
         quote.UnitPrice__c  = 100;
         quote.Quantity__c   = 20;
+        
         insert quote;
     }
 
@@ -129,6 +138,7 @@ public with sharing class ProposalServiceTest {
         FinancialResources__c presumedIncome  = [SELECT Id, Type__c, Amount__c FROM FinancialResources__c WHERE Type__c = 'PRESUMED_MONTHLY_INCOME' LIMIT 1];
         FinancialResources__c confirmedIncome = [SELECT Id, Type__c, Amount__c FROM FinancialResources__c WHERE Type__c = 'CONFIRMED_MONTHLY_INCOME' LIMIT 1];
         ProfessionalInfo__c professionalInfo  = [SELECT Id, Status__c, JobTitle__c FROM ProfessionalInfo__c LIMIT 1];
+        Account accountPartner 				  = [SELECT Id, Name, DocumentNumber__c FROM Account WHERE ExternalId__c = '21b0f42e-f27d-4696-9cfe-2f4258e31164' LIMIT 1];
         
         Test.startTest();
         ProposalService.start(acc.Id, opp.Id);
@@ -139,7 +149,7 @@ public with sharing class ProposalServiceTest {
         AddressDataSection__c addressDataSection    = [SELECT Id, StreetNumber__c, Country__c, AreaLevel2__c, Street__c  FROM AddressDataSection__c];
         WarrantyDataSection__c warrantyDataSection  = [SELECT Id FROM WarrantyDataSection__c];
         IncomeDataSection__c incomeDataSection      = [SELECT Id, JobTitle__c, Status__c, MonthlyIncome__c, PresumedMonthlyIncome__c, ConfirmedMonthlyIncome__c  FROM IncomeDataSection__c LIMIT 1];
-        OperationSection__c operationDataSection    = [SELECT Id, Quantity__c  FROM OperationSection__c];
+        OperationSection__c operationDataSection    = [SELECT Id, Quantity__c, PartnerAccount__c, DocumentNumber__c FROM OperationSection__c];
 
         System.assertEquals(acc.Name, personalDataSection.Name__c,'Field value should have been the same');
         System.assertEquals(email.Code__c, contactDataSection.Email__c, 'Field value should have been the same');
@@ -149,6 +159,9 @@ public with sharing class ProposalServiceTest {
         
         System.assertEquals(professionalInfo.JobTitle__c, incomeDataSection.JobTitle__c, 'Field value should have been the same');
         System.assertEquals(confirmedIncome.Amount__c, incomeDataSection.ConfirmedMonthlyIncome__c, 'Field value should have been the same');
+        
+        System.assertEquals(accountPartner.Name, operationDataSection.PartnerAccount__c, 'Field value should have been the same');
+        System.assertEquals(accountPartner.DocumentNumber__c, operationDataSection.DocumentNumber__c, 'Field value should have been the same');
     }
 
     @isTest
@@ -277,5 +290,30 @@ public with sharing class ProposalServiceTest {
         Opportunity updatedOpp = [SELECT Id, StageName FROM Opportunity LIMIT 1];
 
         System.assertEquals('Aguardando Análise de Formalização', updatedOpp.StageName, 'Incorrect value for Stage Name.');
+    }
+
+    @isTest
+    public static void setReturnPendency() 
+    {
+        Account acc          = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account WHERE Name = 'Nivaele' LIMIT 1];
+        Opportunity opp      = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
+
+        PersonalDataSection__c oldPersonalDataSection  = new PersonalDataSection__c(Opportunity__c = opp.Id);
+        oldPersonalDataSection.CPFStatus__c = 'Pendenciar';
+        insert oldPersonalDataSection;
+        
+        WarrantyDataSection__c oldWarrantyDataSection  = new WarrantyDataSection__c(Opportunity__c = opp.Id);
+        oldWarrantyDataSection.ModelStatus__c = 'Pendenciar';
+        insert oldWarrantyDataSection;
+
+        Test.startTest();
+        ProposalService.start(acc.Id, opp.Id);
+        Test.stopTest();
+
+        PersonalDataSection__c personalDataSection = [SELECT Id, CPFStatus__c FROM PersonalDataSection__c ORDER BY CreatedDate DESC LIMIT 1];
+        WarrantyDataSection__c warrantyDataSection = [SELECT Id, ModelStatus__c FROM WarrantyDataSection__c ORDER BY CreatedDate DESC LIMIT 1];
+
+        System.assertEquals('Voltou de pendência', personalDataSection.CPFStatus__c, 'Status was supposed to be return from pendency');
+        System.assertEquals('Voltou de pendência', warrantyDataSection.ModelStatus__c, 'Status was supposed to be return from pendency');
     }
 }

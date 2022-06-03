@@ -10,9 +10,14 @@ public with sharing class ProposalIntegrationVO {
         public String sectionId;
         public String sectionName;
         public String sectionResult;
-        public String sectionReasons;
+        public List<String> sectionReasons;
         public String sectionObservations;
         public List<AnalyzedItem> analyzedItems;
+
+        public Section() {
+            
+            this.sectionReasons = new List<String>();
+        }
     }
 
     public class AnalyzedItem{

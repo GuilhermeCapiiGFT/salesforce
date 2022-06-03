@@ -6,7 +6,6 @@ public with sharing class ProposalPersonalDataController {
     public static PersonalDataSectionRepository repository;
 
     static {
-
         repository = new PersonalDataSectionRepository();
     }
 
@@ -33,8 +32,6 @@ public with sharing class ProposalPersonalDataController {
 
             personalDataSection = ( PersonalDataSection__c ) System.JSON.deserialize( serializedPersonalDataSection, PersonalDataSection__c.class);
 
-            personalDataSection.Id = null;
-
             personalDataSection = ( PersonalDataSection__c ) repository.save( personalDataSection );
 
         } catch (Exception e) {
@@ -45,7 +42,7 @@ public with sharing class ProposalPersonalDataController {
         return personalDataSection;
     }
 
-    public static void setPersonalDataSectionRepository( PersonalDataSectionRepository repo ) {
+    public static void setPersonalDataSectionRepository(PersonalDataSectionRepository repo) {
         repository = repo;
     }
 }

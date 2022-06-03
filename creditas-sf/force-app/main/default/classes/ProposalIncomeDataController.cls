@@ -6,7 +6,6 @@ public with sharing class ProposalIncomeDataController {
     public static IncomeDataSectionRepository repository;
 
     static {
-        
         repository = new IncomeDataSectionRepository();
     }
 
@@ -33,8 +32,6 @@ public with sharing class ProposalIncomeDataController {
 
             incomeDataSectionToSave = ( IncomeDataSection__c ) System.JSON.deserialize( serializedIncomeDataSection, IncomeDataSection__c.class);
 
-            incomeDataSectionToSave.Id = null;
-
             incomeDataSectionToSave = ( IncomeDataSection__c ) repository.save( incomeDataSectionToSave );
 
         } catch (Exception e) {
@@ -45,7 +42,7 @@ public with sharing class ProposalIncomeDataController {
         return incomeDataSectionToSave;
     }
 
-    public static void setIncomeDataSectionRepository( IncomeDataSectionRepository repo ) {
+    public static void setIncomeDataSectionRepository(IncomeDataSectionRepository repo) {
         repository = repo;
     }
 }

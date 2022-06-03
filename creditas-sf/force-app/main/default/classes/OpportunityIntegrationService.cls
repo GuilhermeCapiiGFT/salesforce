@@ -59,6 +59,7 @@ public with sharing class OpportunityIntegrationService {
         Map<String,String> recordTypeProductMap = createRTProductMap(requestBodyObj?.productType);
         String oppRecordTypeId = selectOppRecordTypeId(recordTypeProductMap.get('recordType'));
         String oppStageName;
+        Id partnerAccount = (AUTO_FIN == recordTypeProductMap.get('recordType') && String.isNotBlank(requestBodyObj?.partner?.Id)) ? getPartnerId(requestBodyObj?.partner?.Id) : null;
         
         if(HOME_REFIN == recordTypeProductMap.get('recordType') || AUTO_FIN ==  recordTypeProductMap.get('recordType') || ATWORK ==  recordTypeProductMap.get('recordType') ){
             oppStageName = [SELECT StageName FROM Opportunity WHERE ExternalId__c = :externalId]?.StageName;
@@ -82,7 +83,10 @@ public with sharing class OpportunityIntegrationService {
             BankCode__c = requestBodyObj.conditions?.depositAccount?.bankCode,
             Branch__c = requestBodyObj.conditions?.depositAccount?.branch,
             AccountNumber__c = requestBodyObj.conditions?.depositAccount?.accountNumber,
-            BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType
+            BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType,
+            PartnerAccount__c = partnerAccount,
+            CCBnumber__c = requestBodyObj.contracts?.ccbNumber
+            
         );
           
         Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;
@@ -231,5 +235,9 @@ public with sharing class OpportunityIntegrationService {
             oppRTId = Util.getRecordTypeIdbyName('Opportunity', 'AtWork');
         }
         return oppRTId; 
+    }
+
+    private static Id getPartnerId(String partnerId){
+        return [SELECT Id FROM Account WHERE ExternalId__c =:partnerId LIMIT 1]?.Id; 
     }
 }

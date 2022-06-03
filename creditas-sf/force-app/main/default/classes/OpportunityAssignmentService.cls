@@ -6,7 +6,7 @@ public with sharing class OpportunityAssignmentService {
     public static final String AWAITING_FORMALIZATION_ANALYSIS = 'Aguardando Análise de Formalização';
     public static final String UNDER_FORMALIZATION_ANALYSIS = 'Em Análise de Formalização';
     public static final String AWAITING_COMITEE_ASSIGNMENT = 'Aguardando Distribuição para Comitê de Formalização';
-    public static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê';
+    public static final String AWAITING_COMITEE_ANALYSIS = 'Aguardando Análise de Comitê de Formalização';
     public static final String UNDER_COMMITEE_ANALYSIS = 'Em Análise de Comitê de Formalização';
     public static final String FORMALIZATION_PENDENCY_RETURN = 'Retorno de Pendência de Formalização';
     public static final String CONSULTING_PENDENCY = 'Pendenciado para Consultoria';
@@ -31,29 +31,25 @@ public with sharing class OpportunityAssignmentService {
     private static Set<Id> assignedOpps = new Set<Id>();
 
     public static Map<String,String> createStageNameMap(List<String> stageNameList){
-      System.debug('tyumi 16');
+
       Map<String,String> stageMap = new Map<String,String>{ 'stageNameFrom' => stageNameList.remove(0), 
                                                             'stageNameTo' => stageNameList.remove(0),
                                                             'stageNameFromPendency' => stageNameList.remove(0),
                                                             'stageNameToPendency' => stageNameList.remove(0),
                                                             'stageNameUnderAnalysis' => stageNameList.remove(0),
                                                             'stageNameCommiteeAnalysis' => stageNameList.remove(0)};
-      System.debug('tyumi 17');
-      System.debug(stageMap);
       return stageMap;
     }
     
     public static Boolean checkOpportunities(List<Opportunity> opportuntitiesInput){
-      System.debug('tyumi 13');
       if(opportunityRecordTypeDevName == null || stageNameMap == null || stageNameMap.isEmpty()){
         throw new OpportunityAssignmentException('Please set up the variables for opportunityRecordTypeDevName and fill the stageNameMap with the required variables');
       }
-      System.debug('tyumi 14');
-      
+
       String oppRecordType = getRecordTypeId(opportunityRecordTypeDevName);
       boolean runAssignment = false;
       for(Opportunity opp : opportuntitiesInput){
-        System.debug('tyumi: ' + opp.StageName);
+        
           if(opp.RecordTypeId == oppRecordType &&
                                 ( TriggerHelper.changedFromTo(opp, 'Stagename', stageNameMap.get('stageNameFrom'), stageNameMap.get('stageNameTo')) ||
                                   TriggerHelper.changedFromTo(opp, 'Stagename', stageNameMap.get('stageNameFromPendency'), stageNameMap.get('stageNameToPendency')) ||
@@ -63,15 +59,13 @@ public with sharing class OpportunityAssignmentService {
               break;
           }
       }
-      System.debug('tyumi 15');
-      System.debug(runAssignment);
       
       return runAssignment;
     }
 
     public static List<Opportunity> assignOpportunities(List<Opportunity> inputOppList, CustomSetup__c cSetup, String recordTypeDevName){
       List<Opportunity> oppsToAssign = new List<Opportunity>();
-      System.debug('tyumi => 0');
+      
       if (cSetup.ProductAssignedUsers__r.isEmpty() || inputOppList.isEmpty()) { return oppsToAssign; }
       
       Map<Id, Set<String>> mapUser = createUserMap(cSetup.ProductAssignedUsers__r, recordTypeDevName);
@@ -159,8 +153,8 @@ public with sharing class OpportunityAssignmentService {
       for(Opportunity opp : oppList){
         System.debug('oppName -> ' + opp.Name + ' oppStageName -> ' + opp.StageName);
         System.debug('Boolean -> ' + (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')));
-        if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')) ))
-        {
+        if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')))) {
+
           filteredOpps.add(opp);
           if(filteredOpps.size() == numberOfOpps){ break; }
         }
@@ -170,18 +164,8 @@ public with sharing class OpportunityAssignmentService {
     }
     
     private static void setOppFields(Opportunity opportunity, Id ownerId){
-      if(String.isNotBlank(opportunity.LastAnalyst__c) && verifyUserAvaliability(opportunity.LastAnalyst__c)) {
-        System.debug('tyumi => entrou no 1: Last Analyst: ' + opportunity.LastAnalyst__c);
-        opportunity.OwnerId = opportunity.LastAnalyst__c;
-      } else {
-        System.debug('tyumi => entrou no 2: Last Analyst: ' + opportunity.LastAnalyst__c);
-        opportunity.OwnerId = ownerId;
-      }
-
+      opportunity.OwnerId = ownerId;
       opportunity.StageName = mapStagesToSet.get(opportunity.StageName);
-      opportunity.LastAnalyst__c = null;
-
-      System.debug('tyumi => entrou no 3: Last Analyst: ' + opportunity.LastAnalyst__c);
     }
 
     private static Set<Id> getUnavailableUsers(List<Opportunity> lstOpp, List<ProductAssignedUser__c> lstProductUser) {
@@ -238,7 +222,7 @@ public with sharing class OpportunityAssignmentService {
       String autoFinRecordTypeId = getRecordTypeId(OpportunityAssignmentController.AUTOFIN);
       Map<String,List<Opportunity>> recordTypeOppMap = new Map<String,List<Opportunity>>{atWorkRecordTypeId => atWorkOpps, autoFinRecordTypeId => autoFinOpps};
 
-      for(Opportunity opportunity : [ SELECT Id, Name, LastAnalyst__c, AccountId, QueueName__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
+      for(Opportunity opportunity : [ SELECT Id, Name, AccountId, QueueName__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
                                       FROM Opportunity
                                       WHERE RecordTypeId IN :oppRecordTypeSet AND
                                       StageName IN :stageNameSet

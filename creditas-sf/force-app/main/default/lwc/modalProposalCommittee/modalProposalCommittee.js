@@ -23,7 +23,7 @@ const SUCCESS_MESSAGE = 'Oportunidade enviada para comitê';
 const SUCCESS_VARIANT = 'success';
 
 const TEXT_FIELD_WARNING = 'Por favor, verifique o campo digitado.';
-const TEXT_FIELD_MESSAGE = 'O número de caractéres não pode ultrapassar';
+const TEXT_FIELD_MESSAGE = 'O número de caracteres não pode ultrapassar';
 
 const OPP_STAGENAME = 'Aguardando Distribuição para Comitê de Formalização';
 
@@ -103,8 +103,6 @@ export default class ModalProposalCommittee extends NavigationMixin(LightningEle
             LastAnalyst__c: this.lastAnalystId,
             StageName: OPP_STAGENAME
           };
-
-          console.log({opp})
 
           updateOpportunityCommittee({newOpp: opp}).then( result => {
             if(result){

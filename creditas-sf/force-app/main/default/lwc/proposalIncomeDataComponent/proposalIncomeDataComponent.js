@@ -55,7 +55,7 @@ export default class ProposalIncomeDataComponent extends LightningElement {
     getLastIncomeDataSectionInstance( {oppId : oppId})
       .then( result => {
 
-        this.incomeDataSectionRecord = result;
+        this.incomeDataSectionRecord = ( result != null ) ? result : {} ;
         this.buildDataSection();
 
         })
@@ -70,7 +70,6 @@ export default class ProposalIncomeDataComponent extends LightningElement {
   handleInputChange(event) {
 
     this.recordSaved = false;
-    
     this.incomeDataSectionRecord[event.target.dataset.id] = event.target.value;
     this.sendInfo(this.getInfo());
   }
@@ -81,7 +80,6 @@ export default class ProposalIncomeDataComponent extends LightningElement {
 
     let recordToSend = JSON.stringify(this.incomeDataSectionRecord);
   
-    console.log('recordToSend ', recordToSend);
     saveInstance({serializedIncomeDataSection : recordToSend}).
       then( result => { 
 

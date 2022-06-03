@@ -3,6 +3,7 @@ public with sharing class OpportunityIntegrationVO {
 	public cls_partner partner;
 	public List<cls_participants> participants;
 	public List<cls_collaterals> collaterals;
+	public cls_contracts contracts;
 	public String status;	//ONGOING
 	public String productType;	//HOME_REFIN
 	public String purpose;	//OTHERS
@@ -14,7 +15,11 @@ public with sharing class OpportunityIntegrationVO {
 	public String friendlyId; //YAZMUN2
 	public Boolean hasError;
 	public String errorMessage;
-    
+
+    public class cls_contracts {
+		public String ccbNumber;
+	}
+
 	public class cls_conditions {
 		public cls_installments installments;
 		public cls_interest interest;
@@ -25,6 +30,7 @@ public with sharing class OpportunityIntegrationVO {
 		public cls_monthlyInterestRateComposition[] monthlyInterestRateComposition;
 		public cls_netValues netValues;
 		public String step;	//CREDIT_ANALYSIS
+		
 	}
 	public class cls_installments {
 		public cls_value value;
@@ -170,8 +176,14 @@ public with sharing class OpportunityIntegrationVO {
 	}
 
 	public static String opportunityMock() {
-		String json=		'{'+
-		''+
+		String json=	'{'+ 
+		' '+		
+		'       "contracts":{'+
+		' '+
+		' 			"ccbNumber":6712683712'+
+		' '+
+		' 		},'+
+		' '+
 		'    "conditions":{'+
 		' '+
 		'       "installments":{'+

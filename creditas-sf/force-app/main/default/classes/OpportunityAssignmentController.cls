@@ -10,19 +10,16 @@ public with sharing class OpportunityAssignmentController {
     Boolean runAutoFin = checkAutoFinAssignment(lstOpportunity);
 
     if(runAtWork){
-      System.debug('tyumi 10');
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(ATWORK));
       stageNameSet.addAll(new List<String>{OpportunityAssignmentService.APPROVED_BY_HR,OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN});
     }
 
     if(runAutoFin){
-      System.debug('tyumi 9');
       recordTypeIdSet.add(OpportunityAssignmentService.getRecordTypeId(AUTOFIN));
       stageNameSet.addAll(new List<String>{OpportunityAssignmentService.AWAITING_FORMALIZATION_ASSIGNMENT,OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN,OpportunityAssignmentService.AWAITING_COMITEE_ASSIGNMENT});
     }
     
     if(runAtWork || runAutoFin){
-      System.debug('tyumi 8');
       runOpportunityAssignment(runAtWork,runAutoFin);
     }
   }
@@ -36,7 +33,7 @@ public with sharing class OpportunityAssignmentController {
                                                                   OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN, 
                                                                   OpportunityAssignmentService.UNDER_FORMALIZATION_ANALYSIS, 
                                                                   ''  });
-    System.debug('tyumi 11');
+
     return OpportunityAssignmentService.checkOpportunities(lstOpportunity);
     
   }
@@ -50,7 +47,6 @@ public with sharing class OpportunityAssignmentController {
                                                                   OpportunityAssignmentService.FORMALIZATION_PENDENCY_RETURN,
                                                                   OpportunityAssignmentService.UNDER_FORMALIZATION_ANALYSIS,
                                                                   OpportunityAssignmentService.UNDER_COMMITEE_ANALYSIS  });
-    System.debug('tyumi 12');
     return OpportunityAssignmentService.checkOpportunities(lstOpportunity);
   }
 
@@ -61,12 +57,10 @@ public with sharing class OpportunityAssignmentController {
     List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
     
     if(runAtWork){
-      System.debug('tyumi 6');
       opportunitiesToUpdate.addAll(runAssignment(oppRecordTypeIdMap.get(OpportunityAssignmentService.getRecordTypeId(ATWORK)), ATWORK));
     }
 
     if(runAutoFin){
-      System.debug('tyumi 7');
       opportunitiesToUpdate.addAll(runAssignment(oppRecordTypeIdMap.get(OpportunityAssignmentService.getRecordTypeId(AUTOFIN)), AUTOFIN));
     }
    
@@ -76,11 +70,9 @@ public with sharing class OpportunityAssignmentController {
   }
   
   private static List<Opportunity> runAssignment(List<Opportunity> oppsToSort, String recordTypeDevName){
-    System.debug('tyumi 4');
     if(oppsToSort.isEmpty()) { return new List<Opportunity>(); }
     CustomSetup__c customSetup = CustomSetupController.getCustomSetupByRecordType(recordTypeDevName);
     List<Opportunity> sortedOpps = OpportunityAssignmentService.getOpportunitiesSorted(oppsToSort,customSetup.DateFilter__c);
-    System.debug('tyumi 5');
     return OpportunityAssignmentService.assignOpportunities(sortedOpps, customSetup, recordTypeDevName);
   }  
 }

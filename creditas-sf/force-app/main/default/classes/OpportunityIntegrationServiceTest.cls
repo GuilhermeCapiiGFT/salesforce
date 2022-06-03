@@ -3,9 +3,24 @@ private with sharing class OpportunityIntegrationServiceTest {
     
     @TestSetup
     static void makeData(){
+        List<Account> accounts = new List<Account>();
         Account acc = AccountSetup.createAccount('Roberval', 'Pessoa_Fisica');
         acc.ExternalId__c = 'PER-01CEB52A-54D9-4260-A07D-BCDD94EE2664';
-        insert acc;
+        accounts.add(acc);
+        
+        Account accPartner = AccountSetup.createAccount('Partner Account', 'Parceiro');
+        accPartner.ExternalId__c = '21b0f42e-f27d-4696-9cfe-2f4258e31164';
+        accounts.add(accPartner);
+        
+        Account accOldPartner = AccountSetup.createAccount('Old Partner Account', 'Parceiro');
+        accOldPartner.ExternalId__c = 'TESTE-1234';
+        accounts.add(accOldPartner);
+        
+        Account accNivaele = AccountSetup.createAccount('Nivaele', 'Pessoa_Fisica');
+        accNivaele.ExternalId__c = 'papirus';
+        accounts.add(accNivaele);
+        insert accounts;
+        
         List<Opportunity> oppToInsert = new List<Opportunity>();
         Opportunity oppAtWork = OpportunitySetup.createOpportunity(acc.Id, 'AtWork');
         oppAtWork.ExternalId__c = 'OPPORTUNITY-VO-ID-6733';
@@ -17,6 +32,7 @@ private with sharing class OpportunityIntegrationServiceTest {
 
         Opportunity oppAuto = OpportunitySetup.createOpportunity(acc.Id, 'AutoFin');
         oppAuto.ExternalId__c = 'OPPORTUNITY-VO-AUTOFIN-2077';
+        oppAuto.PartnerAccount__c = accOldPartner.Id;
         oppToInsert.add(oppAuto);
         insert oppToInsert;
         
@@ -103,5 +119,51 @@ private with sharing class OpportunityIntegrationServiceTest {
         Test.stopTest();
         System.assert(!quoteUpdate.isCreated() , 'Quote should have been updated');
         System.assert(quoteUpdate.isSuccess() , 'Operation should be sucessfull');
+    }
+    
+    @isTest
+    private static void testCreateOppAutoFinPartner(){
+        Account accPartner = [SELECT Id FROM Account WHERE ExternalId__c = '21b0f42e-f27d-4696-9cfe-2f4258e31164' LIMIT 1];
+        Database.upsertResult oppUpsert;
+        
+        Test.startTest();
+        OpportunityIntegrationVO payload = OpportunityIntegrationVO.parse(OpportunityIntegrationControllerTest.payloadMock('success','AUTO_FIN','PENDING_SIGNATURE','AUTOFIN-PARTNER'));
+        OpportunityIntegrationService.getPersonIdAndAccountName(payload.participants);
+        oppUpsert = OpportunityIntegrationService.upsertOpportunity(payload);
+        Test.stopTest();
+        
+        Opportunity oppHomeAfterUpdate = [SELECT Id,StageName, PartnerAccount__c FROM Opportunity WHERE ExternalId__c = 'AUTOFIN-PARTNER'];
+        System.assertEquals(accPartner.Id, oppHomeAfterUpdate.PartnerAccount__c, 'Invalid Partner Account');
+        System.assert(oppUpsert.isCreated(), 'Opportunity should have been created, not updated');
+    }
+    
+    @isTest
+    private static void testCreateOppAtWorkPartner(){
+        Database.upsertResult oppUpsert;
+        Test.startTest();
+        OpportunityIntegrationVO payload = OpportunityIntegrationVO.parse(OpportunityIntegrationControllerTest.payloadMock('success','HOME_REFIN','PENDING_SIGNATURE','ATWORK-PARTNER'));
+        OpportunityIntegrationService.getPersonIdAndAccountName(payload.participants);
+        oppUpsert = OpportunityIntegrationService.upsertOpportunity(payload);
+        Test.stopTest();
+        Opportunity oppHomeAfterUpdate = [SELECT Id, StageName, PartnerAccount__c FROM Opportunity WHERE ExternalId__c = 'ATWORK-PARTNER' LIMIT 1];
+        System.assertEquals(null, oppHomeAfterUpdate.PartnerAccount__c, 'Partner Account should be null');
+        System.assert(oppUpsert.isCreated(), 'Opportunity should have been created, not updated');
+    }
+    
+    @isTest
+    private static void testUpdateOppAutoFinPartner(){
+        Database.upsertResult oppUpsert;
+        
+        Test.startTest();
+        OpportunityIntegrationVO payload = OpportunityIntegrationVO.parse(OpportunityIntegrationControllerTest.payloadMock('success','AUTO_FIN','PENDING_SIGNATURE','OPPORTUNITY-VO-AUTOFIN-2077'));
+        OpportunityIntegrationService.getPersonIdAndAccountName(payload.participants);
+        oppUpsert = OpportunityIntegrationService.upsertOpportunity(payload);
+        Test.stopTest();
+ 
+        Account accNewPartner = [SELECT Id FROM Account WHERE ExternalId__c = '21b0f42e-f27d-4696-9cfe-2f4258e31164' LIMIT 1];
+        Opportunity oppHomeAfterUpdate = [SELECT Id, StageName, PartnerAccount__c FROM Opportunity WHERE ExternalId__c = 'OPPORTUNITY-VO-AUTOFIN-2077'];
+        
+        System.assert(!oppUpsert.isCreated(), 'Opportunity should have been updated, not created');
+        System.assertEquals(accNewPartner.Id, oppHomeAfterUpdate.PartnerAccount__c, 'Invalid Partner Account');
     }
 }

@@ -39,6 +39,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   statusReturnedPendency = RETURNED_PENDENCY_STATUS;
   completionPercentage = 0;
   lastCheckBoxName;
+  age;
   
   // Picklist options
   politicallyExposedOptions = politicallyExposedOptions;
@@ -52,7 +53,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     getLastPersonalDataSectionInstance( {oppId : oppId})
       .then( result => {
 
-        this.personalDataSectionRecord = result;
+        this.personalDataSectionRecord = ( result != null ) ? result : {}  ;
         this.buildDataSection();
 
         })
@@ -68,6 +69,8 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
     this.recordSaved = false;
     this.personalDataSectionRecord[event.target.dataset.id] = event.target.value;
+    this.updateAge();
+
     this.sendInfo(this.getInfo());
   }
 
@@ -231,6 +234,9 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   } 
 
   getAge(dateString) {
+
+    if ( !dateString ) return;
+
     let today = new Date();
     let birthDate = new Date(dateString.toString());
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -240,7 +246,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
   }
 
   get isRed() {
-    return (this.idade > 60 || this.idade < 25) ? true : false;
+    return (this.age > 60 || this.age < 25) ? true : false;
   }
 
   @api
@@ -284,10 +290,16 @@ export default class ProposalPersonalDataComponent extends LightningElement {
 
   buildDataSection() {
 
-    this.personalDataSectionRecord.PoliticallyExposed__c= ( this.personalDataSectionRecord.PoliticallyExposed__c ) ? 'true' : 'false';
-    this.idade = this.getAge(this.personalDataSectionRecord.BirthDate__c);
+    this.personalDataSectionRecord.PoliticallyExposed__c = ( this.personalDataSectionRecord.PoliticallyExposed__c ) ? 'true' : 'false';
+    this.updateAge();
+
     this.showContainer = true;
-    
+  }
+
+  updateAge() {
+
+    this.age = this.getAge( this.personalDataSectionRecord.BirthDate__c );
+
   }
 
   renderedCallback() {

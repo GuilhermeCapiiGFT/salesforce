@@ -1,26 +1,32 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getRecordNotifyChange  } from 'lightning/uiRecordApi';
-import { updateRecord } from 'lightning/uiRecordApi';
+import { getRecord, updateRecord, getFieldValue, getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
 import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
 import OWNER_ID_FIELD from '@salesforce/schema/Opportunity.OwnerId';
-
 import CONTRACT_NUMBER_FIELD from '@salesforce/schema/Opportunity.CCBnumber__c';
-
 import OPP_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeReason__c';
 import OPP_OTHER_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeOtherReason__c';
 import OPP_OBSERVATION_FIELD from '@salesforce/schema/Opportunity.CommitteeObservation__c';
+import OPP_EXTERNALID_FIELD from '@salesforce/schema/Opportunity.ExternalId__c';
 
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
+import sendContract from '@salesforce/apex/ProposalContractController.sendContract';
 
-import {NavigationMixin} from 'lightning/navigation';
-import getContract from '@salesforce/apex/ProposalContractController.getRelatedFilesByRecordId';
+import { subscribe } from 'lightning/empApi';
 
-const fields = [STAGENAME_FIELD, OWNER_ID_FIELD, OPP_REASON_FIELD, OPP_OTHER_REASON_FIELD, OPP_OBSERVATION_FIELD];
+const fields = [
+  STAGENAME_FIELD, 
+  OWNER_ID_FIELD, 
+  OPP_REASON_FIELD, 
+  OPP_OTHER_REASON_FIELD, 
+  OPP_OBSERVATION_FIELD, 
+  OPP_EXTERNALID_FIELD,
+  CONTRACT_NUMBER_FIELD
+];
 
 const PROPOSAL_APPROVED = 'approved';
 const PROPOSAL_PENDENCY = 'pendency';
@@ -49,10 +55,12 @@ export default class ProposalAnalysis extends LightningElement {
   @api accountid
   @api opportunityid
 
+  channelName = '/event/AutoFinContractUpdate__e';
   disableBtnGenerateContract = false;
   disableBtnViewContract = true;
   disableBtnSendContract = true;
   disableBtnCorrectContract = false;
+
   dateContract = '';
   showContractGenerated = false;
 
@@ -116,12 +124,27 @@ export default class ProposalAnalysis extends LightningElement {
   committeeOtherReasons = ''
   committeeObservation = ''
 
-  ccbNumber = ''
-
   //Contract
+  openSendContractModal = false;
   showContractButton = false;
   showApproveButtons = false;
+
   enableContractButton = true;
+
+  opportunityData;
+
+  get StageName(){
+    return getFieldValue(this.opportunityData, STAGENAME_FIELD);
+  }
+
+  get CCBNumber(){
+    return getFieldValue(this.opportunityData, CONTRACT_NUMBER_FIELD);
+  }
+
+  get ExternalId(){
+    return getFieldValue(this.opportunityData, OPP_EXTERNALID_FIELD);
+  }
+
 
   sectionComponentMap = new Map([
     ["ContactDetailsSection__c", "c-proposal-contact-data-component"],
@@ -139,20 +162,23 @@ export default class ProposalAnalysis extends LightningElement {
     this.mapInfoSection.set('ContainerDadosGarantia', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosGarantia'})
     this.mapInfoSection.set('ContainerOperation', {'variant': '', 'value': 0, 'returnedId': 'ContainerOperation'})
     this.mapInfoSection.set('ContainerDadosRenda', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosRenda'})
+    this.subscribeAutoFinContractUpdateEvent(this);
   }
 
   @wire(getRecord, { recordId: '$opportunityid', fields })
   getOpportunity({ error, data }) {
     if (data) {
+      this.opportunityData = data;
       this.getStageName(data)
       this.getCommitteeReasons(data)
+      this.setContractButtonsVisibility();
     } else if (error) {
       this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
     }
   }
 
   getCommitteeReasons(data) {
-    this.committeeReasons = data?.fields?.CommitteeReason__c?.displayValue.split(';')
+    this.committeeReasons = data?.fields?.CommitteeReason__c?.displayValue?.split(';')
     this.committeeOtherReasons = data?.fields?.CommitteeOtherReason__c?.value
     this.committeeObservation = data?.fields?.CommitteeObservation__c?.value
   }
@@ -165,6 +191,7 @@ export default class ProposalAnalysis extends LightningElement {
         this.isAnalysisStarted = false
         this.showCommitteeButton = false;
         this.isStageOnCommittee = false
+
 
         this.showContractButton = false
         this.showApproveButtons = true
@@ -257,7 +284,11 @@ export default class ProposalAnalysis extends LightningElement {
         this.showApproveButtons = true
         this.showContractButton = false
       }
-      
+  }
+
+  setContractButtonsVisibility(){    
+    this.disableBtnSendContract = this.StageName == STATUS_WAITING_CONTRACT && this.CCBNumber ? false : true;
+    this.disableBtnCorrectContract = this.StageName == STATUS_EMITED_CONTRACT ? true: false;
   }
   
   setInfoValueAndVariant(event) {
@@ -334,7 +365,9 @@ export default class ProposalAnalysis extends LightningElement {
 
   handleAccordionToggle(event) {
     if (this.isAnalysisStarted && !this.isAnalysisComplete) {
-      event.target.parentElement.parentElement.parentElement.classList.toggle('slds-is-open')
+       event.target.parentElement.parentElement.parentElement.classList.toggle('slds-is-open');
+       console.log('event ' +JSON.stringify(event.target.parentElement.parentElement.parentElement));
+       console.log('event ' +event.target);
     }
   }
 
@@ -388,6 +421,7 @@ export default class ProposalAnalysis extends LightningElement {
       this.showToast(SUCCESS_OCCURRED, SUCCESS_STAGE_MESSAGE, SUCCESS_VARIANT);
         this.isAnalysisStarted = true;
         this.isLoading = false
+        this.openSection = true;
     })
     .catch( error =>{
       console.log({ error });
@@ -491,7 +525,7 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handleCommitteeProposal() {
-    this.openModalCommittee = true
+    this.openModalCommittee = true   
   }
 
   handlerCloseModalCommittee() {
@@ -507,7 +541,8 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handlerApproveProposal() {    
-    this.openModalApprove = true    
+    this.openModalApprove = true
+       
   }
 
   handlerCloseModalApprove(){
@@ -523,7 +558,27 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handlerAnaylisApprovement() {
-    this.handlerCloseModalApprove();
+    this.handlerCloseModalApprove();    
+    const fields = {}   
+    fields[OPP_ID_FIELD.fieldApiName]    = this.opportunityid;
+    fields[CONTRACT_NUMBER_FIELD.fieldApiName] = "";
+    
+    const recordInput = {fields}
+
+    updateRecord(recordInput)
+      .then(() => {
+        this.showToast(SUCCESS_OCCURRED, SUCCESS_MESSAGE, SUCCESS_VARIANT)
+        this.showApproveButtons = true
+        this.showCommitteeButton = false
+        this.showContractButton = true 
+      })
+      .catch(error => {
+        this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT)
+        this.showApproveButtons = true
+        this.showCommitteeButton = false
+        this.showContractButton = false 
+    }) 
+    this.isLoading = true
     this.sendAnalysis('approve-btn');
   }
 
@@ -537,9 +592,8 @@ export default class ProposalAnalysis extends LightningElement {
     this.sendAnalysis('reject-btn');
   }
 
+
   handleViewContract(){
-        
-    console.log('opportunityId: '+this.opportunityid);
     getContract({ recordId : this.opportunityid})
     .then( result =>{
         console.log({result});
@@ -550,14 +604,10 @@ export default class ProposalAnalysis extends LightningElement {
     });
   }
 
-  handleSendContract(){
-      
-      this.dispatchShowToast('Success','Contrato enviado com sucesso!','success');
-  }
+
   handleGenerateContract(){
       this.disableBtnGenerateContract = true;
       this.disableBtnViewContract = false;
-      this.disableBtnSendContract = false;
       this.disableBtnCorrectContract = false;
 
       let dateNow = new Date();
@@ -569,6 +619,7 @@ export default class ProposalAnalysis extends LightningElement {
       this.showContractGenerated = true;
       this.dispatchShowToast('Success','Contrato gerado com sucesso!','success');
   }
+
   handleCorrectContract(){     
     
       this.showApproveButtons = true
@@ -601,6 +652,57 @@ export default class ProposalAnalysis extends LightningElement {
               selectedRecordId: doccumentId
           }
       })
+  }
+
+  handleSendContract() {
+    this.openSendContractModal = true;
+  }
+
+  handleSendContractModalReturn(event) {
+    const eventType = event.detail;
+    this.openSendContractModal = false;
+    if (eventType == 'yes') {
+      if (!this.CCBNumber) {
+        this.showToast(
+          'Aviso',
+          'O contrato não foi gerado. Tente novamente mais tarde.',
+          'info'
+        );
+        return;
+      }
+
+      if (!this.ExternalId) {
+        this.showError('Id externo não encontrado');
+        return;
+      }
+
+      sendContract({ loanApplicationId: this.ExternalId })
+        .then(result => {
+          if (result == 201) {
+            this.showToast('Sucesso!', 'Contrato enviado com sucesso.', 'success');
+            const fields = {};
+            fields[OPP_ID_FIELD.fieldApiName] = this.opportunityid;
+            fields[STAGENAME_FIELD.fieldApiName] = STATUS_EMITED_CONTRACT;
+            updateRecord({fields})
+              .catch(()=>{
+                this.showError('Não foi possível atualizar a fase da oportunidade');
+              })
+          } else {
+            this.showError('A requisição não obteve sucesso');
+          }
+        })
+        .catch(error => {
+          this.showError('Não foi possível completar a requisição');
+        });
+    }
+  }
+
+  showError(message) {
+    this.showToast(
+      'Erro!',
+      `${message}. Entre em contato com o administrador do sistema.`,
+      'error'
+    );
   }
 
   closeSections(){
@@ -638,4 +740,21 @@ export default class ProposalAnalysis extends LightningElement {
       this.showToast(ERROR_OCCURRED, ERROR_MESSAGE, ERROR_VARIANT);
     })
   }
+
+  subscribeAutoFinContractUpdateEvent(component) {
+    const callback = function (message) {
+      const id = message.data?.payload?.RecordId__c;
+      if (id == component.opportunityid) {
+        component.notifyChange();
+      }
+    };
+
+    subscribe(component.channelName, -1, callback).then(response => {
+      component.subscription = response;
+    });
+  }  
+
+  notifyChange() {
+    getRecordNotifyChange([{ recordId: this.opportunityid }]);
+  }  
 }

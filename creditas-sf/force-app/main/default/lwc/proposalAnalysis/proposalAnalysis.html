@@ -290,5 +290,18 @@
 		</c-modal-proposal-committee>
 	</template>
 
+	<template if:true={openSendContractModal}>
+		<c-generic-confirmation-modal
+			header-title="Envio de Contrato"
+			yes-label="Sim"
+			no-label="Não"
+			onmodalreturn={handleSendContractModalReturn}>
+			<span 
+				class="slds-text-heading_small" 
+				slot="message">Deseja enviar o contrato?
+			</span>
+		</c-generic-confirmation-modal>
+	</template>
+
 	</div>
 </template>
