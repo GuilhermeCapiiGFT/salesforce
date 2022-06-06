@@ -29,7 +29,7 @@ const fields = [
 ];
 
 const PROPOSAL_APPROVED = 'approved';
-const PROPOSAL_PENDENCY = 'pendency';
+const PROPOSAL_PENDENCY = 'pending';
 const PROPOSAL_REJECTED = 'rejected';
 
 const ERROR_OCCURRED = 'Ocorreu um Erro';
@@ -100,6 +100,7 @@ export default class ProposalAnalysis extends LightningElement {
   modalReasonField = '';
   modalReasonObject = ''
   validationResult = new Map();
+  mapReasons = new Map();
 
   openModalDocument = false;
   sourceImg = '';
@@ -338,7 +339,23 @@ export default class ProposalAnalysis extends LightningElement {
       this.modalReasonObject = infoSection.modal.objectReason
     }
 
-    this.isCompleted()
+    this.isCompleted();
+    this.closeSectionWhenIsDone(infoSection);
+  }
+
+  closeSectionWhenIsDone(infoSection) {
+    
+    if ( infoSection.value === 100 ) {
+
+      this.template.querySelectorAll('section').forEach(section => {
+
+        if ( section.getAttribute('data-id') === infoSection.returnedId ) { 
+
+          section.classList.remove('slds-is-open');
+          section.scrollIntoView(false);
+
+      }});
+    } 
   }
 
   formatDate(date) {
@@ -366,8 +383,6 @@ export default class ProposalAnalysis extends LightningElement {
   handleAccordionToggle(event) {
     if (this.isAnalysisStarted && !this.isAnalysisComplete) {
        event.target.parentElement.parentElement.parentElement.classList.toggle('slds-is-open');
-       console.log('event ' +JSON.stringify(event.target.parentElement.parentElement.parentElement));
-       console.log('event ' +event.target);
     }
   }
 
@@ -510,7 +525,7 @@ export default class ProposalAnalysis extends LightningElement {
   handlerCloseDocumentModal(){
     this.openModalDocument = false;
   }
-
+  
   handlerSelectedReason(event) {
     let result = event.detail;
     if(result) {
@@ -521,6 +536,7 @@ export default class ProposalAnalysis extends LightningElement {
       }
 
     }
+    this.mapReasons = result.mapReason;
     this.openModalReason = false;
   }
 
@@ -541,8 +557,7 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handlerApproveProposal() {    
-    this.openModalApprove = true
-       
+    this.openModalApprove = true;
   }
 
   handlerCloseModalApprove(){

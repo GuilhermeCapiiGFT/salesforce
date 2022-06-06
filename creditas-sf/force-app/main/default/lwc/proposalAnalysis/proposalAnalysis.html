@@ -61,7 +61,9 @@
 							<div class="btn-container slds-m-vertical_medium">
 								<button title="Validar biometria">Validar biometria</button>
 							</div>
-							<!-- conteúdo aqui -->
+							<div class="slds-accordion__content" id="proposal-section__general" >
+								<c-proposal-general-data-component opportunityid={opportunityid} accountid={accountid}></c-proposal-general-data-component>
+						  	</div>
 						</section>
 					</li>
 				</div>
@@ -74,7 +76,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section ">
+						  <section class="slds-accordion__section" data-id="ContainerDadosPessoais">
 							  <div class="slds-accordion__summary">
 								<h2 class="slds-accordion__summary-heading">
 								  <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais header-section" onclick={handleAccordionToggle}>
@@ -82,7 +84,7 @@
 								  </span>
 								</h2>
 							  </div>
-							  <div class="slds-accordion__content" id="referenceId-38" >
+							  <div class="slds-accordion__content" id="referenceId-37" >
 									<template if:true={openSection}>
 										<c-proposal-personal-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-personal-data-component>
 									</template>
@@ -98,7 +100,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
+						  <section class="slds-accordion__section" data-id="ContainerDadosContato">
 								<div class="slds-accordion__summary">
 									<h2 class="slds-accordion__summary-heading">
 										<span class="geral slds-accordion__summary-content header-section">Dados de Contato</span>
@@ -120,7 +122,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
+						  <section class="slds-accordion__section" data-id="ContainerDadosEndereco">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
 									  <span class="geral slds-accordion__summary-content header-section">Dados de Endereço</span>
@@ -142,7 +144,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
+						  <section class="slds-accordion__section" data-id="ContainerDadosRenda">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
 									  <span class="geral slds-accordion__summary-content header-section">Dados de Renda</span>
@@ -164,7 +166,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
+						  <section class="slds-accordion__section" data-id="ContainerDadosGarantia">
 							  	<div class="slds-accordion__summary">
 								  	<h2 class="slds-accordion__summary-heading">
 									  	<span class="geral slds-accordion__summary-content header-section">Dados de Garantia</span>
@@ -189,7 +191,7 @@
 
 				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
 					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section">
+						  <section class="slds-accordion__section" data-id="ContainerOperation">
 							  <div class="slds-accordion__summary">
 								  <h2 class="slds-accordion__summary-heading">
 									  <span class="geral slds-accordion__summary-content header-section">Operação</span>
@@ -258,7 +260,8 @@
 			onselectedreason={handlerSelectedReason}
 			type-reason={modalReason}
 			field-reason={modalReasonField}
-			object-reason={modalReasonObject}>
+			object-reason={modalReasonObject}
+			map-reason={mapReasons}>
 		</c-modal-reason>
 	</template>
 

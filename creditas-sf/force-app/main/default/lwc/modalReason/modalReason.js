@@ -12,6 +12,7 @@ export default class ModalReason extends LightningElement {
     @api fieldReason;
     @api objectReason;
     @api typeReason;
+    @api mapReason;
 
     get modalHeader(){
         return this.typeReason == 'reject' ? 'Motivo da reprovação' : 'Motivo do pendenciamento';
@@ -29,6 +30,14 @@ export default class ModalReason extends LightningElement {
         })
     }
 
+    get fieldCBReason(){
+        return this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).reason;
+    }
+
+    get fieldDescription(){
+        return this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).description;
+    }
+
     handlerSelectReason(e){
         if(e.target.value.toUpperCase() != OTHER_REASON){
             this.saveDisabled = false;
@@ -40,7 +49,7 @@ export default class ModalReason extends LightningElement {
     }
 
     handlerChangeNote(e){
-        this.saveDisabled = (e.target.value != '') ? false : true;
+        this.saveDisabled = this.validateInput('lightning-textarea');
     }
 
     handlerSave(event){
@@ -55,13 +64,18 @@ export default class ModalReason extends LightningElement {
             });
         }
 
-        objResultReason.field = this.fieldReason;
-        objResultReason.type = this.typeReason;
-        objResultReason.object = this.objectReason;
+            objResultReason.field = this.fieldReason;
+            objResultReason.type = this.typeReason;
+            objResultReason.object = this.objectReason;
+            let reasonMap = new map();
+            reasonMap.set(`${this.typeReason}${this.fieldReason}`, {reason: objResultReason.reason, description: objResultReason.description});
+            objResultReason.mapReason = reasonMap;
+    
+            console.log({objResultReason})
+            this.selectedReason(objResultReason);
+        
 
-        console.log({objResultReason})
-
-        this.selectedReason(objResultReason);
+        
     }
 
     selectedReason(objResult){
@@ -73,4 +87,14 @@ export default class ModalReason extends LightningElement {
         });
         this.dispatchEvent(selectedEvent);
     }
+
+    validateInput(queryName){
+        const allValid = [
+        ...this.template.querySelectorAll(queryName)
+      ].reduce((validSoFar, inputCmp) => {
+        inputCmp.reportValidity();
+        return validSoFar && inputCmp.checkValidity();
+      }, true);
+      return allValid;
+      }
 }
