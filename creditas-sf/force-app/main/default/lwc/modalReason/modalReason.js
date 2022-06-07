@@ -31,11 +31,13 @@ export default class ModalReason extends LightningElement {
     }
 
     get fieldCBReason(){
-        return this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).reason;
+        console.dir(this.mapReason.get(`${this.typeReason}${this.fieldReason}`));
+        //this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? '' : this.mapReasons.get(`${this.typeReason}${this.fieldReason}`)?.reason;
+        return '';
     }
 
     get fieldDescription(){
-        return this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).description;
+        return this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? '' : this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).description;
     }
 
     handlerSelectReason(e){
@@ -67,7 +69,7 @@ export default class ModalReason extends LightningElement {
             objResultReason.field = this.fieldReason;
             objResultReason.type = this.typeReason;
             objResultReason.object = this.objectReason;
-            let reasonMap = new map();
+            let reasonMap = this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? new map() : this.mapReason.get(`${this.typeReason}${this.fieldReason}`);
             reasonMap.set(`${this.typeReason}${this.fieldReason}`, {reason: objResultReason.reason, description: objResultReason.description});
             objResultReason.mapReason = reasonMap;
     
