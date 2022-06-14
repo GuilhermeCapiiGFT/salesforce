@@ -34,6 +34,15 @@ public with sharing class ProposalContractService {
     this.response = new Http().send(request);
   }
 
+  public void generateContract(String loanApplicationId) {
+    String url = ENDPOINT + loanApplicationId + '/contract';
+    HttpRequest request = new HttpRequest();
+    request.setEndpoint(url);
+    request.setHeader('Authorization', getToken());
+    request.setMethod('POST');
+    this.response = new Http().send(request);
+  }
+
   public String viewContract(String loanApplicationId) {
 
     String url = ENDPOINT + loanApplicationId + '/contract/picture';
@@ -44,7 +53,9 @@ public with sharing class ProposalContractService {
     request.setMethod('GET');
 
     this.response = new Http().send(request);
-    System.debug('viewContract response: ' + this.response.getBody()) ;
-    return this.response.getBody();
+    Blob responseBlob = this.response.getBodyAsBlob();
+    String base64 = EncodingUtil.base64Encode(responseBlob);
+    return base64;
+    
   }
 }

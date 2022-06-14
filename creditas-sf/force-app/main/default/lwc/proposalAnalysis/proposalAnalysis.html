@@ -41,33 +41,10 @@
 	</template>
 
 	<div class="slds-progress slds-progress_vertical">
-		<ol class="slds-accordion slds-progress__list">
-
+		<ol class="slds-accordion">
+			
 			<!-- 1th Accordion -->
-			<div class="slds-progress__item">
-				<lightning-progress-ring value={generalInfoValue} variant={generalInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				<div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					<li class="slds-accordion__list-item">
-						<section class="slds-accordion__section">
-							<div class="slds-accordion__summary">
-								<h2 class="slds-accordion__summary-heading">
-									<span class="geral slds-accordion__summary-content header-section">
-										Geral &nbsp;
-										<lightning-button-icon icon-name="utility:scan"  alternative-text="Validar biometria" title="Validar biometria"></lightning-button-icon>
-									</span>
-								</h2>
-							</div>
-							<div class="btn-container slds-m-vertical_medium">
-								<button title="Validar biometria">Validar biometria</button>
-							</div>
-							<div class="slds-accordion__content" id="proposal-section__general" >
-								<c-proposal-general-data-component opportunityid={opportunityid} accountid={accountid}></c-proposal-general-data-component>
-						  	</div>
-						</section>
-					</li>
-				</div>
-			</div>
+			<c-proposal-general-data-component opportunityid={opportunityid} accountid={accountid} sobject-name="GeneralSection__c"></c-proposal-general-data-component>
 
 			  <!-- 2th Accordion -->
 			  <div class="slds-progress__item">
@@ -137,7 +114,7 @@
 					  </li>
 				  </div>
 			  </div>
-
+			  
 			  <!-- 5th Accordion -->
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={incomeInfoValue} variant={incomeInfoVariant} class="progressCircle"></lightning-progress-ring>
@@ -184,7 +161,7 @@
 					  </li>
 				  </div>
 			  </div>
-
+			  
 			  <!-- 7th Accordion -->
 			  <div class="slds-progress__item">
 				  <lightning-progress-ring value={operationInfoValue} variant={operationInfoVariant} class="progressCircle"></lightning-progress-ring>
@@ -261,7 +238,7 @@
 			type-reason={modalReason}
 			field-reason={modalReasonField}
 			object-reason={modalReasonObject}
-			map-reason={mapReasons}>
+			open="true">
 		</c-modal-reason>
 	</template>
 

@@ -15,6 +15,8 @@ import OPP_EXTERNALID_FIELD from '@salesforce/schema/Opportunity.ExternalId__c';
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
 import sendContract from '@salesforce/apex/ProposalContractController.sendContract';
+import generateContract from '@salesforce/apex/ProposalContractController.generateContract';
+import viewContract from '@salesforce/apex/ProposalContractController.viewContract';
 
 import { subscribe } from 'lightning/empApi';
 
@@ -100,7 +102,6 @@ export default class ProposalAnalysis extends LightningElement {
   modalReasonField = '';
   modalReasonObject = ''
   validationResult = new Map();
-  mapReasons = new Map();
 
   openModalDocument = false;
   sourceImg = '';
@@ -525,7 +526,7 @@ export default class ProposalAnalysis extends LightningElement {
   handlerCloseDocumentModal(){
     this.openModalDocument = false;
   }
-  
+
   handlerSelectedReason(event) {
     let result = event.detail;
     if(result) {
@@ -536,7 +537,6 @@ export default class ProposalAnalysis extends LightningElement {
       }
 
     }
-    this.mapReasons = result.mapReason;
     this.openModalReason = false;
   }
 
@@ -557,7 +557,8 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
   handlerApproveProposal() {    
-    this.openModalApprove = true;
+    this.openModalApprove = true
+       
   }
 
   handlerCloseModalApprove(){
@@ -608,15 +609,27 @@ export default class ProposalAnalysis extends LightningElement {
   }
 
 
-  handleViewContract(){
-    getContract({ recordId : this.opportunityid})
-    .then( result =>{
-        console.log({result});
+  handleViewContract() {
+    console.log('Visualizar Contrato');
+    viewContract({ loanApplicationId: 'LAP-B9BBE976-49B1-4992-8747-00518E59202C' })
+      .then(result => {
+        //var xmltext = result;
+        var filename = "Contrato";
+        var pom = document.createElement('a');
+        //var bb = new Blob([xmltext], { type: 'application/octet-stream' });
 
-        (result != '') ? this.previewHandler(result): this.dispatchShowToast('Warning','Contrato não localizado!','warning');;
-    }).catch(error =>{
-        console.log('Erro: '+error);
-    });
+        pom.setAttribute('href', window.URL.createObjectURL(result));
+        pom.setAttribute('download', filename);
+
+        pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+        pom.draggable = true;
+        pom.classList.add('dragout');
+
+        pom.click();
+        (result != '') ? this.previewHandler(result) : this.dispatchShowToast('Warning', 'Contrato não localizado!', 'warning');;
+      }).catch(error => {
+        console.log('Erro: ' + error);
+      });
   }
 
 
@@ -629,10 +642,17 @@ export default class ProposalAnalysis extends LightningElement {
       let splitDate = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short'}).format(dateNow);
       let splitHours = new Intl.DateTimeFormat('pt-BR', { timeStyle: 'short' }).format(dateNow);
       this.dateContract = splitDate +' às '+splitHours;
-
-    
       this.showContractGenerated = true;
-      this.dispatchShowToast('Success','Contrato gerado com sucesso!','success');
+
+    generateContract({ loanApplicationId: this.ExternalId })
+      .then(result => {
+        this.dispatchShowToast('Success','Contrato gerado com sucesso!','success');  
+      }).catch(error => {
+        this.dispatchShowToast('Error','Ops! Não conseguimos gerar o contrato.','error');
+        console.log('Erro: ' + error);
+      });
+
+      
   }
 
   handleCorrectContract(){     

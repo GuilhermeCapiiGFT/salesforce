@@ -1,0 +1,12 @@
+<template>
+    <lightning-button label="Ver Contrato" variant="brand" name="Ver Contrato" onclick={handleView}></lightning-button>
+
+    <div class="slds-var-m-around_large">
+        <lightning-input type="file" label="SUBA SEU ARQUIVO" onchange={openfileUpload} accept=".docx, .zip" multiple="false"> </lightning-input>
+        <template if:true={fileData}>
+            <p>{fileData.filename}</p>
+            <lightning-button variant="brand" label="submit" title="Submit" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+        </template>
+    </div>
+
+</template>
