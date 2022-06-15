@@ -63,6 +63,7 @@ public with sharing class ProposalServiceTest {
         opportunity.ExternalVersion__c       = 1;      
         opportunity.RecordTypeId             = Util.getRecordTypeIdbyName('Opportunity', 'AutoFin');
         opportunity.PartnerAccount__c        = accPartner.Id;
+        opportunity.CrivoQuery__c            = '[CRIVO QUERY] DATA LIST';
         insert opportunity;
 
         ProfessionalInfo__c professionalInfo = new ProfessionalInfo__c();
@@ -123,6 +124,11 @@ public with sharing class ProposalServiceTest {
         quote.Quantity__c   = 20;
         
         insert quote;
+
+        ProposalGeneralSectionSetup setup = new ProposalGeneralSectionSetup(opportunity, 'general-data-section');
+        GeneralSection__c section = setup.createGeneralSection(null, false);
+        insert section;
+        Test.setCreatedDate(section.Id, Datetime.now().addDays(-1));
     }
 
     @isTest
@@ -299,21 +305,38 @@ public with sharing class ProposalServiceTest {
         Opportunity opp      = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
 
         PersonalDataSection__c oldPersonalDataSection  = new PersonalDataSection__c(Opportunity__c = opp.Id);
-        oldPersonalDataSection.CPFStatus__c = 'Pendenciar';
+        oldPersonalDataSection.CPFStatus__c = 'Pending';
         insert oldPersonalDataSection;
         
-        WarrantyDataSection__c oldWarrantyDataSection  = new WarrantyDataSection__c(Opportunity__c = opp.Id);
-        oldWarrantyDataSection.ModelStatus__c = 'Pendenciar';
-        insert oldWarrantyDataSection;
-
         Test.startTest();
         ProposalService.start(acc.Id, opp.Id);
         Test.stopTest();
 
         PersonalDataSection__c personalDataSection = [SELECT Id, CPFStatus__c FROM PersonalDataSection__c ORDER BY CreatedDate DESC LIMIT 1];
-        WarrantyDataSection__c warrantyDataSection = [SELECT Id, ModelStatus__c FROM WarrantyDataSection__c ORDER BY CreatedDate DESC LIMIT 1];
 
-        System.assertEquals('Voltou de pendência', personalDataSection.CPFStatus__c, 'Status was supposed to be return from pendency');
-        System.assertEquals('Voltou de pendência', warrantyDataSection.ModelStatus__c, 'Status was supposed to be return from pendency');
+        System.assertEquals('RETURNED_PENDING', personalDataSection.CPFStatus__c, 'Status was supposed to be return from pendency');
+    }
+
+    @isTest
+    public static void setReturnPendencyForFieldNotPersistedInOpp() 
+    {
+        Account acc          = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account WHERE Name = 'Nivaele' LIMIT 1];
+        Opportunity opp      = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
+
+        GeneralSection__c oldSection  = new GeneralSection__c(Opportunity__c = opp.Id);
+        oldSection.CrivoQuery__c = 'QUERY';
+        oldSection.CrivoQueryStatus__c = 'PENDING';
+        oldSection.GeneralSectionExternalIdAtWork__c = 'devia-ser-deletado';
+        insert oldSection;
+        Test.startTest();
+        ProposalService.start(acc.Id, opp.Id);
+        Test.stopTest();
+
+        GeneralSection__c newsection = [
+                SELECT Id, CrivoQueryStatus__c 
+                FROM GeneralSection__c 
+                ORDER BY CreatedDate DESC LIMIT 1];
+
+        System.assertEquals('RETURNED_PENDING', newsection.CrivoQueryStatus__c, 'Status was supposed to be return from pendency');
     }
 }

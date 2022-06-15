@@ -1,0 +1,96 @@
+<template>
+    <div class="slds-grid container">
+        <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">
+            {cloneField.Label}
+        <template if:true={cloneField.required}>
+            <span class="required_field">*</span>
+        </template>
+        <template if:true={returnedFromPending}>
+            <lightning-helptext 
+                content="Voltou de pendência" 
+                icon-name="utility:announcement" 
+                icon-variant='warning' 
+                class="slds-m-left_xx-small">
+            </lightning-helptext>
+        </template>
+        </label>
+        <template if:true={dataType.Text}>
+            <lightning-input 
+                onfocus={handleInputFocus}
+                onblur={handleInputBlur} 
+                disabled={hasEditPermission} 
+                variant="label-hidden" 
+                type="text" 
+                class="" 
+                data-id={fieldId} 
+                onchange={handleInputChange} 
+                value={fieldValue}>
+            </lightning-input>
+        </template>
+        <template if:true={dataType.Picklist}>
+            <lightning-combobox 
+                disabled={hasEditPermission} 
+                variant="label-hidden"
+                type="text"
+                options={options}
+                data-id={fieldId}
+                onchange={handleInputChange} 
+                onfocus={handleInputFocus}
+                onblur={handleInputBlur}
+                value={fieldValue}>
+            </lightning-combobox>
+        </template>
+        <template if:true={dataType.TextArea}>
+            <lightning-textarea 
+                disabled={hasEditPermission} 
+                variant="label-hidden"
+                data-id={fieldId}
+                onchange={handleInputChange}
+                onfocus={handleInputFocus}
+                onblur={handleInputBlur}
+                value={fieldValue}>
+        </lightning-textarea>
+        </template>
+        <template if:true={dataType.DateTime}>
+            <lightning-input 
+            type="date" 
+            disabled={hasEditPermission} 
+            variant="label-hidden" 
+            data-id={fieldId} 
+            onchange={handleInputChange} 
+            onfocus={handleInputFocus}
+            onblur={handleInputBlur}
+            value={fieldValue}>
+        </lightning-input>
+        </template>
+        </div>
+        <div class="slds-size_2-of-12"></div>
+        <div class="slds-grid slds-size_5-of-12 checkbox-options" data-id="nameCheckboxContainer">
+        
+        <template if:false={novalidation}>
+            <div class="slds-size_4-of-12 form-control aprovado">
+                <label for={approvalCheckboxId} class="slds-p-bottom_xx-small"
+                style="overflow-wrap: break-word; ">Aprovado</label>
+        
+                <input disabled={hasApprovalPermission} data-id={approvalCheckboxId} checked={status.approved} data-field={cloneField.StatusField}  data-status={cloneField.StatusField} data-value={preValue} name={cloneField.key} type="radio" value="APPROVED"
+                onclick={handleChange} />
+            </div>
+        
+            <div class="slds-size_4-of-12 form-control pendenciado">
+                <label for={pendingChecboxId} class="slds-p-bottom_xx-small"
+                style="overflow-wrap: break-word; ">Pendenciado</label>
+                <input disabled={hasPendingPermission} data-id={pendingChecboxId} checked={status.pending} data-status={cloneField.StatusField} data-value={preValue} name={cloneField.key} type="radio" value="PENDING"
+                onclick={handleChange} /> 
+            </div>
+        
+            <div class="slds-size_4-of-12 form-control reprovado">
+                <label for={rejectCheckboxId} class="slds-p-bottom_xx-small"
+                style="overflow-wrap: break-word; ">Reprovado</label>
+                <input disabled={hasRejectPermission} data-id={rejectCheckboxId} checked={status.rejected} data-status={cloneField.StatusField} data-value={preValue} name={cloneField.key} type="radio" value="REJECTED"
+                onclick={handleChange} /> 
+            </div>
+        </template>
+    </div>
+    </div>
+</template>

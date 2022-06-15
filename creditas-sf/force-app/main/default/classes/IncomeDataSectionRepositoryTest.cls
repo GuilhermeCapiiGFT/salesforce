@@ -22,13 +22,13 @@ public class IncomeDataSectionRepositoryTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'Approved';
+        incomeDataSection.ProfessionStatus__c               = 'Approved';
+        incomeDataSection.NetWorthStatus__c                 = 'Approved';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'Approved';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Approved';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Approved';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Approved';
 
         insert incomeDataSection;
 
@@ -52,13 +52,13 @@ public class IncomeDataSectionRepositoryTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'Approved';
+        incomeDataSection.ProfessionStatus__c               = 'Approved';
+        incomeDataSection.NetWorthStatus__c                 = 'Approved';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'Approved';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Approved';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Approved';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Approved';
 
         List<IncomeDataSection__c> lastIncomeDataSection = (List<IncomeDataSection__c>) repo.save( new List<IncomeDataSection__c>{ incomeDataSection });
         
@@ -78,13 +78,13 @@ public class IncomeDataSectionRepositoryTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'Approved';
+        incomeDataSection.ProfessionStatus__c               = 'Approved';
+        incomeDataSection.NetWorthStatus__c                 = 'Approved';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'Approved';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Approved';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Approved';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Approved';
 
         List<IncomeDataSection__c> lastIncomeDataSection = (List<IncomeDataSection__c>) repo.save( new List<IncomeDataSection__c>{ incomeDataSection });
         
@@ -111,13 +111,13 @@ public class IncomeDataSectionRepositoryTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'Approved';
+        incomeDataSection.ProfessionStatus__c               = 'Approved';
+        incomeDataSection.NetWorthStatus__c                 = 'Approved';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'Approved';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Approved';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Approved';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Approved';
 
         incomeDataSection = (IncomeDataSection__c) repo.save( incomeDataSection );
         
@@ -137,13 +137,13 @@ public class IncomeDataSectionRepositoryTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'Approved';
+        incomeDataSection.ProfessionStatus__c               = 'Approved';
+        incomeDataSection.NetWorthStatus__c                 = 'Approved';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'Approved';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Approved';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Approved';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Approved';
 
         incomeDataSection = (IncomeDataSection__c) repo.save( incomeDataSection );
 

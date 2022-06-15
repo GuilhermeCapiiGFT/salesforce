@@ -15,7 +15,7 @@ public class ProposalIncomeDataControllerTest {
 
         test.stopTest();
 
-        System.assertEquals('Aprovar', incomeDataSection.MinimalRequiredIncomeStatus__c, 'Should have a status');
+        System.assertEquals('APPROVED', incomeDataSection.MinimalRequiredIncomeStatus__c, 'Should have a status');
     }
 
     @isTest
@@ -28,13 +28,13 @@ public class ProposalIncomeDataControllerTest {
 
         IncomeDataSection__c incomeDataSection              = new IncomeDataSection__c();
         incomeDataSection.Opportunity__c                    = opportunity.Id;
-        incomeDataSection.ProfessionalSituationStatus__c    = 'Aprovar';
-        incomeDataSection.ProfessionStatus__c               = 'Aprovar';
-        incomeDataSection.NetWorthStatus__c                 = 'Aprovar';
-        incomeDataSection.MonthlyIncomeStatus__c            = 'Aprovar';
-        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'Aprovar';
-        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'Aprovar';
+        incomeDataSection.ProfessionalSituationStatus__c    = 'APPROVED';
+        incomeDataSection.ProfessionStatus__c               = 'APPROVED';
+        incomeDataSection.NetWorthStatus__c                 = 'APPROVED';
+        incomeDataSection.MonthlyIncomeStatus__c            = 'APPROVED';
+        incomeDataSection.MinimalRequiredIncomeStatus__c    = 'APPROVED';
+        incomeDataSection.PresumedMonthlyIncomeStatus__c    = 'APPROVED';
+        incomeDataSection.ConfirmedMonthlyIncomeStatus__c   = 'APPROVED';
 
         insert incomeDataSection;
 
@@ -53,7 +53,7 @@ public class ProposalIncomeDataControllerTest {
 
         public IncomeDataSectionRepositoryMock( ) {
 
-            String payload = '{"attributes":{"type":"IncomeDataSection__c","url":"/services/data/v51.0/sobjects/IncomeDataSection__c/a0T030000012nXZEAY"},"Status__c":"CLT","MinimalRequiredIncomeStatus__c":"Aprovar","ConfirmedMonthlyIncomeStatus__c":"Aprovar"}';
+            String payload = '{"attributes":{"type":"IncomeDataSection__c","url":"/services/data/v51.0/sobjects/IncomeDataSection__c/a0T030000012nXZEAY"},"Status__c":"CLT","MinimalRequiredIncomeStatus__c":"APPROVED","ConfirmedMonthlyIncomeStatus__c":"APPROVED"}';
             this.incomeDataSection = ( IncomeDataSection__c ) JSON.deserialize( payload, IncomeDataSection__c.class );
 
         }

@@ -1,35 +1,46 @@
-import { api, LightningElement, wire } from 'lwc';
+import { api, LightningElement, wire, track } from 'lwc';
 import getReasonValues from '@salesforce/apex/ProposalController.getReason'
 
-const OTHER_REASON = 'OUTROS';
+const OTHER_REASON = 'OTHER';
 export default class ModalReason extends LightningElement {
 
     saveDisabled = true;
     optionsReason = [];
     openNote = false;
     recordTypeIdObject;
+    actuaValue;
+    actualReason;
 
+    @api uniqueName;
+    @api checkedField;
     @api fieldReason;
     @api objectReason;
     @api typeReason;
     @api mapReason;
+    @track open = false;
+    @api internalControl = false;
+    @api modalHeader;
 
-    get modalHeader(){
-        return this.typeReason == 'reject' ? 'Motivo da reprovação' : 'Motivo do pendenciamento';
+    @api
+    setModalHeader(header) {
+        this.modalHeader = header;
     }
-
+    @api
+    openModal(){
+        this.open = true;
+        this.getReasonOptions();
+    }
+    @api
+    closeModal(){
+        this.open = false;
+    }
     connectedCallback(){
-        getReasonValues({objectReason: this.objectReason, fieldReason: this.fieldReason})
-        .then(result =>{
-            if(result){
-                this.optionsReason = JSON.parse(result);
-            }
-        })
-        .catch(error =>{
-            console.log(error);
-        })
+        this.modalHeader = this.typeReason && this.typeReason.toLowerCase() == 'reject' ? 'Motivo da reprovação' : 'Motivo do pendenciamento';
+        if(!this.internalControl){
+            this.open = true;
+        }
+        this.getReasonOptions();
     }
-
     get fieldCBReason(){
         console.dir(this.mapReason.get(`${this.typeReason}${this.fieldReason}`));
         //this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? '' : this.mapReasons.get(`${this.typeReason}${this.fieldReason}`)?.reason;
@@ -39,7 +50,23 @@ export default class ModalReason extends LightningElement {
     get fieldDescription(){
         return this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? '' : this.mapReasons.get(`${this.typeReason}${this.fieldReason}`).description;
     }
-
+    getReasonOptions = () =>{
+        const request = {objectReason: this.objectReason, fieldReason: this.fieldReason};
+        getReasonValues(request)
+        .then(result =>{
+            if(result){
+                this.optionsReason = JSON.parse(result);
+            }
+        })
+        .catch(error =>{
+        })
+    }
+    handleClose(){
+        if(this.internalControl){
+            this.open = false;
+        }
+        this.clear();
+    }
     handlerSelectReason(e){
         if(e.target.value.toUpperCase() != OTHER_REASON){
             this.saveDisabled = false;
@@ -51,33 +78,40 @@ export default class ModalReason extends LightningElement {
     }
 
     handlerChangeNote(e){
-        this.saveDisabled = this.validateInput('lightning-textarea');
+        this.saveDisabled = !this.validateInput('lightning-textarea');
     }
 
     handlerSave(event){
+        
         let btnAction = event.target.getAttribute('data-action');
         let objResultReason = {};
         
         if(btnAction === 'close'){
             objResultReason.reason = null;
+            if(this.checkedField){
+                const evt = new CustomEvent('cancel', {
+                    detail: {
+                        ...this.checkedField,
+                        typeReason : this.typeReason,
+                        fieldReason : this.fieldReason,
+                        objectReason: this.objectReason
+                    }
+                });
+                this.dispatchEvent(evt);
+            }
         }else{
             this.template.querySelectorAll(".form-reason").forEach(elem => {
                 objResultReason[elem.name] = (elem.value) ? elem.value : null;
             });
         }
 
-            objResultReason.field = this.fieldReason;
-            objResultReason.type = this.typeReason;
-            objResultReason.object = this.objectReason;
-            let reasonMap = this.mapReason.get(`${this.typeReason}${this.fieldReason}`) === undefined ? new map() : this.mapReason.get(`${this.typeReason}${this.fieldReason}`);
-            reasonMap.set(`${this.typeReason}${this.fieldReason}`, {reason: objResultReason.reason, description: objResultReason.description});
-            objResultReason.mapReason = reasonMap;
-    
-            console.log({objResultReason})
-            this.selectedReason(objResultReason);
-        
-
-        
+        objResultReason.field = this.fieldReason;
+        objResultReason.type = this.typeReason;
+        objResultReason.object = this.objectReason;
+        objResultReason.originField = this.checkedField;
+        this.selectedReason(objResultReason);
+        this.handleClose();
+              
     }
 
     selectedReason(objResult){
@@ -98,5 +132,9 @@ export default class ModalReason extends LightningElement {
         return validSoFar && inputCmp.checkValidity();
       }, true);
       return allValid;
-      }
+    }
+    clear(){
+        this.openNote = false;
+        this.saveDisabled = true;
+    }
 }

@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, updateRecord, getFieldValue, getRecordNotifyChange } from 'lightning/uiRecordApi';
-
+import { GENERAL_DATA_FIELD } from './proposalGeneralDataFields';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
@@ -75,6 +75,11 @@ export default class ProposalAnalysis extends LightningElement {
   
   startDate = ''
   openSection = false;
+  @api
+  get disabled(){
+    return !this.openSection;
+  }
+  generalDataField = GENERAL_DATA_FIELD
   // Info sections
   mapInfoSection = new Map()
 
@@ -613,19 +618,10 @@ export default class ProposalAnalysis extends LightningElement {
     console.log('Visualizar Contrato');
     viewContract({ loanApplicationId: 'LAP-B9BBE976-49B1-4992-8747-00518E59202C' })
       .then(result => {
-        //var xmltext = result;
-        var filename = "Contrato";
-        var pom = document.createElement('a');
-        //var bb = new Blob([xmltext], { type: 'application/octet-stream' });
-
-        pom.setAttribute('href', window.URL.createObjectURL(result));
-        pom.setAttribute('download', filename);
-
-        pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
-        pom.draggable = true;
-        pom.classList.add('dragout');
-
-        pom.click();
+        let downloadLink = document.createElement("a");
+        downloadLink.href = "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,"+result;
+        downloadLink.download = "Contrato.docx";
+        downloadLink.click();
         (result != '') ? this.previewHandler(result) : this.dispatchShowToast('Warning', 'Contrato não localizado!', 'warning');;
       }).catch(error => {
         console.log('Erro: ' + error);

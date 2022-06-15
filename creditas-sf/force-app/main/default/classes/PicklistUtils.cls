@@ -17,7 +17,15 @@ public with sharing class PicklistUtils {
             }
             return picklist;
     }
-
+    public static Map<String, String> getPickListValuesByAPIName(String objApiName, String fieldApiName){
+        List<Schema.PicklistEntry> picklistEntries = getPickListValuesList(objApiName,fieldApiName);
+        if( picklistEntries == null ) { return null; }
+        Map<String, String> entriesByApiName = new Map<String, String>();
+        for(Schema.PicklistEntry picklistEntry : getPickListValuesList(objApiName,fieldApiName)){
+            entriesByApiName.put((String) picklistEntry.getValue(), (String) picklistEntry.getLabel());
+        }
+        return entriesByApiName;
+    }
     public class PicklistWrapper{
         public String label;
         public String value;

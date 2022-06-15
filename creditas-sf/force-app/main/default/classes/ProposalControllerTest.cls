@@ -20,6 +20,14 @@ public class ProposalControllerTest {
         opportunity.ExternalVersion__c       = 1;      
         opportunity.RecordTypeId             = Util.getRecordTypeIdbyName('Opportunity', 'AutoFin');
         insert opportunity;
+
+        Account acc = TestSetup.getAccount('Julio Iglesias', true);
+        Opportunity opp = TestSetup.getOpportunity(acc.Id, false);
+        opp.Name = 'genera-data-sectionopp-test';
+        insert opp;
+        ProposalGeneralSectionSetup setup = new ProposalGeneralSectionSetup(opp, 'general-data-section');
+        GeneralSection__c section = setup.createGeneralSection(null, true);
+
     }
 
     @isTest
@@ -95,6 +103,42 @@ public class ProposalControllerTest {
 
         System.assertEquals('Attempt to de-reference a null object', testException.getMessage(), 'Wrong exception Thrown.');
     }
-
+    @IsTest
+    static void testGetSection(){
+        Opportunity opp = [
+            SELECT Id FROM Opportunity WHERE Name = 'genera-data-sectionopp-test'
+        ];
+        ProposalSectionService service = new ProposalSectionService();
+        List<String> fields = new List<String> {'Name', 'GeneralDataObservation__c', 'Opportunity__c'};
+        Test.startTest();
+        String response = ProposalController.getLastSection(opp.Id, 'GeneralSection__c', fields, 'Opportunity__c');
+        Test.stopTest();
+        GeneralSection__c section = (GeneralSection__c) JSON.deserialize(response, GeneralSection__c.class);
+        System.assert(String.isNotBlank(response), 'List is Empty');
+        System.assertEquals(section.Opportunity__c, opp.Id, 'sections is not from de desired opportunity');
+    }
+    @IsTest
+    static void testSaveSection(){
+        Opportunity opp = [
+            SELECT Id FROM Opportunity WHERE Name = 'genera-data-sectionopp-test'
+        ];
+        ProposalSectionService service = new ProposalSectionService();
+        List<String> fields = new List<String> {'Name', 'GeneralDataObservation__c', 'Opportunity__c'};
+        List<GeneralSection__c> section = (List<GeneralSection__c>) service.getLastSection(opp.Id, 'GeneralSection__c', fields, 'Opportunity__c');
+        String jsonString = '{'+
+                '"GeneralSection__c" : {'+
+                    '"Id": "' + section.get(0).Id + '",'+
+                    '"GeneralDataObservation__c":"observation 2"' +
+                '}'+
+        '}';
+        Test.startTest();
+        ProposalCOntroller.saveSection(jsonString);
+        Test.stopTest();
+        GeneralSection__c newSection = [
+            SELECT Id, GeneralDataObservation__c FROM GeneralSection__c WHERE GeneralSectionExternalIdAtWork__c = 'general-data-section'
+        ];
+        System.assert(newSection != null, 'Section was not created');
+        System.assertEquals(newSection.GeneralDataObservation__c,  'observation 2', 'observation was not updated');
+    }
     
 }

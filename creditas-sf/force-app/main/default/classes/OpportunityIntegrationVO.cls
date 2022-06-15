@@ -3,7 +3,7 @@ public with sharing class OpportunityIntegrationVO {
 	public cls_partner partner;
 	public List<cls_participants> participants;
 	public List<cls_collaterals> collaterals;
-	public cls_contracts contracts;
+	public cls_contract contract;
 	public String status;	//ONGOING
 	public String productType;	//HOME_REFIN
 	public String purpose;	//OTHERS
@@ -16,7 +16,7 @@ public with sharing class OpportunityIntegrationVO {
 	public Boolean hasError;
 	public String errorMessage;
 
-    public class cls_contracts {
+    public class cls_contract {
 		public String ccbNumber;
 	}
 

@@ -9,7 +9,7 @@ public class ProposalOperationControllerTest {
 
         OperationSection__c operation = new OperationSection__c();
         operation.Opportunity__c = opp.Id;
-        operation.BranchStatus__c = 'Aprovar';
+        operation.BranchStatus__c = 'APPROVED';
         operation.Agency__c = '11111';
         insert operation;
     }
@@ -23,7 +23,7 @@ public class ProposalOperationControllerTest {
         result = ProposalOperationController.getOperationDetails(opp.Id);
         Test.stopTest();
 
-        System.assertEquals('Aprovar', result.BranchStatus__c ,'Incorrect OperationSection value');
+        System.assertEquals('APPROVED', result.BranchStatus__c ,'Incorrect OperationSection value');
     }
     
     @isTest
@@ -46,7 +46,7 @@ public class ProposalOperationControllerTest {
     static void saveOperationDetailsSuccessTest(){
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
         OperationSection__c operationSection = [SELECT Id, BranchStatus__c FROM OperationSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
-        operationSection.BranchStatus__c = 'Rejeitar';            
+        operationSection.BranchStatus__c = 'REJECTED';            
         
         Test.startTest();
         ProposalOperationController.saveOperationDetails(operationSection);
@@ -54,7 +54,7 @@ public class ProposalOperationControllerTest {
         
         OperationSection__c operationUpdated = [SELECT Id, BranchStatus__c FROM OperationSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
         
-        System.assertEquals('Rejeitar', operationUpdated.BranchStatus__c,'Incorrect OperationSection value');
+        System.assertEquals('REJECTED', operationUpdated.BranchStatus__c,'Incorrect OperationSection value');
     }
     
     @isTest
@@ -75,5 +75,6 @@ public class ProposalOperationControllerTest {
         System.assertEquals('System.AuraHandledException', testException.getTypeName(), 'Wrong exception was thrown');
         System.assertEquals('Invalid conversion from runtime type Account to OperationSection__c', testException.getMessage(),'Incorrect Exception message');
         System.assertEquals('Nivaele', resultProponent.Name,'Incorrect Account Name value');
+
     }
 }

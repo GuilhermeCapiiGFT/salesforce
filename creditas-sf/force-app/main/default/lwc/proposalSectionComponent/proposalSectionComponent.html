@@ -1,0 +1,105 @@
+<template>
+    <div class="slds-progress slds-progress_vertical">
+        <div class="slds-progress__item">
+            <lightning-progress-ring value={progress.percentage} variant={progress.status} class="progressCircle"></lightning-progress-ring>
+            <div class="slds-progress__item_content slds-m-vertical_medium" data-id="progressItem">
+                <li class="slds-accordion__list-item">
+                    <section class="slds-accordion__section" data-id="section-wrapper">
+                        <div class="slds-accordion__summary">
+                            <h2 class="slds-accordion__summary-heading">
+                                <span class="geral slds-accordion__summary-content header-section" onclick={handleAccordionToggle}>
+                                    {sectionName}
+                                </span>
+                            </h2>
+                            <template if:true={showButtons}>
+                                <lightning-icon 
+                                    icon-name="utility:refresh" 
+                                    alternative-text="recarregar" 
+                                    title="recarregar"
+                                    size="xx-small"
+                                    data-id="reload-button"
+                                    class="actions-icon action-icon--undo"
+                                    onclick={reload}>
+                                </lightning-icon>
+                                <lightning-icon 
+                                    icon-name="utility:podcast_webinar"
+                                    data-id="current-button"
+                                    alternative-text="Status atual" 
+                                    title="Status atual"
+                                    size="xx-small"
+                                    class="actions-icon action-icon--current">
+                                </lightning-icon>
+                                <lightning-icon 
+                                    icon-name="utility:reply_all" 
+                                    alternative-text="Inicio" 
+                                    title="Inicio"
+                                    size="xx-small"
+                                    data-id="start-button"
+                                    class="actions-icon action-icon--undo"
+                                    onclick={toStart}>
+                                </lightning-icon>
+                                <lightning-icon 
+                                    icon-name="utility:internal_share" 
+                                    alternative-text="Desfazer"
+                                    data-id="undo-button"
+                                    title="Desfazer"
+                                    size="xx-small"
+                                    class="actions-icon action-icon--undo icon_revert"
+                                    onclick={undo}>
+                                </lightning-icon>
+                                <lightning-icon 
+                                    icon-name="utility:internal_share" 
+                                    alternative-text="Refazer"
+                                    data-id="redo-button"
+                                    title="Refazer"
+                                    size="xx-small"
+                                    class="actions-icon action-icon--redo"
+                                    onclick={redo}>
+                                </lightning-icon>
+                                <lightning-icon 
+                                    icon-name="utility:reply_all"
+                                    data-id="last-button"
+                                    alternative-text="Final" 
+                                    title="Final"
+                                    size="xx-small"
+                                    class="actions-icon action-icon--redo icon_revert"
+                                    onclick={toLast}>
+                                </lightning-icon>
+                            </template>
+                        </div>
+                        <template if:false={disabled}>
+                            <div class="slds-accordion__content" id="proposal-section__general" >
+                                <div data-id="ContainerGeneralData">
+                                    <template if:true={sectionId}>
+                                        <template for:each={componentFields} for:item="field">
+                                            <c-proposal-field-section 
+                                                data-id={field.uniqueName} 
+                                                field={field} 
+                                                key={field.key}
+                                                oninputchange={handleChange}
+                                                onfieldvalidation={handleFieldValidation}
+                                                onload={handleFieldLoad}>
+                                            </c-proposal-field-section>
+                                        </template>
+                                    </template>
+                                    <div class="btn-container">
+                                        <button class="btn" onclick={handleSaveSection} disabled={disabledBtnSave}>Salvar</button>
+                                    </div>
+                                </div>    
+                            </div>
+                        </template>
+                    </section>
+                </li>
+            </div>
+        </div>
+    </div>
+    <c-modal-reason
+        onselectedreason={handleSelectedReason}
+        onclose={handleModalClose}
+        oncancel={handleModalCancel}
+        internal-control="true"
+        type-reason={modalReason}
+        field-reason={modalReasonField}
+        object-reason={modalReasonObject}>
+    </c-modal-reason>
+</template>

@@ -28,15 +28,19 @@ public class ProposalIntegrationControllerTest {
 
         IncomeDataSection__c incomeSection    = new IncomeDataSection__c();
         incomeSection.Opportunity__c = opp.Id;
-        incomeSection.ProfessionalSituationPendingReason__c = 'Outros';
-        incomeSection.ProfessionalSituationObservation__c = 'Pendency Professional Situation';
         insert incomeSection;
 
         OperationSection__c operationSection = new OperationSection__c();
         operationSection.Opportunity__c = opp.Id;
-        operationSection.QuantityRejectReason__c = 'Outros';
-        operationSection.QuantityObservation__c  = 'Reject Quantity';
         insert operationSection;
+
+        OthersSection__c othersSection = new OthersSection__c();
+        othersSection.Opportunity__c = opp.Id;
+        insert othersSection;
+
+        GeneralSection__c generalSection = new GeneralSection__c();
+        generalSection.Opportunity__c = opp.Id;
+        insert generalSection;
     }
 
     @isTest

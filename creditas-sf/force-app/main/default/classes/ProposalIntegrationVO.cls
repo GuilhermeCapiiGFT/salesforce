@@ -3,6 +3,8 @@ public with sharing class ProposalIntegrationVO {
     public String context;
     public String contextResult;
     public String productType;
+    public String assetId;
+    public String personId;
     public String loanApplicationId;
     public List<Section> sections;
 
@@ -15,7 +17,6 @@ public with sharing class ProposalIntegrationVO {
         public List<AnalyzedItem> analyzedItems;
 
         public Section() {
-            
             this.sectionReasons = new List<String>();
         }
     }

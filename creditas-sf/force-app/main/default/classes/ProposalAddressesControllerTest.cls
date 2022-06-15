@@ -17,13 +17,13 @@ public class ProposalAddressesControllerTest {
 
         AddressDataSection__c addressSection  = new AddressDataSection__c();
         addressSection.Opportunity__c         = opportunity.Id;
-        addressSection.CEPStatus__c           = 'Aprovar';
-        addressSection.NeighborhoodStatus__c  = 'Aprovar';
-        addressSection.StreetAddressStatus__c = 'Aprovar';
-        addressSection.AddressNumberStatus__c = 'Aprovar';
-        addressSection.StateStatus__c         = 'Aprovar';
-        addressSection.CountryStatus__c       = 'Aprovar';
-        addressSection.AddOnStatus__c         = 'Aprovar';
+        addressSection.CEPStatus__c           = 'APPROVED';
+        addressSection.NeighborhoodStatus__c  = 'APPROVED';
+        addressSection.StreetAddressStatus__c = 'APPROVED';
+        addressSection.AddressNumberStatus__c = 'APPROVED';
+        addressSection.StateStatus__c         = 'APPROVED';
+        addressSection.CountryStatus__c       = 'APPROVED';
+        addressSection.AddOnStatus__c         = 'APPROVED';
         addressSection.PostalCode__c   = '01392003';
         addressSection.Neighborhood__c = 'Boa Vista';
         addressSection.StreetNumber__c = '45';
@@ -45,7 +45,7 @@ public class ProposalAddressesControllerTest {
         resultAddress = ProposalAddressesController.getAddressSectiontDetails(opp.Id); 
         Test.stopTest();
         
-        System.assertEquals('Aprovar', resultAddress.CEPStatus__c,'Incorrect CEPStatus value');
+        System.assertEquals('APPROVED', resultAddress.CEPStatus__c,'Incorrect CEPStatus value');
         System.assertEquals('01392003', resultAddress.PostalCode__c, 'Incorrect PostalCode value');
     }
     
@@ -80,7 +80,7 @@ public class ProposalAddressesControllerTest {
 
         AddressDataSection__c addressSection  = new AddressDataSection__c();
         addressSection.Opportunity__c         =  opp.Id;
-        addressSection.CEPStatus__c           = 'Pendenciar';
+        addressSection.CEPStatus__c           = 'PENDING';
         
         Test.startTest();
         ProposalAddressesController.saveAddressSection(addressSection);
@@ -88,7 +88,7 @@ public class ProposalAddressesControllerTest {
         
         AddressDataSection__c addressSectionResult = [SELECT Id, Name, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c =: opp.Id LIMIT 1];
 
-        System.assertEquals(addressSectionResult.CEPStatus__c, 'Pendenciar', 'AddressDataSection for this opportunity does not exist.');
+        System.assertEquals(addressSectionResult.CEPStatus__c, 'PENDING', 'AddressDataSection for this opportunity does not exist.');
     }
 
     @isTest
@@ -96,7 +96,7 @@ public class ProposalAddressesControllerTest {
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
         AddressDataSection__c addressSection = new AddressDataSection__c();
         addressSection.Opportunity__c = opp.Id;
-        addressSection.CEPStatus__c = 'Aprovar';
+        addressSection.CEPStatus__c = 'APPROVED';
 
         Test.startTest();
         ProposalAddressesController.saveAddressSection(addressSection);
@@ -104,7 +104,7 @@ public class ProposalAddressesControllerTest {
 
         AddressDataSection__c updatedAddressSection = [SELECT Id, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
         
-        System.assertEquals('Aprovar', updatedAddressSection.CEPStatus__c, 'Field status is different from what is expected');
+        System.assertEquals('APPROVED', updatedAddressSection.CEPStatus__c, 'Field status is different from what is expected');
     }
 
     @isTest
@@ -114,7 +114,7 @@ public class ProposalAddressesControllerTest {
         
         AddressDataSection__c addressSection = [SELECT Id, Name, CEPStatus__c FROM AddressDataSection__c LIMIT 1];
         
-        addressSection.CEPStatus__c = 'Pendenciar';
+        addressSection.CEPStatus__c = 'PENDING';
         
         Test.startTest();
         	ProposalAddressesController.saveAddressSection(addressSection);
@@ -122,7 +122,7 @@ public class ProposalAddressesControllerTest {
         
         AddressDataSection__c updatedaddressSectionsSection = [SELECT Id, CEPStatus__c FROM AddressDataSection__c WHERE Opportunity__c = :opp.Id LIMIT 1];
         
-        System.assertEquals('Pendenciar', updatedaddressSectionsSection.CEPStatus__c, 'Field status is different from what is expected');
+        System.assertEquals('PENDING', updatedaddressSectionsSection.CEPStatus__c, 'Field status is different from what is expected');
     }
 
     @isTest

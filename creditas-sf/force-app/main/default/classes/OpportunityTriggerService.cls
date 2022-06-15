@@ -36,20 +36,21 @@ public with sharing class OpportunityTriggerService {
       if (newOpportunity.IsSynchEnabled__c == 'ENABLED') {
         SynchOpportunity__e synch = new SynchOpportunity__e();
         DataBase.SaveResult sr = EventBus.publish(synch);
+        break;
       }
     }
   }
 
-  public static void firePlatformEventAutoFinContractUpdate(
-    Map<Id, Opportunity> mapNewOpportunity
-  ) {
+  public static void firePlatformEventAutoFinContractUpdate(Map<Id, Opportunity> mapNewOpportunity) {
+    List<AutoFinContractUpdate__e> eventList = new List<AutoFinContractUpdate__e>();
     for (Opportunity newOpportunity : mapNewOpportunity.values()) {
-      if (TriggerHelper.changedField(newOpportunity, 'CCBnumber__c')) {
-        AutoFinContractUpdate__e event = new AutoFinContractUpdate__e(
-          RecordId__c = newOpportunity.Id
-        );
-        DataBase.SaveResult sr = EventBus.publish(event);
-      }
+        if (TriggerHelper.changedField(newOpportunity, 'CCBnumber__c')) {
+            AutoFinContractUpdate__e event = new AutoFinContractUpdate__e(RecordId__c = newOpportunity.Id);
+            eventList.add(event);
+        }
     }
+
+    if(eventList.isEmpty()){ return; }
+    EventBus.publish(eventList);
   }
 }

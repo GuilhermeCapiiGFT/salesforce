@@ -8,7 +8,7 @@ public class ProposalOperationServiceTest {
 
         OperationSection__c operation = new OperationSection__c();
         operation.Opportunity__c = opp.Id;
-        operation.BranchStatus__c = 'Aprovar';
+        operation.BranchStatus__c = 'APPROVED';
         operation.Agency__c = '11111';
         insert operation;
     }
@@ -22,7 +22,7 @@ public class ProposalOperationServiceTest {
         result = ProposalOperationService.getOperationSectionFromOpp(opp.Id);
         Test.stopTest();
         
-        System.assertEquals('Aprovar', result.BranchStatus__c ,'Incorrect BranchStatus__c value');
+        System.assertEquals('APPROVED', result.BranchStatus__c ,'Incorrect BranchStatus__c value');
         System.assertEquals('11111', result.Agency__c ,'Incorrect Agency__c value');
     }
     

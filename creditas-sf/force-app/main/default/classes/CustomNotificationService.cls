@@ -32,4 +32,12 @@ public with sharing class CustomNotificationService {
         notification.setNotificationTypeId(typeId);
         return notification;
     }
+
+    public static void sendCustomNotificationBatch(Set<String> recipientIds, String process, String targetId){
+        String labelBody = process == 'start' ? System.label.BatchStarted : System.label.BatchEnded;
+        Id typeId = getCustomNotificationType('evaluateBatch');
+        Messaging.CustomNotification notification = buildCustomNotification(labelBody,System.label.BatchTitle,typeId);
+                                    notification.setTargetId(targetId);
+                                    notification.send(recipientIds);
+    }
 }

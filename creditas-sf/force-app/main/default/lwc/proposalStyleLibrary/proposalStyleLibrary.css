@@ -47,7 +47,8 @@ input[type="text"]:focus {
   line-height: 2;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;
   background-color: #fff;
@@ -63,7 +64,8 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-input[type="checkbox"]::before {
+input[type="checkbox"]::before,
+input[type="radio"]::before {
   content: "";
   width: 0.7em;
   height: 0.7em;
@@ -72,7 +74,8 @@ input[type="checkbox"]::before {
   transform-origin: bottom left;
 }
 
-.aprovado input[type="checkbox"]::before {
+.aprovado input[type="checkbox"]::before,
+.aprovado input[type="radio"]::before {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +85,8 @@ input[type="checkbox"]::before {
   font-weight: bold;
 }
 
-.pendenciado input[type="checkbox"]::before {
+.pendenciado input[type="checkbox"]::before,
+.pendenciado input[type="radio"]::before {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +96,8 @@ input[type="checkbox"]::before {
   font-weight: bold;
 }
 
-.reprovado input[type="checkbox"]::before {
+.reprovado input[type="checkbox"]::before,
+.reprovado input[type="radio"]::before {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +108,8 @@ input[type="checkbox"]::before {
 }
 
 
-input[type="checkbox"]:checked::before {
+input[type="checkbox"]:checked::before,
+input[type="radio"]:checked::before {
 transform: scale(1);
 } 
 
@@ -111,7 +117,10 @@ input.disabled-input {
   background: #6965652b;
   cursor: no-drop;
 }
-
+input:disabled {
+  background: #6965652b;
+  cursor: no-drop;
+}
 /* Styling the checkboxes END */
 
 
@@ -167,6 +176,7 @@ input.disabled-input {
 .slds-progress_vertical .slds-progress__item {
   align-items: flex-start;
   position: revert;
+  padding: 5px 0 0;
 }
 .slds-m-vertical_medium {
   margin-top: 0%;
@@ -245,6 +255,51 @@ input.disabled-input {
 }
   
 /* Styling Buttons END*/
+
+/* Styling actions START*/
+.actions-icon{
+  cursor: pointer;
+  padding: 0 5px
+}
+.action-icon--current.PENDING,
+.action-icon--undo.PENDING,
+.action-icon--redo.PENDING{
+  --sds-c-icon-color-foreground-default: #fe9339;
+}
+.action-icon--current.APPROVED,
+.action-icon--undo.APPROVED,
+.action-icon--redo.APPROVED,
+.action-icon--current.COMPLETE,
+.action-icon--undo.COMPLETE,
+.action-icon--redo.COMPLETE{
+  --sds-c-icon-color-foreground-default: #4bca81;
+}
+
+.action-icon--current.REJECTED,
+.action-icon--undo.REJECTED,
+.action-icon--redo.REJECTED{
+  --sds-c-icon-color-foreground-default: #fe5c4c;
+}
+
+
+.action-icon--undo,
+.action-icon--redo,
+.action-icon--current,
+.action-icon--undo.inactive,
+.action-icon--redo.inactive{
+  --sds-c-icon-color-foreground-default: #cccccc;
+}
+.icon_revert{
+  transform: scaleX(-1);
+}
+
+.required_field {
+  color: red;
+  font-weight: bolder;
+  padding: 1px
+}
+
+/*  Styling actions  END */
 
 /* Styling Section - START*/
 .header-section{

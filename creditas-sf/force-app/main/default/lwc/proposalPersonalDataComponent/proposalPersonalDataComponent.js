@@ -7,10 +7,10 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import PERSONAL_DATA_SECTION_OBJECT from '@salesforce/schema/PersonalDataSection__c';
 
 const SUCCESS_SAVED = 'Dados Pessoais atualizado com sucesso!';
-const PENDENCY_STATUS = 'Pendenciar';
-const REJECTION_STATUS = 'Rejeitar';
-const APPROVED_STATUS = 'Aprovar';
-const RETURNED_PENDENCY_STATUS = 'Voltou de pendência';
+const PENDENCY_STATUS = 'PENDING';
+const REJECTION_STATUS = 'REJECTED';
+const APPROVED_STATUS = 'APPROVED';
+const RETURNED_PENDENCY_STATUS = 'RETURNED_PENDENCY';
 const VALIDATION_ROWS = 16;
 const COMPONENT_ID = 'ContainerDadosPessoais';
 
@@ -53,7 +53,7 @@ export default class ProposalPersonalDataComponent extends LightningElement {
     getLastPersonalDataSectionInstance( {oppId : oppId})
       .then( result => {
 
-        this.personalDataSectionRecord = ( result != null ) ? result : {}  ;
+        this.personalDataSectionRecord = ( result != null ) ? result : {} ;
         this.buildDataSection();
 
         })

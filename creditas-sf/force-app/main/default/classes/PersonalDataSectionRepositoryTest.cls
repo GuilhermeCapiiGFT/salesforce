@@ -14,13 +14,13 @@ public class PersonalDataSectionRepositoryTest {
 
         PersonalDataSection__c personalDataRecord = new PersonalDataSection__c();
         personalDataRecord.Opportunity__c = opportunity.Id;
-        personalDataRecord.NameStatus__c = 'Aprovar';
-        personalDataRecord.CPFStatus__c = 'Rejeitar';
-        personalDataRecord.BirthCityStatus__c = 'Aprovar';
-        personalDataRecord.BirthCountryStatus__c = 'Aprovar';
-        personalDataRecord.BirthDateStatus__c = 'Pendenciar';
-        personalDataRecord.NationalityStatus__c = 'Pendenciar';
-        personalDataRecord.PoliticallyExposedPersonStatus__c = 'Pendenciar';
+        personalDataRecord.NameStatus__c = 'Approved';
+        personalDataRecord.CPFStatus__c = 'Rejected';
+        personalDataRecord.BirthCityStatus__c = 'Approved';
+        personalDataRecord.BirthCountryStatus__c = 'Approved';
+        personalDataRecord.BirthDateStatus__c = 'Pending';
+        personalDataRecord.NationalityStatus__c = 'Pending';
+        personalDataRecord.PoliticallyExposedPersonStatus__c = 'Pending';
 
         insert personalDataRecord;
     }

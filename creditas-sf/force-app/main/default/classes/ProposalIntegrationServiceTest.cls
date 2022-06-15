@@ -3,7 +3,6 @@ public class ProposalIntegrationServiceTest {
 
     @TestSetup
     static void makeData(){
-        String accPessoaFisica = [SELECT ID FROM RECORDTYPE WHERE DeveloperName = 'Pessoa_Fisica' AND SobjectType = 'Account']?.Id;
         Account accCustomer = TestSetup.getAccount('Nivaele', true);
         
         Opportunity opp = OpportunitySetup.createOpportunity(accCustomer.Id, 'AutoFin');
@@ -31,15 +30,19 @@ public class ProposalIntegrationServiceTest {
 
         IncomeDataSection__c incomeSection    = new IncomeDataSection__c();
         incomeSection.Opportunity__c = opp.Id;
-        incomeSection.ProfessionalSituationPendingReason__c = 'Outros';
-        incomeSection.ProfessionalSituationObservation__c = 'Pendency Professional Situation';
         insert incomeSection;
 
         OperationSection__c operationSection = new OperationSection__c();
         operationSection.Opportunity__c = opp.Id;
-        operationSection.QuantityRejectReason__c = 'Outros';
-        operationSection.QuantityObservation__c  = 'Reject Quantity';
         insert operationSection;
+
+        OthersSection__c othersSection = new OthersSection__c();
+        othersSection.Opportunity__c = opp.Id;
+        insert othersSection;
+
+        GeneralSection__c generalSection = new GeneralSection__c();
+        generalSection.Opportunity__c = opp.Id;
+        insert generalSection;
     }
 
     @isTest
@@ -48,12 +51,12 @@ public class ProposalIntegrationServiceTest {
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         
         Test.startTest();
-        payload = ProposalIntegrationService.getRequest(opp.Id, 'pendency');
+        payload = ProposalIntegrationService.getRequest(opp.Id, 'pending');
         Test.stopTest();
         
         System.assertEquals('loan-1234', payload.loanApplicationId,'loanApplicationId should be loan-1234'); 
         System.assertEquals('Em Análise de Formalização', payload.context,'context should be Em Análise de Formalização'); 
-        System.assertEquals(6, payload.sections.size(),'sections size should be 6');
+        System.assertEquals(8, payload.sections.size(),'sections size should be 8');
     }
     
     @isTest
@@ -66,7 +69,7 @@ public class ProposalIntegrationServiceTest {
         
         Test.startTest();
         Try{
-        	payload = ProposalIntegrationService.getRequest(opp.Id, 'pendency');
+        	payload = ProposalIntegrationService.getRequest(opp.Id, 'pending');
         }catch(Exception e){
             testException = e;
         }
@@ -88,7 +91,7 @@ public class ProposalIntegrationServiceTest {
 
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
-        payload = ProposalIntegrationService.getRequest(opp.Id, 'pendency');
+        payload = ProposalIntegrationService.getRequest(opp.Id, 'pending');
         result = ProposalIntegrationService.sendAnalysis(JSON.serialize(payload));
         Test.stopTest();
         
@@ -110,11 +113,10 @@ public class ProposalIntegrationServiceTest {
 
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
-        payload = ProposalIntegrationService.getRequest(opp.Id, 'pendency');
+        payload = ProposalIntegrationService.getRequest(opp.Id, 'pending');
         result = ProposalIntegrationService.sendAnalysis(JSON.serialize(payload));
         Test.stopTest();
         
         System.assertEquals('Error', result,'Should have received a error message.');
     }
-
 }

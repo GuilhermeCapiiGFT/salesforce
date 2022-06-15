@@ -21,4 +21,13 @@ private with sharing class CustomNotificationTest {
         CustomNotificationController.createCustomNotification(mapTest);
         Test.stopTest();
     }
+    
+    @isTest
+    private static void testSendCustomNotificationBatch(){
+        String userId = UserInfo.getUserId();
+        String oppId = [SELECT Id FROM Opportunity LIMIT 1]?.Id;
+        Test.startTest();
+        CustomNotificationController.createCustomNotificationBatch(new Set<String>{userId},'start', oppId);
+        Test.stopTest();
+    }
 }

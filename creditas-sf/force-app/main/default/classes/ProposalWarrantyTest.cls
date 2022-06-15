@@ -25,9 +25,9 @@ private with sharing class ProposalWarrantyTest {
         insert oppList;
         
         WarrantyDataSection__c dataSection = new WarrantyDataSection__c(
-            UFplateStatus__c = 'Aprovar',
-            RenavamStatus__c = 'Aprovar',
-            PlateStatus__c = 'Aprovar',
+            UFplateStatus__c = 'APPROVED',
+            RenavamStatus__c = 'APPROVED',
+            PlateStatus__c = 'APPROVED',
             Opportunity__c = oppWithFinResource.Id
         );
         insert dataSection;
@@ -39,7 +39,7 @@ private with sharing class ProposalWarrantyTest {
         
         String oppId = [SELECT Id FROM Opportunity WHERE ExternalId__c = 'OPP-JORGE-CAPACIDOCA-NO-RESOURCE']?.Id;
 
-        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovar', Opportunity__c = oppId);
+        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'APPROVED', Opportunity__c = oppId);
 
         Test.startTest();
             ProposalWarrantyController.saveMethod(warrantyObject);
@@ -51,7 +51,7 @@ private with sharing class ProposalWarrantyTest {
     @isTest
     private static void testSaveWarrantyDataException(){
 
-        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'Aprovar');
+        WarrantyDataSection__c warrantyObject = new WarrantyDataSection__c(UFplateStatus__c = 'APPROVED');
         
         Exception testException;
 

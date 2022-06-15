@@ -11,4 +11,10 @@ public with sharing class CustomNotificationController {
             }
         }
     }
+    
+    public static void createCustomNotificationBatch(Set<String> recipientIds, String process, String targetId){
+    
+        CustomNotificationService.sendCustomNotificationBatch(recipientIds, process, targetId); 
+        
+    }
 }

@@ -7,25 +7,26 @@ public with sharing class ProposalIntegrationService {
     private static Map<String,String> resultBySection;
     private static Map<String, List<String>> reasonsBySection;
     private static final string PROPOSAL_APPROVED = 'approved';
-    private static final string PROPOSAL_PENDENCY = 'pendency';
+    private static final string PROPOSAL_PENDENCY = 'pending';
     private static final string PROPOSAL_REJECTED = 'rejected';
-    private static final string STATUS_PENDENCY = 'Pendenciar';
-    private static final string STATUS_REJECTED = 'Rejeitar';
-    private static final string STATUS_APPROVED = 'Aprovar';
+    private static OpportunityRepository opportunityRepository;
 
     static {
 
       productTypes  = new Map<String,String>{ 'AutoFin' => 'AUTO_FIN','AtWork'  => 'PAYROLL' };
       resultBySection = new Map<String,String>();
       reasonsBySection = new Map<String,List<String>>();
+      opportunityRepository = new OpportunityRepository();
 
     }
 
     public static ProposalIntegrationVO getRequest(Id oppId, String status) {
 
         opportunityId = oppId;
-        Opportunity opportunity = getRecordTypeOpp();
+        Opportunity opportunity = opportunityRepository.findById(oppId);
         recordTypeName = opportunity.RecordType.DeveloperName;
+
+        Garantias__c asset = ( !opportunity.Garantia__r.isEmpty() ) ? opportunity.Garantia__r[0] : null;
         
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         List<ProposalIntegrationVO.Section> sections = getSections();
@@ -34,6 +35,8 @@ public with sharing class ProposalIntegrationService {
         payload.context           = opportunity.StageName;
         payload.contextResult     = status;
         payload.productType       = productTypes.containsKey(recordTypeName) ? productTypes.get(recordTypeName) : '';
+        payload.assetId           = asset?.Recurso_Financeiro__r?.ExternalId__c;
+        payload.personId          = opportunity.Account.ExternalId__c;
         payload.sections          = sections;
 
         return payload;
@@ -102,9 +105,9 @@ public with sharing class ProposalIntegrationService {
 
         String currentSectionResult = resultBySection.get(sectionName);
 
-        if ( itemResult == STATUS_APPROVED || currentSectionResult == PROPOSAL_REJECTED ) return;
+        if ( itemResult == PROPOSAL_APPROVED || currentSectionResult == PROPOSAL_REJECTED ) return;
         
-        String sectionResultToStorage = ( itemResult == STATUS_PENDENCY ) ? PROPOSAL_PENDENCY : PROPOSAL_REJECTED;
+        String sectionResultToStorage = ( itemResult == PROPOSAL_PENDENCY ) ? PROPOSAL_PENDENCY : PROPOSAL_REJECTED;
         resultBySection.put(sectionName, sectionResultToStorage);
 
     }
@@ -129,7 +132,9 @@ public with sharing class ProposalIntegrationService {
         records.put('WarrantyDataSection'   ,getRecordBySObject('WarrantyDataSection__c'));
         records.put('IncomeDataSection'     ,getRecordBySObject('IncomeDataSection__c'));
         records.put('OperationSection'      ,getRecordBySObject('OperationSection__c'));
-
+        records.put('OthersSection'      ,getRecordBySObject('OthersSection__c'));
+        records.put('GeneralSection'      ,getRecordBySObject('GeneralSection__c'));
+        
         return records;
     }
 

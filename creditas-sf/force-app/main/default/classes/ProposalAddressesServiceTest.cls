@@ -39,7 +39,7 @@ public with sharing class ProposalAddressesServiceTest {
         
         AddressDataSection__c addressSection = new AddressDataSection__c();
         addressSection.Opportunity__c = opp.Id;
-        addressSection.CEPStatus__c = 'Aprovar';
+        addressSection.CEPStatus__c = 'Approved';
         insert addressSection;
         
         Test.startTest();

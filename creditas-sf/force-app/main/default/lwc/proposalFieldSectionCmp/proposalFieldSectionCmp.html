@@ -1,0 +1,32 @@
+<template>
+    <div class="slds-grid container" key={field.name}>
+        <div class="slds-size_5-of-12 field">
+        <label class="slds-p-bottom_xx-small">Nome</label>
+        <lightning-input variant="label-hidden" type="text" class="" value={personalDataSectionRecord.Name__c} data-id="Name__c" onchange={handleInputChange} disabled={disabledFields.name}> </lightning-input>
+        </div>
+        <div class="slds-size_2-of-12"></div>
+        <div class="slds-grid slds-size_5-of-12 checkbox-options" data-id="nameCheckboxContainer">
+        <div class="slds-size_4-of-12 form-control aprovado">
+            <label for="checkboxNameAprovado" class="slds-p-bottom_xx-small"
+            style="overflow-wrap: break-word; ">Aprovado</label>
+    
+            <input data-id="checkboxNameAprovado" data-field="NameStatus__c"  data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Aprovar"
+            onchange={handleChangeCheckbox} />
+        </div>
+    
+        <div class="slds-size_4-of-12 form-control pendenciado">
+            <label for="checkboxNamePendenciado" class="slds-p-bottom_xx-small"
+            style="overflow-wrap: break-word; ">Pendenciado</label>
+            <input class="disabled-input" disabled data-id="checkboxNamePendenciado" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Pendenciar"
+            onchange={handleChangeCheckbox} /> 
+        </div>
+    
+        <div class="slds-size_4-of-12 form-control reprovado">
+            <label for="checkboxNameReprovado" class="slds-p-bottom_xx-small"
+            style="overflow-wrap: break-word; ">Reprovado</label>
+            <input class="disabled-input" disabled data-id="checkboxNameReprovado" data-status="NameStatus__c" data-value={preValue} name="AccountName" type="checkbox" value="Rejeitar"
+            onchange={handleChangeCheckbox} /> 
+        </div>
+        </div>
+    </div>
+</template>

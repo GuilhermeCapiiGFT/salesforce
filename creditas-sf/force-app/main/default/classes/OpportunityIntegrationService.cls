@@ -85,7 +85,7 @@ public with sharing class OpportunityIntegrationService {
             AccountNumber__c = requestBodyObj.conditions?.depositAccount?.accountNumber,
             BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType,
             PartnerAccount__c = partnerAccount,
-            CCBnumber__c = requestBodyObj.contracts?.ccbNumber
+            CCBnumber__c = requestBodyObj.contract?.ccbNumber
             
         );
           

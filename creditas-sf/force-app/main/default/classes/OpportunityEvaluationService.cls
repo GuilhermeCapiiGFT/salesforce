@@ -11,12 +11,7 @@ public with sharing class OpportunityEvaluationService {
   private static String committeeApiName = CustomSetupController.getCommitteeApiName();
 
   private static Map<String, Set<String>> trackedStageNamesByRecordType = new Map<String, Set<String>>{
-    RECORDTYPENAME_ATWORK => new Set<String>{
-      STAGENAME_NEW,
-      STAGENAME_APPROVED_BY_HR,
-      STAGENAME_PENDENCY_RETURN,
-      STAGENAME_SENT_COMMITTEE
-    },
+    RECORDTYPENAME_ATWORK => new Set<String>{ STAGENAME_NEW, STAGENAME_APPROVED_BY_HR, STAGENAME_PENDENCY_RETURN, STAGENAME_SENT_COMMITTEE },
     RECORDTYPENAME_AUTOFIN => new Set<String>{ STAGENAME_NEW, STAGENAME_PENDENCY_RETURN, STAGENAME_SENT_COMMITTEE }
   };
 
@@ -99,6 +94,11 @@ public with sharing class OpportunityEvaluationService {
     }
   }
 
+  public String getQuery() {
+    String query = getQueryString();
+    return query;
+  }
+
   private String getQueryString() {
     if (this.productsByRecordType.isEmpty()) {
       return '';
@@ -168,5 +168,8 @@ public with sharing class OpportunityEvaluationService {
     if (Trigger.isExecuting && Trigger.isAfter && !this.changedOpportunities.isEmpty()) {
       update this.changedOpportunities;
     }
+  }
+  public void updateChangedOpportunitiesBatch(){
+    Database.update(this.changedOpportunities);
   }
 }
