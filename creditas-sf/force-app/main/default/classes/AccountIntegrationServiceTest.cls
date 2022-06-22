@@ -1,5 +1,5 @@
 @IsTest
-public class AccountIntegrationServiceTest {
+private class AccountIntegrationServiceTest {
   @TestSetup
   private static void makeData() {
     List<Account> relationshipAccounts = new List<Account>{
@@ -41,13 +41,13 @@ public class AccountIntegrationServiceTest {
       account.CommunicationContacts__r.size(),
       '3 contacts should\'ve been created'
     );
-    System.assertEquals(2, account.Enderecos__r.size(), '2 addresses should\'ve been created');
+    System.assertEquals(2, account.Addresses__r.size(), '2 addresses should\'ve been created');
     System.assertEquals(
       2,
       account.Contas_Relacionadas__r.size(),
       '2 relationships should\'ve been created'
     );
-    System.assertEquals(2, account.Documentos__r.size(), '2 documents should\'ve been created');
+    System.assertEquals(2, account.Documents__r.size(), '2 documents should\'ve been created');
     System.assertEquals(
       4,
       account.AccountFinancialRelationships__r.size(),
@@ -55,7 +55,7 @@ public class AccountIntegrationServiceTest {
     );
     System.assertEquals(
       2,
-      account.ProfessionalInfos__r.size(),
+      account.ProfessionalInfo__r.size(),
       '2 professional infos should\'ve been created'
     );
     System.assertEquals(2, account.Filiation__r.size(), '2 filiations should\'ve been created');
@@ -86,12 +86,12 @@ public class AccountIntegrationServiceTest {
     );
     System.assertEquals(
       'apto 33',
-      account.Enderecos__r[0].Complement__c,
+      account.Addresses__r[0].Complement__c,
       'Address complement not updated'
     );
     System.assertEquals(
       '12345',
-      account.Documentos__r[1].DocumentNumber__c,
+      account.Documents__r[1].DocumentNumber__c,
       'Document number not updated'
     );
     System.assertEquals(
@@ -138,7 +138,7 @@ public class AccountIntegrationServiceTest {
 
     assertResponseSuccess(statusCode, response);
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
-    System.assertEquals(1, account.Enderecos__r.size(), 'Number of addresses is incorrect');
+    System.assertEquals(1, account.Addresses__r.size(), 'Number of addresses is incorrect');
   }
 
   @IsTest
@@ -178,7 +178,7 @@ public class AccountIntegrationServiceTest {
 
     assertResponseSuccess(statusCode, response);
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
-    System.assertEquals(1, account.Documentos__r.size(), 'Number of documents is incorrect');
+    System.assertEquals(1, account.Documents__r.size(), 'Number of documents is incorrect');
   }
 
   @IsTest
@@ -198,7 +198,7 @@ public class AccountIntegrationServiceTest {
     System.assertNotEquals(null, responseBlob, 'Response body shouldn\'t be null');
     System.assertEquals(
       1,
-      account.ProfessionalInfos__r.size(),
+      account.ProfessionalInfo__r.size(),
       'Number of professional infos is incorrect'
     );
     System.assertEquals(
@@ -348,22 +348,22 @@ public class AccountIntegrationServiceTest {
     assertResponseError(statusCode, response, 'An unexpected error has occurred');
   }
 
-  private static AccountIntegrationService runUpsert(String json) {
+  static AccountIntegrationService runUpsert(String json) {
     AccountIntegrationService integration = new AccountIntegrationService();
     integration.setRequestBody(json);
     integration.upsertData();
     return integration;
   }
 
-  private static Account selectAccount(String accountId) {
+  static Account selectAccount(String accountId) {
     List<Account> accounts = [
       SELECT
         Id,
         BankName__c,
         (SELECT Id, Code__c FROM CommunicationContacts__r),
-        (SELECT Id, Complement__c FROM Enderecos__r),
+        (SELECT Id, Complement__c FROM Addresses__r),
         (SELECT Id FROM Contas_Relacionadas__r),
-        (SELECT Id, DocumentNumber__c FROM Documentos__r),
+        (SELECT Id, DocumentNumber__c FROM Documents__r),
         (
           SELECT
             Id,
@@ -372,7 +372,7 @@ public class AccountIntegrationServiceTest {
             Recurso_Financeiro__r.ProfessionalInfo__c
           FROM AccountFinancialRelationships__r
         ),
-        (SELECT Id FROM ProfessionalInfos__r),
+        (SELECT Id FROM ProfessionalInfo__r),
         (SELECT Id, Name__c FROM Filiation__r)
       FROM Account
       WHERE Id = :accountId

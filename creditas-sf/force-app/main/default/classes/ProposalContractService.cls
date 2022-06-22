@@ -3,6 +3,15 @@ public with sharing class ProposalContractService {
   private static final String ENDPOINT = 'callout:mulesoftGateway/api/autofin-backend/applications/';
   private static String token;
 
+  private HttpResponse buildRequest(String url, String method){
+    HttpRequest request = new HttpRequest();
+    request.setEndpoint(url);
+    request.setHeader('Authorization', getToken());
+    request.setMethod(method);
+    this.response = new Http().send(request);
+    return this.response;
+  }
+
   private static String getToken() {
     if (token != null) {
       return token;
@@ -27,32 +36,18 @@ public with sharing class ProposalContractService {
 
   public void sendContract(String loanApplicationId) {
     String url = ENDPOINT + loanApplicationId + '/contract/signature';
-    HttpRequest request = new HttpRequest();
-    request.setEndpoint(url);
-    request.setHeader('Authorization', getToken());
-    request.setMethod('POST');
-    this.response = new Http().send(request);
+    buildRequest(url, 'POST');
   }
 
   public void generateContract(String loanApplicationId) {
     String url = ENDPOINT + loanApplicationId + '/contract';
-    HttpRequest request = new HttpRequest();
-    request.setEndpoint(url);
-    request.setHeader('Authorization', getToken());
-    request.setMethod('POST');
-    this.response = new Http().send(request);
+    buildRequest(url, 'POST');
   }
 
   public String viewContract(String loanApplicationId) {
 
     String url = ENDPOINT + loanApplicationId + '/contract/picture';
-
-    HttpRequest request = new HttpRequest();
-    request.setEndpoint(url);
-    request.setHeader('Authorization', getToken());
-    request.setMethod('GET');
-
-    this.response = new Http().send(request);
+    buildRequest(url, 'GET');
     Blob responseBlob = this.response.getBodyAsBlob();
     String base64 = EncodingUtil.base64Encode(responseBlob);
     return base64;

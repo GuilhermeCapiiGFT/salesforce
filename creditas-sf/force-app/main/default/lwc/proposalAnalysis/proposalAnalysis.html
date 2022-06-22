@@ -42,10 +42,8 @@
 
 	<div class="slds-progress slds-progress_vertical">
 		<ol class="slds-accordion">
-			
-			<!-- 1th Accordion -->
-			<!-- 1th Accordion -->
 			<c-proposal-general-data-component
+				onsectioncomplete={handleSectionComplete}
 				parentid={opportunityid} 
 				parent-relation-field="Opportunity__c"
 				accountid={accountid} 
@@ -53,154 +51,75 @@
 				disabled={disabled}>
 			</c-proposal-general-data-component>
 			<c-proposal-section-component
-				uniquekey='section-2'
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-dados-pessoais'
 				parentid={opportunityid} 
 				parent-relation-field="Opportunity__c"
-				section-name="Seção Geral Teste"
-				sobject-name="GeneralSection__c"
+				section-name="Dados Pessoais"
+				sobject-name="PersonalDataSection__c"
 				disabled={disabled}
-				fields={generalDataField}
-				hide-buttons=true>
+				fields={personalDataField}>
 			</c-proposal-section-component>
-			  <!-- 2th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={personalInfoValue} variant={personalInfoVariant} class="progressCircle">
-				  </lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerDadosPessoais">
-							  <div class="slds-accordion__summary">
-								<h2 class="slds-accordion__summary-heading">
-								  <span data-id="sectionPersonal" class="slds-accordion__summary-content dadosPessoais header-section" onclick={handleAccordionToggle}>
-									  Dados Pessoais
-								  </span>
-								</h2>
-							  </div>
-							  <div class="slds-accordion__content" id="referenceId-37" >
-									<template if:true={openSection}>
-										<c-proposal-personal-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-personal-data-component>
-									</template>
-							  </div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-
-			  <!-- 3th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={contactInfoValue} variant={contactInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerDadosContato">
-								<div class="slds-accordion__summary">
-									<h2 class="slds-accordion__summary-heading">
-										<span class="geral slds-accordion__summary-content header-section">Dados de Contato</span>
-									</h2>
-								</div>
-								<div class="slds-accordion__content">
-									<template if:true={openSection}>
-										<c-proposal-contact-data-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-contact-data-component>
-									</template>
-								</div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-
-			  <!-- 4th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={addressesInfoValue} variant={addressesInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerDadosEndereco">
-							  <div class="slds-accordion__summary">
-								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content header-section">Dados de Endereço</span>
-								  </h2>
-							  </div>
-								<div class="slds-accordion__content">
-									<template if:true={openSection}>
-										<c-proposal-addresses-component opportunityid={opportunityid} accountid={accountid} onsendinfo={setInfoValueAndVariant}></c-proposal-addresses-component>
-									</template>
-								</div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-			  
-			  <!-- 5th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={incomeInfoValue} variant={incomeInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerDadosRenda">
-							  <div class="slds-accordion__summary">
-								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content header-section">Dados de Renda</span>
-								  </h2>
-							  </div>
-								<div class="slds-accordion__content">
-									<template if:true={openSection}>
-										<c-proposal-income-data-component accountid={accountid} opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-income-data-component>
-									</template>
-								</div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-
-			  <!-- 6th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={warrantyInfoValue} variant={warrantyInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerDadosGarantia">
-							  	<div class="slds-accordion__summary">
-								  	<h2 class="slds-accordion__summary-heading">
-									  	<span class="geral slds-accordion__summary-content header-section">Dados de Garantia</span>
-								  	</h2>
-							  	</div>
-							  	<div class="slds-accordion__content">
-										<template if:true={openSection}>
-											<c-proposal-warranty-component 
-												opportunityid={opportunityid}
-												onsendinfo={setInfoValueAndVariant}>
-											</c-proposal-warranty-component>
-										</template>
-								</div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-			  
-			  <!-- 7th Accordion -->
-			  <div class="slds-progress__item">
-				  <lightning-progress-ring value={operationInfoValue} variant={operationInfoVariant} class="progressCircle"></lightning-progress-ring>
-
-				  <div class="slds-progress__item_content slds-m-vertical_medium" onclick={handleAccordionToggle} data-id="progressItem">
-					  <li class="slds-accordion__list-item">
-						  <section class="slds-accordion__section" data-id="ContainerOperation">
-							  <div class="slds-accordion__summary">
-								  <h2 class="slds-accordion__summary-heading">
-									  <span class="geral slds-accordion__summary-content header-section">Operação</span>
-								  </h2>
-							  </div>
-							  <div class="slds-accordion__content">
-									<template if:true={openSection}>
-										<c-proposal-operation-component opportunityid={opportunityid} onsendinfo={setInfoValueAndVariant}></c-proposal-operation-component>
-									</template>
-							  </div>
-						  </section>
-					  </li>
-				  </div>
-			  </div>
-
-			  <!-- 8th Accordion -->
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-3'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Dados de Contato"
+				sobject-name="ContactDetailsSection__c"
+				disabled={disabled}
+				fields={contactDataField}>
+			</c-proposal-section-component>
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-4'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Dados de Endereço"
+				sobject-name="AddressDataSection__c"
+				disabled={disabled}
+				fields={addressDataField}>
+			</c-proposal-section-component>
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-6'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Dados de Renda"
+				sobject-name="IncomeDataSection__c"
+				disabled={disabled}
+				fields={incomeDataField}>
+			</c-proposal-section-component>
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-7'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Dados de Garantia"
+				sobject-name="WarrantyDataSection__c"
+				disabled={disabled}
+				fields={warrantyDataField}>
+			</c-proposal-section-component>
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-8'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Outros"
+				sobject-name="OthersSection__c"
+				disabled={disabled}
+				fields={othersDataField}>
+			</c-proposal-section-component>
+			<c-proposal-section-component
+				onsectioncomplete={handleSectionComplete}
+				uniquekey='section-9'
+				parentid={opportunityid} 
+				parent-relation-field="Opportunity__c"
+				section-name="Operação"
+				sobject-name="OperationSection__c"
+				disabled={disabled}
+				fields={operationDataField}>
+			</c-proposal-section-component>
 			<div class="slds-progress__item">
 				<lightning-progress-ring value={quickLinksInfoValue} variant={quickLinksInfoVariant} class="progressCircle"></lightning-progress-ring>
 
@@ -221,18 +140,17 @@
 					</li>
 				</div>
 			</div>
-			
 		</ol>
 	</div>
 
 	<div class="btn-container slds-m-vertical_medium">
 		<template if:true={showCommitteeButton}>
-			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={enableCommiteeButton}> Comitê </button>
+			<button class="btn comite" data-id="committee-btn" onclick={handleCommitteeProposal} disabled={disableCommiteeButton}> Comitê </button>
 		</template>
 		<template if:true={showApproveButtons}>
-			<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled> Reprovar </button>
-			<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled> Pendenciar </button>
-			<button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled> Aprovar </button>
+			<button class="btn reprovado" data-id="reject-btn" onclick={handlerRejectProposal} disabled={disableActionButton.REJECTED}> Reprovar </button>
+			<button class="btn pendenciado" data-id="pending-btn" onclick={handlerPendencyProposal} disabled={disableActionButton.PENDING} > Pendenciar </button>
+			<button class="btn aprovado" data-id="approve-btn" onclick={handlerApproveProposal} disabled={disableActionButton.COMPLETE}> Aprovar </button>
 		</template> 
 	</div>
 	

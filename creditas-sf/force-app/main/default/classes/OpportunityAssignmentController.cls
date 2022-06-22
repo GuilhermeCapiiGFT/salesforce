@@ -66,7 +66,9 @@ public with sharing class OpportunityAssignmentController {
    
     if(opportunitiesToUpdate.isEmpty()){ return; }
     OpportunityAssignmentService.sendCustomNotification(opportunitiesToUpdate);
-    Database.update(opportunitiesToUpdate, false);
+    System.debug(opportunitiesToUpdate);
+    OpportunityAssignmentService.fireEvent(opportunitiesToUpdate);
+    //Database.update(opportunitiesToUpdate, false);
   }
   
   private static List<Opportunity> runAssignment(List<Opportunity> oppsToSort, String recordTypeDevName){

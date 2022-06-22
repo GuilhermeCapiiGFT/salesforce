@@ -30,7 +30,12 @@ public with sharing class GeneralDataService {
             this.authToken = responseMap.get('token_type') + ' ' + responseMap.get('access_token');
         }
     }
-
+    public void updateCrivoQuery(String oppId, String sectionId){
+        Opportunity opp = this.getOppFields(oppId);
+        GeneralSection__c section = new GeneralSection__c(Id = sectionId);
+        section.CrivoQuery__c = opp.CrivoQuery__c;
+        update section;
+    }
     private GeneralDataVO getBiometryResult(){
         String endpoint = this.biometryCredential + '/api/trust/facial-biometric/session?externalId=' + this.oppExternalId;
         HttpRequest request = new HttpRequest();
@@ -47,6 +52,9 @@ public with sharing class GeneralDataService {
     }
 
     private Opportunity getOppFields(String oppId){
-        return [SELECT ExternalId__c FROM Opportunity WHERE Id = :oppId];
+        OpportunityRepository repo = new OpportunityRepository();
+        Opportunity opp = repo.findById(oppId);
+        return opp;
     }
+
 }

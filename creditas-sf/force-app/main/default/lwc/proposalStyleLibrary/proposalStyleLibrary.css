@@ -2,7 +2,7 @@
 .container {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   margin-top: 0.7em;
 }
   
@@ -261,10 +261,14 @@ input:disabled {
   cursor: pointer;
   padding: 0 5px
 }
+.helptext{
+  --lwc-spacingXxSmall : 0;
+  padding: 0 2px;
+}
 .action-icon--current.PENDING,
 .action-icon--undo.PENDING,
 .action-icon--redo.PENDING{
-  --sds-c-icon-color-foreground-default: #fe9339;
+  --sds-c-icon-color-foreground-default: #4bca81;
 }
 .action-icon--current.APPROVED,
 .action-icon--undo.APPROVED,
@@ -278,7 +282,7 @@ input:disabled {
 .action-icon--current.REJECTED,
 .action-icon--undo.REJECTED,
 .action-icon--redo.REJECTED{
-  --sds-c-icon-color-foreground-default: #fe5c4c;
+  --sds-c-icon-color-foreground-default: #4bca81;
 }
 
 

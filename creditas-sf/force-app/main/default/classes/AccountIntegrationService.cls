@@ -143,9 +143,9 @@ public with sharing class AccountIntegrationService {
         Id,
         ExternalId__c,
         (SELECT Id, ExternalId__c FROM CommunicationContacts__r),
-        (SELECT Id, ExternalAddressId__c FROM Enderecos__r),
+        (SELECT Id, ExternalAddressId__c FROM Addresses__r),
         (SELECT Id, ExternalId__c FROM Contas_Relacionadas__r),
-        (SELECT Id, ExternalId__c FROM Documentos__r),
+        (SELECT Id, ExternalId__c FROM Documents__r),
         (
           SELECT
             Id,
@@ -154,7 +154,7 @@ public with sharing class AccountIntegrationService {
             Recurso_Financeiro__r.ProfessionalInfo__c
           FROM AccountFinancialRelationships__r
         ),
-        (SELECT Id, ExternalId__c FROM ProfessionalInfos__r),
+        (SELECT Id, ExternalId__c FROM ProfessionalInfo__r),
         (SELECT Id, Type__c FROM Filiation__r)
       FROM Account
       WHERE ExternalId__c = :externalId
@@ -194,13 +194,13 @@ public with sharing class AccountIntegrationService {
     List<CommunicationContacts__c> contacts = this.getContactsToDelete(
       currentAccount?.CommunicationContacts__r
     );
-    List<Addresses__c> addresses = this.getAddressesToDelete(currentAccount?.Enderecos__r);
+    List<Addresses__c> addresses = this.getAddressesToDelete(currentAccount?.Addresses__r);
     List<AccountRelationships__c> relationships = this.getRelationshipsToDelete(
       currentAccount?.Contas_Relacionadas__r
     );
-    List<Documents__c> documents = this.getDocumentsToDelete(currentAccount?.Documentos__r);
+    List<Documents__c> documents = this.getDocumentsToDelete(currentAccount?.Documents__r);
     List<ProfessionalInfo__c> professionalInfos = this.getProfessionalInfosToDelete(
-      currentAccount?.ProfessionalInfos__r
+      currentAccount?.ProfessionalInfo__r
     );
     List<FinancialResources__c> incomes = this.getIncomesToDelete(
       currentAccount?.AccountFinancialRelationships__r
@@ -242,7 +242,7 @@ public with sharing class AccountIntegrationService {
     );
     List<Addresses__c> addresses = this.getAddressesToUpsert(
       parentAccount,
-      currentAccount?.Enderecos__r
+      currentAccount?.Addresses__r
     );
     List<AccountRelationships__c> relationships = this.getRelationshipsToUpsert(
       parentAccount,
@@ -250,11 +250,11 @@ public with sharing class AccountIntegrationService {
     );
     List<Documents__c> documents = this.getDocumentsToUpsert(
       parentAccount,
-      currentAccount?.Documentos__r
+      currentAccount?.Documents__r
     );
     List<ProfessionalInfo__c> infos = this.getProfessionalInfosToUpsert(
       parentAccount,
-      currentAccount?.ProfessionalInfos__r
+      currentAccount?.ProfessionalInfo__r
     );
     List<FinancialResources__c> incomes = this.getIncomesToUpsert(
       currentAccount?.AccountFinancialRelationships__r

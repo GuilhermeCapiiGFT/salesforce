@@ -8,11 +8,11 @@ export default class ModalReason extends LightningElement {
     optionsReason = [];
     openNote = false;
     recordTypeIdObject;
-    actuaValue;
+    reason;
+    description;
     actualReason;
-
+    _checkedField;
     @api uniqueName;
-    @api checkedField;
     @api fieldReason;
     @api objectReason;
     @api typeReason;
@@ -20,6 +20,25 @@ export default class ModalReason extends LightningElement {
     @track open = false;
     @api internalControl = false;
     @api modalHeader;
+
+    @api
+    get checkedField() {
+        return this._checkedField;
+    }
+    set checkedField( value ) {
+
+        if ( value == null ) {
+            this.reason = '';
+            this.description = '';
+            this._checkedField = null;
+            return;
+        }
+
+        this.reason = ( value.value.toLowerCase() == 'rejected' ) ? value?.rejectValue : value?.pendingValue;
+        this.isOtherSelected(this.reason);
+        this.description = value?.observationValue;
+        this._checkedField = value;
+    }
 
     @api
     setModalHeader(header) {
@@ -68,10 +87,17 @@ export default class ModalReason extends LightningElement {
         this.clear();
     }
     handlerSelectReason(e){
-        if(e.target.value.toUpperCase() != OTHER_REASON){
+        if ( e == null ) return;
+        this.isOtherSelected(e.target.value);
+    }
+
+    isOtherSelected(value) {
+
+        if ( value == null ) return;
+        if ( value.toUpperCase() != OTHER_REASON) {
             this.saveDisabled = false;
             this.openNote = false;
-        }else{
+        } else{
             this.openNote = true;
             this.saveDisabled = true;
         }
@@ -101,7 +127,9 @@ export default class ModalReason extends LightningElement {
             }
         }else{
             this.template.querySelectorAll(".form-reason").forEach(elem => {
+
                 objResultReason[elem.name] = (elem.value) ? elem.value : null;
+                this[elem.name] = (elem.value) ? elem.value : null;
             });
         }
 
@@ -111,7 +139,6 @@ export default class ModalReason extends LightningElement {
         objResultReason.originField = this.checkedField;
         this.selectedReason(objResultReason);
         this.handleClose();
-              
     }
 
     selectedReason(objResult){

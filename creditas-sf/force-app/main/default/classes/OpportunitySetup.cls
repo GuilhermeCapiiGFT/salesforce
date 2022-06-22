@@ -14,11 +14,13 @@ public with sharing class OpportunitySetup {
     public static Opportunity createOpportunity(Id accountId, String recordTypeDevName){
         Map<String,String> mapStageName = new Map<String,String>{'AtWork' => 'Novo','AutoFin' => 'Crédito', 'Home' => 'Emissão e Pré-Assinatura'};
         String lOppRT = Util.getRecordTypeIdbyName('Opportunity', recordTypeDevName);
+        String randomString = Util.generateRandomString(15);
         return new Opportunity(
             Name = 'Opp Test 1',
             CloseDate = Date.today().addDays(30),
             RecordTypeId = lOppRT,
             AccountId = accountId,
+            ExternalId__c = randomString,
             ExternalTenant__c = 'creditasbr',
             ExternalVersion__c = 1,
             StageName = mapStageName.get(recordTypeDevName)

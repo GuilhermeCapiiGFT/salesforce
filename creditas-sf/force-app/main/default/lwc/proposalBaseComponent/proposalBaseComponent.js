@@ -12,6 +12,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 
+const CLEANBLE_FIELDS = ['text', 'string', 'phone', 'email']
 export default class ProposalBaseComponent extends LightningElement {
     /* ---------------- 'CONSTANTS' SECTION ----------------------*/
     APPROVE = 'APPROVED';
@@ -29,15 +30,16 @@ export default class ProposalBaseComponent extends LightningElement {
     SCROLL_BEHAVIOUR = 'smooth';
     STATUS_UPDATE = 'STATUS_UPDATE'
     SUCCESS_SAVED = 'Dados atualizados com sucesso!';
+    ERROR_SAVE = 'Erro ao atualizar registro: '
     VARIANT_BASE = 'base';
     VARIANT_BASE_COMPLETE = 'base-autocomplete';
     VARIANT_EXPIRED = 'expired';
     VARIANT_WARNING = 'warning';
     VARIANTBYSTATUS = {
-        [this.COMPLETE]: { status: this.VARIANT_BASE_COMPLETE, priority : 0 },
-        [this.APPROVE] : { status: this.VARIANT_BASE, priority: 10 },
-        [this.PENDING] : { status: this.VARIANT_WARNING, priority: 100 },
-        [this.REJECT]  : { status: this.VARIANT_EXPIRED, priority : 200 }
+        [this.COMPLETE]: { variant: this.VARIANT_BASE_COMPLETE, priority : 0 },
+        [this.APPROVE] : { variant: this.VARIANT_BASE, priority: 10 },
+        [this.PENDING] : { variant: this.VARIANT_WARNING, priority: 100 },
+        [this.REJECT]  : { variant: this.VARIANT_EXPIRED, priority : 200 }
 
     }
     VIEWPORT_PADDING = 250;
@@ -59,8 +61,8 @@ export default class ProposalBaseComponent extends LightningElement {
     @track openModalReason = false;
     @track progress = this.progress || {
         percentage : 0,
-        status: this.VARIANTBYSTATUS[this.VARIANT_BASE],
-        type : this.APPROVE
+        type: this.VARIANTBYSTATUS[this.VARIANT_BASE],
+        status : this.APPROVE
     };
     @track saved = true;
     @track SObjects = {};
@@ -68,13 +70,14 @@ export default class ProposalBaseComponent extends LightningElement {
     @track validatedFields = {};
     @track retrievedRecord = {};
     @track recordSetup = false;
-    
+    @track sobjectData;
     /* ------------ STANDARD PROPERTIES SECTION -------------*/
     actionHistory = [];
     controlledFieldByPending = {};
     controlledFieldByReject= {};
     controlledFieldByObservation = {};
     controlledFieldByStatus = {};
+    fieldsSetted = false;
     initialStatus;
     isLoadingRecord;
     fieldCount = 0;
@@ -84,7 +87,7 @@ export default class ProposalBaseComponent extends LightningElement {
     firstOpening = true;
     firstRender = true;
     oppId;
-    shaddowObject;
+    shaddowObject = {};
     uniqueName;
     uniquekey;
 
@@ -107,18 +110,19 @@ export default class ProposalBaseComponent extends LightningElement {
     @api parentRelationField;
     @api sectionName;
     @api sobjectName;
-
+    
     /************ @api getters and setters **************/
     @api
     get fields(){
         return this.componentFields;
     }
     set fields(data){
+        if(!data) return;
         this.componentFields = data.map( (field) =>{
-            const uniqueName = field.SObject + '.' + field.ApiFieldName;
+            
+            const uniqueName = field.SObject + '.' + field.ApiFieldName;            
             this.fieldMap[uniqueName] = Object.assign({}, field);
             const validatable = this.isValidatable(field);
-            const editable = this.isEditable(field);
             this.fieldSet.add(field.ApiFieldName);
 
             if(field.StatusField){
@@ -138,23 +142,27 @@ export default class ProposalBaseComponent extends LightningElement {
             }
             if(field.ObservationField){
                 this.fieldSet.add(field.ObservationField);
-                const observationKey = field.RejectStatus.SObject + '.' + field.ObservationField;
+                const observationKey = field.SObject + '.' + field.ObservationField;
                 this.controlledFieldByObservation[observationKey] = uniqueName;
             }
             const uniquekey = this.uniquekey ? this.uniquekey + '-' + uniqueName+ '-' + Math.floor(Math.random() * 9999) 
                               : uniqueName + '-' + Math.floor(Math.random() * 999999);
-            return { ...field, uniqueName:  uniqueName, validatable : validatable, key : uniquekey, editable : editable};
+            return { ...field, uniqueName:  uniqueName, validatable : validatable, key : uniquekey, editable : false};
         });
+        if(this.sobjectData){
+            this.pushSobjectInfoToComponent('set fields');
+        }
+        this.fieldsSetted = true;
     }
 
     @api
     get componentLoaded(){
-        return this.loadedFieldMetaData && this.loadedFieldData
+        return !this.disabled && this.loadedFieldMetaData;
     }
 
     @api
     get showButtons(){
-        return !this.disabled && !this.collapsed && !this.hideButtons;
+        return !this.collapsed && !this.hideButtons;
     }
 
     /****************** @api methods **********/
@@ -164,26 +172,22 @@ export default class ProposalBaseComponent extends LightningElement {
         let target = this.template.querySelector(`[data-id="${targetId}"]`);
         let positionY = target.getBoundingClientRect();
         target.classList.toggle('slds-is-open');
-    }    
+    }   
+    @api
+    buttonsLoaded = () =>{
+        return !!this.currentButton &&
+                !!this.undoButton && !!this.startButton
+                && !!this.redoButton && !!this.lastButton;
+    } 
     /* --------------------- WIRED FUNCTIONS SECTION --------------------- */
     @wire(getObjectInfo, { objectApiName: '$sobjectName'} )
     getSObjInfo({error, data}){
-        if(data){
-            let updatedComponentField = [];
-            this.componentFields.forEach((item) =>{
-                updatedComponentField.push({
-                    ...item,
-                    updateable : data.fields[item.ApiFieldName].updateable,
-                    dataType : data.fields[item.ApiFieldName].dataType,
-                    recordTypeId : item.RecordTypeId ? 
-                                   item.RecordTypeId : 
-                                   data.defaultRecordTypeId
-                });
-            });
-            
-            this.fields = updatedComponentField;
+        if(data){                      
+            this.sobjectData = data;
+            if(this.componentFields.length){
+                this.pushSobjectInfoToComponent('getSObjInfo');
+            }
             this.loadedFieldMetaData = true;
-            
         }else{
             if(error){
                 console.error('[ERROR] OBJECT INFO NOT RETRIEVED STACKTRACE: '+error)
@@ -194,21 +198,19 @@ export default class ProposalBaseComponent extends LightningElement {
 
     }
     /* -------------- LIFE CYCLE FUNCTIONS SECTION ----------------------*/
-    connectedCallback(){
-        if(this.componentFields.length){
-            this.componentFields.forEach((current) =>{
-                if( current.validatable || current.required ) {
-                    this.fieldCount += 1;
-                    this.fieldCounts[current.uniqueName] = current;
-                }
-            });
-        }
-        
-    }
     renderedCallback(){
-        if(!this.disabled && this.firstRender){
+        if(!this.disabled && this.firstRender && this.fieldsSetted){
             this.getSection();
             this.firstRender = false;
+            if(this.componentFields.length){
+                this.componentFields.forEach((current) =>{
+                    if( current.validatable || current.required ) {
+                        this.fieldCount += 1;
+                        this.fieldCounts[current.uniqueName] = current;
+                    }
+                });
+            }
+            this.recalculateProgress();
         }
     }
     /* ----------------- CUSTOM GETTERS AND SETTERS SECTION------------*/
@@ -220,9 +222,8 @@ export default class ProposalBaseComponent extends LightningElement {
             fields : Array.from(this.fieldSet),
             parentRelationField : this.parentRelationField
         }).then((data) =>{
-            let result = JSON.parse(data);
-            console.debug('[DEBUG] RECORD RETRIEVE SUCCECED');
-            this.sectionId = result[this.sobjectName].Id;
+            let result = JSON.parse(data);                        
+            this.sectionId = result[this.sobjectName].Id;                        
             this.mapRecord(result);
             this.loadedFieldData = true;
         })
@@ -240,24 +241,39 @@ export default class ProposalBaseComponent extends LightningElement {
         this.Up();
         this.handleAccordionToggle();
     }
-    cleanField = (fieldMeta) =>{
+    cleanField = (fieldMeta, clearStatus) =>{
+        
         const key = fieldMeta.SObject;
+        const targetId =  fieldMeta.SObject + '.' + fieldMeta.ApiFieldName;
+        if(clearStatus && this.shaddowObject[key]) {
+            this.shaddowObject[key][fieldMeta.StatusField] = null;
+        }
+        if(!this.SObjects) return;
+        
         const sobject = this.SObjects[key];
+
+        if(!sobject) return;
         if(sobject){
             if(fieldMeta.PendingStatus){
+                
                 this.SObjects[key][fieldMeta.PendingStatus.ApiFieldName] = null;
                 this.shaddowObject[key][fieldMeta.PendingStatus.ApiFieldName] = null;
             }
             if(fieldMeta.RejectStatus){
+                
                 this.SObjects[key][fieldMeta.RejectStatus.ApiFieldName] = null;
                 this.shaddowObject[key][fieldMeta.RejectStatus.ApiFieldName] = null;
             }
             if(fieldMeta.ObservationField){
+                
                 this.SObjects[key][fieldMeta.ObservationField] = null;
                 this.shaddowObject[key][fieldMeta.ObservationField] = null;
             }
             
         }
+        const target = this.template.querySelector(`[data-id="${targetId}"]`);
+        target.clearStatusValues();
+        
     }
     clear(targetId){
         try{
@@ -265,12 +281,13 @@ export default class ProposalBaseComponent extends LightningElement {
             this.deleteValidatedField(targetId);
             if(target) { target.clear(); }
         }catch(e){
-            console.error('[ERROR] Error during field clear. Stacktrace: ');
-            console.log(e);
+            console.error('[ERROR] Error during field clear. Stacktrace: ' + e);
         }
     }
     deleteValidatedField = (targetId) =>{
-        this.deletePropertiyFromObject(this.validatedFields, targetId);
+        if(!this.isLoadingRecord){
+            this.deletePropertiyFromObject(this.validatedFields, targetId);
+        }
     }
     deletePropertiyFromObject(object, targetId){
         if(object[targetId]){
@@ -287,74 +304,72 @@ export default class ProposalBaseComponent extends LightningElement {
         this.recalculateProgress();
     }    
     isValidatable(field){
-        let tempField = Object.assign({}, field);
-        field.actions = field.actions || [];
+        let tempField = Object.assign({}, field);                
+        field.actions = field.actions || [];                
         let readOnly = field.actions.includes('READONLY') || field.actions.includes('NO_VALIDATION') || !field.actions.length;
         readOnly = readOnly;
         return !readOnly;
     }
-    isEditable(field){
-        let tempField = Object.assign({}, field);
-        field.actions = field.actions || [];
-        let editable = (field.actions.includes('EDIT') || field.required) && field.updateable;
+    isEditable(field){                
+        let tempField = Object.assign({}, field);                
+        field.actions = field.actions || [];                                
+        let editable = (field.actions.includes('EDIT') || field.required) && !!field.updateable;
         return editable;
     }
     handleApproval = (field) => {
         try{
+            this.cleanField(field);
             this.mountSObject(field)
         }catch(e){
-            console.error('[ERROR] MOUNT SOBJECT WAS NOT POSSIBLE, SEE STACKTRACE')
-            console.log(e);
+            console.error('[ERROR] MOUNT SOBJECT WAS NOT POSSIBLE, SEE STACKTRACE' + e);
         }
     }
     handleInputInteraction = (event) =>{
        
     }
     handleChange = (event) => {
-        if(!event.detail.uniqueName) return;
-        let field = event.detail;
-
-        if(!this.isLoadingRecord){ 
-            this.saved = false;
-            this.clear(event.detail.uniqueName);
-        }
-        let pushHistory = false;
-        const oldValue = this.validatedFields[event.detail.uniqueName]?
-                         this.validatedFields[event.detail.uniqueName]?.value
-                          :"";
         try{
-            if(event.detail.required){
-                if(!event.detail.fieldValue.trim()){
-                    this.deleteValidatedField(event.detail.uniqueName)
-                }else{
-                    if(!event.detail.validatable){
-                        event.detail.value = this.APPROVE;
-                        this.validatedFields[event.detail.uniqueName] = event.detail;
+            if(!event.detail.uniqueName) return;
+            let field = event.detail;
+
+            if(!this.isLoadingRecord){ 
+                this.saved = false;
+                this.clear(event.detail.uniqueName);
+            }
+            let pushHistory = false;
+            try{
+                if(event.detail.required){
+                    if(!String(event.detail.fieldValue).trim()){
+                        this.deleteValidatedField(event.detail.uniqueName)
+                    }else{
+                        if(!event.detail.validatable){
+                            event.detail.value = this.APPROVE;
+                            this.validatedFields[event.detail.uniqueName] = event.detail;
+                        }
                     }
                 }
+                
+            }catch(e){
+                console.error(e)
             }
-            
+            const dataType = event.detail.dataType || 'text';
+           
+            if( String(event.detail.fieldValue).trim() && 
+                ((String(event.detail.fieldValue).endsWith(' '))
+                || ((dataType.toLowerCase().indexOf('text') == -1)
+                && (dataType.toLowerCase().indexOf('string') == -1)))
+            ){
+                pushHistory = true;
+            }; 
+            this.recalculateProgress();
+            this.mountField(event.detail, this.FIELD_UPDATE);
+            if(pushHistory) { 
+                
+                this.cleanField(field, this.actionHistory.length > 0 && !this.isLoadingRecord);
+                this.pushHistory(this.shaddowObject);             
+            }
         }catch(e){
-            console.error(e)
-        }
-        console.log('handling field value change: ');
-        console.log(event.detail.fieldValue)
-        if( event.detail.fieldValue.trim() && 
-            ((event.detail.fieldValue.endsWith(' '))
-            || ((event.detail.dataType.toLowerCase().indexOf('text') == -1)
-            && (event.detail.dataType.toLowerCase().indexOf('string') == -1)))
-        ){
-            console.log('old values and current values are diffrent')
-            if(this.hasHistory(field))
-            {
-                this.pushHistory(this.shaddowObject);
-            }
-            pushHistory = true;
-        }; 
-        this.recalculateProgress();
-        this.mountField(event.detail, this.FIELD_UPDATE);
-        if(pushHistory) { 
-            this.pushHistory(this.shaddowObject);
+            console.error(e);
         }
     }
     handleChoice = (event) => {
@@ -363,7 +378,7 @@ export default class ProposalBaseComponent extends LightningElement {
             return;
         }
         const status = event.detail.value;
-        this.modalReason = this.progress.status;
+        this.modalReason = this.progress.type;
         this.modalReasonObject = event.detail.SObject;
         switch(status) {
             case this.APPROVE:
@@ -379,23 +394,26 @@ export default class ProposalBaseComponent extends LightningElement {
     }
     handleFieldLoad = (evt) =>{
         this.isLoadingRecord = true;
-        this.handleChange(evt);
-        this.handleFieldValidation(evt);
+        try{
+            if(evt.detail.fieldValue){
+                this.handleChange(evt);
+            }
+            if(evt.detail.value){
+                this.handleFieldValidation(evt);
+            }
+        }catch(e){            
+        }
+      
         this.isLoadingRecord = false;
-        console.log('load handle');
-        console.log(JSON.parse(JSON.stringify(this.SObjects)));
     }
     handleFieldValidation = (event) => {
-        
-        
         if(!this.isLoadingRecord){ 
-            console.log(JSON.parse(JSON.stringify(event.detail)));
             this.saved = false; 
-            try{
-                this.cleanField(event.detail);
-            }catch(e){
-                console.log(e);
-            }
+            
+            
+            
+            
+            
         }
         this.handleProgress(event);
         this.handleChoice(event);
@@ -408,6 +426,8 @@ export default class ProposalBaseComponent extends LightningElement {
         }
     }
     handleModalCancel(event){
+        
+        
        this.setRecord(this.shaddowObject);
     }
     handleOpenModal = (field, reason) =>{
@@ -422,11 +442,12 @@ export default class ProposalBaseComponent extends LightningElement {
                 modal.setModalHeader(reason.Label);
                 opened =  modal.openModal();
             }catch(e){
-                console.log(e);
+                console.error(e);
             }
         }
     }
     handlePending = (field) => {
+        
         if(field.PendingStatus){
             this.handleOpenModal(field, field.PendingStatus);
         }else{
@@ -454,8 +475,6 @@ export default class ProposalBaseComponent extends LightningElement {
         }
     }
     handleSaveSection = () => {
-        console.log('handling save');
-        console.log(JSON.stringify(this.SObjects));
         let data = JSON.stringify(this.SObjects);
         
         saveSection({section : data}).then( (result ) =>{
@@ -465,17 +484,27 @@ export default class ProposalBaseComponent extends LightningElement {
             this.notifyRecordChange();
             this.closeSection();
         }).catch((error) => {
-            console.log(error);
+            console.error(error);
+            this.showToast('Erro', this.ERROR_SAVE + error.body.pageErrors[0].message, 'error');
         });
     }
     handleSelectedReason = (event) =>{
         try{
+            this.cleanField(event.detail.originField);
             if(event.detail.reason){
+                const returnedData = event.detail;
                 const uniqueName = event.detail.originField.uniqueName;
                 this.mountSObject(this.fieldMap[uniqueName], event.detail);
+                const newField = Object.assign({}, event.detail.originField);
+                const newFieldValue = {
+                    [event.detail.object] : {
+                        [event.detail.field] : event.detail.reason
+                    }
+                };
+                this.setRecord(newFieldValue);
             }
         }catch(e){
-            console.log(e);
+            console.error(e);
         }
     }
     handleAccordionToggle(event) {
@@ -500,11 +529,14 @@ export default class ProposalBaseComponent extends LightningElement {
         }
     }
     hasHistory = (field) => {
+        if( !this.actionHistory[this.currentStep - 1] ){
+            return false;
+        }
         const hasChanges = !this.isLoadingRecord && 
-            (!this.actionHistory[this.currentStep - 1] || this.actionHistory[this.currentStep - 1] && 
+            (!this.actionHistory[this.currentStep - 1] || (this.actionHistory[this.currentStep - 1] && 
             (this.actionHistory[this.currentStep - 1][field.SObject][field.ApiFieldName].fieldValue 
-            != this.actionHistory[this.currentStep][field.SObject][field.ApiFieldName].fieldValue));
-        console.log('has changes: '+hasChanges);
+            != field.fieldValue)));
+        
         return hasChanges;
     }
     setButtons = (attempt) =>{
@@ -534,9 +566,9 @@ export default class ProposalBaseComponent extends LightningElement {
         }
     }
     mountField = (fieldMeta, operation) => {
-        if(this.isLoadingRecord) return;
+        if(this.isLoadingRecord) return;       
         if(fieldMeta.updateable){
-            const key = fieldMeta.SObject;
+            const key = fieldMeta.SObject;                      
             this.SObjects[key] = this.SObjects[key] ? this.SObjects[key] : {};
             let  tempData = {};
             
@@ -554,7 +586,7 @@ export default class ProposalBaseComponent extends LightningElement {
                 ...this.SObjects[key],
                 ...tempData
             }
-            //this.pushHistory(this.shaddowObject);
+            this.shaddowObject[key] = this.shaddowObject[key] || { [key] : {} };
             this.shaddowObject[key] ={
                 ...this.shaddowObject[key],
                 ...this.SObjects[key],
@@ -584,7 +616,8 @@ export default class ProposalBaseComponent extends LightningElement {
         if(this.sectionId) {
             tempData[this.ID_FIELD] = this.sectionId;
         }
-        if(!this.actionHistory.length){
+        if(!this.actionHistory.length){            
+            this.shaddowObject[key] = this.shaddowObject[key] || { [key] : {} };
             this.shaddowObject[key].progress = this.initialStatus;
             this.pushHistory({
               ...this.shaddowObject
@@ -600,13 +633,33 @@ export default class ProposalBaseComponent extends LightningElement {
             ...this.shaddowObject[key],
             ...this.SObjects[key],
             ...tempData,
-            progress : this.progress.type
+            progress : this.progress.status
         };
         this.pushHistory(this.shaddowObject);
-        console.log('mounted SOBJECT');
-        console.log(JSON.parse(JSON.stringify(this.SObjects)));
         
         
+    }
+    notify = (event, data) => {
+        try{
+            const evt = new CustomEvent(event, {
+                detail : {
+                    ...data
+                }
+            });
+            this.dispatchEvent(evt);
+        }catch(e){
+            console.error(e);
+        }
+    }
+    notifySectionComplete = () => {
+        this.notify('sectioncomplete', {
+            progress : this.progress.percentage,
+            sectionName : this.sectionName,
+            status : this.progress.status,
+            type : this.progress.type,
+            uniquekey : this.uniquekey,
+            complete : true
+        });        
     }
     notifyProgress = () =>{
         const sectionUpdateEvent = new CustomEvent('progresschange', {
@@ -614,13 +667,13 @@ export default class ProposalBaseComponent extends LightningElement {
                 percentage : this.progress.percentage,
                 sectionId : this.sectionId,
                 sectionName : this.sectionName,
-                uniqueName : this.uniqueName,
+                uniquekey : this.uniquekey,
                 status : this.progress.status,
-                returnedId : this.uniqueName,
+                returnedId : this.uniquekey,
                 type : this.progress.type,
-                variant: this.progress.status,
-                value : this.progress.percentage
-                
+                variant: this.progress.type,
+                value : this.progress.percentage,
+                complete : this.progress.percentage == 100 ? true : false
             }
         });
         this.dispatchEvent(sectionUpdateEvent);
@@ -629,9 +682,10 @@ export default class ProposalBaseComponent extends LightningElement {
         getRecordNotifyChange([{recordId : this.parentId},{ recordId : this.sectionId }]);
     }
     pushHistory = (shaddowObject) => {
-        console.log('current history');
-        console.log(JSON.parse(JSON.stringify(this.actionHistory)));
-        if(!this.isLoadingRecord){
+        if(this.isLoadingRecord && this.actionHistory.length == 1) {
+            this.actionHistory = [];
+        }
+        if(!this.isLoadingRecord || !this.actionHistory.length){
             if(this.currentStep < this.actionHistory.length - 1){
                 this.actionHistory = this.actionHistory.reduce((previous, current, index)=>{
                     if(this.currentStep >= index ){
@@ -652,29 +706,50 @@ export default class ProposalBaseComponent extends LightningElement {
             const history = {
                 ...shaddowObject
             }
-            this.actionHistory.push(JSON.parse(JSON.stringify(history)));   
-
-            console.log('new history');
-            console.log(JSON.parse(JSON.stringify(this.actionHistory)));
+            this.actionHistory.push(JSON.parse(JSON.stringify(history)));
 
             try{
-                console.log('pushing history desired step:');
-                console.log(this.actionHistory.length - 1);
                 this.goToStep(this.actionHistory.length - 1, false);
             }catch(e){
-                console.log(e);
+                console.error(e);
             }
             this.currentStep = this.actionHistory.length ?
                                this.actionHistory.length - 1
                                : 0;
         }
     }
+    pushSobjectInfoToComponent(caller){
+        if(!this.sobjectData) return;        
+        let updatedComponentField = [];
+        this.isLoadingRecord = true;
+        this.componentFields.forEach((item) =>{
+            const newItem = {
+                ...item,
+                updateable : this.sobjectData.fields[item.ApiFieldName].updateable,
+                helpText1 : this.sobjectData.fields[item.ApiFieldName].inlineHelpText,
+                dataType : this.sobjectData.fields[item.ApiFieldName].dataType,
+                recordTypeId : item.RecordTypeId ? 
+                               item.RecordTypeId : 
+                               this.sobjectData.defaultRecordTypeId,
+                editable : this.isEditable ({...item, updateable: this.sobjectData.fields[item.ApiFieldName].updateable})
+            }
+            updatedComponentField.push(newItem);
+           
+            this.handleFieldLoad({
+                detail : newItem
+            });                        
+        });                
+        this.componentFields = updatedComponentField;
+        this.isLoadingRecord = false
+        
+
+    }
     recalculateProgress = () => {
-        console.log('is record save? ' + this.saved);
+        
         if(!this.actionHistory.length && this.isLoadingRecord){
-            this.initialStatus = this.progress.type;
+            this.initialStatus = this.progress.status;
         }
-        const validatedKeys =  Object.keys(this.validatedFields);
+        const validatedKeys =  Object.keys(this.validatedFields);                
         const validatedCount = validatedKeys.length;
         this.progress.percentage = validatedCount / this.fieldCount * 100;
         
@@ -685,37 +760,35 @@ export default class ProposalBaseComponent extends LightningElement {
                       this.APPROVE;
        
         
-        this.progress.type = validatedKeys.length ? Object.values(this.validatedFields).reduce((acc, current)=>{
+        this.progress.status = validatedKeys.length ? Object.values(this.validatedFields).reduce((acc, current)=>{
             return this.VARIANTBYSTATUS[current.value].priority >= this.VARIANTBYSTATUS[acc].priority
                     ? current.value
                     : acc
         }, value) : this.APPROVE;
 
-        this.progress.status = this.VARIANTBYSTATUS[this.progress.type].status
+        this.progress.type = this.VARIANTBYSTATUS[this.progress.status].variant
         
         if(this.progress.percentage < 100) {
             this.disabledBtnSave = true;
         }
-
-        console.log('calculated percentage '+this.progress.percentage );
         if( (this.progress.percentage == 100 && this.sectionId)){
             if(!this.saved) {
-                console.log('section not saved')
                 this.progress.percentage = 99;
-                console.log(this.progress.percentage);
                 this.disabledBtnSave = false;
             }
             let type;
-            if(this.saved && this.progress.type == this.APPROVE){
+            if(this.saved && this.progress.status == this.APPROVE){
                type = this.COMPLETE
+               
             }
             else{
-                type = this.progress.type;
+                type = this.progress.status;
             }
-            this.progress.type = type;
-            this.progress.status = this.VARIANTBYSTATUS[this.progress.type].status;
+            this.progress.status = type;
+            this.progress.type = this.VARIANTBYSTATUS[this.progress.status].variant;
         }
-        
+            
+        if(this.progress.percentage == 100 ) { this.notifySectionComplete() };                
         this.notifyProgress();
     }
     mapRecord (retrievedRecord){
@@ -728,12 +801,12 @@ export default class ProposalBaseComponent extends LightningElement {
             let child = value;
             let obj = key;
             for ( let [key, value] of Object.entries(child) ){
-                const targetId = obj + '.' + key;
+                const targetId = obj + '.' + key;                                
                 shaddowFields[key] = value;
                 if(this.fieldMap[targetId]){
                     this.retrievedRecord[targetId] = this.retrievedRecord[targetId] || {};
                     this.retrievedRecord[targetId]['value'] = value;
-                    fieldName = targetId;
+                    fieldName = targetId;                    
                     objectName = obj;
                     shaddowObject[obj];
                 }
@@ -763,28 +836,30 @@ export default class ProposalBaseComponent extends LightningElement {
             
         }
         let updatedComponentFields = [];
+        
         this.componentFields.forEach((item) =>{
             const recordData = this.retrievedRecord[item.uniqueName]
             if(recordData){
-                updatedComponentFields.push({
+                const newItem = {
                     ...item,
                     fieldValue : recordData.value,
-                    statusValue : recordData.statusValue
-                })
+                    statusValue : recordData.statusValue,
+                    ...recordData
+                };
+                updatedComponentFields.push(newItem);
+                this.handleFieldLoad({
+                    detail : newItem
+                });
             }else{
                 updatedComponentFields.push(item);
             }
         });
-        console.log('setting new components');
-        
         this.isLoadingRecord = true;
-        this.componentFields = updatedComponentFields;
-        shaddowObject[objectName] = {
+        this.componentFields = updatedComponentFields;       
+        shaddowObject[this.sobjectName] = {
             ...shaddowFields,
-            progress : this.progress.type
-        }
-
-        console.log(JSON.parse(JSON.stringify(this.componentFields)));
+            progress : this.progress.status
+        }       
         this.shaddowObject = shaddowObject;
         this.pushHistory(this.shaddowObject);
         this.isLoadingRecord = false;
@@ -807,31 +882,20 @@ export default class ProposalBaseComponent extends LightningElement {
         this.notifyRecordChange();
        
     }
-    setFieldValue(field, storedField) {
-        
-        if(!this.retrievedRecord[field]) return;
+    setFieldValue(targetId, field) {
         
         
-        this.isLoadingRecord = true;
-        let target = this.template.querySelector(`[data-id="${field}"]`);
+        let target = this.template.querySelector(`[data-id="${targetId}"]`);
        
-        target.fieldValue = this.retrievedRecord[field].value;
-        if(!storedField || storedField?.validatable){
-            target.statusValue = this.retrievedRecord[field].statusValue;
-            target.pendingValue = this.retrievedRecord[field].pendingValue;
-            target.rejectValue = this.retrievedRecord[field].rejectValue;
-            target.observationValue = this.retrievedRecord[field].observationValue;
-        }
-       
-        this.recalculateProgress();
-        this.isLoadingRecord = false;
-        this.saved = true;
+        target.fieldValue = field.fieldValue;
+        target.statusValue = field.statusValue;
+        target.pendingValue = field.pendingValue;
+        target.rejectValue = field.rejectValue;
+        target.observationValue = field.observationValue;
+
     }
     
     setRecord(fields, clear) {
-        let fieldList = [];
-        let fieldUniqueName;
-        let status;
         this.isLoadingRecord = true;
         for ( let [key, value] of Object.entries(fields) ) {
             let child = value;
@@ -843,9 +907,7 @@ export default class ProposalBaseComponent extends LightningElement {
                     let target = this.template.querySelector(`[data-id="${targetId}"]`);
                     target.fieldValue = value;
                     if(clear){
-                        if(!this.fieldMap[targetId].validatable){
-                            //target.statusValue = this.APPROVE;
-                        }else{
+                        if(this.fieldMap[targetId].validatable){
                             target.clear();
                             this.deleteValidatedField(targetId);
                             target.fieldValue = value;
@@ -855,7 +917,7 @@ export default class ProposalBaseComponent extends LightningElement {
                 if(!clear){
                     if( this.controlledFieldByStatus[targetId]){
                         const statusKey = this.controlledFieldByStatus[targetId];
-                        let target = this.template.querySelector(`[data-id="${statusKey}"]`);
+                        let target = this.template.querySelector(`[data-id="${statusKey}"]`);                       
                         target.statusValue = value;
                     }
                     if(this.controlledFieldByPending[targetId]){
@@ -934,18 +996,13 @@ export default class ProposalBaseComponent extends LightningElement {
         this.currentStep = newPosition;
         this.cleanButtons(directionActions);
         this.updateButtons();
-        
-        console.log('current step:' + this.currentStep);
         if(this.currentStep == 0 && this.actionHistory.length > 1){
-            console.log('disabling btn');
             this.disabledBtnSave = true;
         }
         
     }
     updateButtons = (updateAll) => {
-        console.log('updating buttons');
-        if(this.hideButtons) return;
-
+        if(!this.buttonsLoaded()) return;
         if(updateAll){
             this.currentButton.classList.add((this.actionHistory[this.currentStep][this.sobjectName]?.progress));
         }
@@ -973,10 +1030,7 @@ export default class ProposalBaseComponent extends LightningElement {
                 this.redoButton.classList.add(this.actionHistory[this.currentStep+1][this.sobjectName]?.progress);
                 this.lastButton.classList.add(this.actionHistory[this.actionHistory.length -1][this.sobjectName]?.progress);
             }
-        }
-        
-             
-        
+        } 
     }
     clearButtonCache = () =>{
         this.redoButton = null;
@@ -986,6 +1040,7 @@ export default class ProposalBaseComponent extends LightningElement {
         this.currentButton = null;
     }
     clearButtons = () => {
+        if(!this.buttonsLoaded()) return;
         this.actionHistory.forEach((action)=>{
             if(action[this.sobjectName]){
                 this.undoButton.classList.remove(action[this.sobjectName].progress);
@@ -997,11 +1052,12 @@ export default class ProposalBaseComponent extends LightningElement {
         });
     }
     clearForwardButton = (step) =>{
+        if(!this.buttonsLoaded()) return;
         this.redoButton.classList.remove(this.actionHistory[step][this.sobjectName]?.progress);
         this.lastButton.classList.remove(this.actionHistory[step][this.sobjectName]?.progress);
     }
     cleanButtons = ({direction, oldStep }) =>{
-        
+        if(!this.buttonsLoaded()) return;
         if(this.currentButton){
             this.currentButton.classList.remove(this.actionHistory[oldStep][this.sobjectName]?.progress);
             this.currentButton.classList.add(this.actionHistory[this.currentStep][this.sobjectName]?.progress);            

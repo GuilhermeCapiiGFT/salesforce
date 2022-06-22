@@ -13,10 +13,18 @@ export default class ProposalSectionComponent extends ProposalBaseComponent {
         super.uniquekey = uniquekey;
     }
     @api
+    get sobjectName(){
+        return super.sobjectName;
+    }
+    set sobjectName(data){
+        super.sobjectName = data;
+    }
+    @api
     get fields(){
         return super.fields;
     }
     set fields(fields){
+        if(!fields) return;
         super.fields = JSON.parse(JSON.stringify(fields));
     }
 

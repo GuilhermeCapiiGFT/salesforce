@@ -107,13 +107,14 @@ public class TestSetup {
         Profile profileId = [Select Id from Profile where name in ('Standard User', 'Usuário Padrão', :profileName) limit 1];
 
         for(Integer i = 0; i < numberOfUsers; ++i) {
+            String randomString = Util.generateRandomString(3);
             User userTest = new User();
-            userTest.LastName = 'Test' + i ;
-            userTest.Alias = 'Test' + i;
-            userTest.Email = 'usertest' + i + '@creditas.com';
-            userTest.Username = 'usertest' + i + '@creditas.com';
+            userTest.LastName = 'Test' + randomString + i ;
+            userTest.Alias = 'T' + randomString + i;
+            userTest.Email = 'usertest' + randomString + i + '@creditas.com';
+            userTest.Username = 'usertest' + randomString + i + '@creditas.com';
             usertest.EmployeeNumber = 'TER01984' + i ;
-            userTest.CommunityNickname = 'UserTest' + i;
+            userTest.CommunityNickname = 'UserTest' + randomString + i;
             userTest.ProfileId = profileId.Id;
             userTest.LocaleSidKey = 'pt_BR';
             userTest.LanguageLocaleKey = 'pt_BR';

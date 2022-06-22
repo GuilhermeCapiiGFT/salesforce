@@ -12,4 +12,9 @@ public with sharing class SObjectUtils {
     {
         upsert record;   
     }
+    public static boolean hasRecordType(System.Type sobj){
+        RecordTypeRepository repo = new RecordTypeRepository();
+        List<RecordType> recTypes = repo.getRecordTypeBySObject(String.valueOf(sObj));
+        return !recTypes.isEmpty();
+    }
 }

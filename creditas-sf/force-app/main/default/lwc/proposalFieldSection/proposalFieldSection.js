@@ -1,41 +1,58 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { getPicklistValues } from 'lightning/uiObjectInfoApi';
-
+const TEMPLATE = /(\{\!(\w+)\})/g
+const ALLOWED_OPERATIONS = /==|!=|>=|<=|<|>/g
+const DISALLOWED_OPERATIONS = /window|document|var|let|const|console|for|while|map|[()]|\.|alert/g
 export default class ProposalFieldSection extends LightningElement {
     
     APPROVE = 'APPROVED';
+    BOOLEAN = 'Boolean';
     DATETIME = 'DateTime';
-    LIST_TYPES = ['Picklist', 'CheckBox'];
+    DATE = 'Date';
+    LIST_TYPES = ['Picklist', 'CheckBox', 'Boolean'];
     PENDING = 'PENDING';
     PICKLIST = 'Picklist';
     TEXTAREA = 'TextArea';
     REJECT = 'REJECTED';
     RETURNED_PENDING = 'RETURNED_PENDING';
-
+    renderCount = 1;
+    
     @track cloneField = {};
+    @track daysBetweenNow = 0;
+    @track hoursBetweenNow = 0;
+    @track monthsBetweenNow = 0;
+    @track yearsBetweenNow = 0;
     @track hasApprovalPermission;
     @track hasPendingPermission;
     @track hasRejectPermission;
+    @track helpText1;
+    @track helpText2;
+    @track helpText2Conditions;
+    @track helpText2Style;
+    @track hidden;
     @track dataType = {
         Text : true
     }
-    @track fieldMetaValue = '';
-    @track fieldUniqueName;
+    @track fieldMetaValue = "";
     @track options = [{
         label : '',
         value : ''
     }];
     @track pendingChecboxId;
     @track novalidation;
-    @track recTypeId;
-    @track
-    status = {};
+    @track status = {};
     @track rejectCheckboxId;
     @track recordTypeId;
-
+    @track timeRange;
+    
     firstLoad = true;
     returnedFromPending = false;
     settingField = false;
+    initialHelpText2 = '';
+
+    @api fieldUniqueName;
+    @api customHelpText1;
+    @api recTypeId;
 
     @api
     get fieldValue(){
@@ -43,7 +60,6 @@ export default class ProposalFieldSection extends LightningElement {
     }
     set fieldValue(data){
 
-        console.log('setting fieldValue for: ' + this.fieldUniqueName);
         data = data != undefined ? data : '';
         this.fieldMetaValue = data;
 
@@ -65,11 +81,52 @@ export default class ProposalFieldSection extends LightningElement {
         
     }
     @api
-    observationValue;
+    get fieldHelpText1(){
+        return this.customHelpText1 || this.helpText1; 
+    }
+    @api 
+    get fieldHelpText2(){
+        return this.helpText2;
+    }
+    set fieldHelpText2(data) {
+        const match = data.match(TEMPLATE);
+        if ( !match ) return;
+        let tempHelpText = data;
+        match.forEach((current) =>{
+            const variable = current.replace(/[!{}]/g,'');
+            tempHelpText = data.replace(current, this[variable]);
+        })
+        this.helpText2 = tempHelpText;
+        if(this.helpText2Conditions){
+            let script = '';
+            let style = '';
+            for(let [key, value] of Object.entries(this.helpText2Conditions)){
+                let tempScript = value.expr
+                const match = tempScript.match(TEMPLATE);
+                match.forEach((current) =>{
+                    const variable = current.replace(/[!{}]/g,'');
+                    if(this[variable]){
+                        script = tempScript.replaceAll(current, this[variable]);
+                        style = value.style;
+                    }
+                });
+                if(script){
+                    let scriptResult = eval(script);
+                    if(scriptResult){
+                        this.helpText2Style = style;
+                    }
+                }              
+            }
+            
+        }
+    }
     @api
-    pendingValue;
+    observationValue ="";
     @api
-    rejectValue;
+    pendingValue ="";
+    @api
+    rejectValue ="";
+    @api section;
     @api
     get statusValue(){
         return this.status;
@@ -87,6 +144,8 @@ export default class ProposalFieldSection extends LightningElement {
                 break;
             case this.RETURNED_PENDING:
                 this.returnedFromPending = true;
+            case null :
+                this.status = {}
         }
         if(this.settingField){
             this.notifyChange('load',{
@@ -101,7 +160,7 @@ export default class ProposalFieldSection extends LightningElement {
                 value: value
             });
         }
-        
+        this.clearStatusValues();
     }
     @api
     get disabled(){
@@ -150,17 +209,29 @@ export default class ProposalFieldSection extends LightningElement {
         if(value.dataType == this.DATETIME){
             this.dataType = {};
             this.dataType[this.DATETIME] = true;
+            this.calcTimeBetweenToday(value.fieldValue);
+            
         }
-        if(value.dataType == this.PICKLIST && !this.recTypeId){
-            this.recTypeId = value.recordTypeId;
+        if(value.dataType == this.DATE){
+            this.dataType = {};
+            this.dataType[this.DATE] = true;
+            this.calcTimeBetweenToday(value.fieldValue);
         }
-
-        if(value.fieldValue){
-            console.log('component has fieldValue')
-            this.fieldValue = value.fieldValue; 
-        }else{
-            console.log('component does not have fieldValue');
-            console.log(JSON.parse(JSON.stringify(value)));
+        if(value.dataType == this.BOOLEAN){
+            this.cloneField.fieldValue = String(value.fieldValue);
+            this.options = [{
+                label : 'Sim',
+                value : 'true'
+            },{
+                label : 'Não',
+                value : 'false'
+            }];
+            this.dataType = {
+                Picklist : true
+            }   
+        }
+        if( this.cloneField.fieldValue ){
+            this.fieldValue = String(value.fieldValue); 
         }
         if(value.statusValue){
             this.statusValue = value.statusValue;
@@ -174,12 +245,49 @@ export default class ProposalFieldSection extends LightningElement {
         if(value.observationValue){
             this.observationValue = value.observationValue;
         }
+        if(value.helpText2Conditions){
+            this.helpText2Conditions = value.helpText2Conditions
+        }
+        if(value.helpText1){
+            this.helpText1 = value.helpText1;
+        }
+        if(value.helpText2){
+            this.initialHelpText2 = value.helpText2;
+            this.fieldHelpText2 = value.helpText2
+        }
+        this.hidden = value.hidden;   
         this.settingField = false;
+    }
+    @api
+    clearStatusValues() {
+        this.observationValue = '';
+        this.pendingValue = '';
+        this.rejectValue = '';
+    }
+
+    calcTimeBetweenToday = (value) =>{
+        if(value){
+            const date1 = new Date(value);
+            const date2 = Date.now()
+            const milissecondsBetween = date2 - date1;
+            const hoursBetween = milissecondsBetween / (1000 * 60 * 60);
+            const daysBetween = hoursBetween / 24;
+            this.daysBetweenNow = Math.round(daysBetween);
+            this.monthsBetweenNow = Math.round( daysBetween / 30);
+            this.hoursBetweenNow = Math.round(hoursBetween);
+            this.yearsBetweenNow = Math.round(daysBetween / 365);
+        }else{
+            return '';
+        }
     }
     handleInputChange(event) {
         event.preventDefault();
         const input = event.target;
         this.fieldValue = input.value;
+        if(this.dataType[this.DATETIME] || this.dataType[this.DATE]){
+            this.calcTimeBetweenToday(this.fieldValue);
+            this.fieldHelpText2 = this.initialHelpText2;
+        }
     }
     handleInputFocus = (event) => {
         this.notifyChange('inputfocus',{
@@ -202,7 +310,10 @@ export default class ProposalFieldSection extends LightningElement {
         this.notifyChange('fieldvalidation', {
             ...this.cloneField,
             value: value,
-            fieldValue : this.fieldValue
+            fieldValue : this.fieldValue,
+            rejectValue : this.rejectValue,
+            pendingValue : this.pendingValue,
+            observationValue : this.observationValue
         });
     }
     notifyChange(event, detail){
@@ -214,12 +325,18 @@ export default class ProposalFieldSection extends LightningElement {
     @api
     clear(){
         this.status = {}
+        this.clearStatusValues();
     }
     @wire(getPicklistValues, { recordTypeId: '$recTypeId', fieldApiName: '$fieldUniqueName' })
     getPickListValue({error, data}){
         if(data){
             const options = this.options.concat(data.values);
-            this.options = options;
+            this.options = [...options];
         }
+        if(error){
+        }
+    }
+     renderedCallback(){
+        this.renderCount++
     }
 }

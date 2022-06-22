@@ -258,7 +258,7 @@ public with sharing class ProposalServiceTest {
         }
         Test.stopTest();
 
-        System.assertEquals('Attempt to de-reference a null object', testException.getMessage(), 'Should not anything in the list.');
+        System.assert( String.isNotBlank( testException.getMessage() ), 'Should have a exception message');
     }
 
     @isTest

@@ -147,14 +147,8 @@ public with sharing class OpportunityAssignmentService {
     
     private static List<Opportunity> filterAvaiableOppsForUser(List<Opportunity> oppList, Set<String> avaiableQueueNames, Integer numberOfOpps){
       List<Opportunity> filteredOpps = new List<Opportunity>();
-      System.debug('oppList -> ' + oppList);
-      System.debug('avaiableQueueNames -> ' + avaiableQueueNames);
-      System.debug('assignedOpps -> ' + assignedOpps);
       for(Opportunity opp : oppList){
-        System.debug('oppName -> ' + opp.Name + ' oppStageName -> ' + opp.StageName);
-        System.debug('Boolean -> ' + (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')));
-        if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')))) {
-
+        if(!assignedOpps.contains(opp.Id) && (avaiableQueueNames.contains(opp.QueueName__c) || (avaiableQueueNames.contains('COMMITTEE') && opp.StageName.contains('Comitê')) )) {
           filteredOpps.add(opp);
           if(filteredOpps.size() == numberOfOpps){ break; }
         }
@@ -164,8 +158,8 @@ public with sharing class OpportunityAssignmentService {
     }
     
     private static void setOppFields(Opportunity opportunity, Id ownerId){
-      opportunity.OwnerId = ownerId;
-      opportunity.StageName = mapStagesToSet.get(opportunity.StageName);
+        opportunity.OwnerId = ownerId;
+        opportunity.StageName = mapStagesToSet.get(opportunity.StageName);
     }
 
     private static Set<Id> getUnavailableUsers(List<Opportunity> lstOpp, List<ProductAssignedUser__c> lstProductUser) {
@@ -222,7 +216,7 @@ public with sharing class OpportunityAssignmentService {
       String autoFinRecordTypeId = getRecordTypeId(OpportunityAssignmentController.AUTOFIN);
       Map<String,List<Opportunity>> recordTypeOppMap = new Map<String,List<Opportunity>>{atWorkRecordTypeId => atWorkOpps, autoFinRecordTypeId => autoFinOpps};
 
-      for(Opportunity opportunity : [ SELECT Id, Name, AccountId, QueueName__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
+      for(Opportunity opportunity : [ SELECT Id, Name, AccountId, ExternalId__c, QueueName__c, PriorityPoints__c, RecordTypeId, CreatedDate, ExternalCreationDate__c, StageName, OwnerId
                                       FROM Opportunity
                                       WHERE RecordTypeId IN :oppRecordTypeSet AND
                                       StageName IN :stageNameSet
@@ -272,5 +266,22 @@ public with sharing class OpportunityAssignmentService {
 
     public static String getRecordTypeId(String recordTypeDevName){
       return Util.getRecordTypeIdbyName('Opportunity', recordTypeDevName);
+    }
+
+    public static void fireEvent(List<Opportunity> oppList){
+      List<opportunityAssignment__e> eventList = new List<opportunityAssignment__e>();
+
+      for(Opportunity opp : oppList){
+
+          opportunityAssignment__e e = new opportunityAssignment__e(
+              ExternalId__c = opp.ExternalId__c,
+              OwnerId__c = opp.OwnerId,
+              StageName__c = opp.StageName
+          );
+
+          eventList.add(e);
+      }
+
+      Eventbus.publish(eventList);
     }
 }

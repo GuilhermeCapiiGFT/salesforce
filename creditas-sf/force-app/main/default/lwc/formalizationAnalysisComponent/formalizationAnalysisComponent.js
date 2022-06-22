@@ -122,8 +122,8 @@ export default class FormalizationAnalysis extends LightningElement {
             getInformation( {aOpportunityId : this.recordId} )
             .then((result) => {
                 this.fullData = result;
-                let dataAddress = result.Enderecos__r ? [...result.Enderecos__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'] : [];
-                let dataDocuments = result.Documentos__r ? [...result.Documentos__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {}) : { CPF: {DocumentType__c : 'CPF'}, RG: {DocumentType__c : 'RG'}, PIS: {DocumentType__c : 'PIS'} };
+                let dataAddress = result.Addresses__r ? [...result.Addresses__r].reduce((data, obj) => ({ ...data, Address: obj }), {})['Address'] : [];
+                let dataDocuments = result.Documents__r ? [...result.Documents__r].reduce((data, obj) => ({ ...data, [obj.DocumentType__c]: obj }), {}) : { CPF: {DocumentType__c : 'CPF'}, RG: {DocumentType__c : 'RG'}, PIS: {DocumentType__c : 'PIS'} };
                 let dataContacts = result.CommunicationContacts__r ? [...result.CommunicationContacts__r].reduce((data, obj) => ({ ...data, [obj.Channel__c]: obj }), {}) : { SMS : {Code__c : ''}, EMAIL: {Code__c : ''}};
                 //General Section Variables
                 let generalDataFields = [];

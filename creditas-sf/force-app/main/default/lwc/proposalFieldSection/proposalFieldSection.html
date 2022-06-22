@@ -6,6 +6,12 @@
         <template if:true={cloneField.required}>
             <span class="required_field">*</span>
         </template>
+        <template if:true={fieldHelpText1}>
+            <lightning-helptext 
+                content={fieldHelpText1}
+                class="slds-m-left_xx-small helptext">
+            </lightning-helptext>
+        </template>
         <template if:true={returnedFromPending}>
             <lightning-helptext 
                 content="Voltou de pendência" 
@@ -15,54 +21,74 @@
             </lightning-helptext>
         </template>
         </label>
-        <template if:true={dataType.Text}>
-            <lightning-input 
-                onfocus={handleInputFocus}
-                onblur={handleInputBlur} 
+        <template if:false={hidden}>
+            <template if:true={dataType.Text}>
+                <lightning-input 
+                    onfocus={handleInputFocus}
+                    onblur={handleInputBlur} 
+                    disabled={hasEditPermission} 
+                    variant="label-hidden" 
+                    type="text" 
+                    class="" 
+                    data-id={fieldId} 
+                    onchange={handleInputChange} 
+                    value={fieldValue}>
+                </lightning-input>
+            </template>
+            <template if:true={dataType.Picklist}>
+                <lightning-combobox 
+                    disabled={hasEditPermission} 
+                    variant="label-hidden"
+                    type="text"
+                    options={options}
+                    data-id={fieldId}
+                    onchange={handleInputChange} 
+                    onfocus={handleInputFocus}
+                    onblur={handleInputBlur}
+                    value={fieldValue}>
+                </lightning-combobox>
+            </template>
+            <template if:true={dataType.TextArea}>
+                <lightning-textarea 
+                    disabled={hasEditPermission} 
+                    variant="label-hidden"
+                    data-id={fieldId}
+                    onchange={handleInputChange}
+                    onfocus={handleInputFocus}
+                    onblur={handleInputBlur}
+                    value={fieldValue}>
+            </lightning-textarea>
+            </template>
+            <template if:true={dataType.DateTime}>
+                <lightning-input 
+                type="date" 
                 disabled={hasEditPermission} 
                 variant="label-hidden" 
-                type="text" 
-                class="" 
                 data-id={fieldId} 
                 onchange={handleInputChange} 
+                onfocus={handleInputFocus}
+                onblur={handleInputBlur}
                 value={fieldValue}>
             </lightning-input>
-        </template>
-        <template if:true={dataType.Picklist}>
-            <lightning-combobox 
+            </template>
+            <template if:true={dataType.Date}>
+                <lightning-input 
+                type="date" 
                 disabled={hasEditPermission} 
-                variant="label-hidden"
-                type="text"
-                options={options}
-                data-id={fieldId}
+                variant="label-hidden" 
+                data-id={fieldId} 
                 onchange={handleInputChange} 
                 onfocus={handleInputFocus}
                 onblur={handleInputBlur}
                 value={fieldValue}>
-            </lightning-combobox>
+            </lightning-input>
+            </template>
         </template>
-        <template if:true={dataType.TextArea}>
-            <lightning-textarea 
-                disabled={hasEditPermission} 
-                variant="label-hidden"
-                data-id={fieldId}
-                onchange={handleInputChange}
-                onfocus={handleInputFocus}
-                onblur={handleInputBlur}
-                value={fieldValue}>
-        </lightning-textarea>
-        </template>
-        <template if:true={dataType.DateTime}>
-            <lightning-input 
-            type="date" 
-            disabled={hasEditPermission} 
-            variant="label-hidden" 
-            data-id={fieldId} 
-            onchange={handleInputChange} 
-            onfocus={handleInputFocus}
-            onblur={handleInputBlur}
-            value={fieldValue}>
-        </lightning-input>
+        
+        <template if:true={fieldHelpText2}>
+            <span class="helpText2" style={helpText2Style}>
+                {helpText2}
+            </span>
         </template>
         </div>
         <div class="slds-size_2-of-12"></div>

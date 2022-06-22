@@ -109,4 +109,14 @@ public with sharing class SObjectUtilsTest {
 
         System.assert( exceptionMessage != null);
     }
+    @IsTest
+    static void testHasRecordType(){
+        List<RecordType> recType = [
+            SELECT Id FROM RecordType WHERE SObjectType ='Account'
+        ];
+        Test.startTest();
+        Boolean b = SObjectUtils.hasRecordType(Account.class);
+        Test.stopTest();
+        System.assertEquals(!recType.isEmpty(), b);
+    }
 }

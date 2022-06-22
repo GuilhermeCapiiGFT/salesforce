@@ -1,6 +1,6 @@
 public with sharing class ProposalIntegrationService {
     
-    static final String NAMED_CREDENTIAL = 'callout:proposalIntegration';
+    static final String NAMED_CREDENTIAL = 'callout:mulesoftGateway';
     private static Id opportunityId;
     private static String recordTypeName;
     private static Map<String,String> productTypes;
@@ -10,6 +10,7 @@ public with sharing class ProposalIntegrationService {
     private static final string PROPOSAL_PENDENCY = 'pending';
     private static final string PROPOSAL_REJECTED = 'rejected';
     private static OpportunityRepository opportunityRepository;
+    private static String oppExternalId;
 
     static {
 
@@ -25,6 +26,7 @@ public with sharing class ProposalIntegrationService {
         opportunityId = oppId;
         Opportunity opportunity = opportunityRepository.findById(oppId);
         recordTypeName = opportunity.RecordType.DeveloperName;
+        oppExternalId = opportunity.ExternalId__c;
 
         Garantias__c asset = ( !opportunity.Garantia__r.isEmpty() ) ? opportunity.Garantia__r[0] : null;
         
@@ -148,10 +150,6 @@ public with sharing class ProposalIntegrationService {
         return Database.query(query.escapeUnicode());
     }
 
-    private static Opportunity getRecordTypeOpp(){
-        return [SELECT Id, RecordType.DeveloperName, ExternalId__c, StageName FROM Opportunity WHERE Id = :opportunityId LIMIT 1];
-    }
-
     private static Map<String, List<ProposalAnalysisFields__mdt>> getMapFields(String recordType){
         Map<String, List<ProposalAnalysisFields__mdt>> mapSectionFields = new Map<String, List<ProposalAnalysisFields__mdt>>();
         for(ProposalAnalysisFields__mdt currentSectionField : [SELECT Id, Item_Type__c, Value__r.DeveloperName, Value__r.QualifiedApiName, Object_Section__r.DeveloperName, 
@@ -170,16 +168,34 @@ public with sharing class ProposalIntegrationService {
     }
 
     public static String sendAnalysis(String payload){
+        string endpoint = NAMED_CREDENTIAL + '/api/analisis-report/' + oppExternalId;
+        String authorization = getAuth();
+
+        if('error' == authorization) { return 'Error'; }
+
         HttpRequest request = new HttpRequest();
 
-        request.setEndpoint(NAMED_CREDENTIAL);
+        request.setEndpoint(endpoint);
         request.setHeader('Content-Type', 'application/json');
-        request.setMethod('POST');
+        request.setHeader('Authorization', authorization);
+        request.setMethod('PATCH');
         request.setBody(payload);
         
         Http http = new Http();
         HttpResponse response = new HttpResponse();
         response = http.send(request);
         return (response.getStatusCode() == 200) ? 'Success' : 'Error';
+    }
+
+    private static String getAuth(){
+        String authResponse;
+        HTTPResponse httpAuthRes = GetMulesoftAuthController.getAuth();
+        if(httpAuthRes.getStatusCode() == 200){
+          Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(httpAuthRes.getBody());
+          authResponse = responseMap.get('token_type') + ' ' + responseMap.get('access_token');
+        } else {
+            authResponse = 'error';
+        }
+        return authResponse;
     }
 }

@@ -7,12 +7,14 @@ private with sharing class GeneralDataTest {
 
     @TestSetup
     static void makeData(){
+
         Account acc = AccountSetup.createAccount('Biometry', 'Pessoa_Fisica');
         insert acc;
 
         Opportunity opp = OpportunitySetup.createOpportunity(acc.Id, 'AutoFin');
         opp.ExternalId__c = 'LAP-BDA1167F-994E-4DB0-80F8-6E6C0DEE39DEGG';
         opp.Name = 'OppTest';
+        opp.CrivoQuery__c = 'select by Id';
         insert opp;
     }
 
@@ -101,7 +103,22 @@ private with sharing class GeneralDataTest {
         GeneralSection__c section = new GeneralSection__c(Opportunity__c = oppId);
         System.assertEquals(JSON.serialize(new Map<String, SObject>{'GeneralSection__c' => section}), response, 'Wrong response value');
     }
+    @IsTest
+    static void testGetCrivoQuery(){
+        Opportunity opp = [SELECT Id FROM Opportunity WHERE Name = 'OppTest'];
+        ProposalGeneralSectionSetup setup = new ProposalGeneralSectionSetup(opp, 'general-section-1');
+        GeneralSection__c section = setup.createGeneralSection(null, true);
 
+        Test.startTest();
+        GeneralDataController.updateCrivoQuery(String.valueOf(opp.Id), String.valueOf(section.Id));
+        Test.stopTest();
+        GeneralSection__c sectionDone = [
+            SELECT Id, CrivoQuery__c FROM GeneralSection__c
+            WHERE GeneralSectionExternalIdAtWork__c ='general-section-1'
+            LIMIT 1
+        ];
+        System.assertEquals('select by Id', sectionDone.CrivoQuery__c, 'values dont match');
+    }
     private static void assertFields(String externalId, GeneralSection__c database, GeneralSection__c response){
         assertFields(externalId, database.BiometricFailReason__c, database, response);
     }

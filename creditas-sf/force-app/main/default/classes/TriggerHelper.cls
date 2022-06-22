@@ -37,9 +37,6 @@ public with sharing class TriggerHelper {
 	{
 		assert(aObject, aField);
 		Object lOldObject = (Trigger.isUpdate) ? Trigger.oldMap.get(aObject.Id).get(aField) : null;
-        System.debug('current -> ' +aObject.get(aField));
-        System.debug('old value -> ' +lOldObject);
-        System.debug('assert -> ' +((Trigger.isInsert && aObject.get(aField) != null) || aObject.get(aField) != lOldObject));
 		return ((Trigger.isInsert && aObject.get(aField) != null) || aObject.get(aField) != lOldObject);
 	}
     

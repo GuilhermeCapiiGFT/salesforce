@@ -2,6 +2,20 @@
  * @author Otávio Frank - GFT Brasil
  */
 public abstract class Repository {
+    public static final String DEFAULT_QUERY_TEMPLATE = 'SELECT {0} FROM {1} WHERE Id = {2}';
+    public String customQueryTemplate;
+    public List<String> parameters;
+    public String sobjectName;
+    public Repository(){
+        this.parameters = new List<String>();
+    }
+    public Repository(System.Type sobjectType, List<String> fields){
+        this.sobjectName = String.valueOf(sobjectType);
+        this.parameters = new List<String>();
+        this.parameters.add( String.join( fields, ', ') );
+        this.parameters.add( this.sobjectName );
+        
+    }
 
     virtual
     public SObject save(SObject record) {
@@ -88,4 +102,35 @@ public abstract class Repository {
 
         return recordsToStore;
     }
+    public virtual void addParameter(String parameter){
+        this.parameters.add(parameter);
+    }
+    public virtual void addQuotedParameter(String parameter){
+        this.parameters.add('\''+parameter+'\'');
+    }
+    public virtual void addCustomQuery(String customQueryTemplate){
+        this.customQueryTemplate = customQueryTemplate;
+    }
+    public List<SObject> selectById(){
+        if(this.parameters.size() < 3) {
+            throw new RepositoryException('Insufficient Arguments, please define Sobject, fields and Id');
+        }
+        return Database.query(this.resolveDefaultQuery());
+
+    }
+    public List<SObject> query(){
+        return Database.query(this.resolveQuery());
+    }
+    protected virtual String resolveQuery(){
+        String query = this.customQueryTemplate == null 
+                       ? DEFAULT_QUERY_TEMPLATE 
+                       : this.customQueryTemplate;
+        String q = String.format(query,  this.parameters);  
+        return q;
+    }
+    private virtual String resolveDefaultQuery(){
+        String query = DEFAULT_QUERY_TEMPLATE;
+        return String.format(query,  this.parameters);
+    }
+    public class RepositoryException extends Exception{}
 }

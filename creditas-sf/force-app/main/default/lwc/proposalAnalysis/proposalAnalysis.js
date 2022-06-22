@@ -1,8 +1,6 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, updateRecord, getFieldValue, getRecordNotifyChange } from 'lightning/uiRecordApi';
-import { GENERAL_DATA_FIELD } from './proposalGeneralDataFields';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
 import OPP_ID_FIELD from '@salesforce/schema/Opportunity.Id';
 import STAGENAME_FIELD from '@salesforce/schema/Opportunity.StageName';
 import OWNER_ID_FIELD from '@salesforce/schema/Opportunity.OwnerId';
@@ -11,15 +9,37 @@ import OPP_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeReason__c'
 import OPP_OTHER_REASON_FIELD from '@salesforce/schema/Opportunity.CommitteeOtherReason__c';
 import OPP_OBSERVATION_FIELD from '@salesforce/schema/Opportunity.CommitteeObservation__c';
 import OPP_EXTERNALID_FIELD from '@salesforce/schema/Opportunity.ExternalId__c';
-
 import finishAnalysis from '@salesforce/apex/ProposalIntegrationController.finishAnalysis';
 import startAnalysis from '@salesforce/apex/ProposalController.createNewInstance';
 import sendContract from '@salesforce/apex/ProposalContractController.sendContract';
 import generateContract from '@salesforce/apex/ProposalContractController.generateContract';
 import viewContract from '@salesforce/apex/ProposalContractController.viewContract';
-
 import { subscribe } from 'lightning/empApi';
+import generalDataSection from '@salesforce/resourceUrl/generalDataSection';
+import operationDataSection from '@salesforce/resourceUrl/operationDataSection';
+import addressDataSection from '@salesforce/resourceUrl/addressDataSection';
+import contactDetailDataSection from '@salesforce/resourceUrl/contactDetailDataSection';
+import incomeDataSection from '@salesforce/resourceUrl/incomeDataSection';
+import othersDataSection from '@salesforce/resourceUrl/othersDataSection';
+import personalDataSection from '@salesforce/resourceUrl/personalDataSection';
+import warrantyDataSection from '@salesforce/resourceUrl/warrantyDataSection';
 
+const APPROVED = 'APPROVED';
+const COMPLETED = 'COMPLETE';
+const PENDING = 'PENDING';
+const REJECTED = 'REJECTED';
+const VARIANT_BASE = 'base';
+const VARIANT_BASE_COMPLETE = 'base-autocomplete';
+const VARIANT_EXPIRED = 'expired';
+const VARIANT_WARNING = 'warning';
+
+const VARIANTBYSTATUS = {
+  [COMPLETED]: { status: VARIANT_BASE_COMPLETE, priority : 0 },
+  [APPROVED] : { status: VARIANT_BASE, priority: 10 },
+  [PENDING] : { status: VARIANT_WARNING, priority: 100 },
+  [REJECTED]  : { status: VARIANT_EXPIRED, priority : 200 }
+
+}
 const fields = [
   STAGENAME_FIELD, 
   OWNER_ID_FIELD, 
@@ -62,24 +82,42 @@ export default class ProposalAnalysis extends LightningElement {
   disableBtnViewContract = true;
   disableBtnSendContract = true;
   disableBtnCorrectContract = false;
-
   dateContract = '';
-  showContractGenerated = false;
-
   isStageWaitingForUE = false
   isStageInAnalysis = false
   isAnalysisStarted = false
   isStageWaitingForCommittee = false
   isStageOnCommittee = false
   isLoading = false
+  @track openSection = false;
+  startDate = '';
+  showContractGenerated = false;
   
-  startDate = ''
-  openSection = false;
+
   @api
   get disabled(){
     return !this.openSection;
   }
-  generalDataField = GENERAL_DATA_FIELD
+
+  //sections fields
+  @track allSectionsComplete = false;
+  @track generalDataField;
+  @track operationDataField;
+  @track addressDataField;
+  @track incomeDataField;
+  @track contactDataField;
+  @track othersDataField;  
+  @track overallStatus = '';
+  @track disableActionButton = {
+    [APPROVED] : true,
+    [COMPLETED] : true,
+    [REJECTED] : true,
+    [PENDING]  : true
+  };
+  @track overallVariantType = '';
+  @track personalDataField;
+  @track warrantyDataField;
+  
   // Info sections
   mapInfoSection = new Map()
 
@@ -126,7 +164,7 @@ export default class ProposalAnalysis extends LightningElement {
   //Committee
   openModalCommittee = false
   showCommitteeButton = false;
-  enableCommiteeButton = true;
+  disableCommiteeButton = true;
   committeeReasons = []
   committeeOtherReasons = ''
   committeeObservation = ''
@@ -161,7 +199,74 @@ export default class ProposalAnalysis extends LightningElement {
     ["IncomeDataSection__c", "c-proposal-income-data-component"],
     ["OperationSection__c", "c-proposal-operation-component"]
   ])
+  sectionsStatus = new Map([
+    [ "general-section"                     ,      {percentage: 0, status : "", complete : false}],
+    [ "section-dados-pessoais"              ,      {percentage: 0, status : "", complete : false}],
+    [ "section-3"                           ,      {percentage: 0, status : "", complete : false}],
+    [ "section-4"                           ,      {percentage: 0, status : "", complete : false}],
+    [ "section-6"                           ,      {percentage: 0, status : "", complete : false}],
+    [ "section-7"                           ,      {percentage: 0, status : "", complete : false}],
+    [ "section-8"                           ,      {percentage: 0, status : "", complete : false}],
+    [ "section-9"                           ,      {percentage: 0, status : "", complete : false}]
+  ]);
 
+  handleSectionComplete ( event ) {
+    try{
+      this.clearButtons();
+      const section = event.detail;
+      const sectionStatus = {
+        progress : section.progress,
+        status : section.status,
+        type : section.type,
+        complete : section.complete,
+      }
+      if(this.sectionsStatus.has(section.uniquekey)){
+        this.sectionsStatus.set(section.uniquekey, sectionStatus);
+      }
+      let allSectionsComplete = true;
+      this.overallStatus = '';
+      let status = '';
+      let variantType = '';
+      this.sectionsStatus.forEach((value, key, map) =>{
+        if(value.complete){
+          status = status ? status: value.status;
+          allSectionsComplete &= value.complete;
+          status = this.calcStatus(value.status, status);
+          variantType = VARIANTBYSTATUS[value.status];
+
+        }else {
+          allSectionsComplete = false;
+          status = '';
+        }
+      });
+      if(status && allSectionsComplete){
+        this.overallStatus = status
+        this.statusAnalysis = status == COMPLETED? 
+                              APPROVED.toLowerCase():
+                              status.toLowerCase();
+        this.disableCommiteeButton = false;
+        this.disableActionButton[status] = false
+      }
+      this.overallVariantType = variantType;
+      this.allSectionsComplete = allSectionsComplete;
+      
+    }catch(e){
+      console.error(e);
+    }
+  
+  }
+  calcStatus(oldStatus, newStatus){
+    return  VARIANTBYSTATUS[oldStatus].priority > VARIANTBYSTATUS[newStatus].priority?
+            oldStatus : newStatus;
+  }
+  clearButtons = () =>{
+    this.disableActionButton = {
+      [APPROVED] : true,
+      [COMPLETED] : true,
+      [REJECTED] : true,
+      [PENDING]  : true
+    };
+  }
   connectedCallback() {
     this.mapInfoSection.set('ContainerDadosPessoais', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosPessoais'})
     this.mapInfoSection.set('ContainerDadosContato', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosContato'})
@@ -170,6 +275,12 @@ export default class ProposalAnalysis extends LightningElement {
     this.mapInfoSection.set('ContainerOperation', {'variant': '', 'value': 0, 'returnedId': 'ContainerOperation'})
     this.mapInfoSection.set('ContainerDadosRenda', {'variant': '', 'value': 0, 'returnedId': 'ContainerDadosRenda'})
     this.subscribeAutoFinContractUpdateEvent(this);
+
+    this.buildSectionsFields();
+  }
+
+  renderedCallback(){
+    this.checkCcbNumber();
   }
 
   @wire(getRecord, { recordId: '$opportunityid', fields })
@@ -345,7 +456,6 @@ export default class ProposalAnalysis extends LightningElement {
       this.modalReasonObject = infoSection.modal.objectReason
     }
 
-    this.isCompleted();
     this.closeSectionWhenIsDone(infoSection);
   }
 
@@ -517,14 +627,14 @@ export default class ProposalAnalysis extends LightningElement {
         result = PROPOSAL_REJECTED;
       }
       
-      this.enableCommiteeButton = false;
+      this.disableCommiteeButton = false;
       this.statusAnalysis = result;
     }
     else {
       approveBtn.disabled = true
       pendingBtn.disabled = true
       rejectBtn.disabled = true
-      this.enableCommiteeButton = true;
+      this.disableCommiteeButton = false;
     }
   }
 
@@ -615,7 +725,6 @@ export default class ProposalAnalysis extends LightningElement {
 
 
   handleViewContract() {
-    console.log('Visualizar Contrato');
     viewContract({ loanApplicationId: 'LAP-B9BBE976-49B1-4992-8747-00518E59202C' })
       .then(result => {
         let downloadLink = document.createElement("a");
@@ -787,5 +896,40 @@ export default class ProposalAnalysis extends LightningElement {
 
   notifyChange() {
     getRecordNotifyChange([{ recordId: this.opportunityid }]);
-  }  
+  }
+  
+  buildSectionsFields() {
+
+    Promise.all([
+      fetch(generalDataSection),
+      fetch(operationDataSection),
+      fetch(addressDataSection),
+      fetch(contactDetailDataSection),
+      fetch(incomeDataSection),
+      fetch(othersDataSection),
+      fetch(personalDataSection),
+      fetch(warrantyDataSection)
+    ]).then(responses => Promise.all( responses.map(response => response.json() )))
+      .then( result => result.forEach( sectionFields => { let propertyName = sectionFields.shift().proposalAnalysisPropertyName;
+                                                          this[propertyName] = sectionFields; } ))
+      .catch( error => console.error(error) );
+  }
+
+  checkCcbNumber(){
+    if (this.CCBNumber != null){
+      this.disableBtnGenerateContract = true;
+      this.disableBtnViewContract = false;
+    }
+    if (this.CCBNumber != null && this.stageName != 'contrato emitido') {
+      this.disableBtnSendContract = false;
+    }
+    if (this.stageName != 'contrato emitido'){
+      this.disableBtnCorrectContract = false;
+    }
+    if (this.stageName == 'contrato emitido'){
+      this.disableBtnCorrectContract = true;
+      this.disableBtnGenerateContract = true;
+      this.disableBtnSendContract = true;
+    }
+  }
 }

@@ -1,5 +1,7 @@
 @isTest
 public class ProposalIntegrationServiceTest {
+    
+    private static final String MOCK_AUTH = '{"access_token":"tOxqtBAtTEMUdeCNOlZdsUnvjO8gGmMFq01AFQeOLAtlOWglcI3lR6aXpKNvYH8i2hXgbKjqDZ6sJs8SmpQZ9g","token_type":"Bearer","expires_in":86400}';
 
     @TestSetup
     static void makeData(){
@@ -82,12 +84,8 @@ public class ProposalIntegrationServiceTest {
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         String result;
-        HttpMockFactory mock = new HttpMockFactory(
-            new List<Integer>{200},
-            new List<String>{'SUCCESS'},
-            new List<String>{''},
-            new List<Map<String,String>>{new Map<String,String>()}
-        );
+
+        HttpMockFactory mock = createMock(new List<Integer>{200,200},new List<String>{MOCK_AUTH,''});
 
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
@@ -104,13 +102,9 @@ public class ProposalIntegrationServiceTest {
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1];
         ProposalIntegrationVO payload = new ProposalIntegrationVO();
         String result;
-        HttpMockFactory mock = new HttpMockFactory(
-            new List<Integer>{400},
-            new List<String>{'BAD_REQUEST'},
-            new List<String>{''},
-            new List<Map<String,String>>{new Map<String,String>()}
-        );
 
+        HttpMockFactory mock = createMock(new List<Integer>{200,400},new List<String>{MOCK_AUTH,''});
+    
         Test.setMock(HttpCalloutMock.class, mock);
         Test.startTest();
         payload = ProposalIntegrationService.getRequest(opp.Id, 'pending');
@@ -118,5 +112,15 @@ public class ProposalIntegrationServiceTest {
         Test.stopTest();
         
         System.assertEquals('Error', result,'Should have received a error message.');
+    }
+
+    private static HttpMockFactory createMock(List<Integer> statusCode, List<String> payloads){
+        HttpMockFactory mock = new HttpMockFactory(
+            statusCode,
+            new List<String>{'OK','OK'},
+            payloads,
+            new List<Map<String,String>>{new Map<String,String>(), new Map<String,String>()}
+        );
+        return mock;
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="slds-progress slds-progress_vertical">
         <div class="slds-progress__item">
-            <lightning-progress-ring value={progress.percentage} variant={progress.status} class="progressCircle"></lightning-progress-ring>
+            <lightning-progress-ring value={progress.percentage} variant={progress.type} class="progressCircle"></lightning-progress-ring>
             <div class="slds-progress__item_content slds-m-vertical_medium" data-id="progressItem">
                 <li class="slds-accordion__list-item">
                     <section class="slds-accordion__section" data-id="section-wrapper">
@@ -67,13 +67,12 @@
                                 </lightning-icon>
                             </template>
                         </div>
-                        <template if:false={disabled}>
                             <div class="slds-accordion__content" id="proposal-section__general" >
                                 <div class="slds-m-vertical_medium">
                                     
                                 </div>
                                 <div class="btn-container slds-m-vertical_medium">
-                                    <button title="Validar biometria" onclick={biometryValidation}>Validar biometria</button>
+                                    <button title="Validar biometria" onclick={getCrivoQuery}>Recarregar Crivo</button>
                                 </div>
                                 <div data-id="ContainerGeneralData">
                                     <template if:true={componentLoaded}>
@@ -81,12 +80,13 @@
                                             <c-proposal-field-section 
                                                 data-id={field.uniqueName} 
                                                 field={field} 
+                                                rec-type-id={field.recordTypeId}
+                                                field-unique-name={field.uniqueName}
+                                                section={uniquekey}
                                                 key={field.key} 
                                                 oninputchange={handleChange}
                                                 onfieldvalidation={handleFieldValidation}
-                                                onload={handleFieldLoad}
-                                                oninputfocus={handleInputInteraction}
-                                                oninputblur={handleInputInteraction}>
+                                                onload={handleFieldLoad}>
                                             </c-proposal-field-section>
                                         </template>
                                     </template>
@@ -95,7 +95,6 @@
                                     </div>
                                 </div>    
                             </div>
-                        </template>
                     </section>
                 </li>
             </div>
