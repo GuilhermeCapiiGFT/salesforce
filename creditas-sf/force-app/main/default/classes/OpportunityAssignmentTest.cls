@@ -1,14 +1,3 @@
-/***********************************************************************************************************************
- * Copyright © 2021 Creditas
- * =======================================================================================================================
- * @description Classe de testes da classe OpportunityAssignment
- * 
- =======================================================================================================================
- * History
- * -------
- * VERSION   AUTHOR                  DATE            DETAIL      Description
- * 1.0       Matheus Fernandes       25/01/2021      Created     Criação da classe
- **********************************************************************************************************************/
 @IsTest
 private class OpportunityAssignmentTest {
   //Global Variables that will be used throughout the test class
