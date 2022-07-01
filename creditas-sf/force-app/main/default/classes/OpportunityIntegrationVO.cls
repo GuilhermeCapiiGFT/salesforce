@@ -78,6 +78,11 @@ public with sharing class OpportunityIntegrationVO {
 		public cls_minimalRequiredIncome minimalRequiredIncome;
 	}
     
+	public class cls_minimalRequiredIncome {
+		public Decimal amount;
+		public String currencyCode;
+	}
+
     public class cls_collateralValue {
 		public String currencyCode;	//BRL
 		public String amount;	//25000
@@ -162,11 +167,6 @@ public with sharing class OpportunityIntegrationVO {
 		public String type;	//ASSET
 		public String id;	//f0e55377-0133-4bfe-8cc2-a9819df6cc92
 		public Integer version;	//10
-	}
-
-	public class cls_minimalRequiredIncome{
-		public string amount;
-		public string currencyCode;
 	}
     
 	public static OpportunityIntegrationVO parse(String json){
@@ -271,6 +271,14 @@ public with sharing class OpportunityIntegrationVO {
 		'             "amount":"200"'+
 		' '+
 		'          },'+
+		' '+	   
+		'          "minimalRequiredIncome":{'+
+		' '+
+		'              "amount": 10,'+
+		' '+
+		'    		   "currencyCode": 10'+
+		' '+
+		'           },'+
 		' '+
 		'          "term":180,'+
 		' '+

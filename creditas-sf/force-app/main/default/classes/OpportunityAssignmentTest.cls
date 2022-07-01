@@ -1,7 +1,7 @@
 @IsTest
 private class OpportunityAssignmentTest {
   //Global Variables that will be used throughout the test class
-  private static DateTime firstDttm = Datetime.newInstance(2021, 1, 1, 1, 0, 0);
+  private static DateTime firstDttm = Datetime.now();
   private static DateTime secondDttm = firstDttm.addSeconds(1);
   private static Id cSetupId;
   private static string oppApprovedByRH = 'Aprovado por RH';
@@ -81,7 +81,7 @@ private class OpportunityAssignmentTest {
     lstOppty.add(makeOppty(7, 'REFINANCING', secondDttm, ''));
     lstOppty.add(makeOppty(8, 'STORE', secondDttm, ''));
     lstOppty.add(makeOppty(9, 'PAYROLL_LOAN', secondDttm, ''));
-    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm, ''));    
+    lstOppty.add(makeOppty(10, 'SALARY_ADVANCE', secondDttm, ''));
     insert lstOppty;
   }
 
@@ -92,7 +92,7 @@ private class OpportunityAssignmentTest {
     List<Opportunity> lstOpptyAssignSecond = new List<Opportunity>();
 
     // Change opportunities to trigger the assignments
-    List<Opportunity> lstOppty = [SELECT Id, Name FROM Opportunity WHERE Name LIKE 'Test Oppty%'];
+    List<Opportunity> lstOppty = [SELECT Id, Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' AND RecordType.DeveloperName = 'AtWork'];
     for (Opportunity op : lstOppty) {
       op.StageName = oppApprovedByRH;
       if (op.Name == 'Test Oppty 7' || op.Name == 'Test Oppty 8') {
@@ -101,17 +101,24 @@ private class OpportunityAssignmentTest {
         lstOpptyAssignSecond.add(op);
       }
     }
-
-    Test.startTest();
-    
-    // First update will assign users Test2 and Test3, making them unavailable for the next assignment
-    // This behavior is them validated on the test asserts
+    String testUser2Id = [SELECT Id FROM User WHERE Name = 'Test2']?.Id;
+    String testUser3Id = [SELECT Id FROM User WHERE Name = 'Test3']?.Id;
+    for(Opportunity opp : lstOpptyAssignFirst){
+      opp.StageName = 'Em Análise de Formalização';
+      if(opp.Name == 'Test Oppty 7'){
+        opp.OwnerId = testUser2Id;
+      } else {
+        opp.OwnerId = testUser3Id;
+      }
+    }
     update lstOpptyAssignFirst;
-    update lstOpptyAssignSecond;
+    Test.startTest();
+    // First update will assign users Test2 and Test3, making them unavailable for the next assignment
+      update lstOpptyAssignSecond;
 
     Test.stopTest();
 
-    lstOppty = [SELECT Name, Owner.Name FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
+    lstOppty = [SELECT Name, Owner.Name, StageName FROM Opportunity WHERE Name LIKE 'Test Oppty%' ORDER BY Name ASC];
     
     // Auxiliary table to verify the asserts, sorted by Priority
     // Oppty Name Prod Type       Ext Date    Expected Owner
@@ -277,31 +284,40 @@ private class OpportunityAssignmentTest {
 
   @isTest
   private static void testMultipleOppsSameAccount(){
-    List<Opportunity> oppList = [SELECT Id,AccountId FROM Opportunity WHERE QueueName__c = 'SALARY_ADVANCE'];
-    String accountId = oppList[0]?.AccountId;
-    
+    List<Opportunity> oppList = [SELECT Id,AccountId FROM Opportunity];
+    delete oppList;
+
+    Account acc = AccountSetup.createAccount('VAI_BRASIL', 'Pessoa_Fisica');
+    insert acc;
+    String accountId = acc.Id;
+
+    Opportunity firstOpp = makeOppty(666, 'SALARY_ADVANCE', secondDttm, accountId);
+    insert firstOpp;
+    firstOpp.StageName = oppApprovedByRH;
+    update firstOpp;
+
     List<Opportunity> oppsToCreate = new List<Opportunity>{};
     for(Integer i = 11; i <= 211; i++){
       oppsToCreate.add(makeOppty(i, 'SALARY_ADVANCE', secondDttm, accountId));
     }
+
     insert oppsToCreate;
-    oppList.addAll(oppsToCreate);
-    for(Opportunity iOpp : oppList){
-      iOpp.AccountId =  accountId;
-      iOpp.StageName = oppApprovedByRH;
+
+    for(Opportunity opp : oppsToCreate){
+      opp.StageName = oppApprovedByRH;
     }
     Test.startTest();
-      update oppList;
+      update oppsToCreate;
     Test.stopTest();
 
-    List<Opportunity> oppsAfterUpdate = [SELECT Owner.Name FROM Opportunity WHERE QueueName__c = 'SALARY_ADVANCE'];
-    for(Opportunity iOpp : oppsAfterUpdate){
-      System.assertEquals('Test4', iOpp.Owner.Name, 'Incorrect Owner assigned');
+    List<Opportunity> oppsAfterUpdate = [SELECT Name,QueueName__c,Owner.Name FROM Opportunity WHERE QueueName__c = 'SALARY_ADVANCE'];
+    for(Opportunity opp : oppsAfterUpdate){
+      System.assertEquals('Test4', opp.Owner.Name, 'Incorrect Owner assigned');
     }
   }
 
   @isTest
-  private static void testAutoFinApprovedDistribution(){
+  private static void testAutoFinApprovedDistributionOneOpp(){
     List<Opportunity> oppList = new List<Opportunity>();
     oppList.add(makeOpptyAuto(1,'AUTO_FIN',firstDttm,''));
     oppList.add(makeOpptyAuto(2,'AUTO_FIN',secondDttm,''));
@@ -314,18 +330,35 @@ private class OpportunityAssignmentTest {
     }
     Test.startTest();
       update oppAutoList;
-      List<Opportunity> oppAutoListAfterUpdate = [SELECT Owner.Name,StageName FROM Opportunity WHERE RecordType.DeveloperName = 'AutoFin' ORDER BY ExternalCreationDate__c ASC];
-      System.assertEquals('Test0', oppAutoListAfterUpdate[0].Owner.Name, 'Opportunity was not assigned');
-      System.assertEquals(ownerName, oppAutoListAfterUpdate[1].Owner.Name, 'Opportunity should not be assigned');
-      oppAutoListAfterUpdate[0].StageName = 'Em Análise de Formalização';
-      update oppAutoListAfterUpdate;
-      oppAutoListAfterUpdate[0].StageName = awaitingFormalizationAssignment;
-      update oppAutoListAfterUpdate[0];
+    Test.stopTest();
+
+    List<Opportunity> oppAutoListAfterUpdate = [SELECT Owner.Name,StageName FROM Opportunity WHERE RecordType.DeveloperName = 'AutoFin' ORDER BY ExternalCreationDate__c ASC];
+    System.assertEquals('Test0', oppAutoListAfterUpdate[0].Owner.Name, 'Opportunity was not assigned');
+    System.assertEquals(ownerName, oppAutoListAfterUpdate[1].Owner.Name, 'Opportunity should not be assigned');
+  }
+
+  @isTest
+  private static void testAutoFinApprovedDistribution(){
+    List<Opportunity> oppList = new List<Opportunity>();
+    oppList.add(makeOpptyAuto(1,'AUTO_FIN',firstDttm,''));
+    oppList.add(makeOpptyAuto(2,'AUTO_FIN',secondDttm,''));
+    insert oppList;
+    String ownerName;
+    List<Opportunity> oppAutoList = [SELECT Owner.Name,StageName FROM Opportunity WHERE RecordType.DeveloperName = 'AutoFin' ORDER BY ExternalCreationDate__c ASC];
+    for(Opportunity opp : oppAutoList){
+      opp.StageName = awaitingFormalizationAssignment;
+      ownerName = opp.Owner.Name;
+    }
+    update oppAutoList;
+    Test.startTest();
+      oppAutoList[0].StageName = 'Em Análise de Formalização';
+      update oppAutoList;
+      oppAutoList[0].StageName = 'Aguardando emissão de contrato';
+      update oppAutoList;
     Test.stopTest();
     List<Opportunity> oppAutoListLastUpdate = [SELECT Owner.Name,StageName FROM Opportunity WHERE RecordType.DeveloperName = 'AutoFin' ORDER BY ExternalCreationDate__c ASC];
     System.assertEquals('Test0', oppAutoListLastUpdate[0].Owner.Name, 'Opportunity was not assigned');
     System.assertEquals('Test0', oppAutoListLastUpdate[1].Owner.Name, 'Opportunity was not assigned');
-
   }
 
   @isTest
@@ -354,6 +387,23 @@ private class OpportunityAssignmentTest {
     }
     System.assertEquals(0, [SELECT Count() FROM ProductAssignedUser__c], 'All ProductAssignedUser records should have been deleted');
     
+  }
+
+  @isTest
+  private static void testOldOpportunityUpdate(){
+    List<Opportunity> oppToDelete = [SELECT Id FROM Opportunity];
+    delete oppToDelete;
+    Datetime oldDt = Datetime.now().addMonths(-4);
+    Opportunity oldOpp = makeOppty(2077, 'DISCHARGING', oldDt, '');
+    insert oldOpp;
+    oldOpp.StageName = oppApprovedByRH;
+    Test.startTest();
+    update oldOpp;
+    Test.stopTest();
+    Opportunity opp = [SELECT StageName, OwnerId FROM Opportunity LIMIT 1];
+    System.assertEquals(oppApprovedByRH, opp.StageName, 'Opportunity StageName should not be updated');
+    System.assertEquals(opp.OwnerId, UserInfo.getUserId(), 'Opportunity Owner should not be updated');
+
   }
 
   private static Opportunity makeOpptyAuto(Integer num, String queueName, Datetime externalCreatedDttm, String accountId){

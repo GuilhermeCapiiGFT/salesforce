@@ -29,5 +29,6 @@ public with sharing class ProposalIntegrationVO {
         public String value;
         public String reasons;
         public String fieldObservations;
+        public String externalId;
     }
 }

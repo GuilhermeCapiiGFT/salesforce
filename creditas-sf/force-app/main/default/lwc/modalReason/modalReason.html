@@ -13,26 +13,31 @@
                     </button>
                 </div>
                 <div class="slds-modal__content slds-p-around_medium content-modal-reason" id="modal-content-id-1">
-                    <lightning-combobox
-                        name="reason"
-                        label="Motivo:"
-                        placeholder="Selecione um motivo"
-                        class="form-reason"
-                        options={optionsReason}
-                        onchange={handlerSelectReason}
-                        value={reason}>
-                    </lightning-combobox>
-                    <template if:true={openNote}>
-                        <lightning-textarea 
-                            name="description"
-                            required
-                            onchange={handlerChangeNote} 
-                            class="form-reason slds-m-top_small" 
-                            label="Observação:"
-                            message-when-value-missing="Por favor, digite uma observação."
-                            value={description}>
-                        </lightning-textarea>
-                    </template>
+                    <div class="loading" if:true={loadingPicklist}>
+                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                    </div>
+                    <div if:false={loadingPicklist}>
+                        <lightning-combobox
+                            name="reason"
+                            label="Motivo:"
+                            placeholder="Selecione um motivo"
+                            class="form-reason"
+                            options={optionsReason}
+                            onchange={handlerSelectReason}
+                            value={reason}>
+                        </lightning-combobox>
+                        <template if:true={openNote}>
+                            <lightning-textarea 
+                                name="description"
+                                required
+                                onchange={handlerChangeNote} 
+                                class="form-reason slds-m-top_small" 
+                                label="Observação:"
+                                message-when-value-missing="Por favor, digite uma observação."
+                                value={description}>
+                            </lightning-textarea>
+                        </template>
+                    </div>
                 </div>
                 <div class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" data-action="close" aria-label="Cancel and close" onclick={handlerSave}>Cancel</button>

@@ -6,9 +6,9 @@ public with sharing class ProposalIntegrationService {
     private static Map<String,String> productTypes;
     private static Map<String,String> resultBySection;
     private static Map<String, List<String>> reasonsBySection;
-    private static final string PROPOSAL_APPROVED = 'approved';
-    private static final string PROPOSAL_PENDENCY = 'pending';
-    private static final string PROPOSAL_REJECTED = 'rejected';
+    private static final string PROPOSAL_APPROVED = 'APPROVED';
+    private static final string PROPOSAL_PENDENCY = 'PENDING';
+    private static final string PROPOSAL_REJECTED = 'REJECTED';
     private static OpportunityRepository opportunityRepository;
     private static String oppExternalId;
 
@@ -73,18 +73,20 @@ public with sharing class ProposalIntegrationService {
         for(ProposalAnalysisFields__mdt currentField : sectionFields) {
 
             ProposalIntegrationVO.AnalyzedItem item = new ProposalIntegrationVO.AnalyzedItem();
+            String externalId       = currentField.ExternalId__r.QualifiedApiName;
+            String observation      = currentField.Observation__r.QualifiedApiName;
             String result           = currentField.Status__r.QualifiedApiName;
             String reason           = getReasons(currentField, record);
-            String observation      = currentField.Observation__r.QualifiedApiName;
             String value            = currentField.Value__r.QualifiedApiName;
             
-            item.type               = currentField.Item_Type__c;
+            item.externalId         = String.isBlank(externalId)  ? null  : (String) record.get(externalId);
             item.fieldName          = currentField.Value__r.DeveloperName;
-            item.itemId             = null;
-            item.value              = String.isBlank(value)       ? null  : (String) String.valueOf(record.get(value));
             item.fieldObservations  = String.isBlank(observation) ? null  : (String) record.get(observation);
-            item.result             = String.isBlank(result)      ? null  : (String) record.get(result);
+            item.itemId             = null;
             item.reasons            = String.isBlank(reason)      ? null  : reason;
+            item.result             = String.isBlank(result)      ? null  : (String) record.get(result);
+            item.type               = currentField.Item_Type__c;
+            item.value              = String.isBlank(value)       ? null  : (String) String.valueOf(record.get(value));
             
             if ( String.isNotBlank(reason) ) {
 
@@ -153,7 +155,8 @@ public with sharing class ProposalIntegrationService {
     private static Map<String, List<ProposalAnalysisFields__mdt>> getMapFields(String recordType){
         Map<String, List<ProposalAnalysisFields__mdt>> mapSectionFields = new Map<String, List<ProposalAnalysisFields__mdt>>();
         for(ProposalAnalysisFields__mdt currentSectionField : [SELECT Id, Item_Type__c, Value__r.DeveloperName, Value__r.QualifiedApiName, Object_Section__r.DeveloperName, 
-                                                                Observation__r.QualifiedApiName, Pending_Reason__r.QualifiedApiName, Reject_Reason__r.QualifiedApiName, Status__r.QualifiedApiName 
+                                                                Observation__r.QualifiedApiName, Pending_Reason__r.QualifiedApiName, 
+                                                                Reject_Reason__r.QualifiedApiName, Status__r.QualifiedApiName, ExternalId__c, ExternalId__r.QualifiedApiName
                                                                 FROM ProposalAnalysisFields__mdt
                                                                 WHERE Product_Type__c = :recordType]){
             if(mapSectionFields.containsKey(currentSectionField.Object_Section__r.DeveloperName)){

@@ -1,13 +1,3 @@
-/***********************************************************************************************************************************
-* Copyright © 2021 Creditas
-* ================================================================================================================================
-* @description Default Controller for trigger OpportunityProcessTrigger
-* ================================================================================================================================
-* History
-* -------
-* VERSION   AUTHOR                  DATE            DETAIL      Description
-* 1.0       Nathalia Rosa          17/12/2021      Created     Default Controller for trigger OpportunityProcessTrigger
-**********************************************************************************************************************************/
 public without sharing class OpportunityProcessTriggerController extends TriggerHandler
 {
     private List<OpportunityProcess__c> newOpportunities;

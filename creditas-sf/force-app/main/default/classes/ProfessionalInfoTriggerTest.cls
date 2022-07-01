@@ -42,7 +42,7 @@ public class ProfessionalInfoTriggerTest {
 
         Account varAccount = [SELECT Id, ExternalId__c, isExternallySynched__C, ExternalVersion__c, ExternalCreationDate__c, ExternalUpdatedDate__c,
                               ExternalTenant__c, ExternalModifiedBy__c, DocumentType__c, DocumentNumber__c, Name, Gender__c, BirthDate__c,
-                              CivilStatus__c, Birth_City__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
+                              CivilStatus__c, BirthCity__c, Birth_Country__c, Nationality__c, IsSynchEnabled__c
                               FROM Account
                               WHERE Id =: varProfessionalInfo.Account__c
                               LIMIT 1];

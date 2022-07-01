@@ -85,8 +85,8 @@ public with sharing class OpportunityIntegrationService {
             AccountNumber__c = requestBodyObj.conditions?.depositAccount?.accountNumber,
             BankAccountType__c = requestBodyObj.conditions?.depositAccount?.bankAccountType,
             PartnerAccount__c = partnerAccount,
-            CCBnumber__c = requestBodyObj.contract?.ccbNumber
-            
+            CCBnumber__c = requestBodyObj.contract?.ccbNumber,
+            MinimalRequiredIncome__c = requestBodyObj.conditions?.parameters?.minimalRequiredIncome?.amount
         );
           
         Schema.SObjectField oppExternalId = Opportunity.Fields.ExternalId__c;

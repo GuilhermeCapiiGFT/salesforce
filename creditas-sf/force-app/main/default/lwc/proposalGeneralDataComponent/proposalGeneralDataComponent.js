@@ -29,7 +29,7 @@ export default class ProposalGeneralDataComponent extends ProposalBaseComponent 
             'SObject' : 'GeneralSection__c',
             'ApiFieldName' : 'CrivoQuery__c',
             'StatusField' : 'CrivoQueryStatus__c',
-            'actions' : ['EDIT', 'NO_VALIDATION']
+            'actions' : ['READONLY', 'NO_VALIDATION']
         }];
         this.apiCount = this.fields.length;
     }
@@ -39,7 +39,7 @@ export default class ProposalGeneralDataComponent extends ProposalBaseComponent 
             let result = JSON.parse(event);
             this.sectionId = result.GeneralSection__c.Id;
             this.setRecord(result, true);
-            this.pushHistory(this.shaddowObject);
+            this.pushHistory(this.currentState);
             this.recalculateProgress();
         });
     }

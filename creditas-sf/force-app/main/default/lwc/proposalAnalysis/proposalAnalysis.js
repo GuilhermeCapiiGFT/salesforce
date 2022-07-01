@@ -89,7 +89,7 @@ export default class ProposalAnalysis extends LightningElement {
   isStageWaitingForCommittee = false
   isStageOnCommittee = false
   isLoading = false
-  @track openSection = false;
+  openSection = false;
   startDate = '';
   showContractGenerated = false;
   
@@ -709,7 +709,6 @@ export default class ProposalAnalysis extends LightningElement {
         this.showCommitteeButton = false
         this.showContractButton = false 
     }) 
-    this.isLoading = true
     this.sendAnalysis('approve-btn');
   }
 
@@ -820,6 +819,7 @@ export default class ProposalAnalysis extends LightningElement {
         .then(result => {
           if (result == 201) {
             this.showToast('Sucesso!', 'Contrato enviado com sucesso.', 'success');
+            this.disableBtnSendContract = true;
             const fields = {};
             fields[OPP_ID_FIELD.fieldApiName] = this.opportunityid;
             fields[STAGENAME_FIELD.fieldApiName] = STATUS_EMITED_CONTRACT;
@@ -920,16 +920,17 @@ export default class ProposalAnalysis extends LightningElement {
       this.disableBtnGenerateContract = true;
       this.disableBtnViewContract = false;
     }
-    if (this.CCBNumber != null && this.stageName != 'contrato emitido') {
+    else if (this.CCBNumber != null && this.stageName != STATUS_EMITED_CONTRACT) {
       this.disableBtnSendContract = false;
     }
-    if (this.stageName != 'contrato emitido'){
+    else if (this.stageName != STATUS_EMITED_CONTRACT){
       this.disableBtnCorrectContract = false;
     }
-    if (this.stageName == 'contrato emitido'){
+    else if (this.stageName === STATUS_EMITED_CONTRACT){
       this.disableBtnCorrectContract = true;
       this.disableBtnGenerateContract = true;
       this.disableBtnSendContract = true;
+      this.disableBtnViewContract = false;
     }
   }
 }

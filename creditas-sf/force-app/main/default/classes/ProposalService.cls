@@ -11,6 +11,7 @@ public with sharing class ProposalService
     private static Id accountId;
     private static OpportunityRepository opportunityRepository = new OpportunityRepository();
     private static AccountRepository accountRepository = new AccountRepository();
+    private static FinancialResourcesRepository financialResourcesRepository = new FinancialResourcesRepository();
 
     private static String stageName;
     //globals
@@ -262,10 +263,8 @@ public with sharing class ProposalService
 
     private static void createDocumentsMap(List<Documents__c> docList){
         for(Documents__c doc : docList){
-            if(String.isNotBlank(doc.DocumentKey__c) && !mapDocuments.containsKey(doc.DocumentKey__c)){
-                mapDocuments.put(doc.DocumentKey__c, doc);
-            } else if(mapDocuments.size() == 2){
-                break;
+            if(String.isNotBlank(doc.DocumentType__c) && !mapDocuments.containsKey(doc.DocumentType__c)){
+                mapDocuments.put(doc.DocumentType__c, doc);
             }
         }
     }
@@ -274,8 +273,6 @@ public with sharing class ProposalService
         for(CommunicationContacts__c comm : commList){
             if(String.isNotBlank(comm.Channel__c) && !mapContacts.containsKey(comm.Channel__c)){
                 mapContacts.put(comm.Channel__c, comm);
-            } else if(mapDocuments.size() == 2){
-                break;
             }
         }
     }
@@ -284,8 +281,6 @@ public with sharing class ProposalService
         for(Addresses__c address :addressList){
             if(!mapAddress.containsKey('Address')){
                 mapAddress.put('Address',address);
-            } else if (mapAddress.size() == 1){
-                break;
             }
         }
     }
@@ -294,12 +289,9 @@ public with sharing class ProposalService
         for(ProfessionalInfo__c profInfo :profInfoList){
             if(!mapProfessionalInfo.containsKey('profInfo')){
                 mapProfessionalInfo.put('profInfo',profInfo);
-            } else if (mapProfessionalInfo.size() == 1){
-                break;
             }
         }
     }
-
 
     public static void copyPersonalDataSection(PersonalDataSection__c personalDataSection, PersonalDataSection__c oldPersonalDataSection)
     {
@@ -421,7 +413,7 @@ public with sharing class ProposalService
         if(financialResourceIdSet.isEmpty()) {
             return new FinancialResources__c();
         } else {
-            List<FinancialResources__c> resourceList = [SELECT ResourceKey__c,Plate__c,ModelYear__c,ManufacturingYear__c,Brand__c,Model__c,Color__c,LicensingState__c,State__c,ExternalCodeOrigin__c, Chassis__c, RecordTypeId FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC];
+            List<FinancialResources__c> resourceList = financialResourcesRepository.findByIds(financialResourceIdSet);
             return resourceList[0];
         }
     }
@@ -433,7 +425,7 @@ public with sharing class ProposalService
         if(financialResourceIdSet.isEmpty()) {
             return new Map<String, FinancialResources__c>();
         } else {
-            List<FinancialResources__c> resourceList = [SELECT Id, Type__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC];
+            List<FinancialResources__c> resourceList = financialResourcesRepository.findByIds(financialResourceIdSet);
             Map<String, FinancialResources__c> financialResourcesByType = new Map<String, FinancialResources__c>();
 
             for(FinancialResources__c financialResource : resourceList)
@@ -461,7 +453,7 @@ public with sharing class ProposalService
         if(financialResourceIdSet.isEmpty()) {
             return new FinancialResources__c();
         } else {
-            List<FinancialResources__c> finResources = [SELECT Id, ManufacturingYear__c, Amount__c FROM FinancialResources__c WHERE Id IN :financialResourceIdSet WITH SECURITY_ENFORCED ORDER BY ExternalUpdatedDate__c DESC ];
+            List<FinancialResources__c> finResources = financialResourcesRepository.findByIds(financialResourceIdSet);
             return finResources[0];
         }
     }

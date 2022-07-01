@@ -135,6 +135,7 @@ export default class ProposalFieldSection extends LightningElement {
         switch(value) {
             case this.APPROVE:
                 this.status = {approved: true};
+                this.clearStatusValues();
                 break;
             case this.PENDING:
                 this.status = {pending: true};
@@ -160,7 +161,6 @@ export default class ProposalFieldSection extends LightningElement {
                 value: value
             });
         }
-        this.clearStatusValues();
     }
     @api
     get disabled(){

@@ -87,7 +87,7 @@ export default class ProposalBaseComponent extends LightningElement {
     firstOpening = true;
     firstRender = true;
     oppId;
-    shaddowObject = {};
+    currentState = {};
     uniqueName;
     uniquekey;
 
@@ -162,7 +162,7 @@ export default class ProposalBaseComponent extends LightningElement {
 
     @api
     get showButtons(){
-        return !this.collapsed && !this.hideButtons;
+        return !this.collapsed && !!this.hideButtons;
     }
 
     /****************** @api methods **********/
@@ -243,13 +243,17 @@ export default class ProposalBaseComponent extends LightningElement {
     }
     cleanField = (fieldMeta, clearStatus) =>{
         
+        if ( this.isLoadingRecord ) return;
+
         const key = fieldMeta.SObject;
         const targetId =  fieldMeta.SObject + '.' + fieldMeta.ApiFieldName;
-        if(clearStatus && this.shaddowObject[key]) {
-            this.shaddowObject[key][fieldMeta.StatusField] = null;
+
+        if(clearStatus && this.currentState[key]) {
+            this.currentState[key][fieldMeta.StatusField] = null;
         }
-        if(!this.SObjects) return;
         
+        if( this.SObjects[key] == null ) this.SObjects[key] = JSON.parse(JSON.stringify(this.currentState[key]));
+
         const sobject = this.SObjects[key];
 
         if(!sobject) return;
@@ -257,17 +261,17 @@ export default class ProposalBaseComponent extends LightningElement {
             if(fieldMeta.PendingStatus){
                 
                 this.SObjects[key][fieldMeta.PendingStatus.ApiFieldName] = null;
-                this.shaddowObject[key][fieldMeta.PendingStatus.ApiFieldName] = null;
+                this.currentState[key][fieldMeta.PendingStatus.ApiFieldName] = null;
             }
             if(fieldMeta.RejectStatus){
                 
                 this.SObjects[key][fieldMeta.RejectStatus.ApiFieldName] = null;
-                this.shaddowObject[key][fieldMeta.RejectStatus.ApiFieldName] = null;
+                this.currentState[key][fieldMeta.RejectStatus.ApiFieldName] = null;
             }
             if(fieldMeta.ObservationField){
                 
                 this.SObjects[key][fieldMeta.ObservationField] = null;
-                this.shaddowObject[key][fieldMeta.ObservationField] = null;
+                this.currentState[key][fieldMeta.ObservationField] = null;
             }
             
         }
@@ -319,7 +323,7 @@ export default class ProposalBaseComponent extends LightningElement {
     handleApproval = (field) => {
         try{
             this.cleanField(field);
-            this.mountSObject(field)
+            this.prepareRequestJSON(field)
         }catch(e){
             console.error('[ERROR] MOUNT SOBJECT WAS NOT POSSIBLE, SEE STACKTRACE' + e);
         }
@@ -366,7 +370,7 @@ export default class ProposalBaseComponent extends LightningElement {
             if(pushHistory) { 
                 
                 this.cleanField(field, this.actionHistory.length > 0 && !this.isLoadingRecord);
-                this.pushHistory(this.shaddowObject);             
+                this.pushHistory(this.currentState);             
             }
         }catch(e){
             console.error(e);
@@ -374,7 +378,7 @@ export default class ProposalBaseComponent extends LightningElement {
     }
     handleChoice = (event) => {
         if(this.isLoadingRecord){
-            this.mountSObject(event.detail);
+            this.prepareRequestJSON(event.detail);
             return;
         }
         const status = event.detail.value;
@@ -425,10 +429,11 @@ export default class ProposalBaseComponent extends LightningElement {
             opened =  modal.closeModal();
         }
     }
-    handleModalCancel(event){
-        
-        
-       this.setRecord(this.shaddowObject);
+    handleModalCancel(event){   
+        if(!this.currentState[event.detail.objectReason][event.detail.StatusField]){
+            this.currentState[event.detail.objectReason][event.detail.StatusField] = null;
+        }
+        this.setRecord(this.currentState);
     }
     handleOpenModal = (field, reason) =>{
         const modal = this.template.querySelector('c-modal-reason');
@@ -447,11 +452,10 @@ export default class ProposalBaseComponent extends LightningElement {
         }
     }
     handlePending = (field) => {
-        
         if(field.PendingStatus){
             this.handleOpenModal(field, field.PendingStatus);
         }else{
-            this.mountSObject(field);
+            this.prepareRequestJSON(field);
         }
     }
     handleProgress = (event) => {
@@ -471,7 +475,7 @@ export default class ProposalBaseComponent extends LightningElement {
         if(field.RejectStatus){
             this.handleOpenModal(field, field.RejectStatus);
         }else{
-            this.mountSObject(field);
+            this.prepareRequestJSON(field);
         }
     }
     handleSaveSection = () => {
@@ -494,11 +498,12 @@ export default class ProposalBaseComponent extends LightningElement {
             if(event.detail.reason){
                 const returnedData = event.detail;
                 const uniqueName = event.detail.originField.uniqueName;
-                this.mountSObject(this.fieldMap[uniqueName], event.detail);
+                this.prepareRequestJSON(this.fieldMap[uniqueName], event.detail);
                 const newField = Object.assign({}, event.detail.originField);
                 const newFieldValue = {
                     [event.detail.object] : {
-                        [event.detail.field] : event.detail.reason
+                        [event.detail.field] : event.detail.reason,
+                        [event.detail.originField.ObservationField] : event.detail.description
                     }
                 };
                 this.setRecord(newFieldValue);
@@ -586,15 +591,15 @@ export default class ProposalBaseComponent extends LightningElement {
                 ...this.SObjects[key],
                 ...tempData
             }
-            this.shaddowObject[key] = this.shaddowObject[key] || { [key] : {} };
-            this.shaddowObject[key] ={
-                ...this.shaddowObject[key],
+            this.currentState[key] = this.currentState[key] || { [key] : {} };
+            this.currentState[key] ={
+                ...this.currentState[key],
                 ...this.SObjects[key],
                 ...tempData
             }
         }
     }
-    mountSObject = (fieldMeta, fieldData) =>{
+    prepareRequestJSON = (fieldMeta, fieldData) =>{
 
         if( this.isLoadingRecord ) return;
         const key = fieldData ? fieldData.object : fieldMeta.SObject;
@@ -617,10 +622,10 @@ export default class ProposalBaseComponent extends LightningElement {
             tempData[this.ID_FIELD] = this.sectionId;
         }
         if(!this.actionHistory.length){            
-            this.shaddowObject[key] = this.shaddowObject[key] || { [key] : {} };
-            this.shaddowObject[key].progress = this.initialStatus;
+            this.currentState[key] = this.currentState[key] || { [key] : {} };
+            this.currentState[key].progress = this.initialStatus;
             this.pushHistory({
-              ...this.shaddowObject
+              ...this.currentState
             });
             
         }
@@ -629,13 +634,13 @@ export default class ProposalBaseComponent extends LightningElement {
             ...tempData
         };
         
-        this.shaddowObject[key] = {
-            ...this.shaddowObject[key],
+        this.currentState[key] = {
+            ...this.currentState[key],
             ...this.SObjects[key],
             ...tempData,
             progress : this.progress.status
         };
-        this.pushHistory(this.shaddowObject);
+        this.pushHistory(this.currentState);
         
         
     }
@@ -681,7 +686,7 @@ export default class ProposalBaseComponent extends LightningElement {
     notifyRecordChange = () => {
         getRecordNotifyChange([{recordId : this.parentId},{ recordId : this.sectionId }]);
     }
-    pushHistory = (shaddowObject) => {
+    pushHistory = (currentState) => {
         if(this.isLoadingRecord && this.actionHistory.length == 1) {
             this.actionHistory = [];
         }
@@ -704,7 +709,7 @@ export default class ProposalBaseComponent extends LightningElement {
                 },[]);
             }
             const history = {
-                ...shaddowObject
+                ...currentState
             }
             this.actionHistory.push(JSON.parse(JSON.stringify(history)));
 
@@ -775,7 +780,10 @@ export default class ProposalBaseComponent extends LightningElement {
             if(!this.saved) {
                 this.progress.percentage = 99;
                 this.disabledBtnSave = false;
+            } else {
+                this.disabledBtnSave = true;
             }
+            
             let type;
             if(this.saved && this.progress.status == this.APPROVE){
                type = this.COMPLETE
@@ -794,21 +802,21 @@ export default class ProposalBaseComponent extends LightningElement {
     mapRecord (retrievedRecord){
         let fieldName = '';
         let objectName;
-        let shaddowObject = {};
-        let shaddowFields = {}
+        let currentState = {};
+        let currentFields = {}
         for ( let [key, value] of Object.entries(retrievedRecord) ) {
             
             let child = value;
             let obj = key;
             for ( let [key, value] of Object.entries(child) ){
                 const targetId = obj + '.' + key;                                
-                shaddowFields[key] = value;
+                currentFields[key] = value;
                 if(this.fieldMap[targetId]){
                     this.retrievedRecord[targetId] = this.retrievedRecord[targetId] || {};
                     this.retrievedRecord[targetId]['value'] = value;
                     fieldName = targetId;                    
                     objectName = obj;
-                    shaddowObject[obj];
+                    currentState[obj];
                 }
                 if( this.controlledFieldByStatus[targetId]){
                     const statusKey = this.controlledFieldByStatus[targetId];
@@ -820,7 +828,7 @@ export default class ProposalBaseComponent extends LightningElement {
                     const pendingKey = this.controlledFieldByPending[targetId];
                     this.retrievedRecord[pendingKey] = this.retrievedRecord[pendingKey] || {};
                     this.retrievedRecord[pendingKey]['pendingValue'] = value;
-                    shaddowFields[key = value];
+                    currentFields[key = value];
                 }
                 if(this.controlledFieldByReject[targetId]){
                     const rejectKey = this.controlledFieldByReject[targetId];
@@ -856,12 +864,12 @@ export default class ProposalBaseComponent extends LightningElement {
         });
         this.isLoadingRecord = true;
         this.componentFields = updatedComponentFields;       
-        shaddowObject[this.sobjectName] = {
-            ...shaddowFields,
+        currentState[this.sobjectName] = {
+            ...currentFields,
             progress : this.progress.status
         }       
-        this.shaddowObject = shaddowObject;
-        this.pushHistory(this.shaddowObject);
+        this.currentState = currentState;
+        this.pushHistory(this.currentState);
         this.isLoadingRecord = false;
         this.saved = true;
 
@@ -905,7 +913,7 @@ export default class ProposalBaseComponent extends LightningElement {
                
                 if(this.fieldMap[targetId]){
                     let target = this.template.querySelector(`[data-id="${targetId}"]`);
-                    target.fieldValue = value;
+                    target.fieldValue = ( typeof value === 'boolean') ? value.toString() : value ;
                     if(clear){
                         if(this.fieldMap[targetId].validatable){
                             target.clear();
@@ -940,6 +948,7 @@ export default class ProposalBaseComponent extends LightningElement {
         }
         this.recalculateProgress();
         this.isLoadingRecord = false;
+       
         if(clear) this.disabledBtnSave = true;
     }
     showToast(title, message, variant) {
@@ -993,6 +1002,7 @@ export default class ProposalBaseComponent extends LightningElement {
         };
 
         if(reset != false) this.setRecord(this.actionHistory[newPosition], false);
+        
         this.currentStep = newPosition;
         this.cleanButtons(directionActions);
         this.updateButtons();

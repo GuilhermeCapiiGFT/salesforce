@@ -2,6 +2,7 @@ import { api, LightningElement, wire, track } from 'lwc';
 import getReasonValues from '@salesforce/apex/ProposalController.getReason'
 
 const OTHER_REASON = 'OTHER';
+const REJECTED_REASON = 'rejected';
 export default class ModalReason extends LightningElement {
 
     saveDisabled = true;
@@ -12,6 +13,7 @@ export default class ModalReason extends LightningElement {
     description;
     actualReason;
     _checkedField;
+    loadingPicklist = true;
     @api uniqueName;
     @api fieldReason;
     @api objectReason;
@@ -34,7 +36,7 @@ export default class ModalReason extends LightningElement {
             return;
         }
 
-        this.reason = ( value.value.toLowerCase() == 'rejected' ) ? value?.rejectValue : value?.pendingValue;
+        this.reason = ( value.value.toLowerCase() == REJECTED_REASON ) ? value?.rejectValue : value?.pendingValue;
         this.isOtherSelected(this.reason);
         this.description = value?.observationValue;
         this._checkedField = value;
@@ -75,6 +77,7 @@ export default class ModalReason extends LightningElement {
         .then(result =>{
             if(result){
                 this.optionsReason = JSON.parse(result);
+                this.loadingPicklist = false;
             }
         })
         .catch(error =>{
@@ -84,6 +87,7 @@ export default class ModalReason extends LightningElement {
         if(this.internalControl){
             this.open = false;
         }
+        this.loadingPicklist = true;
         this.clear();
     }
     handlerSelectReason(e){
@@ -124,6 +128,8 @@ export default class ModalReason extends LightningElement {
                     }
                 });
                 this.dispatchEvent(evt);
+                this.handleClose();
+                return;
             }
         }else{
             this.template.querySelectorAll(".form-reason").forEach(elem => {

@@ -33,3 +33,10 @@
 .slds-modal__footer .slds-button_neutral:visited{
     background: #63e39914;
 }
+
+.loading{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

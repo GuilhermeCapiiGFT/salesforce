@@ -1,13 +1,3 @@
-/**********************************************************************************************************************************
-* Copyright © 2021 Creditas
-* ================================================================================================================================
-* Purpose: Class Refactor for IntegrationAsset
-* ================================================================================================================================
-* History
-* -------
-* VERSION   AUTHOR                  DATE            DETAIL      Description
-*  1.0      Gabriel Vidal           03/03/2022      Created     Class Refactor for IntegrationAsset
-**********************************************************************************************************************************/
 @RestResource(urlMapping='/IntegrationAsset/*')
 global with sharing class IntegrationAssetController 
 {
@@ -30,7 +20,7 @@ global with sharing class IntegrationAssetController
             return;
         }
 
-        Map<String, String> responseMap = IntegrationAssetService.upsertAsset(requestBodyString, requestBodyObject);
+        Map<String, String> responseMap = IntegrationAssetService.upsertAsset(requestBodyObject);
         Integer statusCode = Integer.valueOf(responseMap.get('statusCode'));
 
         if(statusCode == 200)

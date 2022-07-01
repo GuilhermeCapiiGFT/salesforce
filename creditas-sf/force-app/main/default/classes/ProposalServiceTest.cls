@@ -7,7 +7,7 @@ public with sharing class ProposalServiceTest {
         List<Account> accounts = new List<Account>();
         
         Account accCustomer               = TestSetup.getAccount('Nivaele', false);
-        accCustomer.Birth_City__c         = 'Monte Caramelo';
+        accCustomer.BirthCity__c         = 'Monte Caramelo';
         accCustomer.Mother__c             = 'Juzimara da Silva';
         accCustomer.Father__c             = 'Josialdo Ferreira';
         accCustomer.NetWorthLowerLimit__c = 20000;
@@ -305,8 +305,9 @@ public with sharing class ProposalServiceTest {
         Opportunity opp      = [SELECT Id FROM Opportunity WHERE AccountId = :acc.Id LIMIT 1];
 
         PersonalDataSection__c oldPersonalDataSection  = new PersonalDataSection__c(Opportunity__c = opp.Id);
-        oldPersonalDataSection.CPFStatus__c = 'Pending';
+        oldPersonalDataSection.CPFStatus__c = 'PENDING';
         insert oldPersonalDataSection;
+        Test.setCreatedDate(oldPersonalDataSection.Id, Datetime.now().addDays(-1));
         
         Test.startTest();
         ProposalService.start(acc.Id, opp.Id);

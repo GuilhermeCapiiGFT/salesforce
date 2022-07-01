@@ -6,7 +6,7 @@ public class ProposalControllerTest {
     {
         Account accCustomer               = TestSetup.getAccount('Nivaele', false);
         accCustomer.RecordTypeId          = Util.getRecordTypeIdbyName('Account', 'Pessoa_Fisica');
-        accCustomer.Birth_City__c         = 'Monte Caramelo';
+        accCustomer.BirthCity__c         = 'Monte Caramelo';
         accCustomer.Mother__c             = 'Juzimara da Silva';
         accCustomer.Father__c             = 'Josialdo Ferreira';
         insert accCustomer;
@@ -70,7 +70,7 @@ public class ProposalControllerTest {
     @isTest
     private static void startCopySuccess()
     {
-        Account acc = [SELECT Id, Name, Birth_City__c, Mother__c, Father__c FROM Account LIMIT 1];
+        Account acc = [SELECT Id, Name, BirthCity__c, Mother__c, Father__c FROM Account LIMIT 1];
         Opportunity opp = [SELECT Id FROM Opportunity LIMIT 1]; 
 
         Test.startTest();
