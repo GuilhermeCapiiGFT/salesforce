@@ -1,13 +1,3 @@
-/***********************************************************************************************************************************
-* Copyright © 2021 Creditas
-* ================================================================================================================================
-* @description Handler padrão para a trigger do Objeto Relações Financeiras (AccountFinancialRelationship__c).
-* ================================================================================================================================
-* History
-* -------
-* VERSION   AUTHOR                  DATE            DETAIL      Description
-* 1.0       Gabriel Vidal           07/10/2021      Created     Implementação de handler voltado para uso da Trigger do objeto Relações Financeiras (AccountFinancialRelationship__c)
-**********************************************************************************************************************************/
 public without sharing class AccFinancialRelationshipTriggerHandler extends TriggerHandler
 {
     private List<AccountFinancialRelationship__c> lstNewAccountFinancialRelationship;
@@ -45,17 +35,6 @@ public without sharing class AccFinancialRelationshipTriggerHandler extends Trig
         this.updateIsExternallySynced();
     }
 
-
-
-    /**********************************************************************************************************************************
-    * ================================================================================================================================
-    * @description atualizar campo isExternallySynced da Conta quando for criada ou atualizada uma Relação Financeira
-    * ================================================================================================================================
-    * History
-    * -------
-    * VERSION     AUTHOR                  DATE            DETAIL      Description
-    * 1.0         Gabriel Vidal           07/10/21
-    **********************************************************************************************************************************/
     private void updateIsExternallySynced()
     {
         List<Account> accountsToUpdate = new List<Account>();
@@ -63,21 +42,20 @@ public without sharing class AccFinancialRelationshipTriggerHandler extends Trig
 
         for (AccountFinancialRelationship__c accFinancialRelationship : lstNewAccountFinancialRelationship)
         {
-            Id accountId = accFinancialRelationship.Account__c;
-            if (accountId != null && !accountsToUpdateIds.contains(accountId))
+            String accountId = accFinancialRelationship?.Account__c;
+            if (String.isNotBlank(accountId) && !accountsToUpdateIds.contains(accountId))
             {
                 accountsToUpdateIds.add(accountId);
                 
                 accountsToUpdate.add(new Account(
-                    Id = accFinancialRelationship.Account__c,
+                    Id = accountId,
                     IsExternallySynched__c = false
                 ));
             }
         }
-
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+        TriggerHandler.bypass('AccountTriggerController');
         update accountsToUpdate;
-        TriggerHandler.clearBypass('AccountTriggerHandler');
+        TriggerHandler.clearBypass('AccountTriggerController');
     }
 
 

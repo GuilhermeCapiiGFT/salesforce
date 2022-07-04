@@ -12,11 +12,14 @@ public with sharing class FinancialResourcesTriggerService {
         if(changedFinancialResourceIdSet.isEmpty()) { return; }
 
         List<Account> accountToUpdateList = new List<Account>();
+        Set<Id> accIdSet = new Set<Id>();
 
         for(AccountFinancialRelationship__c accountFinancialRelationship : [SELECT Account__c,Account__r.IsExternallySynched__c,Account__r.ExternalId__c FROM AccountFinancialRelationship__c WHERE Recurso_Financeiro__c IN : changedFinancialResourceIdSet]){
-            if(String.isNotBlank(accountFinancialRelationship.Account__c)){
+            String accId = accountFinancialRelationship?.Account__c;
+            if(String.isNotBlank(accId) && !accIdSet.contains(accId)){
+                accIdSet.add(accId);
                 Account accountToUpdate = new Account(
-                    Id = accountFinancialRelationship.Account__c,
+                    Id = accId,
                     IsExternallySynched__c = false
                 );
                 accountToUpdateList.add(accountToUpdate);

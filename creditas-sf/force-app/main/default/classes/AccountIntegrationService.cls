@@ -10,6 +10,8 @@ public with sharing class AccountIntegrationService {
       this.detailedMessage = message;
     }
   }
+  
+  private static AccountRepository accRepo = new AccountRepository();
 
   private static AccountIntegrationServiceException createAISException(String message, String detailedMessage) {
     AccountIntegrationServiceException aisException = new AccountIntegrationServiceException(message);
@@ -32,7 +34,7 @@ public with sharing class AccountIntegrationService {
   private Set<String> newProfessionalInfosExternalId;
   private Set<String> newIncomesExternalId;
   private Set<String> newProfessionalIncomesExternalId;
-  private Set<String> newFiliationsType;
+  private Set<String> newFiliationsNames;
 
   private Boolean isValidRequest {
     get {
@@ -123,21 +125,7 @@ public with sharing class AccountIntegrationService {
   }
 
   private Account selectAccount(String externalId) {
-    List<Account> accounts = [
-      SELECT
-        Id,
-        ExternalId__c,
-        (SELECT Id, ExternalId__c FROM CommunicationContacts__r),
-        (SELECT Id, ExternalAddressId__c FROM Addresses__r),
-        (SELECT Id, ExternalId__c FROM Contas_Relacionadas__r),
-        (SELECT Id, ExternalId__c FROM Documents__r),
-        (SELECT Id, Recurso_Financeiro__r.Id, Recurso_Financeiro__r.ExternalId__c, Recurso_Financeiro__r.ProfessionalInfo__c FROM AccountFinancialRelationships__r),
-        (SELECT Id, ExternalId__c FROM ProfessionalInfo__r),
-        (SELECT Id, Type__c FROM Filiation__r)
-      FROM Account
-      WHERE ExternalId__c = :externalId
-    ];
-
+    List<Account> accounts = accRepo.getPersonAccountData(externalId);
     return accounts.isEmpty() ? null : accounts[0];
   }
 
@@ -199,7 +187,7 @@ public with sharing class AccountIntegrationService {
     this.newProfessionalInfosExternalId = new Set<String>();
     this.newIncomesExternalId = new Set<String>();
     this.newProfessionalIncomesExternalId = new Set<String>();
-    this.newFiliationsType = new Set<String>();
+    this.newFiliationsNames = new Set<String>();
 
     Account parentAccount = new Account(ExternalId__c = this.requestBodyObject.id);
     Account account = this.getAccountToUpsert(currentAccount?.Id);
@@ -609,17 +597,17 @@ public with sharing class AccountIntegrationService {
       return filiations;
     }
 
-    Map<String, Id> filiationIdByType = new Map<String, Id>();
+    Map<String, Id> filiationIdByName = new Map<String, Id>();
     if (currentFiliations != null) {
       for (Filiation__c filiation : currentFiliations) {
-        filiationIdByType.put(filiation.Type__c, filiation.Id);
+        filiationIdByName.put(filiation.Name__c, filiation.Id);
       }
     }
 
     for (AccountIntegrationRequestVO.Filiation filiation : this.requestBodyObject.filiation) {
-      filiations.add(new Filiation__c(Id = filiationIdByType.get(filiation.type), FiliatedAccount__r = parentAccount, Name__c = filiation.name, Type__c = filiation.type));
+      filiations.add(new Filiation__c(Id = filiationIdByName.get(filiation.name), FiliatedAccount__r = parentAccount, Name__c = filiation.name, Type__c = filiation.type));
 
-      this.newFiliationsType.add(filiation.type);
+      this.newFiliationsNames.add(filiation.name);
     }
 
     return filiations;
@@ -758,12 +746,13 @@ public with sharing class AccountIntegrationService {
       return filiationsToDelete;
     }
 
+    System.debug('currentFiliations --> ' + currentFiliations);
     for (Filiation__c filiation : currentFiliations) {
-      if (!this.newFiliationsType.contains(filiation.Type__c)) {
+      if (!this.newFiliationsNames.contains(filiation.Name__c)) {
         filiationsToDelete.add(filiation);
       }
     }
-
+    System.debug('filiationsToDelete --> ' + filiationsToDelete);
     return filiationsToDelete;
   }
 
