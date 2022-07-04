@@ -15,7 +15,7 @@ public with sharing class OpportunityAssignmentService {
 
   private static Map<String, Set<String>> mapAssignedOppStages = new Map<String, Set<String>>{
     'AtWork' => new Set<String>{ AWAITING_FORMALIZATION_ANALYSIS, UNDER_FORMALIZATION_ANALYSIS },
-    'AutoFin' => new Set<String>{ AWAITING_FORMALIZATION_ANALYSIS, UNDER_FORMALIZATION_ANALYSIS, AWAITING_COMITEE_ANALYSIS }
+    'AutoFin' => new Set<String>{ AWAITING_FORMALIZATION_ANALYSIS, UNDER_FORMALIZATION_ANALYSIS, AWAITING_COMITEE_ANALYSIS, UNDER_COMMITEE_ANALYSIS }
   };
 
   private static Map<String, String> mapStagesToSet = new Map<String, String>{
